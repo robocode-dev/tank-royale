@@ -1,4 +1,4 @@
-# Config Stack — Layer 1: Universal Principles
+# Config Stack - Layer 1: Universal Principles
 
 These principles are **always active** for any configuration file, regardless of format or environment.
 

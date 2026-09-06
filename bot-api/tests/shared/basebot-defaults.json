@@ -7,133 +7,331 @@
       "description": "getMyId() throws BotException when not connected to server",
       "type": "botDefault",
       "method": "getMyId",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getVariant-throws",
       "description": "getVariant() throws BotException when not connected to server",
       "type": "botDefault",
       "method": "getVariant",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getVersion-throws",
       "description": "getVersion() throws BotException when not connected to server",
       "type": "botDefault",
       "method": "getVersion",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getEnergy-throws",
       "description": "getEnergy() throws BotException when no tick state is available",
       "type": "botDefault",
       "method": "getEnergy",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getX-throws",
       "description": "getX() throws BotException when no tick state is available",
       "type": "botDefault",
       "method": "getX",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getY-throws",
       "description": "getY() throws BotException when no tick state is available",
       "type": "botDefault",
       "method": "getY",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getDirection-throws",
       "description": "getDirection() throws BotException when no tick state is available",
       "type": "botDefault",
       "method": "getDirection",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getGunDirection-throws",
       "description": "getGunDirection() throws BotException when no tick state is available",
       "type": "botDefault",
       "method": "getGunDirection",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getRadarDirection-throws",
       "description": "getRadarDirection() throws BotException when no tick state is available",
       "type": "botDefault",
       "method": "getRadarDirection",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getSpeed-returns-zero",
       "description": "getSpeed() returns 0 when no tick state is available (safe default)",
       "type": "botDefault",
       "method": "getSpeed",
-      "expected": { "returns": 0 }
+      "expected": {
+        "returns": 0
+      }
     },
     {
       "id": "TR-API-BOT-007-getGunHeat-returns-zero",
       "description": "getGunHeat() returns 0 when no tick state is available (safe default)",
       "type": "botDefault",
       "method": "getGunHeat",
-      "expected": { "returns": 0 }
+      "expected": {
+        "returns": 0
+      }
     },
     {
       "id": "TR-API-BOT-007-getBulletStates-returns-empty",
       "description": "getBulletStates() returns an empty collection when no tick state is available",
       "type": "botDefault",
       "method": "getBulletStates",
-      "expected": { "returnsEmpty": true }
+      "expected": {
+        "returnsEmpty": true
+      }
     },
     {
       "id": "TR-API-BOT-007-getEvents-throws",
       "description": "getEvents() throws BotException when no tick state is available",
       "type": "botDefault",
       "method": "getEvents",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getArenaWidth-throws",
       "description": "getArenaWidth() throws BotException when no game setup is available",
       "type": "botDefault",
       "method": "getArenaWidth",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getArenaHeight-throws",
       "description": "getArenaHeight() throws BotException when no game setup is available",
       "type": "botDefault",
       "method": "getArenaHeight",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-007-getGameType-throws",
       "description": "getGameType() throws BotException when no game setup is available",
       "type": "botDefault",
       "method": "getGameType",
-      "expected": { "throws": "BotException" }
+      "expected": {
+        "throws": "BotException"
+      }
     },
     {
       "id": "TR-API-BOT-008-isAdjustGunForBodyTurn-returns-false",
       "description": "isAdjustGunForBodyTurn() returns false by default",
       "type": "botDefault",
       "method": "isAdjustGunForBodyTurn",
-      "expected": { "returns": false }
+      "expected": {
+        "returns": false
+      }
     },
     {
       "id": "TR-API-BOT-008-isAdjustRadarForBodyTurn-returns-false",
       "description": "isAdjustRadarForBodyTurn() returns false by default",
       "type": "botDefault",
       "method": "isAdjustRadarForBodyTurn",
-      "expected": { "returns": false }
+      "expected": {
+        "returns": false
+      }
     },
     {
       "id": "TR-API-BOT-008-isAdjustRadarForGunTurn-returns-false",
       "description": "isAdjustRadarForGunTurn() returns false by default",
       "type": "botDefault",
       "method": "isAdjustRadarForGunTurn",
-      "expected": { "returns": false }
+      "expected": {
+        "returns": false
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getX-initial-position",
+      "description": "getX() falls back to the initial position when no tick state is available",
+      "type": "botDefault",
+      "method": "getX",
+      "setup": {
+        "initialPosition": {
+          "x": 100.0,
+          "y": 200.0,
+          "direction": 45.0
+        }
+      },
+      "expected": {
+        "returns": 100.0
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getY-initial-position",
+      "description": "getY() falls back to the initial position when no tick state is available",
+      "type": "botDefault",
+      "method": "getY",
+      "setup": {
+        "initialPosition": {
+          "x": 100.0,
+          "y": 200.0,
+          "direction": 45.0
+        }
+      },
+      "expected": {
+        "returns": 200.0
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getDirection-initial-position",
+      "description": "getDirection() falls back to the initial position when no tick state is available",
+      "type": "botDefault",
+      "method": "getDirection",
+      "setup": {
+        "initialPosition": {
+          "x": 100.0,
+          "y": 200.0,
+          "direction": 45.0
+        }
+      },
+      "expected": {
+        "returns": 45.0
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getGunDirection-initial-position",
+      "description": "getGunDirection() falls back to the initial position when no tick state is available",
+      "type": "botDefault",
+      "method": "getGunDirection",
+      "setup": {
+        "initialPosition": {
+          "x": 100.0,
+          "y": 200.0,
+          "direction": 45.0
+        }
+      },
+      "expected": {
+        "returns": 45.0
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getRadarDirection-initial-position",
+      "description": "getRadarDirection() falls back to the initial position when no tick state is available",
+      "type": "botDefault",
+      "method": "getRadarDirection",
+      "setup": {
+        "initialPosition": {
+          "x": 100.0,
+          "y": 200.0,
+          "direction": 45.0
+        }
+      },
+      "expected": {
+        "returns": 45.0
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getX-null-initial-position",
+      "description": "getX() throws BotException when the initial position has no value for it",
+      "type": "botDefault",
+      "method": "getX",
+      "setup": {
+        "initialPosition": {
+          "x": null,
+          "y": null,
+          "direction": null
+        }
+      },
+      "expected": {
+        "throws": "BotException"
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getY-null-initial-position",
+      "description": "getY() throws BotException when the initial position has no value for it",
+      "type": "botDefault",
+      "method": "getY",
+      "setup": {
+        "initialPosition": {
+          "x": null,
+          "y": null,
+          "direction": null
+        }
+      },
+      "expected": {
+        "throws": "BotException"
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getDirection-null-initial-position",
+      "description": "getDirection() throws BotException when the initial position has no value for it",
+      "type": "botDefault",
+      "method": "getDirection",
+      "setup": {
+        "initialPosition": {
+          "x": null,
+          "y": null,
+          "direction": null
+        }
+      },
+      "expected": {
+        "throws": "BotException"
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getGunDirection-null-initial-position",
+      "description": "getGunDirection() throws BotException when the initial position has no value for it",
+      "type": "botDefault",
+      "method": "getGunDirection",
+      "setup": {
+        "initialPosition": {
+          "x": null,
+          "y": null,
+          "direction": null
+        }
+      },
+      "expected": {
+        "throws": "BotException"
+      }
+    },
+    {
+      "id": "TR-API-BOT-007-getRadarDirection-null-initial-position",
+      "description": "getRadarDirection() throws BotException when the initial position has no value for it",
+      "type": "botDefault",
+      "method": "getRadarDirection",
+      "setup": {
+        "initialPosition": {
+          "x": null,
+          "y": null,
+          "direction": null
+        }
+      },
+      "expected": {
+        "throws": "BotException"
+      }
     }
   ]
 }

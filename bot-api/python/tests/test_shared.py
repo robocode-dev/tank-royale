@@ -16,6 +16,7 @@ from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHan
 from robocode_tank_royale.bot_api.base_bot import BaseBot as BaseBotClass
 from robocode_tank_royale.bot_api.bot_exception import BotException
 from robocode_tank_royale.bot_api.bot_info import BotInfo
+from robocode_tank_royale.bot_api.initial_position import InitialPosition
 from robocode_tank_royale.bot_api.graphics import Color
 from robocode_tank_royale.bot_api import constants
 from robocode_tank_royale.bot_api.game_type import GameType
@@ -278,6 +279,13 @@ def _run_bot_default(test_case):
         def run(self): pass
 
     bot = BotDefaultStub()
+
+    setup = test_case.get("setup") or {}
+    if "initialPosition" in setup:
+        values = setup["initialPosition"]
+        bot._internals.initial_position = InitialPosition(
+            values.get("x"), values.get("y"), values.get("direction")
+        )
 
     method_map = {
         "getMyId":                  lambda: bot.my_id,

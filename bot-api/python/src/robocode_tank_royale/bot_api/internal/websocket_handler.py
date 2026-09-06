@@ -98,7 +98,11 @@ class WebSocketHandler:
         # Publish to both event handlers
         disconnected_event = DisconnectedEvent(self.server_url, True, code, reason)
         self.bot_event_handlers.on_disconnected.publish(disconnected_event)
-        self.internal_event_handlers.on_disconnected.publish(disconnected_event)
+        self.internal_event_handlers.on_disconnected.publish(disconnected_event)  # triggers stop_thread()
+
+        # The bot thread no longer owns the round after stop_thread(), so drain its final-tick
+        # events here — otherwise they are lost.
+        self.base_bot_internals.flush_final_turn_events()
         self.closed_event.set()
 
     async def on_error(self, websocket: websockets.ClientConnection, error: Exception):
@@ -202,7 +206,7 @@ class WebSocketHandler:
         # Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
         # stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
         # the event queue.
-        self.event_queue.dispatch_events(schema_evt.turn_number)
+        self.base_bot_internals.dispatch_events(schema_evt.turn_number)
 
         # Transfer any remaining stdout/stderr from event handlers (e.g. on_won_round) before the round ends
         self._transfer_std_out_to_bot_intent()
@@ -249,12 +253,16 @@ class WebSocketHandler:
         game_ended_event.results = ResultsMapper.map(schema_evt.results)
 
         self.bot_event_handlers.on_game_ended.publish(game_ended_event)
-        self.internal_event_handlers.on_game_ended.publish(game_ended_event)
+        self.internal_event_handlers.on_game_ended.publish(game_ended_event)  # triggers stop_thread()
+
+        self.base_bot_internals.flush_final_turn_events()
 
     async def handle_game_aborted(self) -> None:
         """Handle a game aborted event from the server."""
         self.bot_event_handlers.on_game_aborted.publish(None)
-        self.internal_event_handlers.on_game_aborted.publish(None)
+        self.internal_event_handlers.on_game_aborted.publish(None)  # triggers stop_thread()
+
+        self.base_bot_internals.flush_final_turn_events()
 
     async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""

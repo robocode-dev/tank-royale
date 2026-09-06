@@ -4,13 +4,13 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "35"
+    CH: "36"
     G: "2"
     GTD: "1"
-    IDR: "4"
+    IDR: "5"
     LOG: "1"
-    P: "4"
-    PDR: "12"
+    P: "5"
+    PDR: "13"
     RBC: "4"
     RCL: "11"
     TNP: "3"
@@ -679,6 +679,12 @@ entries:
       state: live
       prefix: CH
       component: "34"
+    - id: CH-034-open-questions
+      kind: opaque
+      state: live
+    - id: CH-034-tasks
+      kind: opaque
+      state: live
     - id: CH-035
       kind: numeric
       state: live
@@ -688,6 +694,20 @@ entries:
       kind: opaque
       state: live
     - id: CH-035-tasks
+      kind: opaque
+      state: live
+    - id: CH-036
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "36"
+    - id: CH-036-open-questions
+      kind: opaque
+      state: live
+    - id: CH-036-proposal
+      kind: opaque
+      state: live
+    - id: CH-036-tasks
       kind: opaque
       state: live
     - id: G-001
@@ -725,6 +745,11 @@ entries:
       state: live
       prefix: IDR
       component: "4"
+    - id: IDR-005
+      kind: numeric
+      state: live
+      prefix: IDR
+      component: "5"
     - id: LOG-001
       kind: numeric
       state: retired
@@ -750,6 +775,11 @@ entries:
       state: live
       prefix: P
       component: "4"
+    - id: P-005
+      kind: numeric
+      state: live
+      prefix: P
+      component: "5"
     - id: PDR-001
       kind: numeric
       state: live
@@ -810,6 +840,11 @@ entries:
       state: live
       prefix: PDR
       component: "12"
+    - id: PDR-013
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "13"
     - id: RBC-001
       kind: numeric
       state: live

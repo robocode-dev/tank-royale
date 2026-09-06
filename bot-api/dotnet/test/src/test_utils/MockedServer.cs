@@ -126,7 +126,6 @@ public class MockedServer
         });
         // Small delay to ensure server is fully listening
         Thread.Sleep(500);
-        Console.WriteLine($"[Info] Server started at {ServerUrl} (actual port {_port})");
     }
 
     public void Stop()
@@ -430,8 +429,6 @@ public class MockedServer
 
     private void OnMessage(IWebSocketConnection conn, string messageJson)
     {
-        Console.WriteLine("OnMessage: " + messageJson);
-
         var message = JsonConverter.FromJson<Message>(messageJson);
         if (message == null) return;
 

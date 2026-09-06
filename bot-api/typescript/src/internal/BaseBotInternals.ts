@@ -13,7 +13,6 @@ import { BotEventHandlers } from "../events/BotEventHandlers.js";
 import { TickEvent } from "../events/TickEvent.js";
 import { RoundStartedEvent as RoundStartedEventClass } from "../events/RoundStartedEvent.js";
 import { BulletFiredEvent } from "../events/BulletFiredEvent.js";
-import { WonRoundEvent } from "../events/WonRoundEvent.js";
 import { SkippedTurnEvent } from "../events/SkippedTurnEvent.js";
 import { ConnectedEvent } from "../events/ConnectedEvent.js";
 import { DisconnectedEvent } from "../events/DisconnectedEvent.js";
@@ -24,6 +23,7 @@ import { RoundEndedEvent } from "../events/RoundEndedEvent.js";
 import { ResultsMapper } from "../mapper/ResultsMapper.js";
 import { InternalEventHandlers } from "./InternalEventHandlers.js";
 import { BotStoppedException } from "./BotStoppedException.js";
+import { ConsoleCapture } from "./ConsoleCapture.js";
 import { SAB_SLOT_STOP, SAB_SLOT_TURN, SAB_LENGTH } from "./SharedBufferLayout.js";
 import { WebSocketHandler } from "../WebSocketHandler.js";
 import { EnvVars } from "../EnvVars.js";
@@ -82,6 +82,7 @@ export class BaseBotInternals {
   private variant = "";
   private version = "";
   private gameSetup: GameSetup | null = null;
+  private initialPosition: InitialPosition | null = null;
   private tickEvent: TickEvent | null = null;
   private tickStartTime = 0;
   private teammateIds: Set<number> = new Set();
@@ -105,6 +106,19 @@ export class BaseBotInternals {
 
   // Thread/worker state
   private running = false;
+  // TypeScript has no bot thread, so round ownership is modelled with generation tokens that
+  // mirror the `thread` field the Java/.NET/Python APIs use:
+  //   runGeneration       - monotonic counter; each round's bot loop is issued the next value.
+  //   ownerGeneration     - the token that currently owns the round, or 0 for none
+  //                         (equivalent to thread == null).
+  //   activeRunGeneration - the token of the bot loop frame executing right now
+  //                         (equivalent to Thread.currentThread()).
+  // Bot loops nest: a round-N loop parked in waitForNextTurnWorker() drains worker messages, and
+  // a roundStarted message starts the round-N+1 loop on top of it. activeRunGeneration is saved
+  // and restored around each frame so a resumed round-N frame is still recognised as stale.
+  private runGeneration = 0;
+  private ownerGeneration = 0;
+  private activeRunGeneration = 0;
   private eventHandlingDisabledTurn = 0;
   private lastExecuteTurnNumber = -1;
   private movementResetPending = false;
@@ -125,6 +139,9 @@ export class BaseBotInternals {
 
   // Graphics
   private svgGraphics: SvgGraphics | null = null;
+
+  // Console output capture (IDR-005) — installed only in the context that runs bot.run()
+  private readonly consoleCapture = new ConsoleCapture();
 
   constructor(baseBot: IBaseBot, botInfo: BotInfo, serverUrl: string | null, serverSecret: string | undefined) {
     this.baseBot = baseBot;
@@ -229,7 +246,9 @@ export class BaseBotInternals {
 
   private startAsMain(wt: any | null): void {
     if (wt == null) {
-      // No worker_threads available (browser or very old Node) — fall back to legacy connect
+      // No worker_threads available (browser or very old Node) — fall back to legacy connect.
+      // bot.run() executes on this same thread, so this is the only place capture installs here.
+      this.consoleCapture.install();
       this.connect();
       return;
     }
@@ -274,6 +293,9 @@ export class BaseBotInternals {
     this.workerPort = wt.workerData.port;
     this.workerParentPort = wt.workerData.port;
     this.workerReceiveMessageOnPort = wt.receiveMessageOnPort;
+
+    // bot.run() executes inside this Worker, so capture installs here (never on main).
+    this.consoleCapture.install();
 
     // The Worker doesn't run WebSocket — it receives forwarded messages from main.
     // Bootstrap loop: wait for game messages and process them.
@@ -349,7 +371,12 @@ export class BaseBotInternals {
     } else {
       const e = new DisconnectedEvent(this.serverUrl, remote, code, reason);
       this.botEventHandlers.onDisconnected.publish(e);
-      this.internalEventHandlers.onDisconnected.publish(e);
+      this.internalEventHandlers.onDisconnected.publish(e); // triggers stopThread()
+      this.stopThread();
+      // The bot loop no longer owns the round, so drain its final-tick events here.
+      this.flushFinalTurnEvents();
+      this.consoleCapture.restore();
+      return;
     }
     this.stopThread();
   }
@@ -389,6 +416,8 @@ export class BaseBotInternals {
       this.forwardToWorker("gameAborted");
     } else {
       this.internalEventHandlers.fireGameAborted();
+      this.flushFinalTurnEvents();
+      this.consoleCapture.restore();
     }
   }
 
@@ -450,7 +479,9 @@ export class BaseBotInternals {
         {
           const e = new DisconnectedEvent(msg.data.serverUrl, msg.data.remote, msg.data.code, msg.data.reason);
           this.botEventHandlers.onDisconnected.publish(e);
-          this.internalEventHandlers.onDisconnected.publish(e);
+          this.internalEventHandlers.onDisconnected.publish(e); // triggers stopThread()
+          this.flushFinalTurnEvents();
+          this.consoleCapture.restore();
         }
         break;
       case "connectionError":
@@ -468,7 +499,9 @@ export class BaseBotInternals {
         break;
       case "gameAborted":
         this.keepRunningGame = false;
-        this.internalEventHandlers.fireGameAborted();
+        this.internalEventHandlers.fireGameAborted(); // triggers stopThread()
+        this.flushFinalTurnEvents();
+        this.consoleCapture.restore();
         break;
       case "roundStarted":
         this.processRoundStarted(msg.data);
@@ -496,8 +529,8 @@ export class BaseBotInternals {
     this.myId = msg.myId;
     this.gameSetup = GameSetupMapper.map(msg.gameSetup);
     this.teammateIds = new Set(msg.teammateIds ?? []);
-    const initialPosition = new InitialPosition(msg.startX ?? null, msg.startY ?? null, msg.startDirection ?? null);
-    const e = new GameStartedEvent(msg.myId, initialPosition, this.gameSetup);
+    this.initialPosition = new InitialPosition(msg.startX ?? null, msg.startY ?? null, msg.startDirection ?? null);
+    const e = new GameStartedEvent(msg.myId, this.initialPosition, this.gameSetup);
     this.botEventHandlers.onGameStarted.publish(e);
   }
 
@@ -505,7 +538,10 @@ export class BaseBotInternals {
     const results = ResultsMapper.map(msg.results);
     const e = new GameEndedEvent(msg.numberOfRounds, results);
     this.botEventHandlers.onGameEnded.publish(e);
-    this.internalEventHandlers.onGameEnded.publish(e);
+    this.internalEventHandlers.onGameEnded.publish(e); // triggers stopThread()
+
+    this.flushFinalTurnEvents();
+    this.consoleCapture.restore();
   }
 
   private processRoundStarted(msg: import("../protocol/schema.js").RoundStartedEvent): void {
@@ -526,10 +562,9 @@ export class BaseBotInternals {
     // RoundStartedEvent clears the event queue.
     this.dispatchEvents(msg.turnNumber);
 
-    // If the bot won this round (rank == 1), ensure onWonRound is triggered.
-    if (results != null && results.rank === 1) {
-      this.botEventHandlers.onWonRound.publish(new WonRoundEvent(msg.turnNumber));
-    }
+    // Output from final-tick handlers (e.g. onWonRound) fires after the round's last intent
+    // already went out — merge it now so it rides on the next round's first intent (IDR-005).
+    this.mergeConsoleCapture();
   }
 
   private processTick(msg: import("../protocol/schema.js").TickEventForBot): void {
@@ -605,7 +640,17 @@ export class BaseBotInternals {
         this.movementResetPending = false;
       }
     }
-    this.waitForNextTurnWorker(capturedTurnNumber);
+    // Use the generation of the frame we are actually running in, not the newest one. A stale
+    // round's run() that swallowed BotStoppedException and called another blocking method must
+    // not be able to re-arm itself against the new round's token and send an intent into it.
+    const generation = this.activeRunGeneration !== 0 ? this.activeRunGeneration : this.ownerGeneration;
+    if (generation !== this.ownerGeneration) {
+      throw new BotStoppedException();
+    }
+    this.waitForNextTurnWorker(capturedTurnNumber, generation);
+    if (generation !== this.ownerGeneration) {
+      throw new BotStoppedException();
+    }
     // Dispatch events for the new turn *after* waiting, so that run() always reads state
     // that matches the events that just fired — matching Classic Robocode semantics.
     if (this.tickEvent != null) {
@@ -622,6 +667,20 @@ export class BaseBotInternals {
     if (this.svgGraphics != null) {
       this.svgGraphics.clear();
     }
+    this.mergeConsoleCapture();
+  }
+
+  // Drains ConsoleCapture and merges into the intent rather than overwriting it, since a
+  // round-end residual drain (processRoundEnded) may already have set stdOut/stdErr for the
+  // next round's first intent before this runs.
+  private mergeConsoleCapture(): void {
+    const { stdOut, stdErr } = this.consoleCapture.drain();
+    if (stdOut != null) {
+      this.intent.stdOut = (this.intent.stdOut ?? "") + stdOut;
+    }
+    if (stdErr != null) {
+      this.intent.stdErr = (this.intent.stdErr ?? "") + stdErr;
+    }
   }
 
   private sendIntentDirect(): void {
@@ -634,6 +693,8 @@ export class BaseBotInternals {
     this.wsHandler.sendBotIntent(intent as unknown as import("../protocol/schema.js").BotIntent);
     this.intent.teamMessages = null;
     this.intent.debugGraphics = null;
+    this.intent.stdOut = null;
+    this.intent.stdErr = null;
   }
 
   private sendIntentToMain(): void {
@@ -646,11 +707,13 @@ export class BaseBotInternals {
     this.workerParentPort.postMessage({ type: "intent", intent });
     this.intent.teamMessages = null;
     this.intent.debugGraphics = null;
+    this.intent.stdOut = null;
+    this.intent.stdErr = null;
   }
 
-  private waitForNextTurnWorker(currentTurnNumber: number): void {
+  private waitForNextTurnWorker(currentTurnNumber: number, generation: number): void {
     this.stopRogueThread();
-    while (this.running && (this.tickEvent?.turnNumber ?? 0) === currentTurnNumber) {
+    while (this.running && generation === this.ownerGeneration && (this.tickEvent?.turnNumber ?? 0) === currentTurnNumber) {
       this.stopRogueThread();
       if (this.sharedView == null) break;
       const curVal = Atomics.load(this.sharedView, SAB_SLOT_TURN);
@@ -684,29 +747,44 @@ export class BaseBotInternals {
       this.sharedBuffer = new SharedArrayBuffer(SAB_LENGTH * 4);
       this.sharedView = new Int32Array(this.sharedBuffer);
     }
+    const generation = ++this.runGeneration;
+    this.ownerGeneration = generation; // publish ownership before the loop starts
     Atomics.store(this.sharedView, SAB_SLOT_STOP, 0);
-    this.runBotLoop(bot);
+    this.runBotLoop(bot, generation);
   }
 
-  private runBotLoop(bot: IBot): void {
-    this.setRunning(true);
+  private runBotLoop(bot: IBot, generation: number): void {
+    if (generation !== this.ownerGeneration) return;
+    const previousActive = this.activeRunGeneration;
+    this.activeRunGeneration = generation;
     try {
-      this.waitUntilFirstTickArrived();
-      bot.run();
-    } catch (e) {
-      if (!(e instanceof BotStoppedException)) {
-        // ignore unexpected errors from bot.run()
-      }
-    }
-    this.dispatchFinalTurnEvents();
-    while (this.running) {
+      this.setRunning(true);
       try {
-        bot.go();
+        this.waitUntilFirstTickArrived(generation);
+        if (generation !== this.ownerGeneration) return;
+        bot.run();
       } catch (e) {
-        if (e instanceof BotStoppedException) break;
+        // Report unexpected errors from run(), but stay silent once this frame has been
+        // superseded - the failure is then just fallout from losing the round.
+        if (!(e instanceof BotStoppedException) && generation === this.ownerGeneration) {
+          console.error(e);
+        }
       }
+      if (generation !== this.ownerGeneration) return;
+      this.dispatchFinalTurnEvents(generation);
+      while (this.running && generation === this.ownerGeneration) {
+        try {
+          bot.go();
+        } catch (e) {
+          if (e instanceof BotStoppedException) break;
+        }
+      }
+      if (generation === this.ownerGeneration) {
+        this.dispatchFinalTurnEvents(generation);
+      }
+    } finally {
+      this.activeRunGeneration = previousActive;
     }
-    this.dispatchFinalTurnEvents();
   }
 
   isWorkerMode(): boolean { return this.workerMode; }
@@ -715,9 +793,9 @@ export class BaseBotInternals {
   // The thread is started at round-started (before any tick), so it must wait here
   // before run() can safely read bot state (radar direction, etc.).
   // Only applicable in worker mode — in legacy (non-worker) mode, returns immediately.
-  private waitUntilFirstTickArrived(): void {
+  private waitUntilFirstTickArrived(generation: number): void {
     if (!this.workerMode || this.sharedView == null) return;
-    while (this.tickEvent == null && this.running) {
+    while (this.tickEvent == null && this.running && generation === this.ownerGeneration) {
       const curVal = Atomics.load(this.sharedView, SAB_SLOT_TURN);
       Atomics.wait(this.sharedView, SAB_SLOT_TURN, curVal, 500);
       this.drainWorkerMessages();
@@ -730,7 +808,8 @@ export class BaseBotInternals {
   }
 
   stopThread(): void {
-    if (!this.running) return;
+    if (!this.running && this.ownerGeneration === 0) return;
+    this.ownerGeneration = 0; // invalidate ownership before waking the old loop
     this.setRunning(false);
     this.enableEventHandling(false);
     if (this.sharedView != null) {
@@ -770,10 +849,34 @@ export class BaseBotInternals {
   }
 
   dispatchEvents(turnNumber: number): void {
+    // Worker mode is the TypeScript analogue of a dedicated bot thread: only the loop frame that
+    // still owns the round may dispatch (mirrors the thread-ownership guard in Java/.NET/Python).
+    // Once ownership is released (ownerGeneration === 0) the WebSocket side drains freely, which
+    // is what processRoundEnded() and flushFinalTurnEvents() rely on.
+    if (
+      this.workerMode &&
+      this.running &&
+      this.ownerGeneration !== 0 &&
+      this.activeRunGeneration !== 0 &&
+      this.activeRunGeneration !== this.ownerGeneration
+    ) {
+      throw new BotStoppedException();
+    }
     this.eventQueue.dispatchEvents(turnNumber, this.botEventHandlers);
   }
 
-  dispatchFinalTurnEvents(): void {
+  private dispatchFinalTurnEvents(generation: number): void {
+    if (generation !== this.ownerGeneration) return;
+    this.flushFinalTurnEvents();
+  }
+
+  /**
+   * Drains any events still queued for the current tick. Called from the WebSocket side after
+   * stopThread() has invalidated round ownership, so the bot loop can no longer drain them
+   * itself. Without this, final-tick events would be lost on game-ended, game-aborted and
+   * disconnected.
+   */
+  flushFinalTurnEvents(): void {
     if (this.tickEvent != null) {
       this.dispatchEvents(this.tickEvent.turnNumber);
     }
@@ -858,24 +961,29 @@ export class BaseBotInternals {
   }
   isDisabled(): boolean { return this.tickEvent != null && this.getEnergy() === 0; }
   getX(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.x;
+    if (this.tickEvent != null) return this.tickEvent.botState.x;
+    if (this.initialPosition?.x != null) return this.initialPosition.x;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getY(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.y;
+    if (this.tickEvent != null) return this.tickEvent.botState.y;
+    if (this.initialPosition?.y != null) return this.initialPosition.y;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getDirection(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.direction;
+    if (this.tickEvent != null) return this.tickEvent.botState.direction;
+    if (this.initialPosition?.direction != null) return this.initialPosition.direction;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getGunDirection(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.gunDirection;
+    if (this.tickEvent != null) return this.tickEvent.botState.gunDirection;
+    if (this.initialPosition?.direction != null) return this.initialPosition.direction;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getRadarDirection(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.radarDirection;
+    if (this.tickEvent != null) return this.tickEvent.botState.radarDirection;
+    if (this.initialPosition?.direction != null) return this.initialPosition.direction;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getSpeed(): number {
     return this.tickEvent?.botState.speed ?? 0;

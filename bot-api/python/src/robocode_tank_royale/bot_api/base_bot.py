@@ -278,7 +278,7 @@ class BaseBot(BaseBotABC):
         if tick is not None:
             return tick.bot_state.x
         initial_position = self._internals.initial_position
-        if initial_position is not None:
+        if initial_position is not None and initial_position.x is not None:
             return initial_position.x
         raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
@@ -293,7 +293,7 @@ class BaseBot(BaseBotABC):
         if tick is not None:
             return tick.bot_state.y
         initial_position = self._internals.initial_position
-        if initial_position is not None:
+        if initial_position is not None and initial_position.y is not None:
             return initial_position.y
         raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
@@ -308,7 +308,7 @@ class BaseBot(BaseBotABC):
         if tick is not None:
             return tick.bot_state.direction
         initial_position = self._internals.initial_position
-        if initial_position is not None:
+        if initial_position is not None and initial_position.direction is not None:
             return initial_position.direction
         raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
@@ -323,7 +323,7 @@ class BaseBot(BaseBotABC):
         if tick is not None:
             return tick.bot_state.gun_direction
         initial_position = self._internals.initial_position
-        if initial_position is not None:
+        if initial_position is not None and initial_position.direction is not None:
             return initial_position.direction
         raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
@@ -338,7 +338,7 @@ class BaseBot(BaseBotABC):
         if tick is not None:
             return tick.bot_state.radar_direction
         initial_position = self._internals.initial_position
-        if initial_position is not None:
+        if initial_position is not None and initial_position.direction is not None:
             return initial_position.direction
         raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 

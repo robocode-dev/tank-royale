@@ -1,10 +1,10 @@
-# [ID] — [Short principle title]
+# [ID] - [Short principle title]
 
 **Layer:** [1 (universal) | 2 (contextual) | 3 (risk-elevated)]
 **Categories:** [comma-separated: security, reliability, api-design, concurrency, etc.]
 **Applies-to:** [all | java, kotlin, c#, etc.]
 **Summary:** [One sentence: what the principle requires, as an actionable rule]
-<!-- **Audit-scope:** excluded — [reason]  ← omit this line if fully auditable; use "limited — [what is/isn't detectable]" for partial coverage -->
+<!-- **Audit-scope:** excluded - [reason]  ← omit this line if fully auditable; use "limited - [what is/isn't detectable]" for partial coverage -->
 
 ## Principle
 
@@ -24,12 +24,12 @@ Focus on what goes wrong, not abstract theory.]
 
 ## Inspection
 
-<!-- Optional — only if the violation has a grep-able textual signature. -->
-<!-- See DESIGN.md Section 4 "## Inspection — When to Add" for guidance. -->
+<!-- Optional - only if the violation has a grep-able textual signature. -->
+<!-- See DESIGN.md Section 4 "## Inspection - When to Add" for guidance. -->
 
 ## Good practice
 
-- [Concrete recommendation — what to do instead]
+- [Concrete recommendation - what to do instead]
 - [Another actionable recommendation]
 - [Include code patterns or techniques where helpful]
 

@@ -11,4 +11,5 @@ Every change proposal names the plan item it serves, or explicitly declares itse
 - [P-002 — TypeScript Bot API reaches npm](P-002-typescript-bot-api-npm.md) · `completed`
 - [P-003 — Tank Royale Rumble](P-003-rumble.md) · `completed`
 - [P-004 — Rumble hardening](P-004-rumble-hardening.md) · `draft` — Follow-up hardening for the Tank Royale Rumble launched by P-003, which closed as `completed` when its sixth milestone landed.
+- [P-005 — TypeScript bot console output reaches the GUI](P-005-typescript-bot-console-output.md) · `completed` — TypeScript console output reaches the GUI with cross-platform capture evidence.
 <!-- clue:index:end -->

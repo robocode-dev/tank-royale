@@ -1,3 +1,27 @@
+## [Unreleased] - Round lifecycle isolation
+
+### ✨ Features
+
+- Bot API (TypeScript):
+    - `console.log`/`info`/`warn`/`error` output now reaches the GUI, matching the Java, .NET, and Python Bot APIs.
+
+### 🐞 Bug Fixes
+
+- Bot API (Java, .NET, Python, TypeScript):
+    - Fixed events from the last turn of a round, such as `onWonRound` and `onDeath`, being lost when the game ended, when it was aborted, or when the connection to the server dropped.
+    - Fixed a bot's `run()` method from a finished round being able to send commands into the round that follows it.
+    - Fixed an unexpected exception thrown from `run()` discarding the bot's remaining events for that turn.
+- Bot API (TypeScript):
+    - Fixed `onWonRound` being called twice when a bot won a round.
+    - An unexpected exception thrown from `run()` is now reported instead of being silently ignored.
+
+### 🔧 Changes
+
+- Bot API (.NET, TypeScript):
+    - `X`, `Y`, `Direction`, `GunDirection`, and `RadarDirection` now fall back to the bot's initial position when read before the first turn of a game, which is what the Java and Python Bot APIs already did. They still throw a `BotException` when no initial position is available.
+- Bot API (Python):
+    - Calling `go()` on a `BaseBot` that has no `run()` method now stops the rest of the calling event handler after the intent has been sent, matching the Java and .NET Bot APIs.
+
 ## [1.2.0] - 2026-09-05 - Runner compatibility precondition
 
 ### 🐞 Bug Fixes

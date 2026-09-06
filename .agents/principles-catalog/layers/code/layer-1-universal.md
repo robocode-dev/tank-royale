@@ -1,6 +1,6 @@
-# Code Stack — Layer 1: Universal Principles
+# Code Stack - Layer 1: Universal Principles
 
-These principles are **always active** for any source code file, regardless of language, framework, or project context. They represent the foundational rules of good software that apply to every code review. No configuration or context detection is needed — if source code is being reviewed, these principles apply.
+These principles are **always active** for any source code file, regardless of language, framework, or project context. They represent the foundational rules of good software that apply to every code review. No configuration or context detection is needed - if source code is being reviewed, these principles apply.
 
 Layer 1 draws from Kent Beck's four rules of simple design (except "reveals intention", which is truly universal across all artifact types), core SOLID principles, essential security hygiene, and fundamental readability standards.
 

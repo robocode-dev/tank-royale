@@ -136,7 +136,6 @@ symlinks (see [Setup](#setup) for Windows symlink prerequisites):
 | `/deploy-sample-bots [dir]` | Build and deploy sample-bot zips |
 | `/structurizr` | Generate C4 SVGs from DSL workspaces |
 | `/dot-scout [path]` | Detect applicable code-quality principles |
-| `/dot-prime [target]` | Activate principles before editing |
 | `/dot-audit [target]` | Audit code/docs against principles |
 
 ### Change workflow (Cliewen)
