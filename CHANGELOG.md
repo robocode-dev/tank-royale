@@ -1,5 +1,10 @@
 ## [Unreleased] - Round lifecycle isolation
 
+### ✨ Features
+
+- Bot API (TypeScript):
+    - `console.log`/`info`/`warn`/`error` output now reaches the GUI, matching the Java, .NET, and Python Bot APIs.
+
 ### 🐞 Bug Fixes
 
 - Bot API (Java, .NET, Python, TypeScript):
