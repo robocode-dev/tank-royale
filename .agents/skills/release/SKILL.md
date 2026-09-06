@@ -99,8 +99,7 @@ Look for these four properties (in user gradle.properties, falling back to proje
 
 ### 2.2 — NuGet credentials
 
-Look for `nuget-api-key` in the user gradle.properties (falling back to project gradle.properties).
-- Must be present, not empty, and not `dummy`
+NuGet publishing uses [Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing) (OIDC) via the `publish-nuget.yml` GitHub Actions workflow — there is no local credential to check. Readiness depends only on `gh` CLI authentication (checked in 2.5) and the `publish-nuget.yml` workflow existing on `main`.
 
 ### 2.3 — PyPI credentials
 
@@ -130,7 +129,7 @@ Print a credential summary:
 ```
 🔑 Credential check:
   ✅ Maven Central  — ossrhUsername, ossrhPassword, signingKey, signingPassword
-  ✅ NuGet          — nuget-api-key
+  ✅ NuGet          — publish-nuget.yml workflow (Trusted Publishing, no local credential)
   ✅ PyPI           — pypiToken (or PYPI_TOKEN env var, or ~/.pypirc)
   ✅ npmjs          — npmjs-api-key
   ✅ GitHub CLI     — authenticated as <username>
@@ -159,15 +158,22 @@ Run the Gradle command (use the platform-appropriate wrapper):
 
 Print: `"📦 Step 2/4: Publishing .NET package to NuGet..."`
 
-Run:
+NuGet publishing runs via Trusted Publishing (OIDC) inside the `publish-nuget.yml` GitHub Actions workflow — it cannot be pushed from a local machine. Trigger the workflow and **wait for it to complete** (unlike the fire-and-forget trigger in Phase 3.5, this step must block and check the result, since a NuGet failure must STOP the release):
+
 ```
-.\scripts\release\publish-nuget.ps1 -Execute -Force
+gh workflow run publish-nuget.yml --ref main -R robocode-dev/tank-royale -f version=X.Y.Z
 ```
 
-Note: The `-Force` flag skips the interactive YES confirmation prompt.
+Then poll for the run this dispatch created and wait for it to finish, e.g.:
+```
+gh run list --workflow=publish-nuget.yml -R robocode-dev/tank-royale --limit 1 --json databaseId --jq ".[0].databaseId"
+gh run watch <databaseId> -R robocode-dev/tank-royale --exit-status
+```
 
-- If the command **succeeds**: print `"✅ Step 2/4: .NET package published to NuGet"`.
-- If the command **fails**: print `"❌ ERROR: Step 2/4 failed — .NET publish to NuGet failed"` and **STOP**.
+Note: the workflow requires manual approval via its `nuget-publish` GitHub Environment — `gh run watch` will show the run waiting; the maintainer must approve it in the GitHub Actions UI before it proceeds.
+
+- If `gh run watch --exit-status` **succeeds**: print `"✅ Step 2/4: .NET package published to NuGet"`.
+- If it **fails** (non-zero exit): print `"❌ ERROR: Step 2/4 failed — .NET publish to NuGet failed"` and **STOP**.
 
 ### Step 3 of 4 — Publish Python package to PyPI
 

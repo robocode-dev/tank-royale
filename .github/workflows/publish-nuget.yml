@@ -1,0 +1,60 @@
+name: Publish NuGet Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 0.39.0)"
+        required: true
+        type: string
+
+# Needed for OIDC → NuGet Trusted Publishing (see nuget.org Trusted Publishing policy for this repo)
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build and publish to nuget.org
+    runs-on: ubuntu-latest
+    environment: nuget-publish
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java (Temurin 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Ensure gradlew is executable
+        run: chmod +x gradlew
+
+      - name: Verify VERSION file matches requested version
+        run: |
+          ACTUAL=$(./gradlew -q properties | grep "^version:" | awk '{print $2}')
+          if [ "$ACTUAL" != "${{ inputs.version }}" ]; then
+            echo "::error::VERSION file on main ($ACTUAL) does not match requested version (${{ inputs.version }})"
+            exit 1
+          fi
+
+      - name: Build .NET bot API package
+        run: ./gradlew --no-daemon :bot-api:dotnet:buildDotnetBotApi
+
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ vars.NUGET_USERNAME }}
+
+      - name: TEMP - verify key received, no push (OIDC handshake test)
+        run: |
+          KEY="${{ steps.login.outputs.NUGET_API_KEY }}"
+          echo "Got NuGet API key: ${#KEY} chars"
