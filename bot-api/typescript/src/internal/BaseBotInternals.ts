@@ -23,6 +23,7 @@ import { RoundEndedEvent } from "../events/RoundEndedEvent.js";
 import { ResultsMapper } from "../mapper/ResultsMapper.js";
 import { InternalEventHandlers } from "./InternalEventHandlers.js";
 import { BotStoppedException } from "./BotStoppedException.js";
+import { ConsoleCapture } from "./ConsoleCapture.js";
 import { SAB_SLOT_STOP, SAB_SLOT_TURN, SAB_LENGTH } from "./SharedBufferLayout.js";
 import { WebSocketHandler } from "../WebSocketHandler.js";
 import { EnvVars } from "../EnvVars.js";
@@ -139,6 +140,9 @@ export class BaseBotInternals {
   // Graphics
   private svgGraphics: SvgGraphics | null = null;
 
+  // Console output capture (IDR-005) — installed only in the context that runs bot.run()
+  private readonly consoleCapture = new ConsoleCapture();
+
   constructor(baseBot: IBaseBot, botInfo: BotInfo, serverUrl: string | null, serverSecret: string | undefined) {
     this.baseBot = baseBot;
     this.botInfo = botInfo;
@@ -242,7 +246,9 @@ export class BaseBotInternals {
 
   private startAsMain(wt: any | null): void {
     if (wt == null) {
-      // No worker_threads available (browser or very old Node) — fall back to legacy connect
+      // No worker_threads available (browser or very old Node) — fall back to legacy connect.
+      // bot.run() executes on this same thread, so this is the only place capture installs here.
+      this.consoleCapture.install();
       this.connect();
       return;
     }
@@ -287,6 +293,9 @@ export class BaseBotInternals {
     this.workerPort = wt.workerData.port;
     this.workerParentPort = wt.workerData.port;
     this.workerReceiveMessageOnPort = wt.receiveMessageOnPort;
+
+    // bot.run() executes inside this Worker, so capture installs here (never on main).
+    this.consoleCapture.install();
 
     // The Worker doesn't run WebSocket — it receives forwarded messages from main.
     // Bootstrap loop: wait for game messages and process them.
@@ -366,6 +375,7 @@ export class BaseBotInternals {
       this.stopThread();
       // The bot loop no longer owns the round, so drain its final-tick events here.
       this.flushFinalTurnEvents();
+      this.consoleCapture.restore();
       return;
     }
     this.stopThread();
@@ -407,6 +417,7 @@ export class BaseBotInternals {
     } else {
       this.internalEventHandlers.fireGameAborted();
       this.flushFinalTurnEvents();
+      this.consoleCapture.restore();
     }
   }
 
@@ -470,6 +481,7 @@ export class BaseBotInternals {
           this.botEventHandlers.onDisconnected.publish(e);
           this.internalEventHandlers.onDisconnected.publish(e); // triggers stopThread()
           this.flushFinalTurnEvents();
+          this.consoleCapture.restore();
         }
         break;
       case "connectionError":
@@ -489,6 +501,7 @@ export class BaseBotInternals {
         this.keepRunningGame = false;
         this.internalEventHandlers.fireGameAborted(); // triggers stopThread()
         this.flushFinalTurnEvents();
+        this.consoleCapture.restore();
         break;
       case "roundStarted":
         this.processRoundStarted(msg.data);
@@ -528,6 +541,7 @@ export class BaseBotInternals {
     this.internalEventHandlers.onGameEnded.publish(e); // triggers stopThread()
 
     this.flushFinalTurnEvents();
+    this.consoleCapture.restore();
   }
 
   private processRoundStarted(msg: import("../protocol/schema.js").RoundStartedEvent): void {
@@ -547,6 +561,10 @@ export class BaseBotInternals {
     // Flush any queued events from the last tick (e.g. WonRoundEvent) before the next
     // RoundStartedEvent clears the event queue.
     this.dispatchEvents(msg.turnNumber);
+
+    // Output from final-tick handlers (e.g. onWonRound) fires after the round's last intent
+    // already went out — merge it now so it rides on the next round's first intent (IDR-005).
+    this.mergeConsoleCapture();
   }
 
   private processTick(msg: import("../protocol/schema.js").TickEventForBot): void {
@@ -649,6 +667,20 @@ export class BaseBotInternals {
     if (this.svgGraphics != null) {
       this.svgGraphics.clear();
     }
+    this.mergeConsoleCapture();
+  }
+
+  // Drains ConsoleCapture and merges into the intent rather than overwriting it, since a
+  // round-end residual drain (processRoundEnded) may already have set stdOut/stdErr for the
+  // next round's first intent before this runs.
+  private mergeConsoleCapture(): void {
+    const { stdOut, stdErr } = this.consoleCapture.drain();
+    if (stdOut != null) {
+      this.intent.stdOut = (this.intent.stdOut ?? "") + stdOut;
+    }
+    if (stdErr != null) {
+      this.intent.stdErr = (this.intent.stdErr ?? "") + stdErr;
+    }
   }
 
   private sendIntentDirect(): void {
@@ -661,6 +693,8 @@ export class BaseBotInternals {
     this.wsHandler.sendBotIntent(intent as unknown as import("../protocol/schema.js").BotIntent);
     this.intent.teamMessages = null;
     this.intent.debugGraphics = null;
+    this.intent.stdOut = null;
+    this.intent.stdErr = null;
   }
 
   private sendIntentToMain(): void {
@@ -673,6 +707,8 @@ export class BaseBotInternals {
     this.workerParentPort.postMessage({ type: "intent", intent });
     this.intent.teamMessages = null;
     this.intent.debugGraphics = null;
+    this.intent.stdOut = null;
+    this.intent.stdErr = null;
   }
 
   private waitForNextTurnWorker(currentTurnNumber: number, generation: number): void {

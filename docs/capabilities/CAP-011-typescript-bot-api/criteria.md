@@ -1038,4 +1038,50 @@ Feature: typescript-bot-api — TBD - created by archiving change add-typescript
     When a TypeScript sample bot is started via its launch script
     Then it connects to the Robocode server using the `@robocode.dev/tank-royale-bot-api`
     # installed in `deps/node_modules/`
+    # ---
+
+  # Requirement: Standard Output Capture
+  # The TypeScript Bot API SHALL capture the bot's `console.log`/`info`/`warn`/`error` output into
+  # `BotIntent.stdOut`/`stdErr`, matching the standing-output parity the Java, .NET and Python Bot
+  # APIs provide via their recording streams (IDR-005). Capture is additive: the real `console`
+  # method still runs.
+
+  @TBA-132
+  Scenario: console.log and console.info populate stdOut
+    Test-type: Unit
+    When the bot calls `console.log("hello")` and `console.info("world")` before an intent is sent
+    Then the next `BotIntent` sent to the server has `stdOut` containing both messages
+    And the real `console.log`/`console.info` still ran, so a bot author sees the output locally
+
+  @TBA-133
+  Scenario: console.warn and console.error populate stdErr
+    Test-type: Unit
+    When the bot calls `console.warn("careful")` and `console.error("oops")` before an intent is sent
+    Then the next `BotIntent` sent to the server has `stdErr` containing both messages
+    And the real `console.warn`/`console.error` still ran
+
+  @TBA-134
+  Scenario: Capture installs only where bot.run() executes
+    Test-type: Unit
+    When the bot runs in worker mode
+    Then the `console` override is installed inside the Worker, never on the worker-spawning main thread
+    When the bot runs in non-worker (legacy Node or browser) mode
+    Then the `console` override is installed on the single thread that runs `bot.run()`
+
+  @TBA-135
+  Scenario: Round-end residual output rides on the next round's first intent
+    Test-type: Unit
+    When a final-tick event handler (e.g. `onWonRound`) calls `console.log` after the round's last
+    intent has already been sent
+    Then that output is not lost
+    And it is present in `stdOut` on the first `BotIntent` sent for the next round
+    And `stdOut`/`stdErr` are cleared from the intent immediately after each send, so unchanged
+    output is never resent
+
+  @TBA-136
+  Scenario: console override is restored when the bot stops or disconnects
+    Test-type: Unit
+    When the bot's game ends, is aborted, or the connection is disconnected
+    Then the original `console.log`/`info`/`warn`/`error` methods are restored
+    And a non-worker/browser bot no longer reroutes `console` calls into a stopped bot's buffers
 ```
