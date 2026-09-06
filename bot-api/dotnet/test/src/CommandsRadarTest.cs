@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Robocode.TankRoyale.Schema;
 
@@ -17,7 +16,26 @@ public class CommandsRadarTest : AbstractBotTest
 {
     private class RadarTestBot : Bot
     {
+        private int _blockingRescanRequested;
+
         public RadarTestBot(Uri serverUrl) : base(BotInfo, serverUrl) { }
+
+        public override void Run()
+        {
+            while (IsRunning)
+            {
+                if (Interlocked.Exchange(ref _blockingRescanRequested, 0) == 1)
+                {
+                    Rescan();
+                }
+                else
+                {
+                    Go();
+                }
+            }
+        }
+
+        public void RequestBlockingRescan() => Interlocked.Exchange(ref _blockingRescanRequested, 1);
     }
 
     private RadarTestBot StartRadarBot()
@@ -26,6 +44,13 @@ public class CommandsRadarTest : AbstractBotTest
         StartAsync(bot);
         AwaitGameStarted(bot);
         AwaitTick(bot);
+
+        // Drain the initial automatic intent so subsequent captures start cleanly.
+        Server.ResetBotIntentEvent();
+        Server.ContinueBotIntent();
+        AwaitBotIntent();
+        Server.ResetBotIntentEvent();
+
         return bot;
     }
 
@@ -67,8 +92,8 @@ public class CommandsRadarTest : AbstractBotTest
     {
         var bot = StartRadarBot();
 
-        // Run Rescan in a separate task because it's blocking
-        Task.Run(() => bot.Rescan());
+        // Rescan must run on the bot's managed thread because it blocks until the next turn.
+        bot.RequestBlockingRescan();
         AwaitExpectedIntent(intent => intent.Rescan == true);
     }
 
