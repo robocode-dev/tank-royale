@@ -9,8 +9,8 @@ counters:
     GTD: "1"
     IDR: "4"
     LOG: "1"
-    P: "3"
-    PDR: "12"
+    P: "5"
+    PDR: "13"
     RBC: "4"
     RCL: "11"
     TNP: "3"
@@ -729,6 +729,11 @@ entries:
       state: live
       prefix: P
       component: "3"
+    - id: P-005
+      kind: numeric
+      state: live
+      prefix: P
+      component: "5"
     - id: PDR-001
       kind: numeric
       state: live
@@ -789,6 +794,11 @@ entries:
       state: live
       prefix: PDR
       component: "12"
+    - id: PDR-013
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "13"
     - id: RBC-001
       kind: numeric
       state: live

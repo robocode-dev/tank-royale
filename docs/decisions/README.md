@@ -72,4 +72,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [PDR-011 — Empty extracted specifications create no capability](PDR-011-empty-extraction-directory.md) · `inferred` — The `browser-sample-bots` OpenSpec directory contained no requirements to preserve.
 - [PDR-012 — Typed decision records replace the legacy decision log](PDR-012-typed-decision-record-carrier.md) · `inferred` — The legacy decision log mixed architecture, process, implementation, and routine history in one carrier that obscured the enduring subject of each choice.
 - [ADR-047 — Rumble catalog publishes immutable team membership](ADR-047-rumble-catalog-publishes-team-membership.md) · `verified` — The V1 engine pin counts the four bot processes in a TwinDuel battle, while Battle Runner starts two team entries and result ingestion receives two team results.
+- [PDR-013 — TypeScript console-output parity is a tracked plan, not a defect fix](PDR-013-typescript-console-output-plan.md) · `inferred` — The TypeScript Bot API never populates `BotIntent.stdOut` or `stdErr`, so a TypeScript bot's console output never reaches the GUI.
 <!-- clue:index:end -->

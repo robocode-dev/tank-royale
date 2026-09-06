@@ -77,7 +77,11 @@ final class WebSocketHandler implements WebSocket.Listener {
         var disconnectedEvent = new DisconnectedEvent(serverUrl, true, statusCode, reason);
 
         botEventHandlers.onDisconnected.publish(disconnectedEvent);
-        internalEventHandlers.onDisconnected.publish(disconnectedEvent);
+        internalEventHandlers.onDisconnected.publish(disconnectedEvent); // triggers stopThread()
+
+        // The bot thread no longer owns the round after stopThread(), so drain its final-tick
+        // events here — otherwise they are lost.
+        baseBotInternals.flushFinalTurnEvents();
 
         closedLatch.countDown();
         return null;
@@ -223,12 +227,16 @@ final class WebSocketHandler implements WebSocket.Listener {
                 map(gameEndedEventForBot.getResults()));
 
         botEventHandlers.onGameEnded.publish(mappedGameEnded);
-        internalEventHandlers.onGameEnded.publish(mappedGameEnded);
+        internalEventHandlers.onGameEnded.publish(mappedGameEnded); // triggers stopThread()
+
+        baseBotInternals.flushFinalTurnEvents();
     }
 
     private void handleGameAborted() {
         botEventHandlers.onGameAborted.publish(null);
-        internalEventHandlers.onGameAborted.publish(null);
+        internalEventHandlers.onGameAborted.publish(null); // triggers stopThread()
+
+        baseBotInternals.flushFinalTurnEvents();
     }
 
     private void handleSkippedTurn(JsonObject jsonMsg) {

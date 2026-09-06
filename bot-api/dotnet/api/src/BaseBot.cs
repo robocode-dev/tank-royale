@@ -180,19 +180,69 @@ public abstract class BaseBot : IBaseBot
     public bool IsDisabled => Energy == 0;
 
     /// <inheritdoc/>
-    public double X => BaseBotInternals.CurrentTickOrThrow.BotState.X;
+    public double X
+    {
+        get
+        {
+            var tick = BaseBotInternals.CurrentTickOrNull;
+            if (tick != null) return tick.BotState.X;
+            var initialPosition = BaseBotInternals.InitialPosition;
+            if (initialPosition?.X != null) return initialPosition.X.Value;
+            throw new BotException(BaseBotInternals.TickNotAvailableMsg);
+        }
+    }
 
     /// <inheritdoc/>
-    public double Y => BaseBotInternals.CurrentTickOrThrow.BotState.Y;
+    public double Y
+    {
+        get
+        {
+            var tick = BaseBotInternals.CurrentTickOrNull;
+            if (tick != null) return tick.BotState.Y;
+            var initialPosition = BaseBotInternals.InitialPosition;
+            if (initialPosition?.Y != null) return initialPosition.Y.Value;
+            throw new BotException(BaseBotInternals.TickNotAvailableMsg);
+        }
+    }
 
     /// <inheritdoc/>
-    public double Direction => BaseBotInternals.CurrentTickOrThrow.BotState.Direction;
+    public double Direction
+    {
+        get
+        {
+            var tick = BaseBotInternals.CurrentTickOrNull;
+            if (tick != null) return tick.BotState.Direction;
+            var initialPosition = BaseBotInternals.InitialPosition;
+            if (initialPosition?.Direction != null) return initialPosition.Direction.Value;
+            throw new BotException(BaseBotInternals.TickNotAvailableMsg);
+        }
+    }
 
     /// <inheritdoc/>
-    public double GunDirection => BaseBotInternals.CurrentTickOrThrow.BotState.GunDirection;
+    public double GunDirection
+    {
+        get
+        {
+            var tick = BaseBotInternals.CurrentTickOrNull;
+            if (tick != null) return tick.BotState.GunDirection;
+            var initialPosition = BaseBotInternals.InitialPosition;
+            if (initialPosition?.Direction != null) return initialPosition.Direction.Value;
+            throw new BotException(BaseBotInternals.TickNotAvailableMsg);
+        }
+    }
 
     /// <inheritdoc/>
-    public double RadarDirection => BaseBotInternals.CurrentTickOrThrow.BotState.RadarDirection;
+    public double RadarDirection
+    {
+        get
+        {
+            var tick = BaseBotInternals.CurrentTickOrNull;
+            if (tick != null) return tick.BotState.RadarDirection;
+            var initialPosition = BaseBotInternals.InitialPosition;
+            if (initialPosition?.Direction != null) return initialPosition.Direction.Value;
+            throw new BotException(BaseBotInternals.TickNotAvailableMsg);
+        }
+    }
 
     /// <inheritdoc/>
     public double Speed => BaseBotInternals.Speed;

@@ -2,6 +2,7 @@ import pytest
 from robocode_tank_royale.bot_api.base_bot import BaseBot
 from robocode_tank_royale.bot_api.bot_info import BotInfo
 from robocode_tank_royale.bot_api.bot_exception import BotException
+from robocode_tank_royale.bot_api.initial_position import InitialPosition
 
 class TestBot(BaseBot):
     def __init__(self):
@@ -53,6 +54,22 @@ def test_TR_API_BOT_007_base_bot_accessor_defaults():
         _ = bot.arena_height
     with pytest.raises(BotException):
         _ = bot.game_type
+
+@pytest.mark.BOT
+def test_TR_API_BOT_007_null_initial_position_components_raise_bot_exception():
+    bot = TestBot()
+    bot._internals.initial_position = InitialPosition(None, None, None)
+
+    with pytest.raises(BotException):
+        _ = bot.x
+    with pytest.raises(BotException):
+        _ = bot.y
+    with pytest.raises(BotException):
+        _ = bot.direction
+    with pytest.raises(BotException):
+        _ = bot.gun_direction
+    with pytest.raises(BotException):
+        _ = bot.radar_direction
 
 @pytest.mark.BOT
 @pytest.mark.LEGACY

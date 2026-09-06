@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.BaseBot;
+import dev.robocode.tankroyale.botapi.InitialPosition;
 import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.BotInfo;
@@ -379,6 +380,7 @@ public class SharedTestRunner {
 
     private void executeBotDefault(TestCase testCase) {
         BaseBot bot = new BotDefaultStub();
+        applyInitialPositionSetup(bot, testCase);
         if (testCase.expected.containsKey("throws")) {
             assertThrows(BotException.class, () -> callBotDefaultMethod(bot, testCase.method));
         } else {
@@ -394,6 +396,27 @@ public class SharedTestRunner {
                 assertThat((Collection<?>) result).isEmpty();
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void applyInitialPositionSetup(BaseBot bot, TestCase testCase) {
+        if (testCase.setup == null || !testCase.setup.containsKey("initialPosition")) return;
+        var values = (Map<String, Object>) testCase.setup.get("initialPosition");
+        var initialPosition = new InitialPosition(
+                toDouble(values.get("x")), toDouble(values.get("y")), toDouble(values.get("direction")));
+        try {
+            var setter = BaseBotInternals.class.getDeclaredMethod("setInitialPosition", InitialPosition.class);
+            setter.setAccessible(true);
+            var field = BaseBot.class.getDeclaredField("baseBotInternals");
+            field.setAccessible(true);
+            setter.invoke(field.get(bot), initialPosition);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Could not apply initialPosition setup", e);
+        }
+    }
+
+    private static Double toDouble(Object value) {
+        return value == null ? null : ((Number) value).doubleValue();
     }
 
     private static Object callBotDefaultMethod(BaseBot bot, String method) {

@@ -70,7 +70,10 @@ public final class BaseBotInternals {
 
     private final Object nextTurnMonitor = new Object();
 
-    private Thread thread;
+    private static final long THREAD_JOIN_TIMEOUT_MILLIS = 1000;
+
+    private volatile Thread thread;
+    private final Object threadControlMonitor = new Object();
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private boolean isStopped;
@@ -145,25 +148,42 @@ public final class BaseBotInternals {
 
     void startThread(IBot bot) {
         enableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
-        thread = new Thread(createRunnable(bot));
-        thread.start();
+        var newThread = new Thread(createRunnable(bot));
+        synchronized (threadControlMonitor) {
+            thread = newThread;
+        }
+        newThread.start();
     }
 
     private Runnable createRunnable(IBot bot) {
         return () -> {
-            setRunning(true);
+            var botThread = Thread.currentThread();
+            synchronized (threadControlMonitor) {
+                if (botThread != thread) {
+                    return;
+                }
+                setRunning(true);
+            }
             try {
                 waitUntilFirstTickArrived();
+                if (botThread != thread) {
+                    return;
+                }
                 bot.run();
             } catch (ThreadInterruptedException e) {
             } catch (Throwable t) {
-                t.printStackTrace();
+                if (botThread == thread) {
+                    t.printStackTrace();
+                }
             }
 
-            dispatchFinalTurnEvents();
+            if (botThread != thread) {
+                return;
+            }
+            dispatchFinalTurnEvents(botThread);
 
             // Skip every turn after the run method has exited
-            while (isRunning()) {
+            while (isRunning() && botThread == thread) {
                 try {
                     bot.go();
                 } catch (ThreadInterruptedException ignored) {
@@ -171,11 +191,26 @@ public final class BaseBotInternals {
                 }
             }
 
-            dispatchFinalTurnEvents();
+            if (botThread == thread) {
+                dispatchFinalTurnEvents(botThread);
+            }
         };
     }
 
-    private void dispatchFinalTurnEvents() {
+    private void dispatchFinalTurnEvents(Thread botThread) {
+        if (botThread != thread) {
+            return;
+        }
+        flushFinalTurnEvents();
+    }
+
+    /**
+     * Drains any events still queued for the current tick. Called on the WebSocket thread after
+     * stopThread() has invalidated bot-thread ownership, so the bot thread can no longer drain
+     * them itself. Without this, final-tick events would be lost on game-ended, game-aborted and
+     * disconnected.
+     */
+    void flushFinalTurnEvents() {
         var tick = getCurrentTickOrNull();
         if (tick != null) {
             dispatchEvents(tick.getTurnNumber());
@@ -183,15 +218,34 @@ public final class BaseBotInternals {
     }
 
     void stopThread() {
-        if (!isRunning())
-            return;
+        Thread oldThread;
+        synchronized (threadControlMonitor) {
+            if (!isRunning() && thread == null) {
+                return;
+            }
 
-        setRunning(false);
+            oldThread = thread;
+            thread = null; // invalidate ownership before waking the old thread
+            setRunning(false);
+        }
+
         enableEventHandling(false); // disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
-        if (thread != null) {
-            thread.interrupt();
-            thread = null;
+        if (oldThread != null) {
+            oldThread.interrupt();
+        }
+        synchronized (nextTurnMonitor) {
+            nextTurnMonitor.notifyAll();
+        }
+
+        if (oldThread != null && oldThread != Thread.currentThread()) {
+            // Best-effort cleanup only. Ownership was invalidated above, so correctness does not
+            // depend on this bounded wait and an infinite legacy loop cannot block a round.
+            try {
+                oldThread.join(THREAD_JOIN_TIMEOUT_MILLIS);
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
@@ -413,7 +467,7 @@ public final class BaseBotInternals {
     // (priority 110) has already captured the initial directions via clearRemaining().
     private void waitUntilFirstTickArrived() {
         synchronized (nextTurnMonitor) {
-            while (isRunning() && getCurrentTickOrNull() == null) {
+            while (isRunning() && Thread.currentThread() == thread && getCurrentTickOrNull() == null) {
                 try {
                     nextTurnMonitor.wait();
                 } catch (InterruptedException ex) {
@@ -434,6 +488,9 @@ public final class BaseBotInternals {
     }
 
     public void dispatchEvents(int turnNumber) {
+        if (isRunning() && thread != null && Thread.currentThread() != thread) {
+            throw new ThreadInterruptedException();
+        }
         try {
             eventQueue.dispatchEvents(turnNumber);
         } catch (Exception e) {

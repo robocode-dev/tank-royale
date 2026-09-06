@@ -50,6 +50,21 @@ class BaseBotStateTest {
     }
 
     @Test
+    @Tag("TR-API-BOT-007")
+    void test_TR_API_BOT_007_null_initial_position_components_do_not_unbox() throws Exception {
+        var bot = new TestBot();
+        var setter = bot.baseBotInternals.getClass().getDeclaredMethod("setInitialPosition", InitialPosition.class);
+        setter.setAccessible(true);
+        setter.invoke(bot.baseBotInternals, new InitialPosition(null, null, null));
+
+        assertThrows(BotException.class, bot::getX);
+        assertThrows(BotException.class, bot::getY);
+        assertThrows(BotException.class, bot::getDirection);
+        assertThrows(BotException.class, bot::getGunDirection);
+        assertThrows(BotException.class, bot::getRadarDirection);
+    }
+
+    @Test
     @Tag("TR-API-BOT-008")
     @Tag("LEGACY")
     void test_TR_API_BOT_008_adjustment_flags_default_false() {
