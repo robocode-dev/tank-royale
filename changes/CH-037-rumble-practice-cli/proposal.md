@@ -29,6 +29,7 @@ Serves [P-004/M-012](../../docs/plans/P-004-rumble-hardening.md) without changin
 ## Scope
 
 - In `robocode-dev/rumble-client`, remove the `configuration.mode() != ClientMode.RANKED` guard from `RumbleSynchronizer.synchronize()`, `BotCachePreparer.prepare()`, `RankedBattleSelector.select()`, and `RankedBattleExecution.execute()`.
+- Also make `RumbleSnapshotParser.parse()`'s client registration lookup ranked-only (found during implementation): it unconditionally required a registered `clientId`, which practice mode may omit since a practice result is never journaled or submitted under an identity.
 - In `RumbleClient.run()`, gate `--submit` on ranked mode with a clear early error (before synchronizing), since practice mode must never invoke the submission transport (RCL-004).
 - In `RumbleClient.run()`'s `--run` handling, gate `RankedJournal.append(...)` (and obsolete-record quarantine) on `configuration.mode().permitsRankedJournal()`, since practice mode must never append to the ranked journal (RCL-004).
 - Update or replace the existing tests that currently assert the buggy behavior as correct: `RumbleSynchronizerTest#testUnitNegative_rejectsSynchronizationInPracticeModeBeforeRepositoryAccess` and `RankedBattleExecutionTest#testRCL004_IntegrationNegative_practiceModeCannotCreateRankedResult`.
