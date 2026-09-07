@@ -206,7 +206,7 @@ class WebSocketHandler:
         # Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
         # stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
         # the event queue.
-        self.base_bot_internals.dispatch_events(schema_evt.turn_number)
+        self.base_bot_internals.flush_final_turn_events()
 
         # Transfer any remaining stdout/stderr from event handlers (e.g. on_won_round) before the round ends
         self._transfer_std_out_to_bot_intent()

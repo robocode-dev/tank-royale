@@ -55,8 +55,13 @@ sealed class BaseBotInternals
     private readonly object _threadControlMonitor = new();
 
     private volatile Thread _thread;
+    private long _nextThreadGeneration;
+    private long _ownerGeneration;
+    private volatile bool _rejectStaleDispatch;
+    private readonly ThreadLocal<long?> _botThreadGeneration = new();
 
     private bool _isRunning;
+    private bool _dispatchingFinalTurnEvents;
     private readonly object _isRunningLock = new();
 
     private IStopResumeListener _stopResumeListener;
@@ -176,16 +181,21 @@ sealed class BaseBotInternals
     internal void StartThread(IBot bot)
     {
         EnableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
-        var newThread = new Thread(() => CreateRunnable(bot));
+        Thread newThread;
         lock (_threadControlMonitor)
         {
+            var generation = ++_nextThreadGeneration;
+            newThread = new Thread(() => CreateRunnable(bot, generation));
             _thread = newThread;
+            _ownerGeneration = generation;
+            _rejectStaleDispatch = false;
         }
         newThread.Start();
     }
 
-    private void CreateRunnable(IBot bot)
+    private void CreateRunnable(IBot bot, long generation)
     {
+        _botThreadGeneration.Value = generation;
         var botThread = Thread.CurrentThread;
         lock (_threadControlMonitor)
         {
@@ -246,16 +256,25 @@ sealed class BaseBotInternals
     }
 
     /// <summary>
-    /// Drains any events still queued for the current tick. Called on the WebSocket thread after
-    /// StopThread() has invalidated bot-thread ownership, so the bot thread can no longer drain
-    /// them itself. Without this, final-tick events would be lost on game-ended, game-aborted and
-    /// disconnected.
+    /// Drains any events still queued for the current tick. Called after StopThread() has stopped
+    /// the bot loop, so the WebSocket thread can drain events that would otherwise be lost on
+    /// game-ended, game-aborted and disconnected.
     /// </summary>
     internal void FlushFinalTurnEvents()
     {
         var tick = CurrentTickOrNull;
-        if (tick != null)
+        if (tick == null)
+            return;
+
+        _dispatchingFinalTurnEvents = true;
+        try
+        {
             DispatchEvents(tick.TurnNumber);
+        }
+        finally
+        {
+            _dispatchingFinalTurnEvents = false;
+        }
     }
 
     internal void AddEventsFromTick(E.TickEvent tickEvent) => _eventQueue.AddEventsFromTick(tickEvent);
@@ -272,6 +291,7 @@ sealed class BaseBotInternals
 
             oldThread = _thread;
             _thread = null; // invalidate ownership before waking the old thread
+            _ownerGeneration = 0;
             IsRunning = false;
         }
 
@@ -290,6 +310,12 @@ sealed class BaseBotInternals
             // not depend on this bounded wait and an infinite legacy loop cannot block a round.
             oldThread.Join(ThreadJoinTimeoutMillis);
         }
+    }
+
+    /// <summary>Rejects stale bot dispatch while the next round clears its tick state.</summary>
+    internal void InvalidateThreadOwnership()
+    {
+        _rejectStaleDispatch = true;
     }
 
 
@@ -525,12 +551,18 @@ sealed class BaseBotInternals
 
     internal void DispatchEvents(int turnNumber)
     {
-        if (IsRunning && _thread != null && Thread.CurrentThread != _thread)
+        var callerGeneration = _botThreadGeneration.Value;
+        if ((callerGeneration.HasValue &&
+             ((_rejectStaleDispatch && _ownerGeneration == 0)
+              || (_ownerGeneration != 0 && callerGeneration.Value != _ownerGeneration)))
+            || (IsRunning && _thread != null && Thread.CurrentThread != _thread))
             throw new ThreadInterruptedException();
 
         try
         {
-            _eventQueue.DispatchEvents(turnNumber);
+            var evaluateCustomEvents = !_dispatchingFinalTurnEvents
+                && (!callerGeneration.HasValue || IsRunning);
+            _eventQueue.DispatchEvents(turnNumber, evaluateCustomEvents);
         }
         catch (Exception e)
         {
@@ -987,7 +1019,7 @@ sealed class BaseBotInternals
         // Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
         // stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
         // the event queue.
-        DispatchEvents(mappedRoundEndedEvent.TurnNumber);
+        FlushFinalTurnEvents();
 
         // Transfer any remaining stdout/stderr from event handlers (e.g. OnWonRound) before the round ends
         TransferStdOutToBotIntent();

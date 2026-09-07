@@ -108,8 +108,22 @@ final class EventQueue {
      * @param turnNumber the current turn number
      */
     void dispatchEvents(int turnNumber) {
+        dispatchEvents(turnNumber, true);
+    }
+
+    /**
+     * Dispatches queued events, optionally evaluating custom-event conditions first.
+     * Conditions are evaluated only while a round is active. A condition can become true on
+     * the last tick, but invoking its handler during round-end cleanup can call a blocking bot
+     * method with no next tick available.
+     */
+    void dispatchEvents(int turnNumber, boolean evaluateCustomEvents) {
         removeOldEvents(turnNumber);
-        addCustomEvents();
+        if (evaluateCustomEvents) {
+            addCustomEvents();
+        } else {
+            removeCustomEvents();
+        }
         sortEvents();
 
         BotEvent currentEvent;
@@ -142,6 +156,12 @@ final class EventQueue {
             } finally {
                 currentTopEventPriority = oldTopEventPriority;
             }
+        }
+    }
+
+    private void removeCustomEvents() {
+        synchronized (events) {
+            events.removeIf(event -> event instanceof CustomEvent);
         }
     }
 

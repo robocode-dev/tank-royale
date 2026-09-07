@@ -93,6 +93,11 @@ class BaseBotInternals:
         self._server_handshake: Optional[ServerHandshake] = None
         self._conditions: Set[Condition] = set()
         self._is_running_atomic: bool = False
+        self._next_thread_generation: int = 0
+        self._owner_generation: int = 0
+        self._reject_stale_dispatch: bool = False
+        self._bot_thread_generation = threading.local()
+        self._dispatching_final_turn_events: bool = False
         self._event_handling_disabled_turn: int = 0
         self.graphics_state: GraphicsABC = SvgGraphics()
         # Fields for set_stop / set_resume
@@ -352,10 +357,20 @@ class BaseBotInternals:
         self.event_queue.set_current_event_interruptible(interruptible)
 
     def dispatch_events(self, turn_number: int) -> None:
-        if self.is_running() and self.thread is not None and threading.current_thread() is not self.thread:
+        caller_generation = getattr(self._bot_thread_generation, "value", None)
+        if (
+            (caller_generation is not None and (
+                (self._reject_stale_dispatch and self._owner_generation == 0)
+                or (self._owner_generation != 0 and caller_generation != self._owner_generation)
+            ))
+            or (self.is_running() and self.thread is not None and threading.current_thread() is not self.thread)
+        ):
             raise ThreadInterruptedException()
         try:
-            self.event_queue.dispatch_events(turn_number)
+            evaluate_custom_events = not self._dispatching_final_turn_events and (
+                caller_generation is None or self.is_running()
+            )
+            self.event_queue.dispatch_events(turn_number, evaluate_custom_events)
         except BotException:
             # Suppress tick-unavailable errors during round transitions (bot is shutting down)
             if self.is_running():
@@ -385,9 +400,10 @@ class BaseBotInternals:
         # Pre-dispatching causes event handlers that call go() to send intents before run() has
         # set up state (colors, movement), and corrupts last_execute_turn_number for turn 1.
 
-    def _create_runnable(self, bot: BotABC):
+    def _create_runnable(self, bot: BotABC, generation: int):
         """Create runnable function for bot thread (matches Java's createRunnable)"""
         def runnable():
+            self._bot_thread_generation.value = generation
             bot_thread = threading.current_thread()
             with self._thread_control_lock:
                 if self.thread is not bot_thread:
@@ -430,20 +446,27 @@ class BaseBotInternals:
     def flush_final_turn_events(self) -> None:
         """Drain any events still queued for the current tick.
 
-        Called on the WebSocket thread after stop_thread() has invalidated bot-thread ownership,
-        so the bot thread can no longer drain them itself. Without this, final-tick events would
-        be lost on game-ended, game-aborted and disconnected.
+        Called after stop_thread() has stopped the bot loop, so the WebSocket thread can drain
+        events that would otherwise be lost on game-ended, game-aborted and disconnected.
         """
         tick = self.current_tick_or_null
         if tick is not None:
-            self.dispatch_events(tick.turn_number)
+            self._dispatching_final_turn_events = True
+            try:
+                self.dispatch_events(tick.turn_number)
+            finally:
+                self._dispatching_final_turn_events = False
 
     def start_thread(self, bot: BotABC) -> None:
         """Start bot thread (matches Java's startThread)"""
         self.enable_event_handling(True)  # reset on WebSocket thread — before new bot thread starts
-        new_thread = threading.Thread(target=self._create_runnable(bot))
         with self._thread_control_lock:
+            self._next_thread_generation += 1
+            generation = self._next_thread_generation
+            new_thread = threading.Thread(target=self._create_runnable(bot, generation))
             self.thread = new_thread
+            self._owner_generation = generation
+            self._reject_stale_dispatch = False
         new_thread.start()
 
     def stop_thread(self) -> None:
@@ -453,6 +476,7 @@ class BaseBotInternals:
                 return
             old_thread = self.thread
             self.thread = None  # invalidate ownership before waking the old thread
+            self._owner_generation = 0
             self.set_running(False)
         self.enable_event_handling(False)  # disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
@@ -462,10 +486,12 @@ class BaseBotInternals:
 
         if old_thread is not None and old_thread is not threading.current_thread():
             # Best-effort cleanup only. Ownership was invalidated above, so correctness does not
-            # depend on this bounded wait and an infinite legacy loop cannot block a round. It
-            # still keeps the old thread from dispatching concurrently with the WebSocket thread
-            # in the common case.
+            # depend on this bounded wait and an infinite legacy loop cannot block a round.
             old_thread.join(timeout=THREAD_JOIN_TIMEOUT_SECS)
+
+    def invalidate_thread_ownership(self) -> None:
+        """Invalidate the old round before the next round clears its tick state."""
+        self._reject_stale_dispatch = True
 
 
     def _sanitize_url(self, uri: str) -> None:

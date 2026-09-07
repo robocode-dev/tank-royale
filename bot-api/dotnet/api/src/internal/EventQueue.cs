@@ -117,12 +117,22 @@ sealed class EventQueue : IComparer<BotEvent>
     /// Dispatches events for the specified turn number, processing them according to their priorities.
     /// </summary>
     /// <param name="turnNumber">The current turn number</param>
-    internal void DispatchEvents(int turnNumber)
+    internal void DispatchEvents(int turnNumber, bool evaluateCustomEvents = true)
     {
 //        DumpEvents(); // for debugging purposes
 
         RemoveOldEvents(turnNumber);
-        AddCustomEvents();
+        if (evaluateCustomEvents)
+        {
+            AddCustomEvents();
+        }
+        else
+        {
+            lock (_events)
+            {
+                _events.RemoveAll(botEvent => botEvent is CustomEvent);
+            }
+        }
         SortEvents();
 
         BotEvent currentEvent;

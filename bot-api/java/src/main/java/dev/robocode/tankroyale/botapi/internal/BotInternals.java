@@ -58,9 +58,16 @@ public final class BotInternals implements IStopResumeListener {
         // where the bot thread wakes up before turnRemaining/distanceRemaining are updated.
         instantEventHandlers.onNextTurn.subscribe(this::onNextTurn, 110);
 
-        // Priority 90 ensures BaseBotInternals.onRoundStarted (priority 100) resets state first,
-        // then we pre-warm the bot thread so it is alive and waiting before turn 1 arrives.
-        instantEventHandlers.onRoundStarted.subscribe(e -> onRoundStarted(), 90);
+        // Stop the previous bot thread before BaseBotInternals.onRoundStarted (priority 100)
+        // clears the previous tick and event queue. Otherwise a custom-event condition still
+        // running on the old thread can read state after the tick is cleared.
+        instantEventHandlers.onRoundStarted.subscribe(e -> {
+            baseBotInternals.stopThread();
+            baseBotInternals.invalidateThreadOwnership();
+        }, 110);
+        // Start the replacement only after BaseBotInternals.onRoundStarted has reset state. A
+        // replacement started too early can observe the previous round's tick as its first tick.
+        instantEventHandlers.onRoundStarted.subscribe(e -> baseBotInternals.startThread(bot), 90);
 
         instantEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
         instantEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
@@ -76,11 +83,6 @@ public final class BotInternals implements IStopResumeListener {
             onFirstTurn();
         }
         processTurn();
-    }
-
-    private void onRoundStarted() {
-        baseBotInternals.stopThread();
-        baseBotInternals.startThread(bot);
     }
 
     private void onFirstTurn() {

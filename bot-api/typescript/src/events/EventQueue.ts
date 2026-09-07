@@ -56,9 +56,13 @@ export class EventQueue {
     });
   }
 
-  dispatchEvents(turnNumber: number, handlers: BotEventHandlers): void {
+  dispatchEvents(turnNumber: number, handlers: BotEventHandlers, evaluateCustomEvents = true): void {
     this.removeOldEvents(turnNumber);
-    this.addCustomEvents(turnNumber);
+    if (evaluateCustomEvents) {
+      this.addCustomEvents(turnNumber);
+    } else {
+      this.events = this.events.filter((event) => !(event instanceof CustomEvent));
+    }
     this.sortEvents();
 
     const dispatched = [...this.events];
