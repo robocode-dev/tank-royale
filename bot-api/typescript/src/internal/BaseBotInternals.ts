@@ -106,6 +106,7 @@ export class BaseBotInternals {
 
   // Thread/worker state
   private running = false;
+  private dispatchingFinalTurnEvents = false;
   // TypeScript has no bot thread, so round ownership is modelled with generation tokens that
   // mirror the `thread` field the Java/.NET/Python APIs use:
   //   runGeneration       - monotonic counter; each round's bot loop is issued the next value.
@@ -118,6 +119,7 @@ export class BaseBotInternals {
   // and restored around each frame so a resumed round-N frame is still recognised as stale.
   private runGeneration = 0;
   private ownerGeneration = 0;
+  private rejectStaleDispatch = false;
   private activeRunGeneration = 0;
   private eventHandlingDisabledTurn = 0;
   private lastExecuteTurnNumber = -1;
@@ -560,7 +562,7 @@ export class BaseBotInternals {
 
     // Flush any queued events from the last tick (e.g. WonRoundEvent) before the next
     // RoundStartedEvent clears the event queue.
-    this.dispatchEvents(msg.turnNumber);
+    this.flushFinalTurnEvents();
 
     // Output from final-tick handlers (e.g. onWonRound) fires after the round's last intent
     // already went out — merge it now so it rides on the next round's first intent (IDR-005).
@@ -749,6 +751,7 @@ export class BaseBotInternals {
     }
     const generation = ++this.runGeneration;
     this.ownerGeneration = generation; // publish ownership before the loop starts
+    this.rejectStaleDispatch = false;
     Atomics.store(this.sharedView, SAB_SLOT_STOP, 0);
     this.runBotLoop(bot, generation);
   }
@@ -818,6 +821,12 @@ export class BaseBotInternals {
     }
   }
 
+  invalidateThreadOwnership(): void {
+    // Round-start invalidates the old loop before the base handler clears tick state.
+    this.rejectStaleDispatch = true;
+    this.ownerGeneration = 0;
+  }
+
   enableEventHandling(enable: boolean): void {
     if (enable) {
       this.eventHandlingDisabledTurn = 0;
@@ -855,14 +864,16 @@ export class BaseBotInternals {
     // is what processRoundEnded() and flushFinalTurnEvents() rely on.
     if (
       this.workerMode &&
-      this.running &&
-      this.ownerGeneration !== 0 &&
       this.activeRunGeneration !== 0 &&
-      this.activeRunGeneration !== this.ownerGeneration
+      ((this.rejectStaleDispatch && this.ownerGeneration === 0) ||
+        (this.running && this.ownerGeneration !== 0 &&
+          this.activeRunGeneration !== this.ownerGeneration))
     ) {
       throw new BotStoppedException();
     }
-    this.eventQueue.dispatchEvents(turnNumber, this.botEventHandlers);
+    const evaluateCustomEvents = !this.dispatchingFinalTurnEvents &&
+      (this.activeRunGeneration === 0 || this.running);
+    this.eventQueue.dispatchEvents(turnNumber, this.botEventHandlers, evaluateCustomEvents);
   }
 
   private dispatchFinalTurnEvents(generation: number): void {
@@ -871,14 +882,18 @@ export class BaseBotInternals {
   }
 
   /**
-   * Drains any events still queued for the current tick. Called from the WebSocket side after
-   * stopThread() has invalidated round ownership, so the bot loop can no longer drain them
-   * itself. Without this, final-tick events would be lost on game-ended, game-aborted and
-   * disconnected.
+   * Drains any events still queued for the current tick. Called after stopThread() has stopped
+   * the bot loop, so the WebSocket side can drain events that would otherwise be lost on
+   * game-ended, game-aborted and disconnected.
    */
   flushFinalTurnEvents(): void {
     if (this.tickEvent != null) {
-      this.dispatchEvents(this.tickEvent.turnNumber);
+      this.dispatchingFinalTurnEvents = true;
+      try {
+        this.dispatchEvents(this.tickEvent.turnNumber);
+      } finally {
+        this.dispatchingFinalTurnEvents = false;
+      }
     }
   }
 

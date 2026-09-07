@@ -31,8 +31,12 @@ class BotInternals(StopResumeListenerABC):
         # where the bot thread wakes up before turn_remaining/distance_remaining are updated.
         handlers.on_next_turn.subscribe(self.on_next_turn, 110)
 
-        # Priority 90 ensures BaseBotInternals.on_round_started (priority 100) resets state first,
-        # then we pre-warm the bot thread so it is alive and waiting before turn 1 arrives.
+        # Stop the previous bot thread before BaseBotInternals._on_round_started (priority 100)
+        # clears the previous tick and event queue. Otherwise a custom-event condition still
+        # running on the old thread can read state after the tick is cleared.
+        handlers.on_round_started.subscribe(self._on_round_started_stop, 110)
+        # Start the replacement only after BaseBotInternals._on_round_started has reset state. A
+        # replacement started too early can observe the previous round's tick as its first tick.
         handlers.on_round_started.subscribe(lambda _: self._on_round_started_prewarm(), 90)
 
         handlers.on_game_aborted.subscribe(_stop_thread, 100)
@@ -59,9 +63,12 @@ class BotInternals(StopResumeListenerABC):
 
     def _on_round_started_prewarm(self) -> None:
         """Pre-warm bot thread at RoundStarted (P90) so thread is alive before turn 1 arrives."""
-        self._base_bot_internals.stop_thread()
         self._clear_remaining()
         self._base_bot_internals.start_thread(self._bot)
+
+    def _on_round_started_stop(self, _event: ...) -> None:
+        self._base_bot_internals.stop_thread()
+        self._base_bot_internals.invalidate_thread_ownership()
 
     def _on_first_turn(self) -> None:
         """Handle the first turn — capture initial directions for delta tracking."""

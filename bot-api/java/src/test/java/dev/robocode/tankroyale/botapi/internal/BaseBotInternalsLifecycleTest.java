@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.IBot;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.TickEvent;
+import dev.robocode.tankroyale.botapi.events.Condition;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -73,6 +74,7 @@ class BaseBotInternalsLifecycleTest {
     @Tag("TR-API-TCK-019")
     void final_tick_events_are_flushed_after_the_bot_thread_loses_ownership() {
         var dispatchedTicks = new AtomicInteger();
+        var customConditionEvaluations = new AtomicInteger();
         var baseBot = (IBaseBot) Proxy.newProxyInstance(
                 IBaseBot.class.getClassLoader(),
                 new Class<?>[]{IBaseBot.class},
@@ -87,6 +89,13 @@ class BaseBotInternalsLifecycleTest {
         var tick = new TickEvent(1, 1, null, List.of(), List.of());
         internals.setTickEvent(tick);
         internals.addEventsFromTick(tick);
+        internals.addCondition(new Condition("final-turn-condition") {
+            @Override
+            public boolean test() {
+                customConditionEvaluations.incrementAndGet();
+                return true;
+            }
+        });
 
         // stopThread() invalidates bot-thread ownership, so the bot thread can no longer drain
         // the queue itself. The WebSocket thread must still be able to — this is what the
@@ -95,6 +104,7 @@ class BaseBotInternalsLifecycleTest {
         internals.flushFinalTurnEvents();
 
         assertThat(dispatchedTicks).hasValue(1);
+        assertThat(customConditionEvaluations).hasValue(0);
     }
 
     @Test

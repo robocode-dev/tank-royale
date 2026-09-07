@@ -11,6 +11,7 @@
     - Fixed events from the last turn of a round, such as `onWonRound` and `onDeath`, being lost when the game ended, when it was aborted, or when the connection to the server dropped.
     - Fixed a bot's `run()` method from a finished round being able to send commands into the round that follows it.
     - Fixed an unexpected exception thrown from `run()` discarding the bot's remaining events for that turn.
+    - Fixed a custom event `Condition` that becomes true on a round's last tick having its handler invoked during round-end cleanup, where a blocking bot method has no next tick to wait for.
 - Bot API (TypeScript):
     - Fixed `onWonRound` being called twice when a bot won a round.
     - An unexpected exception thrown from `run()` is now reported instead of being silently ignored.

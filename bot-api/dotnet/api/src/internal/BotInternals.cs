@@ -48,9 +48,13 @@ sealed class BotInternals : IStopResumeListener
         // where the bot thread wakes up before TurnRemaining/DistanceRemaining are updated.
         internalEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 110);
 
-        // Priority 90 ensures BaseBotInternals.OnRoundStarted (priority 100) resets state first,
-        // then we pre-warm the bot thread so it is alive and waiting before turn 1 arrives.
-        internalEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 90);
+        // Stop the previous bot thread before BaseBotInternals.OnRoundStarted (priority 100)
+        // clears the previous tick and event queue. Otherwise a custom-event condition still
+        // running on the old thread can read state after the tick is cleared.
+        internalEventHandlers.OnRoundStarted.Subscribe(OnRoundStartedStop, 110);
+        // Start the replacement only after BaseBotInternals.OnRoundStarted has reset state. A
+        // replacement started too early can observe the previous round's tick as its first tick.
+        internalEventHandlers.OnRoundStarted.Subscribe(OnRoundStartedStart, 90);
 
         internalEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
         internalEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
@@ -69,9 +73,14 @@ sealed class BotInternals : IStopResumeListener
         ProcessTurn();
     }
 
-    private void OnRoundStarted(RoundStartedEvent evt)
+    private void OnRoundStartedStop(RoundStartedEvent evt)
     {
         _baseBotInternals.StopThread();
+        _baseBotInternals.InvalidateThreadOwnership();
+    }
+
+    private void OnRoundStartedStart(RoundStartedEvent evt)
+    {
         _baseBotInternals.StartThread(_bot);
     }
 

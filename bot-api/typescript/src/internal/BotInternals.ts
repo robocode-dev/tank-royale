@@ -57,8 +57,15 @@ export class BotInternals implements IStopResumeListener {
     const ih = base.internalEventHandlers;
     // Priority 110 — runs BEFORE BaseBotInternals.onNextTurn (priority 100) which notifies worker
     ih.onNextTurn.subscribe((e: NextTurnEvent) => this.onNextTurn(e), 110);
-    // Priority 90 ensures BaseBotInternals.onRoundStarted (priority 100) resets state first,
-    // then we pre-warm the bot thread so it is alive and waiting before turn 1 arrives.
+    // Stop the previous bot thread before BaseBotInternals.onRoundStarted (priority 100)
+    // clears the previous tick and event queue. Otherwise a custom-event condition still
+    // running on the old worker can read state after the tick is cleared.
+    ih.onRoundStarted.subscribe(() => {
+      this.base.stopThread();
+      this.base.invalidateThreadOwnership();
+    }, 110);
+    // Start the replacement only after BaseBotInternals.onRoundStarted has reset state. A
+    // replacement started too early can observe the previous round's tick as its first tick.
     ih.onRoundStarted.subscribe(() => this.onRoundStartedPrewarm(), 90);
     ih.onGameAborted.subscribe(() => base.stopThread(), 100);
     ih.onRoundEnded.subscribe(() => base.stopThread(), 90);
@@ -80,7 +87,6 @@ export class BotInternals implements IStopResumeListener {
 
   private onRoundStartedPrewarm(): void {
     if (this.base.isWorkerMode()) {
-      this.base.stopThread();
       this.clearRemaining();
       this.base.startThread(this.bot);
     }

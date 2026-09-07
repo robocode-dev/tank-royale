@@ -83,7 +83,7 @@ class EventQueue:
         for e in event.events:
             self.add_event(e)
 
-    def dispatch_events(self, turn_number: int) -> None:
+    def dispatch_events(self, turn_number: int, evaluate_custom_events: bool = True) -> None:
         """Dispatches events in prioritized order to event handlers.
 
         Args:
@@ -92,7 +92,11 @@ class EventQueue:
         #        dumpEvents(turn_number); // for debugging purposes
 
         self.remove_old_events(turn_number)
-        self.add_custom_events()
+        if evaluate_custom_events:
+            self.add_custom_events()
+        else:
+            with self.events_lock:
+                self.events = deque(event for event in self.events if not isinstance(event, CustomEvent))
         self.sort_events()
 
         while True:

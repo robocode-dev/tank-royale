@@ -220,7 +220,7 @@ describe("Task 4: BaseBotInternals", () => {
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
     const spy = vi.spyOn(internals.eventQueue, "dispatchEvents");
     internals.dispatchEvents(5);
-    expect(spy).toHaveBeenCalledWith(5, internals.botEventHandlers);
+    expect(spy).toHaveBeenCalledWith(5, internals.botEventHandlers, true);
   });
 
   it("4.11 enableEventHandling sets/clears disabled turn", () => {

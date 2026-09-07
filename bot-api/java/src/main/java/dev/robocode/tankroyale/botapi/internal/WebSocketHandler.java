@@ -184,7 +184,7 @@ final class WebSocketHandler implements WebSocket.Listener {
         // Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
         // stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
         // the event queue.
-        baseBotInternals.dispatchEvents(mappedRoundEndedEvent.getTurnNumber());
+        baseBotInternals.flushFinalTurnEvents();
 
         // Transfer any remaining stdout/stderr from event handlers (e.g. onWonRound) before the round ends
         baseBotInternals.transferStdOutToBotIntent();

@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
@@ -74,6 +75,10 @@ public final class BaseBotInternals {
 
     private volatile Thread thread;
     private final Object threadControlMonitor = new Object();
+    private final AtomicLong nextThreadGeneration = new AtomicLong();
+    private volatile long ownerGeneration;
+    private volatile boolean rejectStaleDispatch;
+    private final ThreadLocal<Long> botThreadGeneration = new ThreadLocal<>();
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private boolean isStopped;
@@ -148,15 +153,20 @@ public final class BaseBotInternals {
 
     void startThread(IBot bot) {
         enableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
-        var newThread = new Thread(createRunnable(bot));
+        Thread newThread;
         synchronized (threadControlMonitor) {
+            var generation = nextThreadGeneration.incrementAndGet();
+            newThread = new Thread(createRunnable(bot, generation));
             thread = newThread;
+            ownerGeneration = generation;
+            rejectStaleDispatch = false;
         }
         newThread.start();
     }
 
-    private Runnable createRunnable(IBot bot) {
+    private Runnable createRunnable(IBot bot, long generation) {
         return () -> {
+            botThreadGeneration.set(generation);
             var botThread = Thread.currentThread();
             synchronized (threadControlMonitor) {
                 if (botThread != thread) {
@@ -205,15 +215,19 @@ public final class BaseBotInternals {
     }
 
     /**
-     * Drains any events still queued for the current tick. Called on the WebSocket thread after
-     * stopThread() has invalidated bot-thread ownership, so the bot thread can no longer drain
-     * them itself. Without this, final-tick events would be lost on game-ended, game-aborted and
-     * disconnected.
+     * Drains any events still queued for the current tick. Called after stopThread() has stopped
+     * the bot loop, so the WebSocket thread can drain events that would otherwise be lost on
+     * game-ended, game-aborted and disconnected.
      */
     void flushFinalTurnEvents() {
         var tick = getCurrentTickOrNull();
         if (tick != null) {
-            dispatchEvents(tick.getTurnNumber());
+            dispatchingFinalTurnEvents = true;
+            try {
+                dispatchEvents(tick.getTurnNumber());
+            } finally {
+                dispatchingFinalTurnEvents = false;
+            }
         }
     }
 
@@ -226,6 +240,7 @@ public final class BaseBotInternals {
 
             oldThread = thread;
             thread = null; // invalidate ownership before waking the old thread
+            ownerGeneration = 0;
             setRunning(false);
         }
 
@@ -247,6 +262,11 @@ public final class BaseBotInternals {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    /** Rejects stale bot dispatch while the next round clears its tick state. */
+    void invalidateThreadOwnership() {
+        rejectStaleDispatch = true;
     }
 
     public void enableEventHandling(boolean enable) {
@@ -311,6 +331,7 @@ public final class BaseBotInternals {
     }
 
     private boolean movementResetPending = false;
+    private boolean dispatchingFinalTurnEvents;
 
     private void onRoundStarted(RoundStartedEvent e) {
         tickEvent = null;
@@ -488,11 +509,17 @@ public final class BaseBotInternals {
     }
 
     public void dispatchEvents(int turnNumber) {
-        if (isRunning() && thread != null && Thread.currentThread() != thread) {
+        var callerGeneration = botThreadGeneration.get();
+        if ((callerGeneration != null &&
+                ((rejectStaleDispatch && ownerGeneration == 0)
+                        || (ownerGeneration != 0 && callerGeneration != ownerGeneration)))
+                || (isRunning() && thread != null && Thread.currentThread() != thread)) {
             throw new ThreadInterruptedException();
         }
         try {
-            eventQueue.dispatchEvents(turnNumber);
+            var evaluateCustomEvents = !dispatchingFinalTurnEvents
+                    && (callerGeneration == null || isRunning());
+            eventQueue.dispatchEvents(turnNumber, evaluateCustomEvents);
         } catch (Exception e) {
             e.printStackTrace();
         }
