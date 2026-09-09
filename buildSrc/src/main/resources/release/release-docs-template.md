@@ -53,7 +53,7 @@ Download pre-built bots to start battling immediately:
 
 | Language      | Download                           | Requirements                    |
 |---------------|------------------------------------|---------------------------------|
-| 🐍 **Python** | [sample-bots-python-{VERSION}.zip] | [Python] 3.10 or newer          |
+| 🐍 **Python** | [sample-bots-python-{VERSION}.zip] | [Python] 3.10 or newer with `venv` |
 | 🔷 **C#**     | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.NET SDK] 8 or newer |
 | ☕ **Java**    | [sample-bots-java-{VERSION}.zip]   | Any [Java SDK] 11 or newer      |
 | 🟦 **TypeScript** | [sample-bots-typescript-{VERSION}.zip] | [Node.js] 22 or newer   |
@@ -64,9 +64,14 @@ Download pre-built bots to start battling immediately:
 Ready to develop your own bots? Install the API for your preferred language:
 
 ### 🐍 Python
+Create and activate a virtual environment before installing the API:
+
 ```bash
-pip install robocode-tank-royale=={VERSION}
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install robocode-tank-royale=={VERSION}
 ```
+On Windows PowerShell, use `py -3 -m venv .venv`, activate it with `.\.venv\Scripts\Activate.ps1`, and then run the `python -m pip` command above.
 
 ### ☕ Java
 **Maven:**
@@ -129,5 +134,3 @@ Follow the repository instructions to install sounds in the correct location.
 [Java SDK]: https://robocode-dev.github.io/tank-royale/articles/installation.html#java-11-or-newer "Java SDK"
 [Node.js]: https://nodejs.org/en/download "Node.js downloads"
 [SHA256SUMS]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/SHA256SUMS "SHA256 checksums for verifying installer integrity"
-
-

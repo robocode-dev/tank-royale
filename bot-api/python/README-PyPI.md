@@ -22,10 +22,18 @@ behave during battles.
 
 ## Installation
 
-Install the Python Bot API using pip:
+Create a virtual environment, activate it, and install the Python Bot API using `python -m pip`:
 
 ```shell
-pip install robocode-tank-royale
+# macOS/Linux
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Windows PowerShell: use `py -3 -m venv .venv` and
+# `.\.venv\Scripts\Activate.ps1` instead.
+
+python -m pip install --upgrade pip
+python -m pip install robocode-tank-royale
 ```
 
 ### Requirements
@@ -98,7 +106,7 @@ The Python Bot API provides:
 
 ## Getting Started
 
-1. **Install the package**: `pip install robocode-tank-royale`
+1. **Install the package** using the virtual-environment commands in [Installation](#installation): `python -m pip install robocode-tank-royale`
 
 2. **Download Robocode Tank Royale**: Get the game GUI and server from
    the [official releases](https://github.com/robocode-dev/tank-royale/releases)

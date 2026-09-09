@@ -48,7 +48,7 @@ communication with the server behind the scenes.
 ### Startup / Main entry
 
 The next thing we need to do is to implement the `main` entry point for our bot. The bot will run like an ordinary
-Python application, typically started with `python MyFirstBot.py`.
+Python application, typically started with `python3 MyFirstBot.py` on macOS/Linux or `python MyFirstBot.py` on Windows.
 
 ```python
 
@@ -202,26 +202,26 @@ dependencies for running the bot application.
 
 ### Install the bot API library
 
-Install the Python package for the bot API using pip. You can do this globally, in a virtual environment, or in a
-project-specific environment.
+Use a virtual environment for the bot so its Bot API dependencies do not modify the system Python installation.
 
 ```bash
-# Optionally create and activate a virtual environment
-python -m venv .venv
 # macOS/Linux
+python3 -m venv .venv
 source .venv/bin/activate
-# Windows PowerShell
-# .venv\Scripts\Activate.ps1
 
-# Install the API
-pip install robocode-tankroyale-bot-api
+# Windows PowerShell: use `py -3 -m venv .venv` and
+# `.\.venv\Scripts\Activate.ps1` instead.
+
+# Install the API into the active environment
+python -m pip install --upgrade pip
+python -m pip install robocode-tank-royale
 ```
 
 Alternatively, if you downloaded the source of this repository, the Python package is located under `bot-api/python` and
 can be installed locally with:
 
 ```bash
-pip install -e ./bot-api/python
+python -m pip install -e ./bot-api/python
 ```
 
 ### Scripts for starting the bot
@@ -242,8 +242,8 @@ We create a command file for Windows named `MyFirstBot.cmd` and put it into our 
 python MyFirstBot.py %*
 ```
 
-So the `python MyFirstBot.py` part is used for starting the bot standing in the bot directory from a command prompt. You
-may want to use `python3` if your environment requires it.
+So the `python MyFirstBot.py` part is used for starting the bot standing in the bot directory from a command prompt. On
+macOS/Linux, use `python3` when the environment is not activated.
 
 Next, we create a shell script for macOS and Linux named `MyFirstBot.sh` and put it into our bot directory:
 

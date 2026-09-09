@@ -10,18 +10,31 @@ The Bot API is provided via a pip package.
 
 ### From the current directory:
 
-First, generate schemas into a tank_royale.schema package:
+Create and activate the project virtual environment first. The setup scripts install the dependencies from `requirements.txt` into `.venv`.
+
+On macOS/Linux:
 
 ```shell
+bash scripts/create-venv.sh
+. .venv/bin/activate
+```
+
+On Windows PowerShell:
+
+```powershell
+.\scripts\create-venv.ps1
+.\.venv\Scripts\Activate.ps1
+```
+
+Then generate schemas and install the local package in editable mode:
+
+```shell
+python scripts/update_version.py
 python scripts/schema_to_python.py -d ../../schema/schemas -o generated/robocode_tank_royale/schema
+python -m pip install -e .
 ```
 
-Then install a local package using in "editable" mode setup.py, linking the installed package to the source directory
-for live updates:
-
-```shell
-pip install -e .
-```
+On macOS/Linux, `bash prepare.sh` can be used instead when type-stub generation is also needed; it performs the version update, schema generation, and stub generation using the active environment.
 
 ### From the root folder using Gradle:
 

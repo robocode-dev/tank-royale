@@ -1,4 +1,4 @@
-pip install pyyaml mypy
+python3 -m pip install pyyaml mypy
 python3 scripts/update_version.py
 python3 scripts/schema_to_python.py -d ../../schema/schemas -o generated/robocode_tank_royale/schema
 stubgen src/robocode_tank_royale -o src/robocode_tank_royale-stubs

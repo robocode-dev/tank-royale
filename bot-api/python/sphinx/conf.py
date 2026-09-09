@@ -92,7 +92,7 @@ exclude_patterns: list[str] = [
 # documentation builds don't fail unexpectedly.
 #
 # Install the theme with:
-#   pip install sphinxawesome-theme
+#   python -m pip install sphinxawesome-theme
 #
 # See: https://pypi.org/project/sphinxawesome-theme/
 import warnings
@@ -105,7 +105,7 @@ try:
 except Exception:
     warnings.warn(
         "sphinxawesome_theme not found; falling back to 'alabaster'. "
-        "To use the Awesome theme install it with: pip install sphinxawesome-theme",
+        "To use the Awesome theme install it with: python -m pip install sphinxawesome-theme",
         UserWarning,
     )
     html_theme = "alabaster"

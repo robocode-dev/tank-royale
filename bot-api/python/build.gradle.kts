@@ -139,7 +139,7 @@ tasks {
         group = "documentation"
         description = "Installs Sphinx for building Python API docs"
         // Also install sphinxawesome-theme so the sphinxawesome_theme is available
-        // during sphinx-build: pip install sphinx sphinxawesome-theme
+        // during sphinx-build: python -m pip install sphinx sphinxawesome-theme
         dependsOn(setupVenv)
         commandLine(venvPythonPath(), "-m", "pip", "install", "sphinx", "sphinxawesome-theme")
     }

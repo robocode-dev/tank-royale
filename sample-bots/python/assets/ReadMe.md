@@ -4,12 +4,12 @@ This directory contains sample bots for Robocode Tank Royale developed for the P
 
 ## Requirements for running the sample bots
 
-1. Python 3.10 (or newer) must be installed on your system. You can download it from here:
+1. Python 3.10 (or newer), including the `venv` module, must be installed on your system. You can download it from here:
    https://www.python.org/downloads/
-2. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with
-   Robocode.
+   On Debian or Ubuntu, install the matching `python3-venv` package if the `venv` module is not included.
+2. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with Robocode.
 
-Note that you need Python (and pip) if you want to develop your own bot.
+Each archive creates a `deps/venv` virtual environment on its first run and installs the bot dependencies there. No global Python package installation is required.
 
 ## Bot directories
 
@@ -24,22 +24,18 @@ Each bot has its own subdirectory (bot directory) that contains:
 The bot can be run by Robocode without any script file by using the information in the bot's JSON file.
 By default, the booter assumes that the base Python script has the same name as the bot directory.
 If the base script has a different name, it must be specified using the `base` property in the JSON file.
-However, a script file can still be used for running the bot, which is `python <Python source file>` for the sample bots
-for Python.
+However, a script file can still be used for running the bot. The generated `.sh` and `.cmd` scripts install dependencies into `deps/venv` and use that interpreter.
 
-You can run a sample bot manually from the command line by going into the bot directory (using the `cd` command) and
-writing:
+If a bot directory contains a generated launcher script, you can start it by going into its directory and running the script. For example:
 
-    python <Python source file>
+    ./MyFirstTeam.sh
 
-For example:
+On Windows, run `MyFirstTeam.cmd` instead. If you run the source file directly, install the dependencies first and use the virtual-environment interpreter:
 
-    python SpinBot.py
+    ../deps/venv/bin/python SpinBot.py
 
-(assuming you are standing in the `SpinBot` bot directory)
+(assuming you are standing in the `SpinBot` bot directory; on Windows, use `..\deps\venv\Scripts\python.exe SpinBot.py`)
 
 ## Slow boot up the first time
 
-Note that when you run a sample bot for Python for the first time, dependencies might need to be installed (using the
-provided `install-dependencies` scripts), which can take some additional time before it is ready to join the battle.
-Hence, it might take a while before the bot becomes available on the list of Joined Bots on the GUI. So please be patient.
+When you run a sample bot for Python for the first time, its dependency installer creates the virtual environment and installs the dependencies. This can take some additional time before it is ready to join the battle, so it might take a while before the bot becomes available in the GUI.

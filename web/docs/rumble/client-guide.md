@@ -19,6 +19,34 @@ The client accepts a practice-mode configuration, but `--run` currently executes
 
 The runtime check reports exactly what is missing and does not install or change anything.
 
+### Native Python setup
+
+The Docker image contains its own Python environment. For native execution, create a virtual environment and install the Python Bot API before running the client. Keep the environment active, or set the explicit interpreter variable, whenever the client starts Python bots.
+
+On Linux or macOS:
+
+```shell
+cd rumble-client
+python3.12 -m venv .rumble-python
+. .rumble-python/bin/activate
+python -m pip install --upgrade pip
+python -m pip install "robocode-tank-royale==1.2.0"
+export RUMBLE_PYTHON="$(command -v python)"
+```
+
+On Windows PowerShell:
+
+```powershell
+cd rumble-client
+py -3.12 -m venv .rumble-python
+.\.rumble-python\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install "robocode-tank-royale==1.2.0"
+$env:RUMBLE_PYTHON = (Get-Command python).Source
+```
+
+Use the same shell for the runtime check, synchronization, and ranked run. `RUMBLE_PYTHON` is honored by the catalog's Python launchers and makes the selected venv explicit; putting the venv first on `PATH` also ensures generic `python3` launchers use it. The runtime check verifies the interpreter version, so installing the API into this environment is still required.
+
 ## 1. Register your client
 
 Each battle contributor registers once so result submissions can be tied to a GitHub account. Fork [`robocode-dev/rumble-data`](https://github.com/robocode-dev/rumble-data), then add `clients/<your-github-account>.json`:

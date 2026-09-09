@@ -117,43 +117,20 @@ if ! PYTHON_CMD=$(find_python); then
   exit 1
 fi
 
-# Try to use system pip first, fall back to virtual environment on failure
-PIP_CMD=""
+echo "Using virtual environment..."
 
-# First, try to find system pip
-if command -v python3 >/dev/null 2>&1 && python3 -m pip --version >/dev/null 2>&1; then
-  PIP_CMD="python3 -m pip"
-elif command -v python >/dev/null 2>&1 && python -m pip --version >/dev/null 2>&1; then
-  PIP_CMD="python -m pip"
-elif command -v pip3 >/dev/null 2>&1; then
-  PIP_CMD="pip3"
-elif command -v pip >/dev/null 2>&1; then
-  PIP_CMD="pip"
+if ! VENV_PIP=$(setup_venv "$PYTHON_CMD"); then
+  echo "Error: Failed to setup virtual environment." >&2
+  exit 1
 fi
 
-# Try system pip installation first
-if [ -n "$PIP_CMD" ] && ${PIP_CMD} install -q -r requirements.txt 2>/dev/null; then
-  install_local_wheel_or_pypi "$PIP_CMD"
+if ${VENV_PIP} install -q -r requirements.txt; then
+  install_local_wheel_or_pypi "$VENV_PIP"
   # Create marker file to indicate dependencies are installed
   : > .deps_installed
-  echo "Dependencies installed using system pip."
+  echo "Dependencies installed in virtual environment."
+  echo "Note: Virtual environment created in ./venv directory"
 else
-  # System pip failed (likely externally-managed-environment), use virtual environment
-  echo "System pip failed (likely externally managed environment). Using virtual environment..."
-
-  if ! VENV_PIP=$(setup_venv "$PYTHON_CMD"); then
-    echo "Error: Failed to setup virtual environment." >&2
-    exit 1
-  fi
-
-  if ${VENV_PIP} install -q -r requirements.txt; then
-    install_local_wheel_or_pypi "$VENV_PIP"
-    # Create marker file to indicate dependencies are installed
-    : > .deps_installed
-    echo "Dependencies installed in virtual environment."
-    echo "Note: Virtual environment created in ./venv directory"
-  else
-    echo "Error: Failed to install dependencies in virtual environment." >&2
-    exit 1
-  fi
+  echo "Error: Failed to install dependencies in virtual environment." >&2
+  exit 1
 fi
