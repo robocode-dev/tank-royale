@@ -723,7 +723,7 @@ entries:
       state: live
     - id: CH-038
       kind: numeric
-      state: reserved
+      state: live
       prefix: CH
       component: "38"
     - id: CH-038-open-questions

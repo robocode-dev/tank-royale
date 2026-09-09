@@ -40,7 +40,7 @@ Fork-pull-request submission remains a portability option only after the result-
 
 ## Runtime boundary
 
-The primary distribution is a rebuildable container containing the pinned Tank Royale engine, Battle Runner, and the Java, .NET, Python, and Node.js runtimes required by the catalog. Client network egress is limited to repository synchronization and issue submission; bot processes receive only the local server connection. Documented bare-metal setup remains available with an explicit warning that it does not provide the container boundary.
+The primary distribution is a rebuildable container containing the pinned Tank Royale engine, Battle Runner, and the Java, .NET, Python, and Node.js runtimes required by the catalog. The image follows an LTS-first runtime policy; the external Rumble client repository owns the exact pins and its scheduled refresh workflow opens a reviewable pull request only after the image, hardened checks, and all four language smoke battles pass. Client network egress is limited to repository synchronization and issue submission; bot processes receive only the local server connection. Documented bare-metal setup remains available with an explicit warning that it does not provide the container boundary.
 
 ## External evidence
 
