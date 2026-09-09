@@ -11,7 +11,11 @@
 # Suppress warnings for optional annotation classes
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn org.jetbrains.annotations.ApiStatus$Internal
+-dontwarn org.jetbrains.annotations.ApiStatus$Experimental
 -dontwarn org.jetbrains.annotations.MustBeInvokedByOverriders
+-dontwarn aQute.bnd.annotation.jpms.**
+-dontwarn aQute.bnd.annotation.spi.**
+-dontwarn org.osgi.annotation.bundle.**
 
 # Keep important attributes for reflection and debugging
 -keepattributes AnnotationDefault,*Annotation*,Signature,InnerClasses,EnclosingMethod,RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,RuntimeVisibleParameterAnnotations,RuntimeInvisibleParameterAnnotations,RuntimeVisibleTypeAnnotations,RuntimeInvisibleTypeAnnotations,SourceFile,LineNumberTable
