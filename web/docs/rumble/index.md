@@ -72,4 +72,4 @@ The bot catalog synchronizes at 23 minutes past every UTC hour. A newly merged b
 
 ## Current availability
 
-Bot submission, ranked battle execution, result ingestion, and the dashboard work end to end. The Rumble client does not yet have a published production container image, so battle contributors currently build it from source and use the native command line. The [client guide](client-guide.md) shows the exact supported path and calls out the parts of the Docker workflow that are still under development.
+Bot submission, ranked battle execution, result ingestion, and the dashboard work end to end. The Rumble client does not yet have a published production container image, so battle contributors currently build it from source. Its development container includes all four bot runtimes and can be run with Docker or Podman for validation, runtime checks, and synchronization; the native command line remains the documented path for ranked `run` and `submit`. The [client guide](client-guide.md) shows the exact supported paths.

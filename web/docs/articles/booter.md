@@ -119,6 +119,22 @@ The assumption here is the command(s) used within the scripts are available on t
 Hence, it is a good idea to provide a ReadMe file that describes the required commands that must be installed to run the
 script for a bot if other people should be able to run the bot on their system.
 
+## Running bots in a container
+
+A container is another environment in which the booter can start a bot. The container image must provide the bot's runtime and Bot API dependencies, and the bot root directory must be mounted at a path visible inside the container:
+
+```shell
+docker run --rm --network <server-network> \
+  --mount type=bind,source=<bot-root>,target=/bots,readonly \
+  <bot-image> <bot-command-using-/bots>
+```
+
+Podman uses the same command shape; replace `docker` with `podman`. The bot and server must be able to reach each other. `localhost` inside a bot container refers to that container, so use the server container's network name or a host address reachable from the container when setting `SERVER_URL` or an explicit server URL in the bot code.
+
+Mount source-only bot archives read-only only when their startup command does not need to create files or change permissions. C# and TypeScript bots commonly restore or install dependencies on first start, so preinstall those dependencies in the image or copy the bot root into writable container storage first. Python dependencies can be installed in an image-owned virtual environment; do not require a host virtual environment to be present inside the container.
+
+Run bot containers as a non-root user, limit CPU and memory, drop unnecessary capabilities, and allow network access only to the battle server. Container isolation reduces the risk from reviewed bot code but does not replace bot review or server-side validation.
+
 ## JSON config file
 
 All bot directories must contain a [JSON] file, which is basically a description of the bot (or team),

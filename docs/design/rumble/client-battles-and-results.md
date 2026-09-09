@@ -206,7 +206,7 @@ Semantics:
 - **Compatibility is decided by `behaviorVersion`, never by the release version.** Any release that carries the pinned behavior version is acceptable; the client and the validator both compare the behavior version reported by the running server against the pin. A GUI-only release 1.2.0 with unchanged `behaviorVersion 7` causes no rollout, no client obsolescence, and no epoch reset. `release`/`clientImage` in the pin are convenience ("which build to install"), not the compatibility contract.
 - **A `behaviorVersion` bump is the rollout event.** All clients become obsolete at that moment, by design: mixed behavior versions would silently corrupt result comparability. On its next sync the client sees the new pin, refuses ranked mode, and prints exactly how to upgrade. Results produced on the old behavior version are rejected by the validator (and the client will not submit them). Each behavior version is its own result **epoch** (aggregation document).
 - **Bump discipline is guarded, not trusted.** The engine's CI replays recorded battles deterministically and compares outcomes: an unintended outcome difference fails the build, and an intended one requires bumping `behaviorVersion` in the same change. The Tank Royale preparation proposal defines the hook for this guard; the replay corpus can be expanded in a later proposal.
-- Upgrading must be **one step**: `docker pull` the image named in the new pin for container users, or re-running the platform install script for bare-metal users.
+- Upgrading must be **one step**: pull the image named in the new pin with Docker or Podman for container users, or re-run the platform install script for bare-metal users.
 
 ## Runtimes: the Client Container and Install Scripts
 
@@ -214,7 +214,7 @@ A rumble client must be able to boot bots for **all four platforms**: Java (JVM)
 
 - **`rumble-client` image**: bundles the pinned server, booter, runner, the rumble client itself, plus the exact runtime versions (JRE, .NET SDK, Python, Node.js/npm) matching the engine pin. Tagged by release version (`rumble-client:1.1.4`, the image named in `engine.json`), so upgrading engine and runtimes is one pull; the pinned image implies the pinned `behaviorVersion`.
 - The image doubles as the **sandbox**: run with no outbound network (localhost WebSocket only) except the submission endpoint, and CPU/memory/time limits via container flags. Review reduces malice (submission document), the container contains it; no one pretends there is a central sandbox.
-- The `Dockerfile` lives in the repo, so forks can rebuild the image even though registry packages (GHCR) do not fork with the repo (principle P2 is satisfied by rebuildability, not by the artifact).
+- The `Dockerfile` lives in the repo, so forks can rebuild the image with Docker or Podman even though registry packages (GHCR) do not fork with the repo (principle P2 is satisfied by rebuildability, not by the artifact).
 - **Bare-metal fallback**: documented install scripts per OS (Linux, macOS, Windows) that check for and install the required runtime versions and the pinned engine artifacts. Bare-metal users knowingly accept the residual risk of running reviewed-but-untrusted code outside a container.
 
 ## Client Policy Details

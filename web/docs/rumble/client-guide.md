@@ -6,7 +6,7 @@ You do not need to own a bot to contribute battles. If you do own one, you can a
 
 ## What works today
 
-The native client can synchronize, run one ranked battle, and submit its result. You currently build it from source because there is no published production client image. The development Docker image contains all four bot runtimes, but its launcher scripts currently expose only configuration validation, runtime checks, and synchronization. Use the native path below for ranked `run` and `submit` commands.
+The native client can synchronize, run one ranked battle, and submit its result. You currently build it from source because there is no published production client image. The development container image contains all four bot runtimes and can be run with Docker or Podman, but its launcher scripts currently expose only configuration validation, runtime checks, and synchronization. Use the native path below for ranked `run` and `submit` commands.
 
 The client accepts a practice-mode configuration, but `--run` currently executes ranked battles only. Use the [Tank Royale GUI](../articles/gui-battle-setup.md) for local practice battles.
 
@@ -15,6 +15,7 @@ The client accepts a practice-mode configuration, but `--run` currently executes
 - A GitHub account.
 - Git and JDK 17.
 - Java 17, .NET 8 SDK, Python 3.12, and Node.js 22 if you run natively. The client may select bots from any supported language.
+- Docker Engine/Desktop or Podman if you run the development container. On Windows, Podman Desktop uses a Linux virtual machine with either WSL2 or Hyper-V as the provider.
 - Two sibling source checkouts: [`tank-royale`](https://github.com/robocode-dev/tank-royale) and [`rumble-client`](https://github.com/robocode-dev/rumble-client).
 
 The runtime check reports exactly what is missing and does not install or change anything.
@@ -46,6 +47,49 @@ $env:RUMBLE_PYTHON = (Get-Command python).Source
 ```
 
 Use the same shell for the runtime check, synchronization, and ranked run. `RUMBLE_PYTHON` is honored by the catalog's Python launchers and makes the selected venv explicit; putting the venv first on `PATH` also ensures generic `python3` launchers use it. The runtime check verifies the interpreter version, so installing the API into this environment is still required.
+
+### Container setup
+
+The development image includes Java 17, .NET 8, Python 3.12 with the Tank Royale API installed in an image-owned virtual environment, and Node.js 22. The container does not use your host Python environment, so the native Python setup above is unnecessary when all client commands run in the container. Podman Desktop/WSL2 has been manually verified on Windows; rootless Linux Podman state-directory behavior remains a separate verification target and is not part of CI.
+
+From the `rumble-client` checkout, build the image with Docker or Podman:
+
+```shell
+docker build --tag rumble-client:dev .
+podman build --tag rumble-client:dev .
+```
+
+On Windows, create and start a Podman machine once if needed. Choose one provider when initializing it:
+
+```powershell
+# WSL2
+podman machine init --provider wsl
+
+# Or Hyper-V
+podman machine init --provider hyperv
+
+podman machine start
+```
+
+Run the supported container phases with the launcher scripts. Docker is the default; select Podman with `CONTAINER_ENGINE=podman` on Unix-like shells or `-Engine podman` in PowerShell:
+
+```shell
+./docker/rumble.sh runtimes
+CONTAINER_ENGINE=podman ./docker/rumble.sh runtimes
+./docker/rumble.sh validate rumble-client.json rumble-client:dev
+CONTAINER_ENGINE=podman ./docker/rumble.sh sync rumble-client.json rumble-client:dev
+```
+
+```powershell
+.\docker\rumble.ps1 runtimes
+.\docker\rumble.ps1 runtimes -Engine podman
+.\docker\rumble.ps1 validate rumble-client.json rumble-client:dev -Engine podman
+.\docker\rumble.ps1 sync rumble-client.json rumble-client:dev -Engine podman
+```
+
+The launcher mounts the configuration read-only and keeps `.rumble-client` writable because synchronization creates the immutable bot cache and the client stores journals and replay evidence there. Runtime checks run with no network; synchronization needs network access to the configured repositories. The current launcher does not expose ranked `run` or `submit`, so use the native commands in steps 5 and 6 for those operations.
+
+When a containerized Battle Runner boots bot archives directly, mount a bot root directory rather than a zip file. Java and Python archives can remain read-only. C# and TypeScript first-run dependency setup may write files and change permissions, so copy those archives into writable container storage before booting them; this avoids `EPERM` errors on Windows bind mounts. If Podman Desktop reports `ssh-keygen` is missing, enable Windows OpenSSH and add `C:\Windows\System32\OpenSSH` to the user `PATH`, then restart the terminal and Podman Desktop.
 
 ## 1. Register your client
 
