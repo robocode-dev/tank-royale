@@ -99,4 +99,13 @@ Feature: rumble-client — Local ranked and practice battle client
     When the client synchronizes, selects and completes a battle, journals its result, and submits it through issue-ops
     Then the result-data ingestion workflow accepts the record as an immutable raw fact and regenerates the affected projections
     And no person copies, edits, or grants repository-content write access to deliver the result
+
+  @RCL-012 @draft
+  Scenario: Runtime refreshes are proposed only after cross-platform container evidence
+    Test-type: Integration
+    Given an official release feed contains a newer runtime in one of the configured LTS-first lanes
+    When the scheduled Rumble runtime refresh runs
+    Then it updates the single runtime policy source and the derived user-facing runtime references
+    And it opens a reviewable pull request only after the updater checks, image build, hardened checks, and Java, .NET, Python, and TypeScript one-round smoke battles pass
+    And it does not automatically merge or publish the proposed refresh
 ```

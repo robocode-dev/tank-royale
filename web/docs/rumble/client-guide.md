@@ -14,7 +14,7 @@ The client accepts a practice-mode configuration, but `--run` currently executes
 
 - A GitHub account.
 - Git and JDK 17.
-- Java 17, .NET 8 SDK, Python 3.12, and Node.js 22 if you run natively. The client may select bots from any supported language.
+- Java 25, .NET 10 SDK, Python 3.14, and Node.js 24 if you run natively. The client may select bots from any supported language.
 - Docker Engine/Desktop or Podman if you run the development container. On Windows, Podman Desktop uses a Linux virtual machine with either WSL2 or Hyper-V as the provider.
 - Two sibling source checkouts: [`tank-royale`](https://github.com/robocode-dev/tank-royale) and [`rumble-client`](https://github.com/robocode-dev/rumble-client).
 
@@ -28,7 +28,7 @@ On Linux or macOS:
 
 ```shell
 cd rumble-client
-python3.12 -m venv .rumble-python
+python3.14 -m venv .rumble-python
 . .rumble-python/bin/activate
 python -m pip install --upgrade pip
 python -m pip install "robocode-tank-royale==1.2.0"
@@ -39,7 +39,7 @@ On Windows PowerShell:
 
 ```powershell
 cd rumble-client
-py -3.12 -m venv .rumble-python
+py -3.14 -m venv .rumble-python
 .\.rumble-python\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install "robocode-tank-royale==1.2.0"
@@ -50,7 +50,7 @@ Use the same shell for the runtime check, synchronization, and ranked run. `RUMB
 
 ### Container setup
 
-The development image includes Java 17, .NET 8, Python 3.12 with the Tank Royale API installed in an image-owned virtual environment, and Node.js 22. The container does not use your host Python environment, so the native Python setup above is unnecessary when all client commands run in the container. Podman Desktop/WSL2 has been manually verified on Windows; rootless Linux Podman state-directory behavior remains a separate verification target and is not part of CI.
+The development image uses the current LTS-first Java 25, .NET 10, Python 3.14, and Node.js 24 lanes, with the Tank Royale API installed in an image-owned Python virtual environment. The container does not use your host Python environment, so the native Python setup above is unnecessary when all client commands run in the container. Exact image pins are maintained in the [Rumble client repository](https://github.com/robocode-dev/rumble-client/blob/main/src/main/resources/runtime-versions.properties) and refreshed by reviewed monthly pull requests. Podman Desktop/WSL2 has been manually verified on Windows; rootless Linux Podman state-directory behavior remains a separate verification target and is not part of CI.
 
 From the `rumble-client` checkout, build the image with Docker or Podman:
 
