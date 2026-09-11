@@ -8,7 +8,6 @@ using NUnit.Framework;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
-[Category("Arch")]
 public class TestPurposeArchitectureTest
 {
     private static readonly Regex AcceptanceId = new("^(?:[A-Z][A-Z0-9]*-)+\\d+[a-z]?$", RegexOptions.Compiled);
