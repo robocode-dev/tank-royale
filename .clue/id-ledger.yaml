@@ -238,6 +238,9 @@ events:
     - {id: CH-039-tasks, kind: opaque, state: live}
     - {id: CH-039-open-questions, kind: opaque, state: live}
     - {id: CH-040, kind: numeric, state: reserved, prefix: CH, component: "40"}
+    - {id: CH-040, kind: numeric, state: live, prefix: CH, component: "40"}
+    - {id: CH-040-open-questions, kind: opaque, state: live}
+    - {id: CH-040-tasks, kind: opaque, state: live}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
