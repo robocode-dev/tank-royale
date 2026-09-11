@@ -126,9 +126,8 @@ class TestPurposeArchitectureTest {
 
     private fun isJvmTestSource(path: Path): Boolean {
         if (!path.isRegularFile()) return false
-        if (path.fileName.toString() !in setOf("TestPurposeArchitectureTest.kt") &&
-            !path.fileName.toString().endsWith("Test.java") &&
-            !path.fileName.toString().endsWith("Test.kt")
+        if (path.fileName.toString() != "TestPurposeArchitectureTest.kt" &&
+            path.fileName.toString().substringAfterLast('.') !in setOf("java", "kt")
         ) return false
         val parts = path.iterator().asSequence().map { it.toString() }.toList()
         return parts.none { it in setOf("build", "bin", ".gradle", ".external") } &&
