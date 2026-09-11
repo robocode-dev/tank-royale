@@ -8,6 +8,13 @@ title: Complete test-purpose tagging across the repository
 
 # CH-040 — Complete test-purpose tagging across the repository
 
+## Acceptance brief
+
+- Plan: P-001/M-002 remains wanted and is complete. Every discovered executable test in JVM, .NET, Python, and TypeScript has one effective purpose, and a platform architecture guard enforces it.
+- Vision: this change proceeds under `docs/vision.md` and preserves the product's cross-platform purpose.
+- Criteria: no acceptance-criterion meaning changed or was added, and no draft criterion was promoted. Existing `TR-API-*` identifiers remain legacy registry identifiers; active GTD-001 evidence retains its AC, Unit, Positive, and Negative metadata.
+- Proof: the four focused architecture guards, platform suites, `./gradlew clean build`, `clue validate`, and `git diff --check` pass on the reviewed candidate.
+- Merge: accepting CH-040 binds the test-purpose declarations, guard methodology, registry guidance, and M-002 bookkeeping. No unmerged base or superseded behavior is involved. Documentation updated: `docs/README.md`, `docs/plans/P-001-cliewen-adoption.md`, `bot-api/tests/TEST-REGISTRY.md`, and Python test guidance; architecture/design overviews are unchanged because this is test/governance infrastructure only.
 ## What
 
 Complete P-001/M-002 by making every executable test in the repository declare exactly one effective purpose: its canonical acceptance-criterion ID or `Unit`, `Sanity`, or `Arch`. Apply the platform-appropriate tag or grouping mechanism to the JVM, .NET, Python, and TypeScript suites, and add one architecture guard per platform that fails when a discovered test has zero or multiple effective purpose declarations.
