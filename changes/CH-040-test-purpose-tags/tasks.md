@@ -9,6 +9,7 @@ title: Task breakdown for CH-040
 # CH-040 — Tasks
 
 - [x] Reserve CH-040, branch from the accepted tip of `main`, and capture the full-route proposal.
+- [x] Commit and push the proposal, then open draft PR #268 before implementation.
 - [ ] Inventory executable test entry points and existing criterion mappings across JVM, .NET, Python, and TypeScript suites.
 - [ ] Define the repository's one-purpose-per-test mapping for each supported framework and record any non-blocking implementation choice in the change workspace.
 - [ ] Tag JVM tests and add a JVM architecture guard covering Java and Kotlin test executables.
