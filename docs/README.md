@@ -19,4 +19,5 @@ The red thread: G-xxx → P-xxx/M-xxx → CH-xxx → CAP-xxx → AC (namespaced)
 - [quality/](quality/README.md) — QS-xxx: quality scenarios (verifiable NFRs)
 - [analysis/](analysis/README.md) — spike findings and extraction reports
 - [ARCH-026 — Debugging Guide](DEBUGGING-GUIDE.md) · `draft` — developer manual, rides along at this level
+- [use-cases/](use-cases/README.md)
 <!-- clue:index:end -->

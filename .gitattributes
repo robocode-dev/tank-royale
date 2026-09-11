@@ -18,3 +18,4 @@
 *.jar binary
 *.class binary
 *.pdf binary
+/.clue/id-ledger.yaml merge=union

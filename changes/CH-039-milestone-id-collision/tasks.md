@@ -1,5 +1,0 @@
-- [ ] Confirm P-005 retains M-016 and allocate a fresh M identity for P-004 with `clue id next M` before editing the plan.
-- [ ] Apply the Cliewen 0.25.0 migration, including managed carriers, CI caller, ledger format, and corpus indexes.
-- [ ] Update P-004's milestone row and dependency prose to the fresh identity without changing the completed P-005 milestone or PDR-013 references.
-- [ ] Run `clue validate`, `clue migrate --reversal-cost low`, and `git diff --check`.
-- [ ] Digest the completed work into the permanent corpus and remove this change workspace.
