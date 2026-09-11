@@ -62,9 +62,11 @@ def test_every_python_test_has_exactly_one_effective_purpose() -> None:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         fallback = _effective_purposes(_module_markers(tree))
         for function in _test_functions(tree):
-            direct = _effective_purposes(
-                [name for decorator in function.decorator_list if (name := _marker_name(decorator))]
-            )
+            direct_names = [name for decorator in function.decorator_list if (name := _marker_name(decorator))]
+            declared = direct_names or _module_markers(tree)
+            if len(set(declared)) != len(declared):
+                failures.append(f"{path.relative_to(tests_root)}:{function.lineno} repeated purpose declaration -> {declared}")
+            direct = _effective_purposes(direct_names)
             effective = direct or fallback
             if len(effective) != 1:
                 failures.append(f"{path.relative_to(tests_root)}:{function.lineno} -> {effective}")

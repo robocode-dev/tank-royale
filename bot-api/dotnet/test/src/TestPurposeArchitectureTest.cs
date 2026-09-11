@@ -39,6 +39,11 @@ public class TestPurposeArchitectureTest
                     .ToList();
                 var effective = methodPurposes.Count > 0 ? methodPurposes : classPurposes;
 
+                if (effective.Distinct(StringComparer.Ordinal).Count() != effective.Count)
+                {
+                    failures.Add($"{type.FullName}.{method.Name}: repeated purpose declaration [{string.Join(", ", effective)}]");
+                }
+
                 if (EffectivePurposeCount(effective) != 1)
                 {
                     failures.Add($"{type.FullName}.{method.Name}: [{string.Join(", ", effective)}]");

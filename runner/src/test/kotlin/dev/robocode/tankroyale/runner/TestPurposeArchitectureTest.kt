@@ -66,6 +66,9 @@ class TestPurposeArchitectureTest {
                 cursor++
             }
             val effectivePurposes = if (purposes.isNotEmpty()) purposes else classPurposeValues(lines, classDeclaration, purposeTag, index)
+            if (effectivePurposes.distinct().size != effectivePurposes.size) {
+                failures += "${root.relativize(path)}:${index + 1} repeated purpose declaration in $effectivePurposes"
+            }
             val acceptanceIds = effectivePurposes.filter(::isAcceptanceId)
             val effective = if (acceptanceIds.isNotEmpty()) acceptanceIds else effectivePurposes.filter(::isGenericPurpose)
             if (effective.size != 1) {
@@ -109,6 +112,9 @@ class TestPurposeArchitectureTest {
             .map { it.groupValues[1] }
             .filter(::isPurpose)
             .toList()
+        if (purposes.distinct().size != purposes.size) {
+            failures += "${root.relativize(path)} repeated purpose declaration in $purposes"
+        }
         val acceptanceIds = purposes.filter(::isAcceptanceId)
         val effective = if (acceptanceIds.isNotEmpty()) acceptanceIds else purposes.filter(::isGenericPurpose)
         if (effective.size != 1) {
