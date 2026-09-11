@@ -15,6 +15,7 @@ class TestBot(BaseBot):
     def run(self):
         pass
 
+@pytest.mark.TR_API_BOT_007
 @pytest.mark.BOT
 @pytest.mark.LEGACY
 def test_TR_API_BOT_007_base_bot_accessor_defaults():
@@ -55,6 +56,7 @@ def test_TR_API_BOT_007_base_bot_accessor_defaults():
     with pytest.raises(BotException):
         _ = bot.game_type
 
+@pytest.mark.TR_API_BOT_007
 @pytest.mark.BOT
 def test_TR_API_BOT_007_null_initial_position_components_raise_bot_exception():
     bot = TestBot()
@@ -71,6 +73,7 @@ def test_TR_API_BOT_007_null_initial_position_components_raise_bot_exception():
     with pytest.raises(BotException):
         _ = bot.radar_direction
 
+@pytest.mark.TR_API_BOT_008
 @pytest.mark.BOT
 @pytest.mark.LEGACY
 def test_TR_API_BOT_008_adjustment_flags_default_false():

@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui
 
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import java.io.File
@@ -10,6 +11,7 @@ import java.util.Properties
 import java.util.regex.Pattern
 
 class PropertiesConsistencyTest : StringSpec({
+    tags(Tag("Unit"))
     "All locale .properties files must contain the same keys per base name" {
         val candidates = listOf(
             Path.of("src", "main", "resources"),

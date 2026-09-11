@@ -7,6 +7,7 @@ from robocode_tank_royale.bot_api.base_bot import BaseBot
 from robocode_tank_royale.bot_api import BotInfo
 
 
+@pytest.mark.TR_API_BOT_001c
 def test_TR_API_BOT_001c_explicit_args_override_env_for_server_url_and_botinfo():
     """TR-API-BOT-001c Precedence: explicit args > ENV (Python has no Java system properties).
 

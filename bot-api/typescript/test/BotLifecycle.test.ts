@@ -201,7 +201,7 @@ function makeInternals(botInfo = makeBotInfo()) {
 // Task 4: BaseBotInternals
 // ---------------------------------------------------------------------------
 
-describe("Task 4: BaseBotInternals", () => {
+describe("Unit: Task 4: BaseBotInternals", () => {
   it("4.1 constructor initializes all fields correctly", () => {
     const info = makeBotInfo();
     // Create a minimal stub baseBot
@@ -436,7 +436,7 @@ describe("Task 4: BaseBotInternals", () => {
 // Task 5: Bot class
 // ---------------------------------------------------------------------------
 
-describe("Task 5: Bot class", () => {
+describe("Unit: Task 5: Bot class", () => {
   class TestBot extends Bot {
     constructor() { super(makeBotInfo(), "ws://localhost:7654"); }
   }
@@ -509,7 +509,7 @@ describe("Task 5: Bot class", () => {
 // Task 6: BotInternals
 // ---------------------------------------------------------------------------
 
-describe("Task 6: BotInternals", () => {
+describe("Unit: Task 6: BotInternals", () => {
   class TestBot extends Bot {
     constructor() { super(makeBotInfo(), "ws://localhost:7654"); }
     // Expose internals for testing
@@ -552,7 +552,7 @@ describe("Task 6: BotInternals", () => {
 // Task 7: BotStoppedException
 // ---------------------------------------------------------------------------
 
-describe("Task 7: BotStoppedException", () => {
+describe("Unit: Task 7: BotStoppedException", () => {
   it("7.5 BotStoppedException is an Error subclass", () => {
     const e = new BotStoppedException();
     expect(e).toBeInstanceOf(Error);
@@ -575,7 +575,7 @@ describe("Task 7: BotStoppedException", () => {
 // Task 8: Integration tests (mock-server driven)
 // ---------------------------------------------------------------------------
 
-describe("Task 8: Integration tests", () => {
+describe("Unit: Task 8: Integration tests", () => {
   // Helper: build a BaseBotInternals with a mock WebSocketHandler
   function buildInternals() {
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;

@@ -9,6 +9,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// Unit tests for TestBotBuilder.
 /// </summary>
 [TestFixture]
+[Category("Unit")]
 [Category("UTL")]
 [Property("ID", "TR-API-UTL-005")]
 public class TestBotBuilderTest

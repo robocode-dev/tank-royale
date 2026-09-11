@@ -213,7 +213,7 @@ events:
     - {id: TNP-002, kind: numeric, state: retired, prefix: TNP, component: "2"}
     - {id: TNP-003, kind: numeric, state: retired, prefix: TNP, component: "3"}
     - {id: M-001, kind: numeric, state: retired, prefix: M, component: "1"}
-    - {id: M-002, kind: numeric, state: live, prefix: M, component: "2"}
+    - {id: M-002, kind: numeric, state: retired, prefix: M, component: "2"}
     - {id: M-003, kind: numeric, state: retired, prefix: M, component: "3"}
     - {id: M-004, kind: numeric, state: retired, prefix: M, component: "4"}
     - {id: M-005, kind: numeric, state: retired, prefix: M, component: "5"}

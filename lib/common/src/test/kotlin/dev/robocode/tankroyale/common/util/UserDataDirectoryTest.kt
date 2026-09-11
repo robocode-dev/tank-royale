@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.common.util
 
 import dev.robocode.tankroyale.common.APPLICATION_NAME
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -10,6 +11,7 @@ import java.io.File
 
 @Suppress("unused") // Test class is discovered by Kotest via reflection
 class UserDataDirectoryTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("UserDataDirectory") {
 

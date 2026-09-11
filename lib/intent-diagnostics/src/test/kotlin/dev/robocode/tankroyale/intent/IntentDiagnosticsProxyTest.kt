@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.intent
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 class IntentDiagnosticsProxyTest {
@@ -13,6 +14,7 @@ class IntentDiagnosticsProxyTest {
         proxy?.close()
     }
 
+    @Tag("Unit")
     @Test
     fun `proxy starts and assigns a port`() {
         proxy = IntentDiagnosticsProxy("ws://localhost:9999")
@@ -23,6 +25,7 @@ class IntentDiagnosticsProxyTest {
         assertThat(proxy!!.proxyUrl).startsWith("ws://localhost:")
     }
 
+    @Tag("Unit")
     @Test
     fun `proxy close stops the server`() {
         proxy = IntentDiagnosticsProxy("ws://localhost:9999")
@@ -34,6 +37,7 @@ class IntentDiagnosticsProxyTest {
         assertThat(proxy!!.isRunning).isFalse()
     }
 
+    @Tag("Unit")
     @Test
     fun `start is idempotent`() {
         proxy = IntentDiagnosticsProxy("ws://localhost:9999")
@@ -46,6 +50,7 @@ class IntentDiagnosticsProxyTest {
         assertThat(proxy!!.isRunning).isTrue()
     }
 
+    @Tag("Unit")
     @Test
     fun `store is empty before any connections`() {
         proxy = IntentDiagnosticsProxy("ws://localhost:9999")
@@ -55,6 +60,7 @@ class IntentDiagnosticsProxyTest {
         assertThat(proxy!!.store.botNames()).isEmpty()
     }
 
+    @Tag("Unit")
     @Test
     fun `close is safe to call multiple times`() {
         proxy = IntentDiagnosticsProxy("ws://localhost:9999")

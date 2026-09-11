@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.runner
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 /**
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test
  */
 class BattleResultsTest {
 
+    @Tag("Unit")
     @Test
     fun `BotResult exposes all fields`() {
         val r = BotResult(
@@ -33,6 +35,7 @@ class BattleResultsTest {
         assertThat(r.thirdPlaces).isEqualTo(2)
     }
 
+    @Tag("Unit")
     @Test
     fun `BotResult equality works`() {
         val a = BotResult(1, "Bot", "1.0", false, 1, 100, 50, 10, 20, 5, 10, 5, 3, 2, 1)
@@ -41,6 +44,7 @@ class BattleResultsTest {
         assertThat(a.hashCode()).isEqualTo(b.hashCode())
     }
 
+    @Tag("Unit")
     @Test
     fun `BotResult with different values are not equal`() {
         val a = BotResult(1, "Bot", "1.0", false, 1, 100, 50, 10, 20, 5, 10, 5, 3, 2, 1)
@@ -48,6 +52,7 @@ class BattleResultsTest {
         assertThat(a).isNotEqualTo(b)
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleResults contains rounds and results`() {
         val bot1 = BotResult(1, "Winner", "1.0", false, 1, 200, 50, 10, 100, 20, 15, 5, 5, 0, 0)
@@ -60,6 +65,7 @@ class BattleResultsTest {
         assertThat(results.results[1].name).isEqualTo("Loser")
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleResults with empty results list`() {
         val results = BattleResults(numberOfRounds = 0, results = emptyList())
@@ -67,6 +73,7 @@ class BattleResultsTest {
         assertThat(results.results).isEmpty()
     }
 
+    @Tag("Unit")
     @Test
     fun `BotResult isTeam can be true`() {
         val r = BotResult(1, "TeamBot", "1.0", true, 1, 100, 50, 10, 20, 5, 10, 5, 3, 2, 1)

@@ -4,6 +4,7 @@ from robocode_tank_royale.bot_api.bot_results import BotResults
 from robocode_tank_royale.bot_api.game_setup import GameSetup
 from robocode_tank_royale.bot_api.graphics.color import Color
 
+@pytest.mark.TR_API_MDL_002
 @pytest.mark.MDL
 def test_TR_API_MDL_002_bot_state_constructor():
     body_color = Color.from_hex("111111")
@@ -48,6 +49,7 @@ def test_TR_API_MDL_002_bot_state_constructor():
     assert state.gun_color == gun_color
     assert state.debugging_enabled is True
 
+@pytest.mark.TR_API_MDL_003
 @pytest.mark.MDL
 def test_TR_API_MDL_003_bot_results_constructor():
     results = BotResults(
@@ -69,6 +71,7 @@ def test_TR_API_MDL_003_bot_results_constructor():
     assert results.second_places == 2
     assert results.third_places == 4
 
+@pytest.mark.TR_API_MDL_004
 @pytest.mark.MDL
 def test_TR_API_MDL_004_game_setup_constructor():
     setup = GameSetup(

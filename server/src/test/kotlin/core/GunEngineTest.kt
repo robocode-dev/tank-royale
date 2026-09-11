@@ -12,6 +12,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
 class GunEngineTest : FunSpec({
+    tags(Tag("Unit"))
 
     val setup = GameSetup(
         gunCoolingRate = 0.1, maxNumberOfParticipants = 10,

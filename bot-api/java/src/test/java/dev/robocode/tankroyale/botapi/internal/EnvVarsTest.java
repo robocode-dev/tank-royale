@@ -38,18 +38,21 @@ class EnvVarsTest {
         @Nested
         class GetName {
 
+            @Tag("Unit")
             @Test
             void givenValidEnvVar_whenCallingGetName_thenReturnedNameIsTheSame() {
                 envVars.set(BOT_NAME, "MyBot");
                 assertThat(EnvVars.getBotInfo().getName()).isEqualTo("MyBot");
             }
 
+            @Tag("Unit")
             @Test
             void givenMissingEnvVar_whenCallingGetName_thenReturnNull() {
                 envVars.set(BOT_NAME, null);
                 assertThat(EnvVars.getBotInfo().getName()).isNull();
             }
 
+            @Tag("Unit")
             @Test
             void givenBlankEnvVar_whenCallingGetName_thenReturnNull() {
                 envVars.set(BOT_NAME, "  \t");
@@ -63,18 +66,21 @@ class EnvVarsTest {
             @SystemStub
             final EnvironmentVariables envVars = createEnvVars();
 
+            @Tag("Unit")
             @Test
             void givenValidEnvVar_whenCallingGetVersion_thenReturnedVersionIsTheSame() {
                 envVars.set(BOT_VERSION, "1.0");
                 assertThat(EnvVars.getBotInfo().getVersion()).isEqualTo("1.0");
             }
 
+            @Tag("Unit")
             @Test
             void givenMissingEnvVar_whenCallingGetVersion_thenReturnNull() {
                 envVars.set(BOT_VERSION, null);
                 assertThat(EnvVars.getBotInfo().getVersion()).isNull();
             }
 
+            @Tag("Unit")
             @Test
             void givenBlankEnvVar_whenCallingGetVersion_thenReturnNull() {
                 envVars.set(BOT_VERSION, "  \t");
@@ -88,18 +94,21 @@ class EnvVarsTest {
             @SystemStub
             final EnvironmentVariables envVars = createEnvVars();
 
+            @Tag("Unit")
             @Test
             void givenValidEnvVar_whenCallingGetAuthors_thenReturnedListContainsSameAuthors() {
                 envVars.set(BOT_AUTHORS, "Author 1, Author 2");
                 assertThat(EnvVars.getBotInfo().getAuthors()).containsAll(List.of("Author 1", "Author 2"));
             }
 
+            @Tag("Unit")
             @Test
             void givenMissingEnvVar_whenCallingAuthors_thenReturnEmpty() {
                 envVars.set(BOT_AUTHORS, null);
                 assertThat(EnvVars.getBotInfo().getAuthors()).isEmpty();
             }
 
+            @Tag("Unit")
             @Test
             void givenBlankEnvVar_whenCallingAuthors_thenReturnEmpty() {
                 envVars.set(BOT_AUTHORS, "  \t");
@@ -113,6 +122,7 @@ class EnvVarsTest {
             @SystemStub
             final EnvironmentVariables envVars = createEnvVars();
 
+            @Tag("Unit")
             @Test
             void givenValidEnvVar_whenCallingGetGameTypes_thenReturnedListContainsSameGameTypes() {
                 envVars.set(BOT_GAME_TYPES, "classic, 1v1, melee");
@@ -122,18 +132,21 @@ class EnvVarsTest {
             @Nested
             class GetDescription {
 
+                @Tag("Unit")
                 @Test
                 void givenValidEnvVar_whenCallingGetDescription_thenReturnedDescriptionIsTheSame() {
                     envVars.set(BOT_DESCRIPTION, "description");
                     assertThat(EnvVars.getBotInfo().getDescription()).isEqualTo("description");
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenMissingEnvVar_whenCallingGetDescription_thenReturnNull() {
                     envVars.set(BOT_DESCRIPTION, null);
                     assertThat(EnvVars.getBotInfo().getDescription()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenBlankEnvVar_whenCallingGetDescription_thenReturnNull() {
                     envVars.set(BOT_DESCRIPTION, "  \t");
@@ -147,18 +160,21 @@ class EnvVarsTest {
                 @SystemStub
                 final EnvironmentVariables envVars = createEnvVars();
 
+                @Tag("Unit")
                 @Test
                 void givenValidEnvVar_whenCallingGetHomepage_thenReturnedHomepageIsTheSame() {
                     envVars.set(BOT_HOMEPAGE, "https://robocode.dev/");
                     assertThat(EnvVars.getBotInfo().getHomepage()).isEqualTo("https://robocode.dev/");
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenMissingEnvVar_whenCallingGetHomepage_thenReturnNull() {
                     envVars.set(BOT_HOMEPAGE, null);
                     assertThat(EnvVars.getBotInfo().getHomepage()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenBlankEnvVar_whenCallingGetHomepage_thenReturnNull() {
                     envVars.set(BOT_HOMEPAGE, "  \t");
@@ -172,24 +188,28 @@ class EnvVarsTest {
                 @SystemStub
                 final EnvironmentVariables envVars = createEnvVars();
 
+                @Tag("Unit")
                 @Test
                 void givenValidEnvVar_whenCallingGetCountryCodes_thenReturnedListContainsSameCountryCodesInUpperCase() {
                     envVars.set(BOT_COUNTRY_CODES, "dk, us");
                     assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(List.of("DK", "US"));
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenInvalidEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode() {
                     envVars.set(BOT_COUNTRY_CODES, "xyz");
                     assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(getLocalCountryCodeAsList());
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenMissingEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode() {
                     envVars.set(BOT_COUNTRY_CODES, null);
                     assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(getLocalCountryCodeAsList());
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenBlankEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode() {
                     envVars.set(BOT_COUNTRY_CODES, "  \t");
@@ -203,18 +223,21 @@ class EnvVarsTest {
                 @SystemStub
                 final EnvironmentVariables envVars = createEnvVars();
 
+                @Tag("Unit")
                 @Test
                 void givenValidEnvVar_whenCallingGetPlatform_thenReturnedPlatformIsTheSame() {
                     envVars.set(BOT_PLATFORM, "JVM");
                     assertThat(EnvVars.getBotInfo().getPlatform()).isEqualTo("JVM");
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenMissingEnvVar_whenCallingGetPlatform_thenReturnedPlatformMustContainJava() {
                     envVars.set(BOT_PLATFORM, null);
                     assertThat(EnvVars.getBotInfo().getPlatform()).contains("Java");
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenBlankEnvVar_whenCallingGetPlatform_thenReturnedPlatformMustContainJava() {
                     envVars.set(BOT_PLATFORM, "  \t");
@@ -228,18 +251,21 @@ class EnvVarsTest {
                 @SystemStub
                 final EnvironmentVariables envVars = createEnvVars();
 
+                @Tag("Unit")
                 @Test
                 void givenValidEnvVar_whenCallingGetProgrammingLang_thenReturnedProgrammingLangIsTheSame() {
                     envVars.set(BOT_PROG_LANG, "Java 19");
                     assertThat(EnvVars.getBotInfo().getProgrammingLang()).isEqualTo("Java 19");
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenMissingEnvVar_whenCallingGetProgrammingLang_thenReturnNull() {
                     envVars.set(BOT_PROG_LANG, null);
                     assertThat(EnvVars.getBotInfo().getProgrammingLang()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenBlankEnvVar_whenCallingGetProgrammingLang_thenReturnNull() {
                     envVars.set(BOT_PROG_LANG, "  \t");
@@ -253,6 +279,7 @@ class EnvVarsTest {
                 @SystemStub
                 final EnvironmentVariables envVars = createEnvVars();
 
+                @Tag("Unit")
                 @Test
                 void givenValidPositionEnvVar_whenCallingGetInitialPosition_thenReturnedCoordinatesAreTheSame() {
                     envVars.set(BOT_INITIAL_POS, "50, 100, 45");
@@ -262,6 +289,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isEqualTo(45);
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenValidXCoordinateOnly_whenCallingGetInitialPosition_thenReturnedCoordinatesContainsOnlySameXCoordinate() {
                     envVars.set(BOT_INITIAL_POS, "  50 ");
@@ -271,6 +299,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenValidXCoordinateWithCommaAfter_whenCallingGetInitialPosition_thenReturnedCoordinatesContainsOnlySameXCoordinate() {
                     envVars.set(BOT_INITIAL_POS, "  50, ");
@@ -280,6 +309,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenValidXAndYCoordinateOnlyWithNoCommaInBetween_whenCallingGetInitialPosition_thenReturnedCoordinatesContainsOnlySameXAndYCoordinate() {
                     envVars.set(BOT_INITIAL_POS, "  50 70.0");
@@ -289,6 +319,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenValidXAndYCoordinateOnlyWithACommaInBetween_whenCallingGetInitialPosition_thenReturnedCoordinatesContainsOnlySameXAndYCoordinate() {
                     envVars.set(BOT_INITIAL_POS, "  50.0, 70");
@@ -298,6 +329,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenValidXAndYCoordinateOnlyWithACommaInBetweenAndAfter_whenCallingGetInitialPosition_thenReturnedCoordinatesContainsOnlySameXAndYCoordinate() {
                     envVars.set(BOT_INITIAL_POS, "  50, 70.0 ,");
@@ -307,6 +339,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenValidCoordinatesWithCommaSeparators_whenCallingGetInitialPosition_thenReturnedCoordinatesAreTheSame() {
                     envVars.set(BOT_INITIAL_POS, "  50.0, 70, 100");
@@ -316,6 +349,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isEqualTo(100);
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenValidCoordinatesWithMixedSpaceAndCommaSeparator_whenCallingGetInitialPosition_thenReturnedCoordinatesAreTheSame() {
                     envVars.set(BOT_INITIAL_POS, "  50, 70.0 100");
@@ -325,6 +359,7 @@ class EnvVarsTest {
                     assertThat(pos.getDirection()).isEqualTo(100);
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenEmptyPosition_whenCallingGetInitialPosition_thenReturnNull() {
                     envVars.set(BOT_INITIAL_POS, "");
@@ -332,6 +367,7 @@ class EnvVarsTest {
                     assertThat(pos).isNull();
                 }
 
+                @Tag("Unit")
                 @Test
                 void givenBlankPosition_whenCallingGetInitialPosition_thenReturnNull() {
                     envVars.set(BOT_INITIAL_POS, "  \t");

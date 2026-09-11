@@ -14,6 +14,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 class TurnProcessorTest : FunSpec({
+    tags(Tag("Unit"))
 
     val setup = GameSetup(
         arenaWidth = 800, arenaHeight = 600, maxNumberOfParticipants = 10,

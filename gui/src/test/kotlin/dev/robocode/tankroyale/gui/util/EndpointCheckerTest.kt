@@ -1,9 +1,11 @@
 package dev.robocode.tankroyale.gui.util
 
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 class EndpointCheckerTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("isLocalEndpoint") {
         test("should identify local endpoints correctly") {

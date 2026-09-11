@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 class EventsMapperTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("TR-SRV-MAP-001: Events mapping").config(tags = setOf(Tag("TR-SRV-MAP-001"))) {
 

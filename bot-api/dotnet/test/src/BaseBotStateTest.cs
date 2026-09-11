@@ -5,6 +5,7 @@ using NUnit.Framework;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Category("Unit")]
 [Category("BOT")]
 public class BaseBotStateTest
 {

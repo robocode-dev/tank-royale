@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.client.model.BotAddress
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.runner.BotIdentity
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 class BotMatcherTest {
@@ -30,6 +31,7 @@ class BotMatcherTest {
     // Tests
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `2 distinct bots both connect - isComplete true and matched has 2 addresses`() {
         val matcher = BotMatcher(
@@ -47,6 +49,7 @@ class BotMatcherTest {
         assertThat(result.matched).containsExactlyInAnyOrder(address("host-a"), address("host-b"))
     }
 
+    @Tag("Unit")
     @Test
     fun `same bot directory twice - needs 2 connections with same name and version`() {
         val matcher = BotMatcher(
@@ -69,6 +72,7 @@ class BotMatcherTest {
         assertThat(full.matched).hasSize(2)
     }
 
+    @Tag("Unit")
     @Test
     fun `team with 4 droids same identity - needs 4 connections`() {
         val matcher = BotMatcher(
@@ -85,6 +89,7 @@ class BotMatcherTest {
         assertThat(result.matched).hasSize(4)
     }
 
+    @Tag("Unit")
     @Test
     fun `stray bot with different identity - filtered out and does not count toward match`() {
         val matcher = BotMatcher(
@@ -103,6 +108,7 @@ class BotMatcherTest {
         assertThat(result.matched).doesNotContain(address("host-stray"))
     }
 
+    @Tag("Unit")
     @Test
     fun `pre-existing bots are excluded from matching`() {
         val preExisting = setOf(address("host-pre"))
@@ -120,6 +126,7 @@ class BotMatcherTest {
         assertThat(result.pending).containsKey(identity("BotA"))
     }
 
+    @Tag("Unit")
     @Test
     fun `partial connection 1 of 2 - isComplete false and pending shows missing identity`() {
         val matcher = BotMatcher(
@@ -136,6 +143,7 @@ class BotMatcherTest {
         assertThat(result.pending[identity("BotB")]).isEqualTo(1)
     }
 
+    @Tag("Unit")
     @Test
     fun `extra bots beyond expected count - only expected count taken and isComplete true`() {
         val matcher = BotMatcher(

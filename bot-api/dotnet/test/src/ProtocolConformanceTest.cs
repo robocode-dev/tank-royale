@@ -15,6 +15,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// <para>See also: bot-api/tests/TEST-REGISTRY.md</para>
 /// </summary>
 [TestFixture]
+[Category("Unit")]
 [Category("TCK")]
 public class ProtocolConformanceTest : AbstractBotTest
 {

@@ -7,6 +7,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 using System.Text.RegularExpressions;
 
 [TestFixture]
+[Category("Unit")]
 [Category("GFX")]
 [Property("ID", "TR-API-GFX-001")]
 [Property("ID", "TR-API-GFX-002")]

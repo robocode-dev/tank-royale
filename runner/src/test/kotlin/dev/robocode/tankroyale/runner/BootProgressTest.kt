@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.client.model.BotListUpdate
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.runner.internal.ServerConnection
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.util.concurrent.CopyOnWriteArrayList
@@ -48,6 +49,7 @@ class BootProgressTest {
     // 5.3 — BootProgress unit tests
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `totalExpected and totalConnected computed correctly`() {
         val progress = BootProgress(
@@ -62,6 +64,7 @@ class BootProgressTest {
         assertThat(progress.totalConnected).isEqualTo(1)
     }
 
+    @Tag("Unit")
     @Test
     fun `pending equals expected minus connected clamped to zero`() {
         val alpha = BotIdentity("Alpha", "1.0", "Author")
@@ -86,6 +89,7 @@ class BootProgressTest {
         assertThat(pendingClamped[alpha]).isNull() // filtered out (value = 0)
     }
 
+    @Tag("Unit")
     @Test
     fun `progress event fires on each BotListUpdate`() {
         val conn = conn()

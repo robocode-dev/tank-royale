@@ -15,6 +15,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// (TR-API-TCK-006)
 /// </summary>
 [TestFixture]
+[Category("Unit")]
 [Category("TCK")]
 [Property("ID", "TR-API-TCK-006")]
 public class TeamMessageSerializationTest

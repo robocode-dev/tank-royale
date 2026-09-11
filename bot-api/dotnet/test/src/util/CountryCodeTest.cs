@@ -5,6 +5,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Util;
 
 [Description("TR-API-UTL-003 CountryCode utility")]
 [Category("UTL")]
+[Category("Unit")]
 [Property("ID", "TR-API-UTL-003")]
 public class CountryCodeTest
 {

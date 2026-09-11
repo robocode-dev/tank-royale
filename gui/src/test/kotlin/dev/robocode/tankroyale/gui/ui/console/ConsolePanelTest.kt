@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -9,6 +10,7 @@ import io.kotest.matchers.string.shouldNotContain
 import javax.swing.SwingUtilities
 
 class ConsolePanelTest : StringSpec({
+    tags(Tag("Unit"))
     "should preserve double backslashes in text" {
         val consolePanel = ConsolePanel()
         val textWithBackslashes = "\\\\_\\\\_\\\\/ _ \\\\| __)/ _ \\\\/ __// _ \\\\| _ \\\\__|"

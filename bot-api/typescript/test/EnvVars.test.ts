@@ -18,7 +18,7 @@ function makeAdapter(env: Record<string, string | undefined>): RuntimeAdapter {
 // Individual getters
 // ---------------------------------------------------------------------------
 
-describe("EnvVars — individual getters", () => {
+describe("Unit: EnvVars — individual getters", () => {
   it("getServerUrl returns the env value", () => {
     const ev = new EnvVars(makeAdapter({ SERVER_URL: "ws://localhost:7654" }));
     expect(ev.getServerUrl()).toBe("ws://localhost:7654");
@@ -79,7 +79,7 @@ describe("EnvVars — individual getters", () => {
 // Comma-separated list parsing (Task 3.3)
 // ---------------------------------------------------------------------------
 
-describe("EnvVars — comma-separated list parsing", () => {
+describe("Unit: EnvVars — comma-separated list parsing", () => {
   it("getBotAuthors splits on comma", () => {
     const ev = new EnvVars(makeAdapter({ BOT_AUTHORS: "Alice,Bob,Carol" }));
     expect(ev.getBotAuthors()).toEqual(["Alice", "Bob", "Carol"]);
@@ -115,7 +115,7 @@ describe("EnvVars — comma-separated list parsing", () => {
 // getTeamId (Task 3.4)
 // ---------------------------------------------------------------------------
 
-describe("EnvVars — getTeamId", () => {
+describe("Unit: EnvVars — getTeamId", () => {
   it("returns null when TEAM_ID is absent", () => {
     const ev = new EnvVars(makeAdapter({}));
     expect(ev.getTeamId()).toBeNull();
@@ -141,7 +141,7 @@ describe("EnvVars — getTeamId", () => {
 // getBotInitialPosition
 // ---------------------------------------------------------------------------
 
-describe("EnvVars — getBotInitialPosition", () => {
+describe("Unit: EnvVars — getBotInitialPosition", () => {
   it("returns null when BOT_INITIAL_POS is absent", () => {
     const ev = new EnvVars(makeAdapter({}));
     expect(ev.getBotInitialPosition()).toBeNull();
@@ -160,7 +160,7 @@ describe("EnvVars — getBotInitialPosition", () => {
 // getBotInfo (Task 3.2)
 // ---------------------------------------------------------------------------
 
-describe("EnvVars — getBotInfo", () => {
+describe("Unit: EnvVars — getBotInfo", () => {
   const fullEnv: Record<string, string> = {
     BOT_NAME: "MyBot",
     BOT_VERSION: "1.0",

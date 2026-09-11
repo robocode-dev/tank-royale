@@ -15,6 +15,7 @@ def mock_internals():
 
 # TR-API-EVT-001: All event class constructors store correct fields
 
+@pytest.mark.TR_API_EVT_001
 def test_TR_API_EVT_001_event_constructors():
     # TickEvent
     te = TickEvent(turn_number=1, round_number=2, bot_state=None, bullet_states=[], events=[])
@@ -109,6 +110,7 @@ def test_TR_API_EVT_001_event_constructors():
 
 # TR-API-EVT-008: Condition.test() is callable and subclass can override return value
 
+@pytest.mark.TR_API_EVT_008
 def test_TR_API_EVT_008_condition_test_callable():
     c1 = Condition(callable=lambda: True)
     assert c1.test() is True
@@ -125,6 +127,7 @@ def test_TR_API_EVT_008_condition_test_callable():
 
 # TR-API-EVT-009: CustomEvent fires when its Condition.test() returns true
 
+@pytest.mark.TR_API_EVT_009
 def test_TR_API_EVT_009_custom_event_firing(mock_internals):
     handlers = MagicMock(spec=BotEventHandlers)
     mock_internals.current_tick_or_throw.turn_number = 5

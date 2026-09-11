@@ -10,6 +10,7 @@ import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 
 class LineTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("TR-SRV-PHY-005: Line intersection").config(tags = setOf(Tag("TR-SRV-PHY-005"))) {
 

@@ -13,6 +13,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Internal;
 /// BaseBotInternalsLifecycleTest and the Python test_round_lifecycle.py.
 /// </summary>
 [TestFixture]
+[Category("Unit")]
 [Category("BOT")]
 public class BaseBotInternalsLifecycleTest
 {

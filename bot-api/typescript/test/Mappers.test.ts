@@ -95,7 +95,7 @@ const schemaResults: ResultsForBot = {
 // BulletStateMapper
 // ---------------------------------------------------------------------------
 
-describe("BulletStateMapper", () => {
+describe("Unit: BulletStateMapper", () => {
   it("maps all fields correctly", () => {
     const result = BulletStateMapper.map(schemaBullet);
     expect(result.bulletId).toBe(1);
@@ -123,7 +123,7 @@ describe("BulletStateMapper", () => {
 // BotStateMapper
 // ---------------------------------------------------------------------------
 
-describe("BotStateMapper", () => {
+describe("Unit: BotStateMapper", () => {
   it("maps all fields correctly", () => {
     const result = BotStateMapper.map(schemaBotState);
     expect(result.isDroid).toBe(false);
@@ -161,7 +161,7 @@ describe("BotStateMapper", () => {
 // GameSetupMapper
 // ---------------------------------------------------------------------------
 
-describe("GameSetupMapper", () => {
+describe("Unit: GameSetupMapper", () => {
   it("maps all fields correctly", () => {
     const result = GameSetupMapper.map(schemaGameSetup);
     expect(result.gameType).toBe("classic");
@@ -179,7 +179,7 @@ describe("GameSetupMapper", () => {
 // ResultsMapper
 // ---------------------------------------------------------------------------
 
-describe("ResultsMapper", () => {
+describe("Unit: ResultsMapper", () => {
   it("maps all fields correctly", () => {
     const result = ResultsMapper.map(schemaResults);
     expect(result.rank).toBe(1);
@@ -200,7 +200,7 @@ describe("ResultsMapper", () => {
 // InitialPositionMapper
 // ---------------------------------------------------------------------------
 
-describe("InitialPositionMapper", () => {
+describe("Unit: InitialPositionMapper", () => {
   it("maps all fields correctly", () => {
     const pos = new InitialPosition(10, 20, 90);
     const result = InitialPositionMapper.map(pos);
@@ -243,7 +243,7 @@ function makeTick(events: TickEventForBot["events"]): TickEventForBot {
   };
 }
 
-describe("EventMapper", () => {
+describe("Unit: EventMapper", () => {
   const myBotId = 42;
 
   it("maps tick metadata correctly", () => {

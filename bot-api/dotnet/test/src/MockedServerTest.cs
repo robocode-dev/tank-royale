@@ -4,6 +4,7 @@ using NUnit.Framework;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Category("Unit")]
 [Category("UTL")]
 [Property("ID", "TR-API-UTL-003")]
 public class MockedServerTest : AbstractBotTest

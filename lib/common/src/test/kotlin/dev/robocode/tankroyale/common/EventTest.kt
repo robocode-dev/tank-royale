@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.common
 
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.common.event.event
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
@@ -11,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.atomic.AtomicInteger
 
 class EventTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("Event class") {
 

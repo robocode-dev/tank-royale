@@ -30,6 +30,7 @@ class JavaInteropTest {
     // BattleRunner — static factory + Consumer<Builder> overload
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     void createWithDefaults() {
         var runner = BattleRunner.create();
@@ -38,6 +39,7 @@ class JavaInteropTest {
         assertThat(runner.getConfig().getRecordingPath()).isNull();
     }
 
+    @Tag("Unit")
     @Test
     void createWithConsumerBuilder() {
         var runner = BattleRunner.create(b -> b.externalServer("ws://localhost:7654"));
@@ -47,6 +49,7 @@ class JavaInteropTest {
         assertThat(external.getUrl()).isEqualTo("ws://localhost:7654");
     }
 
+    @Tag("Unit")
     @Test
     void createWithEmbeddedServerNoArgOverload() {
         var runner = BattleRunner.create(b -> b.embeddedServer());
@@ -54,6 +57,7 @@ class JavaInteropTest {
         assertThat(embedded.getPort()).isEqualTo(0);
     }
 
+    @Tag("Unit")
     @Test
     void createWithEmbeddedServerExplicitPort() {
         var runner = BattleRunner.create(b -> b.embeddedServer(9999));
@@ -61,24 +65,28 @@ class JavaInteropTest {
         assertThat(embedded.getPort()).isEqualTo(9999);
     }
 
+    @Tag("Unit")
     @Test
     void createWithDefaultsCaptureServerOutputIsTrue() {
         var runner = BattleRunner.create();
         assertThat(runner.getConfig().getCaptureServerOutput()).isTrue();
     }
 
+    @Tag("Unit")
     @Test
     void enableServerOutputSetsConfigToTrue() {
         var runner = BattleRunner.create(b -> b.enableServerOutput());
         assertThat(runner.getConfig().getCaptureServerOutput()).isTrue();
     }
 
+    @Tag("Unit")
     @Test
     void suppressServerOutputSetsConfigToFalse() {
         var runner = BattleRunner.create(b -> b.suppressServerOutput());
         assertThat(runner.getConfig().getCaptureServerOutput()).isFalse();
     }
 
+    @Tag("Unit")
     @Test
     void suppressServerOutputIsChainableWithOtherBuilderMethods() {
         var runner = BattleRunner.create(b -> b.embeddedServer().suppressServerOutput());
@@ -93,6 +101,7 @@ class JavaInteropTest {
         runner.close();
     }
 
+    @Tag("Unit")
     @Test
     void createWithIntentDiagnosticsAndRecording() {
         Path recordingPath = tempDir.resolve("recording.battle.gz");
@@ -108,6 +117,7 @@ class JavaInteropTest {
     // BattleSetup — static factories + Consumer<Builder> overloads
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     void classicPresetDefaults() {
         var setup = BattleSetup.classic();
@@ -117,6 +127,7 @@ class JavaInteropTest {
         assertThat(setup.getNumberOfRounds()).isEqualTo(10);
     }
 
+    @Tag("Unit")
     @Test
     void classicPresetWithConsumerOverrides() {
         var setup = BattleSetup.classic(s -> {
@@ -130,6 +141,7 @@ class JavaInteropTest {
         assertThat(setup.getArenaWidth()).isEqualTo(800);
     }
 
+    @Tag("Unit")
     @Test
     void meleePresetDefaults() {
         var setup = BattleSetup.melee();
@@ -139,6 +151,7 @@ class JavaInteropTest {
         assertThat(setup.getMinNumberOfParticipants()).isEqualTo(10);
     }
 
+    @Tag("Unit")
     @Test
     void meleePresetWithConsumerOverrides() {
         var setup = BattleSetup.melee(s -> {
@@ -152,6 +165,7 @@ class JavaInteropTest {
         assertThat(setup.getArenaWidth()).isEqualTo(1000);
     }
 
+    @Tag("Unit")
     @Test
     void oneVsOnePresetDefaults() {
         var setup = BattleSetup.oneVsOne();
@@ -159,6 +173,7 @@ class JavaInteropTest {
         assertThat(setup.getMaxNumberOfParticipants()).isEqualTo(2);
     }
 
+    @Tag("Unit")
     @Test
     void oneVsOnePresetWithConsumerOverrides() {
         var setup = BattleSetup.oneVsOne(s -> {
@@ -192,6 +207,7 @@ class JavaInteropTest {
         assertThat(setup.getMaxNumberOfParticipants()).isEqualTo(4);
     }
 
+    @Tag("Unit")
     @Test
     void customPresetDefaults() {
         var setup = BattleSetup.custom();
@@ -201,6 +217,7 @@ class JavaInteropTest {
         assertThat(setup.getReadyTimeoutMicros()).isEqualTo(10_000_000);
     }
 
+    @Tag("Unit")
     @Test
     void customPresetWithConsumerOverrides() {
         var setup = BattleSetup.custom(s -> {
@@ -224,6 +241,7 @@ class JavaInteropTest {
         assertThat(setup.getReadyTimeoutMicros()).isEqualTo(500_000);
     }
 
+    @Tag("Unit")
     @Test
     void builderGameTypeIsReadOnly() {
         var setup = BattleSetup.classic(s -> {
@@ -236,18 +254,21 @@ class JavaInteropTest {
     // BotEntry — static factories
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     void botEntryFromPath() {
         var entry = BotEntry.of(tempDir);
         assertThat(entry.getPath()).isEqualTo(tempDir);
     }
 
+    @Tag("Unit")
     @Test
     void botEntryFromString() {
         var entry = BotEntry.of(tempDir.toString());
         assertThat(entry.getPath()).isEqualTo(tempDir);
     }
 
+    @Tag("Unit")
     @Test
     void botEntryRejectsNonDirectory() {
         assertThatThrownBy(() -> BotEntry.of(tempDir.resolve("nonexistent")))
@@ -259,6 +280,7 @@ class JavaInteropTest {
     // BattleResults / BotResult — data class accessors
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     void battleResultsAccessors() {
         var botResult = new BotResult(
@@ -292,6 +314,7 @@ class JavaInteropTest {
     // Event<T> — Java-friendly on/once/off API
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     void eventOnMethodAcceptsConsumer() {
         var event = new Event<String>();
@@ -304,6 +327,7 @@ class JavaInteropTest {
         assertThat(received.get()).isEqualTo("hello");
     }
 
+    @Tag("Unit")
     @Test
     void eventOnceMethodFiresOnce() {
         var event = new Event<String>();
@@ -317,6 +341,7 @@ class JavaInteropTest {
         assertThat(count.get()).isEqualTo(1);
     }
 
+    @Tag("Unit")
     @Test
     void eventOffUnsubscribes() {
         var event = new Event<String>();
@@ -331,6 +356,7 @@ class JavaInteropTest {
         assertThat(received.get()).isEqualTo("before");
     }
 
+    @Tag("Unit")
     @Test
     void eventOnWithPriorityOrdersHandlers() {
         var event = new Event<String>();
@@ -349,6 +375,7 @@ class JavaInteropTest {
     // BattleException
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     void battleExceptionIsRuntimeException() {
         var ex = new BattleException("test error", null);
@@ -356,6 +383,7 @@ class JavaInteropTest {
         assertThat(ex.getMessage()).isEqualTo("test error");
     }
 
+    @Tag("Unit")
     @Test
     void battleExceptionWithCause() {
         var cause = new RuntimeException("root cause");

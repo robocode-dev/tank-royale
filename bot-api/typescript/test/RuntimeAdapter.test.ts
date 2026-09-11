@@ -3,7 +3,7 @@ import { detectRuntime } from "../src/runtime/detectRuntime.js";
 import { NodeRuntimeAdapter } from "../src/runtime/NodeRuntimeAdapter.js";
 import { BrowserRuntimeAdapter } from "../src/runtime/BrowserRuntimeAdapter.js";
 
-describe("detectRuntime()", () => {
+describe("Unit: detectRuntime()", () => {
   it("returns NodeRuntimeAdapter when process.env is available", () => {
     // In the vitest/Node.js test environment, process is always defined.
     const adapter = detectRuntime();
@@ -23,7 +23,7 @@ describe("detectRuntime()", () => {
   });
 });
 
-describe("NodeRuntimeAdapter", () => {
+describe("Unit: NodeRuntimeAdapter", () => {
   let adapter: NodeRuntimeAdapter;
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe("NodeRuntimeAdapter", () => {
   });
 });
 
-describe("BrowserRuntimeAdapter", () => {
+describe("Unit: BrowserRuntimeAdapter", () => {
   let adapter: BrowserRuntimeAdapter;
 
   beforeEach(() => {

@@ -11,6 +11,10 @@ This folder contains Python tests for the Bot API. Tests must maintain strict 1â
 - Prefer public-behavior testing. Import underscore-prefixed helpers only when large internals are otherwise untestable.
 - Embed the canonical ID/title by adding a module or test function docstring whose first line is `TR-API-<ID> <short description>`.
 
+## Test purpose
+
+Every test function must have one effective purpose marker: a canonical acceptance marker such as `@pytest.mark.TR_API_CMD_001`, or the generic `@pytest.mark.Unit`, `@pytest.mark.Sanity`, or `@pytest.mark.Arch`. A function marker overrides a module-level `pytestmark` fallback. The repository-level purpose architecture test enforces this rule.
+
 ## Concrete PR checklist (Python)
 Use this checklist when adding or updating tests.
 

@@ -18,18 +18,21 @@ class ServerConnectionTest {
     // Initial state
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `new instance is not connected`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
         assertThat(conn.isConnected).isFalse()
     }
 
+    @Tag("Unit")
     @Test
     fun `close on unconnected instance is a no-op`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
         conn.close()
     }
 
+    @Tag("Unit")
     @Test
     fun `stopBattle on unconnected instance is a no-op`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -37,6 +40,7 @@ class ServerConnectionTest {
         conn.stopBattle()
     }
 
+    @Tag("Unit")
     @Test
     fun `pauseBattle throws when not connected`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -45,6 +49,7 @@ class ServerConnectionTest {
             .hasMessageContaining("Not connected")
     }
 
+    @Tag("Unit")
     @Test
     fun `resumeBattle throws when not connected`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -53,6 +58,7 @@ class ServerConnectionTest {
             .hasMessageContaining("Not connected")
     }
 
+    @Tag("Unit")
     @Test
     fun `nextTurn throws when not connected`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -61,6 +67,7 @@ class ServerConnectionTest {
             .hasMessageContaining("Not connected")
     }
 
+    @Tag("Unit")
     @Test
     fun `enableDebugMode throws when not connected`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -69,6 +76,7 @@ class ServerConnectionTest {
             .hasMessageContaining("Not connected")
     }
 
+    @Tag("Unit")
     @Test
     fun `disableDebugMode throws when not connected`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -77,6 +85,7 @@ class ServerConnectionTest {
             .hasMessageContaining("Not connected")
     }
 
+    @Tag("Unit")
     @Test
     fun `setBotPolicy throws when not connected`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -85,6 +94,7 @@ class ServerConnectionTest {
             .hasMessageContaining("Not connected")
     }
 
+    @Tag("Unit")
     @Test
     fun `serverFeatures is null before connect`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
@@ -128,6 +138,7 @@ class ServerConnectionTest {
     // 6.9 — BattleResults extraction
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `toBattleResults maps GameEndedEvent correctly`() {
         val event = GameEndedEvent(
@@ -177,6 +188,7 @@ class ServerConnectionTest {
         assertThat(second.rank).isEqualTo(2)
     }
 
+    @Tag("Unit")
     @Test
     fun `toBattleResults handles null isTeam as false`() {
         val event = GameEndedEvent(

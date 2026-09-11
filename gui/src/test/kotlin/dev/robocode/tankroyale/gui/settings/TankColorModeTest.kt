@@ -1,9 +1,11 @@
 package dev.robocode.tankroyale.gui.settings
 
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 class TankColorModeTest : StringSpec({
+    tags(Tag("Unit"))
     "fromString() returns correct enum value for each name" {
         TankColorMode.fromString("bot-colors") shouldBe TankColorMode.BOT_COLORS
         TankColorMode.fromString("bot-colors-once") shouldBe TankColorMode.BOT_COLORS_ONCE

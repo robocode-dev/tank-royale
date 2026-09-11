@@ -10,9 +10,9 @@ title: Complete test-purpose tagging across the repository
 
 ## What
 
-Complete P-001/M-002 by making every executable test in the repository declare exactly one purpose: its canonical acceptance-criterion ID or `Unit`, `Sanity`, or `Arch`. Apply the platform-appropriate tag or grouping mechanism to the JVM, .NET, Python, and TypeScript suites, and add one architecture guard per platform that fails when a discovered test has zero or multiple purpose declarations.
+Complete P-001/M-002 by making every executable test in the repository declare exactly one effective purpose: its canonical acceptance-criterion ID or `Unit`, `Sanity`, or `Arch`. Apply the platform-appropriate tag or grouping mechanism to the JVM, .NET, Python, and TypeScript suites, and add one architecture guard per platform that fails when a discovered test has zero or multiple effective purpose declarations.
 
-Where an existing test already proves a registered criterion, preserve that canonical ID. Tests that are not evidence for a criterion receive the narrowest honest generic purpose. Update the test registry and testing guidance where the enforced contract differs from the current migration notes, and close M-002 only after all platform guards and focused suites pass.
+Where an existing test already proves a registered criterion, preserve that canonical ID. Tests that are not evidence for a criterion receive the narrowest honest generic purpose. Existing framework category labels required by an active evidence contract remain as supporting metadata; an acceptance ID takes precedence over a generic purpose when determining the effective purpose. Update the test registry and testing guidance where the enforced contract differs from the current migration notes, and close M-002 only after all platform guards and focused suites pass.
 
 ## Why
 

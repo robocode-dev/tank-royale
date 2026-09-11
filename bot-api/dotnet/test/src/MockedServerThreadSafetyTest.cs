@@ -10,6 +10,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// These tests would have been flaky before the thread-safety fixes.
 /// </summary>
 [TestFixture]
+[Category("Unit")]
 [Description("Thread-safety tests for MockedServer")]
 [Category("UTL")]
 [Property("ID", "TR-API-UTL-004")]

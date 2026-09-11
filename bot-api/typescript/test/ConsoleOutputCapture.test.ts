@@ -94,7 +94,7 @@ function buildInternals() {
   return { internals, sentIntents };
 }
 
-describe("Console output capture wired into BaseBotInternals", () => {
+describe("Unit: Console output capture wired into BaseBotInternals", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });

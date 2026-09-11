@@ -18,6 +18,7 @@ class TestBot(BaseBot):
         pass
 
 
+@pytest.mark.TR_API_TCK_018
 @pytest.mark.TCK
 def test_TR_API_TCK_018_stale_thread_is_rejected_after_round_owner_changes():
     """A thread that no longer owns the round is stopped by the blocking bot methods.
@@ -33,6 +34,7 @@ def test_TR_API_TCK_018_stale_thread_is_rejected_after_round_owner_changes():
         internals._wait_for_next_turn(1)
 
 
+@pytest.mark.Unit
 @pytest.mark.BOT
 def test_wait_for_next_turn_unwinds_when_no_bot_thread_owns_the_round():
     """A BaseBot with no run() loop owns no thread, so go() unwinds after sending the intent.
@@ -48,6 +50,7 @@ def test_wait_for_next_turn_unwinds_when_no_bot_thread_owns_the_round():
         internals._wait_for_next_turn(1)
 
 
+@pytest.mark.TR_API_TCK_020
 @pytest.mark.TCK
 def test_TR_API_TCK_020_unexpected_error_from_run_still_drains_final_turn_events():
     """run() blowing up must not cost the bot its final-turn events.
@@ -82,6 +85,7 @@ def test_TR_API_TCK_020_unexpected_error_from_run_still_drains_final_turn_events
     assert len(dispatched) >= 1
 
 
+@pytest.mark.TR_API_TCK_019
 @pytest.mark.TCK
 def test_TR_API_TCK_019_final_turn_events_flush_after_the_bot_thread_loses_ownership():
     """Events queued for the current tick still drain once the bot thread stops owning the round.
@@ -107,6 +111,7 @@ def test_TR_API_TCK_019_final_turn_events_flush_after_the_bot_thread_loses_owner
     assert len(dispatched) == 1
 
 
+@pytest.mark.Unit
 @pytest.mark.BOT
 def test_flush_final_turn_events_is_a_no_op_without_a_tick():
     """flush_final_turn_events runs on the WebSocket thread after ownership is released."""

@@ -78,7 +78,7 @@ function simulateMessage(ws: WebSocketLike, msg: object): void {
 // connect() / disconnect()
 // ---------------------------------------------------------------------------
 
-describe("WebSocketHandler.connect()", () => {
+describe("Unit: WebSocketHandler.connect()", () => {
   it("calls createWebSocket with the server URL", () => {
     const { ws } = makeMockWs();
     const adapter = makeAdapter(ws);
@@ -115,7 +115,7 @@ describe("WebSocketHandler.connect()", () => {
   });
 });
 
-describe("WebSocketHandler.disconnect()", () => {
+describe("Unit: WebSocketHandler.disconnect()", () => {
   it("calls close() on the socket", () => {
     const { ws } = makeMockWs();
     const handler = makeHandler(ws);
@@ -129,7 +129,7 @@ describe("WebSocketHandler.disconnect()", () => {
 // Message routing — ServerHandshake (4.3, 4.4)
 // ---------------------------------------------------------------------------
 
-describe("WebSocketHandler — ServerHandshake routing", () => {
+describe("Unit: WebSocketHandler — ServerHandshake routing", () => {
   it("fires onServerHandshake callback", () => {
     const { ws } = makeMockWs();
     const onServerHandshake = vi.fn();
@@ -169,7 +169,7 @@ describe("WebSocketHandler — ServerHandshake routing", () => {
 // Message routing — GameStarted (4.5)
 // ---------------------------------------------------------------------------
 
-describe("WebSocketHandler — GameStarted routing", () => {
+describe("Unit: WebSocketHandler — GameStarted routing", () => {
   const gameStartedMsg: GameStartedEventForBot = {
     type: MessageType.GameStartedEventForBot,
     myId: 42,
@@ -200,7 +200,7 @@ describe("WebSocketHandler — GameStarted routing", () => {
 // Message routing — Tick (4.6)
 // ---------------------------------------------------------------------------
 
-describe("WebSocketHandler — Tick routing", () => {
+describe("Unit: WebSocketHandler — Tick routing", () => {
   it("fires onTick callback", () => {
     const { ws } = makeMockWs();
     const onTick = vi.fn();
@@ -239,7 +239,7 @@ describe("WebSocketHandler — Tick routing", () => {
 // Message routing — RoundStarted / RoundEnded / GameEnded / GameAborted / SkippedTurn (4.7)
 // ---------------------------------------------------------------------------
 
-describe("WebSocketHandler — round/game/skipped routing", () => {
+describe("Unit: WebSocketHandler — round/game/skipped routing", () => {
   it("fires onGameAborted", () => {
     const { ws } = makeMockWs();
     const onGameAborted = vi.fn();
@@ -254,7 +254,7 @@ describe("WebSocketHandler — round/game/skipped routing", () => {
 // sendBotIntent (4.8)
 // ---------------------------------------------------------------------------
 
-describe("WebSocketHandler.sendBotIntent()", () => {
+describe("Unit: WebSocketHandler.sendBotIntent()", () => {
   it("sends JSON with BotIntent type", () => {
     const { ws, sent } = makeMockWs();
     const handler = makeHandler(ws);
@@ -271,7 +271,7 @@ describe("WebSocketHandler.sendBotIntent()", () => {
 // BotHandshakeFactory tests (task 5.2)
 // ---------------------------------------------------------------------------
 
-describe("BotHandshakeFactory.create()", () => {
+describe("Unit: BotHandshakeFactory.create()", () => {
   it("sets isDroid=true when specified", () => {
     const botInfo = makeBotInfo();
     const handshake = BotHandshakeFactory.create("s", botInfo, true, undefined, makeEnvVars());
