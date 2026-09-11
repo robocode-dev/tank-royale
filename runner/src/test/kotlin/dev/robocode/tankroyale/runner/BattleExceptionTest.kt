@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.runner
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 /**
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test
  */
 class BattleExceptionTest {
 
+    @Tag("Unit")
     @Test
     fun `BattleException is a RuntimeException`() {
         val ex = BattleException("test")
@@ -17,6 +19,7 @@ class BattleExceptionTest {
         assertThat(ex.cause).isNull()
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleException with cause`() {
         val cause = IllegalStateException("root")

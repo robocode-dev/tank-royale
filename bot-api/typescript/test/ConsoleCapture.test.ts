@@ -5,7 +5,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { ConsoleCapture } from "../src/internal/ConsoleCapture.js";
 
-describe("ConsoleCapture", () => {
+describe("Unit: ConsoleCapture", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });

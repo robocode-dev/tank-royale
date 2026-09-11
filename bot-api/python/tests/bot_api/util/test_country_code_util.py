@@ -3,6 +3,7 @@ import pytest
 from robocode_tank_royale.bot_api.util import CountryCodeUtil
 
 
+@pytest.mark.TR_API_UTL_003
 def test_TR_API_UTL_003_country_code_valid_examples():
     """TR-API-UTL-003 CountryCode utility: validation/normalization of known codes"""
     for code in ["GB", "gb", "dk", "us", "no", "SE", "FI"]:
@@ -11,6 +12,7 @@ def test_TR_API_UTL_003_country_code_valid_examples():
         assert country.alpha_2.upper() == code.strip().upper()
 
 
+@pytest.mark.TR_API_UTL_003
 def test_TR_API_UTL_003_country_code_local_detection():
     """TR-API-UTL-003 CountryCode utility: local country code is recognized"""
     local = CountryCodeUtil.local_country_code()

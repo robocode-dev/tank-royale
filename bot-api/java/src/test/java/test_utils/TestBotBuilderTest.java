@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.Bot;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,6 +30,7 @@ class TestBotBuilderTest {
         server.stop();
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder creates bot with default passive behavior")
     void testDefaultPassiveBehavior() {
@@ -39,6 +41,7 @@ class TestBotBuilderTest {
         assertThat(bot).isNotNull();
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder creates bot with custom name")
     void testCustomName() {
@@ -51,6 +54,7 @@ class TestBotBuilderTest {
         assertThat(bot).isNotNull();
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder creates bot with aggressive behavior")
     void testAggressiveBehavior() {
@@ -61,6 +65,7 @@ class TestBotBuilderTest {
         assertThat(bot).isNotNull();
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder creates bot with scanning behavior")
     void testScanningBehavior() {
@@ -71,6 +76,7 @@ class TestBotBuilderTest {
         assertThat(bot).isNotNull();
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder onTick callback is invoked")
     void testOnTickCallback() throws InterruptedException {
@@ -97,6 +103,7 @@ class TestBotBuilderTest {
         botThread.join(1000);
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder onRun callback is invoked")
     void testOnRunCallback() throws InterruptedException {
@@ -123,6 +130,7 @@ class TestBotBuilderTest {
         botThread.join(1000);
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder multiple callbacks can be chained")
     void testCallbackChaining() {
@@ -141,6 +149,7 @@ class TestBotBuilderTest {
         assertThat(bot).isNotNull();
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder custom behavior relies on callbacks only")
     void testCustomBehavior() throws InterruptedException {
@@ -168,6 +177,7 @@ class TestBotBuilderTest {
         botThread.join(1000);
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder can build multiple bots from same builder")
     void testMultipleBotsFromSameBuilder() {

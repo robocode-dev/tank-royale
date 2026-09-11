@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.util
 
 import dev.robocode.tankroyale.common.event.Event
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 class EventTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("Event class") {
 

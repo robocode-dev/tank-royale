@@ -14,6 +14,7 @@ class BattleSetupTest {
     // Preset defaults
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `classic preset has expected defaults`() {
         val setup = BattleSetup.classic()
@@ -29,6 +30,7 @@ class BattleSetupTest {
         assertThat(setup.readyTimeoutMicros).isEqualTo(10_000_000)
     }
 
+    @Tag("Unit")
     @Test
     fun `melee preset has expected defaults`() {
         val setup = BattleSetup.melee()
@@ -40,6 +42,7 @@ class BattleSetupTest {
         assertThat(setup.numberOfRounds).isEqualTo(10)
     }
 
+    @Tag("Unit")
     @Test
     fun `oneVsOne preset has expected defaults`() {
         val setup = BattleSetup.oneVsOne()
@@ -77,6 +80,7 @@ class BattleSetupTest {
         assertThat(setup.maxNumberOfParticipants).isEqualTo(4)
     }
 
+    @Tag("Unit")
     @Test
     fun `custom preset has expected defaults`() {
         val setup = BattleSetup.custom()
@@ -96,6 +100,7 @@ class BattleSetupTest {
     // Builder overrides
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `classic preset allows overriding numberOfRounds`() {
         val setup = BattleSetup.classic { numberOfRounds = 25 }
@@ -106,6 +111,7 @@ class BattleSetupTest {
         assertThat(setup.arenaHeight).isEqualTo(600)
     }
 
+    @Tag("Unit")
     @Test
     fun `custom preset allows overriding all fields`() {
         val setup = BattleSetup.custom {
@@ -130,6 +136,7 @@ class BattleSetupTest {
         assertThat(setup.readyTimeoutMicros).isEqualTo(500_000)
     }
 
+    @Tag("Unit")
     @Test
     fun `melee preset allows overriding numberOfRounds`() {
         val setup = BattleSetup.melee { numberOfRounds = 3 }
@@ -139,6 +146,7 @@ class BattleSetupTest {
         assertThat(setup.minNumberOfParticipants).isEqualTo(10)
     }
 
+    @Tag("Unit")
     @Test
     fun `oneVsOne preset allows overriding numberOfRounds`() {
         val setup = BattleSetup.oneVsOne { numberOfRounds = 50 }
@@ -150,6 +158,7 @@ class BattleSetupTest {
     // Java Consumer overloads
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `classic Consumer overload works`() {
         val setup = BattleSetup.classic { numberOfRounds = 7 }
@@ -157,6 +166,7 @@ class BattleSetupTest {
         assertThat(setup.numberOfRounds).isEqualTo(7)
     }
 
+    @Tag("Unit")
     @Test
     fun `melee Consumer overload works`() {
         val setup = BattleSetup.melee { maxInactivityTurns = 200 }
@@ -164,6 +174,7 @@ class BattleSetupTest {
         assertThat(setup.maxInactivityTurns).isEqualTo(200)
     }
 
+    @Tag("Unit")
     @Test
     fun `oneVsOne Consumer overload works`() {
         val setup = BattleSetup.oneVsOne { readyTimeoutMicros = 2_000_000 }
@@ -171,6 +182,7 @@ class BattleSetupTest {
         assertThat(setup.readyTimeoutMicros).isEqualTo(2_000_000)
     }
 
+    @Tag("Unit")
     @Test
     fun `custom Consumer overload works`() {
         val setup = BattleSetup.custom { arenaWidth = 1500 }
@@ -182,6 +194,7 @@ class BattleSetupTest {
     // Builder gameType is read-only
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `builder exposes gameType as read-only`() {
         BattleSetup.classic {
@@ -202,6 +215,7 @@ class BattleSetupTest {
     // Data class equality
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `BattleSetup with same values are equal`() {
         val a = BattleSetup.classic { numberOfRounds = 5 }
@@ -210,6 +224,7 @@ class BattleSetupTest {
         assertThat(a.hashCode()).isEqualTo(b.hashCode())
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleSetup with different values are not equal`() {
         val a = BattleSetup.classic { numberOfRounds = 5 }

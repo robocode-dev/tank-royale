@@ -6,6 +6,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Category("Unit")]
 [Category("MDL")]
 public class DataModelTest
 {

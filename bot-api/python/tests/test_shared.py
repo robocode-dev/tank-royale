@@ -96,6 +96,7 @@ def create_event_at(event_name, turn_number):
     if event_name == "BotDeathEvent":   return BotDeathEvent(turn_number=turn_number, victim_id=0)
     raise ValueError(f"Unknown event for scenario: {event_name}")
 
+@pytest.mark.Unit
 @pytest.mark.parametrize("suite_name, test_case", get_shared_test_cases(), ids=lambda x: f"{x[0]} | {x[1]['id']}" if isinstance(x, tuple) else x)
 def test_shared(suite_name, test_case):
     if test_case.get('type') == 'scenario':

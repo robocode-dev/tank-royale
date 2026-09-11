@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.runner
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
@@ -15,6 +16,7 @@ class BotEntryTest {
     @TempDir
     lateinit var tempDir: Path
 
+    @Tag("Unit")
     @Test
     fun `of(Path) accepts existing directory`() {
         val dir = tempDir.resolve("MyBot").createDirectory()
@@ -22,6 +24,7 @@ class BotEntryTest {
         assertThat(entry.path).isEqualTo(dir)
     }
 
+    @Tag("Unit")
     @Test
     fun `of(String) accepts existing directory`() {
         val dir = tempDir.resolve("MyBot").createDirectory()
@@ -29,6 +32,7 @@ class BotEntryTest {
         assertThat(entry.path).isEqualTo(dir)
     }
 
+    @Tag("Unit")
     @Test
     fun `constructor rejects nonexistent path`() {
         assertThatThrownBy { BotEntry(tempDir.resolve("NoSuchBot")) }
@@ -36,6 +40,7 @@ class BotEntryTest {
             .hasMessageContaining("Bot path must be a directory")
     }
 
+    @Tag("Unit")
     @Test
     fun `constructor rejects file path`() {
         val file = tempDir.resolve("notADir.txt")
@@ -45,6 +50,7 @@ class BotEntryTest {
             .hasMessageContaining("Bot path must be a directory")
     }
 
+    @Tag("Unit")
     @Test
     fun `data class equality works`() {
         val dir = tempDir.resolve("SameBot").createDirectory()
@@ -54,6 +60,7 @@ class BotEntryTest {
         assertThat(a.hashCode()).isEqualTo(b.hashCode())
     }
 
+    @Tag("Unit")
     @Test
     fun `directory with spaces in name works`() {
         val dir = tempDir.resolve("My Bot Dir").createDirectory()

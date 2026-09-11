@@ -11,6 +11,7 @@ import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 
 class ScoreTrackerTest : FunSpec({
+    tags(Tag("Unit"))
 
     val botId1 = BotId(1)
     val botId2 = BotId(2)

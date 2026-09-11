@@ -6,6 +6,7 @@ using Robocode.TankRoyale.BotApi.Events;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Category("Unit")]
 [Category("TCK")]
 [Property("ID", "TR-API-TCK-005")]
 public class WonRoundEventTest : AbstractBotTest

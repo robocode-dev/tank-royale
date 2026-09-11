@@ -27,6 +27,7 @@ public class SvgGraphicsTest {
         graphics = new SvgGraphics();
     }
 
+    @Tag("Unit")
     @Test
     public void givenNewGraphics_whenToSvg_thenContainsRootSvgAndClosed() {
         // Initial SVG should just contain the basic structure
@@ -35,6 +36,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.trim().endsWith("</svg>"));
     }
 
+    @Tag("Unit")
     @Test
     public void givenStrokeSet_whenDrawLine_thenLineElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.RED);
@@ -51,6 +53,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"2\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenStrokeSet_whenDrawRectangle_thenRectElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.BLUE);
@@ -68,6 +71,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"3\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenFillAndStrokeSet_whenFillRectangle_thenRectElementWithAttributesPresent() {
         graphics.setFillColor(Color.GREEN);
@@ -86,6 +90,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"1\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenStrokeSet_whenDrawCircle_thenCircleElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.PURPLE);
@@ -102,6 +107,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"2\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenFillAndStrokeSet_whenFillCircle_thenCircleElementWithAttributesPresent() {
         graphics.setFillColor(Color.YELLOW);
@@ -119,6 +125,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"1\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenStrokeSet_whenDrawPolygon_thenPolygonElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.BLACK);
@@ -137,6 +144,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"2\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenFillAndStrokeSet_whenFillPolygon_thenPolygonElementWithAttributesPresent() {
         graphics.setFillColor(Color.BLUE);
@@ -156,6 +164,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"1\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenTooFewPoints_whenDrawOrFillPolygon_thenNoPolygonIsAdded() {
         graphics.setStrokeColor(Color.BLACK);
@@ -170,6 +179,7 @@ public class SvgGraphicsTest {
         assertFalse(svg.contains("<polygon "));
     }
 
+    @Tag("Unit")
     @Test
     public void givenStrokeAndFontSet_whenDrawText_thenTextElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.BLUE);
@@ -186,6 +196,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains(">Hello World</text>"));
     }
 
+    @Tag("Unit")
     @Test
     public void test_TR_API_GFX_003_text_is_escaped_in_svg_output() {
         graphics.setStrokeColor(Color.BLACK);
@@ -195,6 +206,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains(">5 &lt; 7 &amp; &quot;quote&quot;</text>"));
     }
 
+    @Tag("Unit")
     @Test
     public void givenVariousElementsDrawn_whenToSvg_thenCountsMatch() {
         graphics.setStrokeColor(Color.RED);
@@ -213,6 +225,7 @@ public class SvgGraphicsTest {
         assertEquals(1, circleCount);
     }
 
+    @Tag("Unit")
     @Test
     public void testClear() {
         graphics.setStrokeColor(Color.RED);
@@ -232,6 +245,7 @@ public class SvgGraphicsTest {
         assertFalse(svgAfter.contains("<circle "));
     }
 
+    @Tag("Unit")
     @Test
     public void testDefaultStrokeValues() {
         // DrawRectangle and DrawCircle should use default black stroke if none is set
@@ -247,6 +261,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"1\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void testToSvgFormatting() {
         graphics.drawLine(10, 10, 20, 20);
@@ -257,6 +272,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.trim().endsWith("</svg>"));
     }
 
+    @Tag("Unit")
     @Test
     public void testNumberFormatting() {
         // Test that decimal numbers are formatted correctly
@@ -279,6 +295,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("y2=\"40.988\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void test_TR_API_GFX_002_alpha_on_stroke_and_fill_is_applied_in_svg_attributes() {
         // Stroke with alpha
@@ -299,6 +316,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke=\"#000000\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void test_TR_API_GFX_002_outline_shapes_ignore_fill_and_use_defaults_when_no_stroke_set() {
         // Set only fill color and no explicit stroke
@@ -312,6 +330,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"1\" "));
     }
 
+    @Tag("Unit")
     @Test
     public void test_TR_API_GFX_004_identical_sequences_produce_identical_svg() {
         // TR-API-GFX-004 IGraphics contract: identical sequences yield identical SVG

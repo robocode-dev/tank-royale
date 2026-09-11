@@ -77,7 +77,7 @@ function parseArg(arg: any): any {
   return arg;
 }
 
-describe('Shared Cross-Platform Tests', () => {
+describe('Unit: Shared Cross-Platform Tests', () => {
   const suites = getSharedTestSuites();
 
   for (const suite of suites) {

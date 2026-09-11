@@ -24,85 +24,108 @@ def clean_env():
 
 # TR-API-BOT-001a: Constructor reads env vars and applies defaults
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_server_url(clean_env):
     os.environ["SERVER_URL"] = "ws://localhost:7654"
     assert EnvVars.get_server_url() == "ws://localhost:7654"
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_server_url_missing(clean_env):
     assert EnvVars.get_server_url() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_server_secret(clean_env):
     os.environ["SERVER_SECRET"] = "s3cr3t"
     assert EnvVars.get_server_secret() == "s3cr3t"
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_name(clean_env):
     os.environ["BOT_NAME"] = "MyBot"
     assert EnvVars.get_bot_name() == "MyBot"
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_version(clean_env):
     os.environ["BOT_VERSION"] = "2.0"
     assert EnvVars.get_bot_version() == "2.0"
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_description_missing(clean_env):
     assert EnvVars.get_bot_description() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_homepage_missing(clean_env):
     assert EnvVars.get_bot_homepage() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_platform_missing(clean_env):
     assert EnvVars.get_bot_platform() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_programming_lang_missing(clean_env):
     assert EnvVars.get_bot_programming_lang() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_is_bot_booted_false(clean_env):
     assert EnvVars.is_bot_booted() is False
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_is_bot_booted_true(clean_env):
     os.environ["BOT_BOOTED"] = "1"
     assert EnvVars.is_bot_booted() is True
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_authors_list(clean_env):
     os.environ["BOT_AUTHORS"] = "Alice,Bob,Carol"
     assert EnvVars.get_bot_authors() == ["Alice", "Bob", "Carol"]
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_authors_trim(clean_env):
     os.environ["BOT_AUTHORS"] = "Alice , Bob , Carol"
     assert EnvVars.get_bot_authors() == ["Alice", "Bob", "Carol"]
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_authors_missing(clean_env):
     assert EnvVars.get_bot_authors() == []
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_authors_blank(clean_env):
     os.environ["BOT_AUTHORS"] = "   "
     assert EnvVars.get_bot_authors() == []
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_country_codes(clean_env):
     os.environ["BOT_COUNTRY_CODES"] = "US,GB,DE"
     assert EnvVars.get_bot_country_codes() == ["US", "GB", "DE"]
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_game_types(clean_env):
     os.environ["BOT_GAME_TYPES"] = "classic , melee"
     assert EnvVars.get_bot_game_types() == {"classic", "melee"}
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_team_id_missing(clean_env):
     assert EnvVars.get_team_id() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_team_id_blank(clean_env):
     os.environ["TEAM_ID"] = "  "
     assert EnvVars.get_team_id() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_team_id_valid(clean_env):
     os.environ["TEAM_ID"] = "42"
     assert EnvVars.get_team_id() == 42
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_team_id_trim(clean_env):
     os.environ["TEAM_ID"] = "  7  "
     assert EnvVars.get_team_id() == 7
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_initial_position_missing(clean_env):
     assert EnvVars.get_bot_initial_position() is None
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_initial_position_valid(clean_env):
     os.environ["BOT_INITIAL_POS"] = "100,200,90"
     pos = EnvVars.get_bot_initial_position()
@@ -110,6 +133,7 @@ def test_TR_API_BOT_001_get_bot_initial_position_valid(clean_env):
     assert pos.y == 200
     assert pos.direction == 90
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_info_full(clean_env):
     os.environ["BOT_NAME"] = "MyBot"
     os.environ["BOT_VERSION"] = "1.0"
@@ -132,6 +156,7 @@ def test_TR_API_BOT_001_get_bot_info_full(clean_env):
     assert info.platform == "Python"
     assert info.programming_lang == "Python 3"
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_info_missing_required(clean_env):
     os.environ["BOT_VERSION"] = "1.0"
     os.environ["BOT_AUTHORS"] = "Alice"
@@ -140,6 +165,7 @@ def test_TR_API_BOT_001_get_bot_info_missing_required(clean_env):
     assert info.name is None
     assert info.version == "1.0"
 
+@pytest.mark.TR_API_BOT_001
 def test_TR_API_BOT_001_get_bot_info_blank_required(clean_env):
     os.environ["BOT_NAME"] = "  "
     os.environ["BOT_VERSION"] = "1.0"

@@ -11,6 +11,7 @@ from robocode_tank_royale.bot_api import Bot, BotInfo
 
 class TestBot(unittest.TestCase):
 
+    @pytest.mark.Unit
     @patch("websockets.connect", new_callable=AsyncMock)
     def test_initialization_default(self, mock_connect: AsyncMock):
         # Given

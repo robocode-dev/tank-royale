@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.intent
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 class IntentStoreTest {
@@ -13,6 +14,7 @@ class IntentStoreTest {
         store = IntentStore()
     }
 
+    @Tag("Unit")
     @Test
     fun `new store is empty`() {
         assertThat(store.size).isEqualTo(0)
@@ -20,6 +22,7 @@ class IntentStoreTest {
         assertThat(store.getAllIntents()).isEmpty()
     }
 
+    @Tag("Unit")
     @Test
     fun `add and retrieve intent`() {
         val intent = capturedIntent("BotA", round = 1, turn = 5)
@@ -30,6 +33,7 @@ class IntentStoreTest {
         assertThat(store.getIntentsForBot("BotA")).containsExactly(intent)
     }
 
+    @Tag("Unit")
     @Test
     fun `retrieve intents for specific bot`() {
         store.add(capturedIntent("BotA", round = 1, turn = 1))
@@ -41,6 +45,7 @@ class IntentStoreTest {
         assertThat(store.getIntentsForBot("BotC")).isEmpty()
     }
 
+    @Tag("Unit")
     @Test
     fun `get intent at specific round and turn`() {
         val intent1 = capturedIntent("BotA", round = 1, turn = 1, firepower = 2.0)
@@ -54,6 +59,7 @@ class IntentStoreTest {
         assertThat(store.getIntentForBotAtTurn("BotX", 1, 1)).isNull()
     }
 
+    @Tag("Unit")
     @Test
     fun `getAllIntents returns grouped snapshot`() {
         store.add(capturedIntent("BotA", round = 1, turn = 1))
@@ -66,6 +72,7 @@ class IntentStoreTest {
         assertThat(all["BotB"]).hasSize(1)
     }
 
+    @Tag("Unit")
     @Test
     fun `clear removes all intents`() {
         store.add(capturedIntent("BotA", round = 1, turn = 1))
@@ -79,6 +86,7 @@ class IntentStoreTest {
         assertThat(store.getAllIntents()).isEmpty()
     }
 
+    @Tag("Unit")
     @Test
     fun `size counts intents across all bots`() {
         store.add(capturedIntent("BotA", round = 1, turn = 1))

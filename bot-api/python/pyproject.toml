@@ -37,6 +37,9 @@ timeout = 30
 # Use thread method for cross-platform compatibility (works on Windows)
 timeout_method = "thread"
 markers = [
+    "Unit: Unit-level behavior tests",
+    "Sanity: Sanity and smoke tests",
+    "Arch: Test architecture and governance checks",
     "VAL: Validation tests (BotInfo, constants, initial position)",
     "CMD: Command tests (fire, movement, radar)",
     "TCK: Protocol conformance / tick lifecycle tests",

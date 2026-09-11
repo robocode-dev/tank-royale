@@ -10,11 +10,13 @@ class TestSvgGraphics(unittest.TestCase):
     def setUp(self) -> None:
         self.graphics = SvgGraphics()
 
+    @pytest.mark.Unit
     def test_given_new_graphics_when_to_svg_then_contains_root_svg_and_closed(self):
         svg = self.graphics.to_svg()
         self.assertIn('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5000 5000">', svg)
         self.assertTrue(svg.strip().endswith("</svg>"))
 
+    @pytest.mark.Unit
     def test_given_stroke_set_when_draw_line_then_line_element_with_attributes_present(self):
         self.graphics.set_stroke_color(Color.from_rgb(255, 0, 0))  # RED
         self.graphics.set_stroke_width(2)
@@ -28,6 +30,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#FF0000" ', svg)
         self.assertIn('stroke-width="2" ', svg)
 
+    @pytest.mark.Unit
     def test_given_stroke_set_when_draw_rectangle_then_rect_element_with_attributes_present(self):
         self.graphics.set_stroke_color(Color.from_rgb(0, 0, 255))  # BLUE
         self.graphics.set_stroke_width(3)
@@ -42,6 +45,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#0000FF" ', svg)
         self.assertIn('stroke-width="3" ', svg)
 
+    @pytest.mark.Unit
     def test_given_fill_and_stroke_set_when_fill_rectangle_then_rect_element_with_attributes_present(self):
         self.graphics.set_fill_color(Color.from_rgb(0, 128, 0))  # GREEN
         self.graphics.set_stroke_color(Color.from_rgb(255, 0, 0))  # RED
@@ -57,6 +61,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#FF0000" ', svg)
         self.assertIn('stroke-width="1" ', svg)
 
+    @pytest.mark.Unit
     def test_given_stroke_set_when_draw_circle_then_circle_element_with_attributes_present(self):
         self.graphics.set_stroke_color(Color.from_rgb(128, 0, 128))  # PURPLE
         self.graphics.set_stroke_width(2)
@@ -70,6 +75,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#800080" ', svg)
         self.assertIn('stroke-width="2" ', svg)
 
+    @pytest.mark.Unit
     def test_given_fill_and_stroke_set_when_fill_circle_then_circle_element_with_attributes_present(self):
         self.graphics.set_fill_color(Color.from_rgb(255, 255, 0))  # YELLOW
         self.graphics.set_stroke_color(Color.from_rgb(255, 165, 0))  # ORANGE
@@ -84,6 +90,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#FFA500" ', svg)
         self.assertIn('stroke-width="1" ', svg)
 
+    @pytest.mark.Unit
     def test_given_stroke_set_when_draw_polygon_then_polygon_element_with_attributes_present(self):
         self.graphics.set_stroke_color(Color.from_rgb(0, 0, 0))  # BLACK
         self.graphics.set_stroke_width(2)
@@ -96,6 +103,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#000000" ', svg)
         self.assertIn('stroke-width="2" ', svg)
 
+    @pytest.mark.Unit
     def test_given_fill_and_stroke_set_when_fill_polygon_then_polygon_element_with_attributes_present(self):
         self.graphics.set_fill_color(Color.from_rgb(0, 0, 255))  # BLUE
         self.graphics.set_stroke_color(Color.from_rgb(0, 0, 0))  # BLACK
@@ -109,6 +117,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#000000" ', svg)
         self.assertIn('stroke-width="1" ', svg)
 
+    @pytest.mark.Unit
     def test_given_too_few_points_when_draw_or_fill_polygon_then_no_polygon_is_added(self):
         self.graphics.set_stroke_color(Color.from_rgb(0, 0, 0))
         points = [Point(10, 10), Point(50, 10)]
@@ -117,6 +126,7 @@ class TestSvgGraphics(unittest.TestCase):
         svg = self.graphics.to_svg()
         self.assertNotIn("<polygon ", svg)
 
+    @pytest.mark.Unit
     def test_given_stroke_and_font_set_when_draw_text_then_text_element_with_attributes_present(self):
         self.graphics.set_stroke_color(Color.from_rgb(0, 0, 255))
         self.graphics.set_font("Verdana", 24)
@@ -130,6 +140,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('fill="#0000FF"', svg)
         self.assertIn(">Hello World</text>", svg)
 
+    @pytest.mark.TR_API_GFX_003
     def test_TR_API_GFX_003_text_is_escaped_in_svg_output(self):
         """TR-API-GFX-003 SvgGraphics text: correct attributes and escaping"""
         self.graphics.set_stroke_color(Color.from_rgb(0, 0, 0))
@@ -138,6 +149,7 @@ class TestSvgGraphics(unittest.TestCase):
         svg = self.graphics.to_svg()
         self.assertIn(">5 &lt; 7 &amp; &quot;quote&quot;</text>", svg)
 
+    @pytest.mark.Unit
     def test_given_various_elements_drawn_when_to_svg_then_counts_match(self):
         self.graphics.set_stroke_color(Color.from_rgb(255, 0, 0))
         self.graphics.draw_line(10, 10, 20, 20)
@@ -149,6 +161,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertEqual(svg.count("<line "), 1)
         self.assertEqual(svg.count("<circle "), 1)
 
+    @pytest.mark.Unit
     def test_clear(self):
         self.graphics.set_stroke_color(Color.from_rgb(255, 0, 0))
         self.graphics.draw_line(10, 10, 20, 20)
@@ -162,6 +175,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertNotIn("<line ", svg_after)
         self.assertNotIn("<circle ", svg_after)
 
+    @pytest.mark.Unit
     def test_default_stroke_values(self):
         self.graphics.draw_rectangle(10, 20, 100, 50)
         svg = self.graphics.to_svg()
@@ -173,6 +187,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#000000" ', svg)
         self.assertIn('stroke-width="1" ', svg)
 
+    @pytest.mark.Unit
     def test_number_formatting(self):
         self.graphics.draw_line(10.123, 20.456, 30.789, 40.987)
         svg = self.graphics.to_svg()
@@ -188,6 +203,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('x2="30.789" ', svg)
         self.assertIn('y2="40.988" ', svg)
 
+    @pytest.mark.TR_API_GFX_002
     def test_TR_API_GFX_002_alpha_on_stroke_and_fill_is_applied(self):
         """TR-API-GFX-002 SvgGraphics styles: stroke/fill/alpha apply as expected"""
         # Stroke with alpha
@@ -207,6 +223,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('fill="#0000FF40" ', svg)
         self.assertIn('stroke="#000000" ', svg)
 
+    @pytest.mark.TR_API_GFX_002
     def test_TR_API_GFX_002_outline_shapes_ignore_fill_and_default_stroke(self):
         """TR-API-GFX-002 SvgGraphics styles: outline shapes not filled and default stroke applied"""
         # Only fill set
@@ -217,6 +234,7 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#000000" ', svg)
         self.assertIn('stroke-width="1" ', svg)
 
+    @pytest.mark.TR_API_GFX_004
     def test_TR_API_GFX_004_identical_sequences_produce_identical_svg(self):
         """TR-API-GFX-004 IGraphics contract: identical sequences yield identical SVG"""
         g = SvgGraphics()

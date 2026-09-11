@@ -12,6 +12,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
 class CollisionDetectorTest : FunSpec({
+    tags(Tag("Unit"))
 
     val setup = GameSetup(
         arenaWidth = 1000, arenaHeight = 1000, maxNumberOfParticipants = 10,

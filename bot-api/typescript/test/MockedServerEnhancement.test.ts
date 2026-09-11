@@ -139,7 +139,7 @@ function poll(predicate: () => boolean, timeoutMs = 2000, intervalMs = 10): Prom
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("MockedServer Enhancement Tests", () => {
+describe("Unit: MockedServer Enhancement Tests", () => {
   let server: MockedServer;
   let client: MinimalBotClient;
 

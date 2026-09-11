@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.join(os.getcwd(), "generated"))  # For the schema
 
 
 class ImportTestCase(unittest.TestCase):
+    @pytest.mark.Unit
     def test_imports(self):
         """
         This test checks if the necessary modules can be imported.

@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.client.model.BotListUpdate
 import dev.robocode.tankroyale.runner.internal.ServerConnection
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.time.Duration
 
@@ -47,6 +48,7 @@ class WaitForBotsTest {
     // 4.4 — waitForBots tests
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `matching identities emitted via BotListUpdate returns correct BotAddress set`() {
         val conn = conn()
@@ -73,6 +75,7 @@ class WaitForBotsTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `partial updates complete only when all identities matched`() {
         val conn = conn()
@@ -102,6 +105,7 @@ class WaitForBotsTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `timeout throws BattleException with identity-aware message`() {
         val conn = conn()
@@ -128,6 +132,7 @@ class WaitForBotsTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `pre-existing bots are excluded from matching`() {
         val conn = conn()

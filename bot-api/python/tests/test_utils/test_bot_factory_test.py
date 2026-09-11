@@ -21,6 +21,7 @@ class TestBotBuilderTest(unittest.TestCase):
         """Tear down test fixtures."""
         self.server.stop()
 
+    @pytest.mark.Unit
     def test_default_passive_behavior(self) -> None:
         """TestBotBuilder creates bot with default passive behavior."""
         bot = (TestBotBuilder()
@@ -29,6 +30,7 @@ class TestBotBuilderTest(unittest.TestCase):
 
         self.assertIsNotNone(bot)
 
+    @pytest.mark.Unit
     def test_custom_name(self) -> None:
         """TestBotBuilder creates bot with custom name."""
         bot = (TestBotBuilder()
@@ -39,6 +41,7 @@ class TestBotBuilderTest(unittest.TestCase):
 
         self.assertIsNotNone(bot)
 
+    @pytest.mark.Unit
     def test_aggressive_behavior(self) -> None:
         """TestBotBuilder creates bot with aggressive behavior."""
         bot = (TestBotBuilder()
@@ -47,6 +50,7 @@ class TestBotBuilderTest(unittest.TestCase):
 
         self.assertIsNotNone(bot)
 
+    @pytest.mark.Unit
     def test_scanning_behavior(self) -> None:
         """TestBotBuilder creates bot with scanning behavior."""
         bot = (TestBotBuilder()
@@ -55,6 +59,7 @@ class TestBotBuilderTest(unittest.TestCase):
 
         self.assertIsNotNone(bot)
 
+    @pytest.mark.Unit
     def test_on_tick_callback(self) -> None:
         """TestBotBuilder on_tick callback is invoked."""
         tick_called = threading.Event()
@@ -78,6 +83,7 @@ class TestBotBuilderTest(unittest.TestCase):
             self.server.stop()
             bot_thread.join(timeout=1.0)
 
+    @pytest.mark.Unit
     def test_on_run_callback(self) -> None:
         """TestBotBuilder on_run callback is invoked."""
         run_called = threading.Event()
@@ -101,6 +107,7 @@ class TestBotBuilderTest(unittest.TestCase):
             self.server.stop()
             bot_thread.join(timeout=1.0)
 
+    @pytest.mark.Unit
     def test_callback_chaining(self) -> None:
         """TestBotBuilder multiple callbacks can be chained."""
         callback_count = 0
@@ -121,6 +128,7 @@ class TestBotBuilderTest(unittest.TestCase):
 
         self.assertIsNotNone(bot)
 
+    @pytest.mark.Unit
     def test_custom_behavior(self) -> None:
         """TestBotBuilder custom behavior relies on callbacks only."""
         custom_tick_handled = threading.Event()
@@ -145,6 +153,7 @@ class TestBotBuilderTest(unittest.TestCase):
             self.server.stop()
             bot_thread.join(timeout=1.0)
 
+    @pytest.mark.Unit
     def test_multiple_bots_from_same_builder(self) -> None:
         """TestBotBuilder can build multiple bots from same builder."""
         builder = (TestBotBuilder()

@@ -1,11 +1,13 @@
 package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.client.model.BotInfo
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 
 class BotMatcherTest : FunSpec({
+    tags(Tag("Unit"))
 
     fun makeBotInfo(name: String, version: String): BotInfo = BotInfo(
         name = name,

@@ -42,6 +42,7 @@ class BaseBotConstructorPrecedenceTest extends AbstractBotTest {
         System.clearProperty("SERVER_URL");
     }
 
+    @Tag("Unit")
     @Test
     void test_TR_API_BOT_001c_system_property_over_env_for_server_url() throws Exception {
         // Arrange: ENV points to a bogus port; system property points to the mocked server

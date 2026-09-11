@@ -3,6 +3,7 @@ package test_utils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -25,6 +26,7 @@ class MockedServerInitialStateTest {
         server.stop();
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("setInitialBotState should update internal state without requiring connections")
     void testSetInitialBotState() {
@@ -33,6 +35,7 @@ class MockedServerInitialStateTest {
         // Assert - success indicated by no exception being thrown
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("setInitialBotState should accept null values for unchanged state")
     void testSetInitialBotStateWithNulls() {
@@ -41,6 +44,7 @@ class MockedServerInitialStateTest {
         // Assert - success indicated by no exception being thrown
     }
 
+    @Tag("Unit")
     @Test
     @DisplayName("setInitialBotState primitive overload should work")
     void testSetInitialBotStatePrimitives() {

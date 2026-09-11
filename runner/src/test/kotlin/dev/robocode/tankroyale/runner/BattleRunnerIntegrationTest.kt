@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.runner
 import dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.api.Timeout
@@ -144,6 +145,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `runBattle with two sample bots returns valid results`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -168,6 +170,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `runBattle with config-less Java bot succeeds`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -183,6 +186,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `runBattle with bot missing required properties fails with BotException`() {
         BattleRunner.create {
@@ -202,6 +206,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `runBattle with multiple rounds produces results with scores`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -221,6 +226,7 @@ class BattleRunnerIntegrationTest {
     // 10.3 — Server reuse across battles
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `server is reused across battles`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -245,6 +251,7 @@ class BattleRunnerIntegrationTest {
     // 10.3 — External server mode
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `external server mode throws for unreachable server`() {
         BattleRunner.create { externalServer("ws://localhost:1") }.use { extRunner ->
@@ -261,6 +268,7 @@ class BattleRunnerIntegrationTest {
     // 10.4 — Error scenarios
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `runBattle with too few bots throws BattleException`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -274,6 +282,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `runBattle with too many bots for 1v1 throws BattleException`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -291,6 +300,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `runBattle after close throws`() {
         val disposableRunner = BattleRunner.create { externalServer("ws://localhost:1") }
@@ -305,6 +315,7 @@ class BattleRunnerIntegrationTest {
             .hasMessageContaining("closed")
     }
 
+    @Tag("Unit")
     @Test
     fun `runBattle with invalid bot directory throws`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -325,6 +336,7 @@ class BattleRunnerIntegrationTest {
     // 10.2 — Async battle (BattleHandle)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `startBattleAsync returns handle with events and results`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -344,6 +356,7 @@ class BattleRunnerIntegrationTest {
     // 10.5 — Battle recording
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `recording produces valid gzip ND-JSON file`() {
         val recordingDir = tempDir.resolve("recordings")
@@ -390,6 +403,7 @@ class BattleRunnerIntegrationTest {
     // 10.6 — Intent diagnostics
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `intent diagnostics captures bot intents`() {
         BattleRunner.create {
@@ -426,6 +440,7 @@ class BattleRunnerIntegrationTest {
     // WonRoundEvent delivery verification — 10-round battle
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `firstPlaces sum equals number of rounds in 10-round battle`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -442,6 +457,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `WonRoundCounterJava bot receives one WonRoundEvent per round it wins`() {
         val countFile = Path.of(System.getProperty("java.io.tmpdir"), "won_round_java.txt")
@@ -473,6 +489,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `WonRoundCounterCSharp bot receives one WonRoundEvent per round it wins`() {
         val countFile = Path.of(System.getProperty("java.io.tmpdir"), "won_round_csharp.txt")
@@ -504,6 +521,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `WonRoundCounterTs bot receives one WonRoundEvent per round it wins`() {
         val countFile = Path.of(System.getProperty("java.io.tmpdir"), "won_round_ts.txt")
@@ -543,6 +561,7 @@ class BattleRunnerIntegrationTest {
     // captureServerOutput logging behavior — integration (real processes, real JUL capture)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `server and booter output is logged by default`() {
         val handler = CapturingHandler()
@@ -570,6 +589,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `suppressServerOutput produces no SERVER or BOOTER prefixed log lines`() {
         val handler = CapturingHandler()
@@ -601,6 +621,7 @@ class BattleRunnerIntegrationTest {
     // Identity matching — successive battles reset matcher state
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `successive battles with different bot compositions both succeed`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -630,6 +651,7 @@ class BattleRunnerIntegrationTest {
     // Identity matching — timeout error message contains pending identities
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `bot connect timeout produces identity-aware error message`() {
         // Create a valid bot directory whose bot will never connect (booter is not started for it)
@@ -658,6 +680,7 @@ class BattleRunnerIntegrationTest {
     // 10.7 — Debug mode and breakpoint mode
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `serverFeatures advertises debugMode and breakpointMode`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -673,6 +696,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `enableDebugMode pauses after each turn with debug_step pauseCause`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -706,6 +730,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     fun `disableDebugMode exits debug mode and battle completes normally`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
@@ -735,6 +760,7 @@ class BattleRunnerIntegrationTest {
     // WonRound cross-language tests
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `combined Java and CSharp WonRoundEvents sum to number of rounds`() {
         val javaCountFile  = Path.of(System.getProperty("java.io.tmpdir"), "won_round_java.txt")
@@ -784,7 +810,9 @@ class BattleRunnerIntegrationTest {
      *
      * Tagged [Tag("slow")] — excluded from the default `integrationTest` Gradle task.
      * Run explicitly with `./gradlew :runner:slowIntegrationTest`.
+    @Tag("Unit")
      */
+    @Tag("Unit")
     @Test
     @Tag("slow")
     @Timeout(value = 6, unit = TimeUnit.MINUTES)
@@ -861,7 +889,9 @@ class BattleRunnerIntegrationTest {
      *
      * Tagged [Tag("slow")] — excluded from the default `integrationTest` Gradle task.
      * Run explicitly with `./gradlew :runner:slowIntegrationTest`.
+    @Tag("Unit")
      */
+    @Tag("Unit")
     @Test
     @Tag("slow")
     @Timeout(value = 6, unit = TimeUnit.MINUTES)
@@ -911,6 +941,7 @@ class BattleRunnerIntegrationTest {
     // Bot color regression — verifies Corners bot colors reach observer tick data
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `Corners bot colors appear in tick event bot states and intent diagnostics`() {
         // Corners sets: body=RED(#ff0000), turret=BLACK(#000000), radar=YELLOW(#ffff00),
@@ -967,6 +998,7 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    @Tag("Unit")
     @Test
     @Timeout(180)
     fun `CSharp repeated connected restarts preserve turn 1 run state and debug graphics`() {

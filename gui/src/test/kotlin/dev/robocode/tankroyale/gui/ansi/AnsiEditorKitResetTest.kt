@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ansi
 
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import java.awt.Color
@@ -7,6 +8,7 @@ import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.StyleConstants
 
 class AnsiEditorKitResetTest : StringSpec({
+    tags(Tag("Unit"))
 
     "should set default foreground color after RESET code" {
         val ansiEditorKit = AnsiEditorKit()

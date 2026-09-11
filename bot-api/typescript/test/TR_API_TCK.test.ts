@@ -7,7 +7,7 @@ import { BaseBotInternals } from "../src/internal/BaseBotInternals.js";
 import { MessageType } from "../src/protocol/MessageType.js";
 import { TickEvent } from "../src/events/TickEvent.js";
 
-describe("TR-API-TCK: Protocol Conformance", () => {
+describe("Unit: TR-API-TCK: Protocol Conformance", () => {
   let server: MockedServer;
   const info = new BotInfo("TCKBot", "1.0", ["Author"], null, null, null, ["classic"], null, null);
 

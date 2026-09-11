@@ -14,6 +14,7 @@ def test_json_util_serialization():
     assert data["firepower"] == 1.5
     assert data["turnRate"] == 10.0
     
+@pytest.mark.Unit
 def test_json_util_deserialization():
     json_str = '{"type": "BotIntent", "firepower": 2.0}'
     intent = from_json(json_str)

@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.common.recording
 
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldEndWith
@@ -9,6 +10,7 @@ import java.nio.file.Files
 import java.util.zip.GZIPInputStream
 
 class GameRecorderTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("GameRecorder") {
 

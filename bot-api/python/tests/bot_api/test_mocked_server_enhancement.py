@@ -38,6 +38,7 @@ class MockedServerEnhancementTest(unittest.TestCase):
         self._bot_thread = threading.Thread(target=bot.start, daemon=True)
         self._bot_thread.start()
 
+    @pytest.mark.Unit
     def test_await_bot_ready_should_succeed(self):
         bot = Bot(self.bot_info, self.server.server_url)
         self._start_bot(bot)
@@ -45,6 +46,7 @@ class MockedServerEnhancementTest(unittest.TestCase):
         ready = self.server.await_bot_ready(2000)
         self.assertTrue(ready)
 
+    @pytest.mark.Unit
     def test_set_bot_state_and_await_tick_should_update_state(self):
         server = self.server
         class BotWithLoop(Bot):

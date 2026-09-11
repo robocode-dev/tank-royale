@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.booter
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
@@ -9,6 +10,7 @@ import io.kotest.matchers.string.shouldContain
 import java.nio.file.Files
 
 class BotIdentityReaderTest : FunSpec({
+    tags(Tag("Unit"))
 
     context("BotIdentityReader") {
 

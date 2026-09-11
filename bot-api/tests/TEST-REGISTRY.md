@@ -158,9 +158,13 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 
 ## How to tag tests
 
+Purpose is separate from category and legacy metadata. Every executable test must have exactly one effective purpose: an acceptance ID at the narrowest test scope, or one generic `Unit`, `Sanity`, or `Arch` purpose. A method/function-level purpose overrides a class/module/suite fallback; when multiple acceptance IDs exist at one scope, the acceptance IDs take precedence over generic purposes. The repository enforces this contract with `runner/src/test/kotlin/dev/robocode/tankroyale/runner/TestPurposeArchitectureTest.kt`, `bot-api/dotnet/test/src/TestPurposeArchitectureTest.cs`, `bot-api/python/tests/test_purpose_architecture.py`, and `bot-api/typescript/test/TestPurposeArchitecture.test.ts`.
+
 | Platform | Category tag | Test ID | Legacy tag |
 |----------|-------------|---------|------------|
 | Java | `@Tag("CMD")` | `@Tag("TR-API-CMD-001")` | `@Tag("LEGACY")` |
 | C# | `[Category("CMD")]` | `[Category("TR-API-CMD-001")]` | `[Category("LEGACY")]` |
-| Python | `@pytest.mark.CMD` | ID in function name: `test_TR_API_CMD_001_*` | `@pytest.mark.LEGACY` |
-| TypeScript | File grouping | `describe("TR-API-CMD-001: ...")` | `describe.skip("LEGACY: ...")` |
+| Python | `@pytest.mark.CMD` | `@pytest.mark.TR_API_CMD_001` | `@pytest.mark.LEGACY` |
+| TypeScript | File grouping | `describe("TR-API-CMD-001: ...")` or an AC-prefixed suite | `describe.skip("LEGACY: ...")` |
+
+Use `@Tag("Unit")`, `[Category("Unit")]`, `@pytest.mark.Unit`, or a `Unit:` suite prefix for tests that do not yet map to a canonical acceptance criterion. The `Arch` purpose is reserved for the architecture guards themselves; `Sanity` is for smoke/sanity coverage.

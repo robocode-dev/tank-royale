@@ -8,6 +8,7 @@ from tests.bot_api.abstract_bot_test import AbstractBotTest
 @pytest.mark.TCK
 @pytest.mark.TR_API_TCK_005
 class TestWonRoundEvent(AbstractBotTest):
+    @pytest.mark.Unit
     def test_won_round_event_delivery(self):
         """TR-API-TCK-005 WonRoundEvent is delivered to on_won_round"""
         won_round_event_received = threading.Event()

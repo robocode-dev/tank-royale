@@ -9,6 +9,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 namespace Robocode.TankRoyale.BotApi.Tests.Internal;
 
 [TestFixture]
+[Category("Unit")]
 [Category("EVT")]
 public class EventSystemTest
 {

@@ -17,6 +17,7 @@ from robocode_tank_royale.bot_api.internal.recording_text_writer import Recordin
 # Unit Tests - RecordingTextWriter
 # =============================================================================
 
+@pytest.mark.Unit
 def test_basic_write_and_read():
     """Test basic write and read functionality"""
     underlying = StringIO()
@@ -38,6 +39,7 @@ def test_basic_write_and_read():
     assert recorded_again == ""
 
 
+@pytest.mark.Unit
 def test_multiple_read_cycles():
     """Test multiple read cycles clear buffer properly"""
     underlying = StringIO()
@@ -55,6 +57,7 @@ def test_multiple_read_cycles():
     assert underlying.getvalue() == "FirstSecond"
 
 
+@pytest.mark.Unit
 def test_thread_safety():
     """Test thread-safety with concurrent writes from multiple threads"""
     underlying = StringIO()
@@ -89,6 +92,7 @@ def test_thread_safety():
         assert len(thread_lines) == writes_per_thread
 
 
+@pytest.mark.Unit
 def test_print_redirection():
     """Test that print() works correctly when sys.stdout is redirected"""
     original_stdout = sys.stdout
@@ -114,6 +118,7 @@ def test_print_redirection():
 # Integration Tests - Bot Workflow
 # =============================================================================
 
+@pytest.mark.Unit
 def test_bot_workflow_simulation():
     """
     Simulate complete bot workflow:
@@ -171,6 +176,7 @@ def test_bot_workflow_simulation():
         sys.stderr = original_stderr
 
 
+@pytest.mark.Unit
 def test_empty_output_handling():
     """Test that empty output returns empty string, not None"""
     original_stdout = sys.stdout
@@ -190,6 +196,7 @@ def test_empty_output_handling():
         sys.stdout = original_stdout
 
 
+@pytest.mark.Unit
 def test_unicode_handling():
     """Test unicode and special characters are handled correctly"""
     original_stdout = sys.stdout

@@ -7,6 +7,7 @@ using static Robocode.TankRoyale.BotApi.Tests.Test_utils.EnvironmentVariables;
 namespace Robocode.TankRoyale.BotApi.Tests.Internal;
 
 [TestFixture]
+[Category("Unit")]
 [Category("BOT")]
 [Property("ID", "TR-API-BOT-001d")]
 public class EnvVarsTest

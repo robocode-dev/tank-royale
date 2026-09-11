@@ -213,7 +213,7 @@ events:
     - {id: TNP-002, kind: numeric, state: retired, prefix: TNP, component: "2"}
     - {id: TNP-003, kind: numeric, state: retired, prefix: TNP, component: "3"}
     - {id: M-001, kind: numeric, state: retired, prefix: M, component: "1"}
-    - {id: M-002, kind: numeric, state: live, prefix: M, component: "2"}
+    - {id: M-002, kind: numeric, state: retired, prefix: M, component: "2"}
     - {id: M-003, kind: numeric, state: retired, prefix: M, component: "3"}
     - {id: M-004, kind: numeric, state: retired, prefix: M, component: "4"}
     - {id: M-005, kind: numeric, state: retired, prefix: M, component: "5"}
@@ -237,6 +237,13 @@ events:
     - {id: M-016, kind: numeric, state: retired, prefix: M, component: "16"}
     - {id: CH-039-tasks, kind: opaque, state: live}
     - {id: CH-039-open-questions, kind: opaque, state: live}
+    - {id: CH-040, kind: numeric, state: reserved, prefix: CH, component: "40"}
+    - {id: CH-040, kind: numeric, state: live, prefix: CH, component: "40"}
+    - {id: CH-040-open-questions, kind: opaque, state: live}
+    - {id: CH-040-tasks, kind: opaque, state: live}
+    - {id: CH-040, kind: numeric, state: retired, prefix: CH, component: "40"}
+    - {id: CH-040-open-questions, kind: opaque, state: retired}
+    - {id: CH-040-tasks, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

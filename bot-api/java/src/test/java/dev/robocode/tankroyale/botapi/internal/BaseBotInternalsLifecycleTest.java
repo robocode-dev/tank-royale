@@ -107,6 +107,7 @@ class BaseBotInternalsLifecycleTest {
         assertThat(customConditionEvaluations).hasValue(0);
     }
 
+    @Tag("Unit")
     @Test
     void wait_for_next_turn_unwinds_when_no_thread_owns_the_round() throws Exception {
         var internals = new BaseBotInternals(proxy(IBaseBot.class), botInfo(), null, null);

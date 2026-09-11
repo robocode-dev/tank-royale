@@ -9,7 +9,7 @@ import { BulletState } from "../src/BulletState.js";
 import { Condition } from "../src/events/Condition.js";
 import { BotState } from "../src/BotState.js";
 
-describe("EventSystem Tier 2", () => {
+describe("Unit: EventSystem Tier 2", () => {
   const handlers = new BotEventHandlers();
   const priorities = new EventPriorities();
   const interruption = new EventInterruption();

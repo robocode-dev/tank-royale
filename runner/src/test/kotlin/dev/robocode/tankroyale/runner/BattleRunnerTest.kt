@@ -32,6 +32,7 @@ class BattleRunnerTest {
     // GameSetup conversion (8.1)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `toClientGameSetup converts classic preset correctly`() {
         val setup = BattleSetup.classic()
@@ -50,6 +51,7 @@ class BattleRunnerTest {
         assertThat(gs.defaultTurnsPerSecond).isEqualTo(setup.defaultTurnsPerSecond)
     }
 
+    @Tag("Unit")
     @Test
     fun `toClientGameSetup forwards custom defaultTurnsPerSecond`() {
         val setup = BattleSetup.classic { defaultTurnsPerSecond = 5 }
@@ -58,6 +60,7 @@ class BattleRunnerTest {
         assertThat(gs.defaultTurnsPerSecond).isEqualTo(5)
     }
 
+    @Tag("Unit")
     @Test
     fun `toClientGameSetup converts 1v1 preset correctly`() {
         val setup = BattleSetup.oneVsOne { numberOfRounds = 3 }
@@ -69,6 +72,7 @@ class BattleRunnerTest {
         assertThat(gs.maxNumberOfParticipants).isEqualTo(2)
     }
 
+    @Tag("Unit")
     @Test
     fun `toClientGameSetup converts melee preset correctly`() {
         val setup = BattleSetup.melee()
@@ -77,6 +81,7 @@ class BattleRunnerTest {
         assertThat(gs.gameType).isEqualTo("melee")
     }
 
+    @Tag("Unit")
     @Test
     fun `toClientGameSetup converts custom preset correctly`() {
         val setup = BattleSetup.custom { arenaWidth = 1200; arenaHeight = 900 }
@@ -87,6 +92,7 @@ class BattleRunnerTest {
         assertThat(gs.arenaHeight).isEqualTo(900)
     }
 
+    @Tag("Unit")
     @Test
     fun `toClientGameSetup sets all locked fields to false`() {
         val setup = BattleSetup.classic()
@@ -108,24 +114,28 @@ class BattleRunnerTest {
     // captureServerOutput config (Builder)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `default config has captureServerOutput true`() {
         runner = BattleRunner.create { embeddedServer() }
         assertThat(runner!!.config.captureServerOutput).isTrue()
     }
 
+    @Tag("Unit")
     @Test
     fun `enableServerOutput sets captureServerOutput to true`() {
         runner = BattleRunner.create { embeddedServer(); enableServerOutput() }
         assertThat(runner!!.config.captureServerOutput).isTrue()
     }
 
+    @Tag("Unit")
     @Test
     fun `suppressServerOutput sets captureServerOutput to false`() {
         runner = BattleRunner.create { embeddedServer(); suppressServerOutput() }
         assertThat(runner!!.config.captureServerOutput).isFalse()
     }
 
+    @Tag("Unit")
     @Test
     fun `suppressServerOutput is chainable with other builder calls`() {
         runner = BattleRunner.create { embeddedServer().suppressServerOutput().enableIntentDiagnostics() }
@@ -133,6 +143,7 @@ class BattleRunnerTest {
         assertThat(runner!!.config.intentDiagnosticsEnabled).isTrue()
     }
 
+    @Tag("Unit")
     @Test
     fun `create with no arguments defaults captureServerOutput to true`() {
         runner = BattleRunner.create()
@@ -143,24 +154,28 @@ class BattleRunnerTest {
     // botConnectTimeout config (3.3)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `default config has botConnectTimeoutMs of 30000`() {
         runner = BattleRunner.create { embeddedServer() }
         assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(30_000L)
     }
 
+    @Tag("Unit")
     @Test
     fun `botConnectTimeout of 120 seconds sets botConnectTimeoutMs to 120000`() {
         runner = BattleRunner.create { embeddedServer(); botConnectTimeout(Duration.ofSeconds(120)) }
         assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(120_000L)
     }
 
+    @Tag("Unit")
     @Test
     fun `botConnectTimeout of 500 milliseconds sets botConnectTimeoutMs to 500`() {
         runner = BattleRunner.create { embeddedServer(); botConnectTimeout(Duration.ofMillis(500)) }
         assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(500L)
     }
 
+    @Tag("Unit")
     @Test
     fun `builder without botConnectTimeout preserves default of 30000`() {
         runner = BattleRunner.create { embeddedServer().suppressServerOutput() }
@@ -195,6 +210,7 @@ class BattleRunnerTest {
     // Lifecycle (8.4)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `close is idempotent`() {
         runner = BattleRunner.create { embeddedServer() }
@@ -203,6 +219,7 @@ class BattleRunnerTest {
         runner = null // already closed
     }
 
+    @Tag("Unit")
     @Test
     fun `startBattleAsync throws after close`() {
         runner = BattleRunner.create { embeddedServer() }
@@ -241,6 +258,7 @@ class BattleRunnerTest {
     // BattleHandle — awaitResults (8.2)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `BattleHandle awaitResults returns when game ends`() {
         val conn = ServerConnection("ws://localhost:9999", "secret")
@@ -277,6 +295,7 @@ class BattleRunnerTest {
         assertThat(closeLatch.await(1, TimeUnit.SECONDS)).isTrue()
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleHandle awaitResults throws on game abort`() {
         val conn = ServerConnection("ws://localhost:9999", "secret")
@@ -295,6 +314,7 @@ class BattleRunnerTest {
         handle.close()
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleHandle close unsubscribes event handlers`() {
         val conn = ServerConnection("ws://localhost:9999", "secret")
@@ -316,6 +336,7 @@ class BattleRunnerTest {
     // BattleHandle — serverFeatures and debug/breakpoint control (6.8 / 6.9)
     // -------------------------------------------------------------------------------------
 
+    @Tag("Unit")
     @Test
     fun `BattleHandle serverFeatures returns null when no handshake received`() {
         val conn = ServerConnection("ws://localhost:9999", "secret")
@@ -326,6 +347,7 @@ class BattleRunnerTest {
         handle.close()
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleHandle serverFeatures reflects Features set on connection`() {
         val conn = ServerConnection("ws://localhost:9999", "secret")
@@ -338,6 +360,7 @@ class BattleRunnerTest {
         handle.close()
     }
 
+    @Tag("Unit")
     @Test
     fun `BattleHandle onGamePaused delivers pauseCause from event`() {
         val conn = ServerConnection("ws://localhost:9999", "secret")

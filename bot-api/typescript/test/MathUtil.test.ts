@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { MathUtil } from "../src/util/MathUtil.js";
 
-describe("MathUtil", () => {
+describe("Unit: MathUtil", () => {
   describe("clamp", () => {
     it("returns value when within range", () => {
       expect(MathUtil.clamp(5, 0, 10)).toBe(5);

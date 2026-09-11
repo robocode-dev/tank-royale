@@ -15,6 +15,7 @@ import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.events.BotEvent;
 import dev.robocode.tankroyale.botapi.util.MathUtil;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestFactory;
 
 import java.io.FileReader;
@@ -62,6 +63,7 @@ public class SharedTestRunner {
     }
 
     @TestFactory
+    @Tag("Unit")
     Stream<DynamicTest> runSharedTests() throws IOException {
         if (!Files.exists(SHARED_TESTS_DIR)) {
             // Fallback for different execution environments

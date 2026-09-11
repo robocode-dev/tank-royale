@@ -5,11 +5,13 @@ import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.TankColorMode
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import java.awt.Color
 
 class TankColorResolutionTest : StringSpec({
+    tags(Tag("Unit"))
 
     afterTest {
         ConfigSettings.tankColorMode = TankColorMode.BOT_COLORS

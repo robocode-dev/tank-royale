@@ -8,6 +8,7 @@ from robocode_tank_royale.bot_api.base_bot import BaseBot
 from robocode_tank_royale.bot_api.internal.env_vars import EnvVars
 
 
+@pytest.mark.TR_API_BOT_001d
 def test_TR_API_BOT_001d_type_parsing_normalization_team_id_and_initial_position():
     """TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling"""
     # Arrange required base env

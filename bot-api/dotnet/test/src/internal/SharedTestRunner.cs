@@ -17,6 +17,7 @@ using ApiBotInfo = Robocode.TankRoyale.BotApi.BotInfo;
 using ApiBotIntent = Robocode.TankRoyale.Schema.BotIntent;
 
 [TestFixture]
+[Category("Unit")]
 public class SharedTestRunner
 {
     private static string FindSharedTestsDir()

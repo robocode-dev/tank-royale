@@ -6,10 +6,12 @@ from robocode_tank_royale.bot_api import Bot
 
 class MockedServerTest(AbstractBotTest):
 
+    @pytest.mark.Unit
     def test_await_bot_ready(self):
         bot = self.start_bot()
         self.assertTrue(self.server.await_bot_ready(1000))
 
+    @pytest.mark.Unit
     def test_set_bot_state_and_await_tick(self):
         bot = self.start_bot()
         # No need to await game started separately as start_bot does await_bot_ready
@@ -27,6 +29,7 @@ class MockedServerTest(AbstractBotTest):
         reflected_gun_heat = self.await_condition(lambda: abs(bot.gun_heat - new_gun_heat) < 1e-6, 1000)
         self.assertTrue(reflected_gun_heat)
 
+    @pytest.mark.Unit
     def test_set_initial_bot_state(self):
         """Test that set_initial_bot_state properly configures state before bot runs."""
         # Set state before bot starts
@@ -44,6 +47,7 @@ class MockedServerTest(AbstractBotTest):
         reflected_gun_heat = self.await_condition(lambda: abs(bot.gun_heat - initial_gun_heat) < 1e-6, 1000)
         self.assertTrue(reflected_gun_heat, f"Expected gun_heat {initial_gun_heat}, got {bot.gun_heat}")
 
+    @pytest.mark.Unit
     def test_execute_command_and_get_intent(self):
         """Test that property assignment is reflected in the captured bot intent."""
         bot = Bot(self.bot_info, self.server.server_url)
@@ -65,6 +69,7 @@ class MockedServerTest(AbstractBotTest):
         self.assertIsNotNone(intent.turn_rate, "Intent should have turn_rate set")
         self.assertAlmostEqual(intent.turn_rate, -5.0, places=5)
 
+    @pytest.mark.Unit
     def test_reset_bot_intent_event_synchronization(self):
         """Test that reset_bot_intent_event properly synchronizes intent capture."""
         bot = self.start_bot()
@@ -80,6 +85,7 @@ class MockedServerTest(AbstractBotTest):
             intent = self.server.get_bot_intent()
             self.assertIsNotNone(intent, f"Intent {i} should be captured")
 
+    @pytest.mark.Unit
     def test_concurrent_state_access_thread_safety(self):
         """
         Test that concurrent state access from multiple threads is thread-safe.
@@ -156,6 +162,7 @@ class MockedServerTest(AbstractBotTest):
         for t in threads:
             self.assertFalse(t.is_alive(), "Thread should have completed")
 
+    @pytest.mark.Unit
     def test_teardown_completes_within_timeout(self):
         """
         Test that teardown completes within a reasonable time without hanging.

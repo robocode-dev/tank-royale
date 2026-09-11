@@ -1,9 +1,11 @@
 package dev.robocode.tankroyale.gui.util
 
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 class EscapedTextDecoderTest : StringSpec({
+    tags(Tag("Unit"))
     "should handle null input" {
         EscapedTextDecoder.unescape(null) shouldBe null
     }
