@@ -222,7 +222,7 @@ events:
     - {id: M-008, kind: numeric, state: retired, prefix: M, component: "8"}
     - {id: M-009, kind: numeric, state: retired, prefix: M, component: "9"}
     - {id: M-010, kind: numeric, state: retired, prefix: M, component: "10"}
-    - {id: M-011, kind: numeric, state: live, prefix: M, component: "11"}
+    - {id: M-011, kind: numeric, state: retired, prefix: M, component: "11"}
     - {id: M-012, kind: numeric, state: retired, prefix: M, component: "12"}
     - {id: M-013, kind: numeric, state: retired, prefix: M, component: "13"}
     - {id: M-014, kind: numeric, state: live, prefix: M, component: "14"}

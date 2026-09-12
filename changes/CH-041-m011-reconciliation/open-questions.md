@@ -8,4 +8,4 @@ title: Open questions for CH-041
 
 # CH-041 — Open questions
 
-The blocking external dependency is [rumble-client#9](https://github.com/robocode-dev/rumble-client/pull/9), currently open and `MERGEABLE` at hosted head `08edb40460993a7733d3312fe9be2b3d02a37030`; its refreshed build checks are still running. M-011 cannot be marked done until a maintainer merges that pull request. The user explicitly authorized preparing this change while the external base remains unaccepted; the dependency must be re-verified before the permanent status update.
+No blocking external dependency remains. [rumble-client#9](https://github.com/robocode-dev/rumble-client/pull/9) merged on 2026-09-12 as `fec6450da1c881be43f1688c1e7e4a65e7e361fc` after its repaired head passed the hosted checks. The external dependency and both M-011 exit conditions were re-verified before updating the permanent plan status; the remaining work is CH-041 verification and digest.
