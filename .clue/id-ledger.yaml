@@ -222,7 +222,7 @@ events:
     - {id: M-008, kind: numeric, state: retired, prefix: M, component: "8"}
     - {id: M-009, kind: numeric, state: retired, prefix: M, component: "9"}
     - {id: M-010, kind: numeric, state: retired, prefix: M, component: "10"}
-    - {id: M-011, kind: numeric, state: live, prefix: M, component: "11"}
+    - {id: M-011, kind: numeric, state: retired, prefix: M, component: "11"}
     - {id: M-012, kind: numeric, state: retired, prefix: M, component: "12"}
     - {id: M-013, kind: numeric, state: retired, prefix: M, component: "13"}
     - {id: M-014, kind: numeric, state: live, prefix: M, component: "14"}
@@ -245,6 +245,12 @@ events:
     - {id: CH-040-open-questions, kind: opaque, state: retired}
     - {id: CH-040-tasks, kind: opaque, state: retired}
     - {id: CH-041, kind: numeric, state: reserved, prefix: CH, component: "41"}
+    - {id: CH-041, kind: numeric, state: live, prefix: CH, component: "41"}
+    - {id: CH-041-open-questions, kind: opaque, state: live}
+    - {id: CH-041-tasks, kind: opaque, state: live}
+    - {id: CH-041, kind: numeric, state: retired, prefix: CH, component: "41"}
+    - {id: CH-041-open-questions, kind: opaque, state: retired}
+    - {id: CH-041-tasks, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
