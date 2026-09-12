@@ -1,3 +1,11 @@
+---
+id: CH-043-tasks
+type: tasks
+status: open
+links: [M-014]
+title: CH-043 task checklist
+---
+
 - [x] Read `bot-author-guide.md` and `moderator-guide.md` fully against current `rumble-bots`/`rumble-data` behavior; confirm no pre-fix claims remain (no known criterion; editorial confirmation only)
 - [x] Correct `web/docs/rumble/index.md`'s "Current availability" section: the container path now covers ranked `run` and `submit`, not only validation/runtimes/sync
 - [x] Correct `web/docs/rumble/client-guide.md`'s "What works today" section for the same container capability

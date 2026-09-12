@@ -1,5 +1,9 @@
 ---
-links: P-004/M-014
+id: CH-043
+type: change
+status: open
+links: [M-014]
+title: Reconcile Rumble documentation with post-fix behavior
 ---
 
 # CH-043: Reconcile Rumble documentation with post-fix behavior
