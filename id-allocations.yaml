@@ -555,6 +555,11 @@ claims:
       state: reserved
       prefix: CH
       component: "41"
+    - id: CH-042
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "42"
     - id: G-001
       kind: numeric
       state: reserved
