@@ -267,6 +267,14 @@ events:
     - {id: CH-043, kind: numeric, state: retired, prefix: CH, component: "43"}
     - {id: CH-043-open-questions, kind: opaque, state: retired}
     - {id: CH-043-tasks, kind: opaque, state: retired}
+    - {id: CH-044, kind: numeric, state: reserved, prefix: CH, component: "44"}
+    - {id: CH-044, kind: numeric, state: live, prefix: CH, component: "44"}
+    - {id: CH-044-open-questions, kind: opaque, state: live}
+    - {id: CH-044-tasks, kind: opaque, state: live}
+    - {id: M-019, kind: numeric, state: retired, prefix: M, component: "19"}
+    - {id: CH-044, kind: numeric, state: retired, prefix: CH, component: "44"}
+    - {id: CH-044-open-questions, kind: opaque, state: retired}
+    - {id: CH-044-tasks, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
