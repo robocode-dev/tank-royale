@@ -6,9 +6,9 @@ You do not need to own a bot to contribute battles. If you do own one, you can a
 
 ## What works today
 
-The native client can synchronize, run one ranked battle, and submit its result. You currently build it from source because there is no published production client image. The development container image contains all four bot runtimes and can be run with Docker or Podman, but its launcher scripts currently expose only configuration validation, runtime checks, and synchronization. Use the native path below for ranked `run` and `submit` commands.
+The client can synchronize, run one ranked battle, and submit its result, either built from source natively or through its development container. You currently build the client yourself because there is no published production client image. The container image contains all four bot runtimes and can be run with Docker or Podman, including rootless Podman on Linux; its launcher scripts cover configuration validation, runtime checks, synchronization, ranked battles, and result submission. The native path below and the container path in [Container setup](#container-setup) both reach the same commands.
 
-The client accepts a practice-mode configuration, but `--run` currently executes ranked battles only. Use the [Tank Royale GUI](../articles/gui-battle-setup.md) for local practice battles.
+The client also accepts a practice-mode configuration: `--sync` and `--run` both work against local bot sources without a registered client identity. `--submit` rejects practice mode early, since a practice result is never journaled or submitted. Use the [Tank Royale GUI](../articles/gui-battle-setup.md) for local practice battles when you would rather not use the client at all.
 
 ## What you need
 
@@ -50,7 +50,7 @@ Use the same shell for the runtime check, synchronization, and ranked run. `RUMB
 
 ### Container setup
 
-The development image uses the current LTS-first Java 25, .NET 10, Python 3.14, and Node.js 24 lanes, with the Tank Royale API installed in an image-owned Python virtual environment. The container does not use your host Python environment, so the native Python setup above is unnecessary when all client commands run in the container. Exact image pins are maintained in the [Rumble client repository](https://github.com/robocode-dev/rumble-client/blob/main/src/main/resources/runtime-versions.properties) and refreshed by reviewed monthly pull requests. Podman Desktop/WSL2 has been manually verified on Windows; rootless Linux Podman state-directory behavior remains a separate verification target and is not part of CI.
+The development image uses the current LTS-first Java 25, .NET 10, Python 3.14, and Node.js 24 lanes, with the Tank Royale API installed in an image-owned Python virtual environment. The container does not use your host Python environment, so the native Python setup above is unnecessary when all client commands run in the container. Exact image pins are maintained in the [Rumble client repository](https://github.com/robocode-dev/rumble-client/blob/main/src/main/resources/runtime-versions.properties) and refreshed by reviewed monthly pull requests. Podman Desktop/WSL2 on Windows and rootless Podman on Linux have both been manually verified for this image; neither is part of CI. The launcher scripts fully qualify the image's base images and add `--userns=keep-id` for the Podman engine so the bind-mounted `.rumble-client` state directory stays writable under rootless Podman. Rootless Podman also needs the `cpu`, `memory`, and `pids` cgroup controllers delegated to your user session for the launchers' resource limits to apply; recent systemd delegates all three by default on most current Linux distributions, so this is normally a non-issue, but a cgroup- or resource-limit-related failure instead of an application error is the sign to check delegation.
 
 From the `rumble-client` checkout, build the image with Docker or Podman:
 
@@ -78,6 +78,9 @@ Run the supported container phases with the launcher scripts. Docker is the defa
 CONTAINER_ENGINE=podman ./docker/rumble.sh runtimes
 ./docker/rumble.sh validate rumble-client.json rumble-client:dev
 CONTAINER_ENGINE=podman ./docker/rumble.sh sync rumble-client.json rumble-client:dev
+./docker/rumble.sh run rumble-client.json rumble-client:dev
+export RUMBLE_CLIENT_TOKEN='<your token>'
+./docker/rumble.sh submit rumble-client.json rumble-client:dev
 ```
 
 ```powershell
@@ -85,9 +88,12 @@ CONTAINER_ENGINE=podman ./docker/rumble.sh sync rumble-client.json rumble-client
 .\docker\rumble.ps1 runtimes -Engine podman
 .\docker\rumble.ps1 validate rumble-client.json rumble-client:dev -Engine podman
 .\docker\rumble.ps1 sync rumble-client.json rumble-client:dev -Engine podman
+.\docker\rumble.ps1 run rumble-client.json rumble-client:dev -Engine podman
+$env:RUMBLE_CLIENT_TOKEN = '<your token>'
+.\docker\rumble.ps1 submit rumble-client.json rumble-client:dev -Engine podman
 ```
 
-The launcher mounts the configuration read-only and keeps `.rumble-client` writable because synchronization creates the immutable bot cache and the client stores journals and replay evidence there. Runtime checks run with no network; synchronization needs network access to the configured repositories. The current launcher does not expose ranked `run` or `submit`, so use the native commands in steps 5 and 6 for those operations.
+The launcher mounts the configuration read-only and keeps `.rumble-client` writable because synchronization creates the immutable bot cache and the client stores journals and replay evidence there. `runtimes` runs with no network; `validate`, `sync`, `run`, and `submit` need network access, since `run` re-synchronizes before executing a battle and `submit` reaches the GitHub Issues API. This covers the same ranked and practice-mode commands as the native path in steps 4 through 6 below; use whichever path fits your setup.
 
 When a containerized Battle Runner boots bot archives directly, mount a bot root directory rather than a zip file. Java and Python archives can remain read-only. C# and TypeScript first-run dependency setup may write files and change permissions, so copy those archives into writable container storage before booting them; this avoids `EPERM` errors on Windows bind mounts. If Podman Desktop reports `ssh-keygen` is missing, enable Windows OpenSSH and add `C:\Windows\System32\OpenSSH` to the user `PATH`, then restart the terminal and Podman Desktop.
 
