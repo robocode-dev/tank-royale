@@ -1,0 +1,7 @@
+- [ ] Read `bot-author-guide.md` and `moderator-guide.md` fully against current `rumble-bots`/`rumble-data` behavior; confirm no pre-fix claims remain (no known criterion; editorial confirmation only)
+- [ ] Correct `web/docs/rumble/index.md`'s "Current availability" section: the container path now covers ranked `run` and `submit`, not only validation/runtimes/sync
+- [ ] Correct `web/docs/rumble/client-guide.md`'s "What works today" section for the same container capability
+- [ ] Correct `web/docs/rumble/client-guide.md`'s practice-mode claim: `--sync` and `--run` work in practice mode against local bot sources; only `--submit` rejects it
+- [ ] Correct `web/docs/rumble/client-guide.md`'s rootless-Podman claim: state-directory writability is verified end to end, with the cgroups v2 delegation caveat documented
+- [ ] Add the container-path steps for ranked `run` and `submit` alongside the existing native steps 5 and 6 in `client-guide.md`
+- [ ] Update `docs/plans/P-004-rumble-hardening.md`: mark M-014 `done` with its evidence
