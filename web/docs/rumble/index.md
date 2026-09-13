@@ -24,6 +24,7 @@ The cycle never really ends. A bot that dominates today may meet a smarter oppon
 | Enter my bot in the rankings | [Submit a bot](bot-author-guide.md) |
 | Donate computer time and run ranked battles | [Run a Rumble client](client-guide.md) |
 | See which bots are winning | [Open the live dashboard](https://robocode-dev.github.io/rumble-data/) |
+| Understand APS and ranking history | [Read how rankings work](rankings.md) |
 | Help review submissions and keep the competition fair | [Moderate the Rumble](moderator-guide.md) |
 
 You can submit a bot without running a client, and you can run a client without owning a bot. Many competitors do both because the client gives matchups involving their own bots priority when more samples are needed.
@@ -60,15 +61,15 @@ A matchup is a set of opponents that fought each other. One completed battle is 
 
 ### Rankings and APS
 
-The main ranking number is APS, or Average Percentage Score. For each matchup, Rumble calculates the percentage of the total score earned by a bot or team. It averages repeated battles of that matchup, then averages across all of the entry's matchups. Higher APS is better.
+The main ranking number is APS, or Average Percentage Score. Rumble first averages repeated battles within each exact participant matchup, then gives every distinct matchup equal weight in the final average. [Read the ranking guide](rankings.md) for the precise formula, an uneven-sample example, and the eligibility rules.
 
-A new bot or version starts with no battle samples, so its first position can move sharply. The ranking settles as it fights more opponents. When a game-observable engine change starts a new behavior version, the current leaderboard uses only results from that new epoch. Earlier results stay in the public data history, but they are not mixed with battles played under different rules.
+A new active bot version starts at APS 0 with no battle samples. Its superseded version and every matchup containing that old identity stop affecting the current ranking. When a game-observable engine change starts a new behavior version, the current leaderboard likewise uses only results from the new epoch. Immutable month-end snapshots preserve earlier published rankings.
 
 ## When rankings update
 
-An incoming result submission starts the ingestion workflow as soon as GitHub applies its `result-submission` label. A scheduled sweep also runs at 17 and 47 minutes past every UTC hour in case an event was delayed. Accepted results regenerate the leaderboard, and GitHub Pages publishes the changed dashboard after the data commit. In normal operation, a result appears within minutes; the scheduled sweep is the fallback, not a guaranteed deadline.
+An incoming result submission starts the ingestion workflow as soon as GitHub applies its `result-submission` label. A scheduled sweep also runs at 17 and 47 minutes past every UTC hour in case an event was delayed. Accepted results regenerate the leaderboard, and changed ranking data explicitly requests a dashboard deployment. An hourly Pages reconciliation repairs a missed deployment without republishing an unchanged site.
 
-The bot catalog synchronizes at 23 minutes past every UTC hour. A newly merged bot normally reaches the dashboard after that synchronization, then waits for clients to produce its first ranked battles.
+The bot catalog is checked at 23 minutes past every UTC hour. An unchanged catalog stops without aggregation or a catalog-driven deployment; a month-end snapshot can still make that run publish history. A newly merged bot or version normally reaches the dashboard after a changed check, then waits for clients to produce its first ranked battles. The dashboard timestamp reports when ranking data changed, not when automation last ran.
 
 ## Current availability
 
