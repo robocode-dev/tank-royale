@@ -44,7 +44,7 @@ A battle contributes to the current leaderboard only when all of these condition
 
 The complete participant set matters. When one participant version becomes inactive, that old matchup stops affecting the live APS of every participant in it.
 
-For `1v1`, a matchup contains two active individual bots. For TwinDuel, it contains two eligible team entries whose members are active and do not overlap. For Melee, the complete set of active individual participants identifies the matchup.
+For `1v1`, a matchup contains two active individual bots. For TwinDuel, it contains two active team entries. A team entry is only listed, and a TwinDuel result is only accepted, when the team's members are active and the two teams share no members. For Melee, the complete set of active individual participants identifies the matchup.
 
 ## What happens when a bot gets a new version
 
