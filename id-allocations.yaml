@@ -910,6 +910,11 @@ claims:
       state: reserved
       prefix: RDA
       component: "4"
+    - id: RDA-005
+      kind: numeric
+      state: reserved
+      prefix: RDA
+      component: "5"
     - id: TASKS-001
       kind: numeric
       state: reserved
@@ -1001,11 +1006,11 @@ high-water:
       state: reserved
       prefix: PDR
       component: "13"
-    - id: RBC-004
+    - id: RBC-005
       kind: numeric
       state: reserved
       prefix: RBC
-      component: "4"
+      component: "5"
     - id: RCL-011
       kind: numeric
       state: reserved
