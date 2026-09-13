@@ -50,6 +50,7 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     Given the normalized local catalog and the reviewed source catalog
     When the scheduled synchronization checks the source
     Then a changed bot or version is stored and regenerated into current rankings
-    And identical content is not rewritten, aggregated, committed, or deployed
+    And identical content is not rewritten or aggregated
+    And, when no independent publication state changed, no commit or deployment occurs
     And catalog and result writers cannot overlap their publication sections
 ```

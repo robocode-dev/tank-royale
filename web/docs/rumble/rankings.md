@@ -66,7 +66,7 @@ Late accepted results update the current cumulative ranking. They do not change 
 
 Result submissions normally trigger ingestion immediately. Scheduled result sweeps run at 17 and 47 minutes past every UTC hour if an event was delayed.
 
-The reviewed bot catalog is checked at 23 minutes past every UTC hour. When its normalized content is unchanged, `rumble-data` skips aggregation, commit, and deployment. A new bot or version changes the catalog and triggers regeneration.
+The reviewed bot catalog is checked at 23 minutes past every UTC hour. When its normalized content is unchanged, `rumble-data` skips aggregation and makes no catalog-driven commit or deployment. A month-end snapshot created by the same run is an independent publication change and may still be committed and deployed. A new bot or version changes the catalog and triggers regeneration.
 
 Changed ranking data explicitly requests a dashboard deployment. A separate Pages reconciliation runs at 41 minutes past every UTC hour and deploys only when the current site differs from the latest successful deployment. GitHub Actions schedules can run late, so these times are operating cadences rather than deadlines.
 

@@ -69,7 +69,7 @@ A new active bot version starts at APS 0 with no battle samples. Its superseded 
 
 An incoming result submission starts the ingestion workflow as soon as GitHub applies its `result-submission` label. A scheduled sweep also runs at 17 and 47 minutes past every UTC hour in case an event was delayed. Accepted results regenerate the leaderboard, and changed ranking data explicitly requests a dashboard deployment. An hourly Pages reconciliation repairs a missed deployment without republishing an unchanged site.
 
-The bot catalog is checked at 23 minutes past every UTC hour. An unchanged catalog stops without aggregation or deployment. A newly merged bot or version normally reaches the dashboard after a changed check, then waits for clients to produce its first ranked battles. The dashboard timestamp reports when ranking data changed, not when automation last ran.
+The bot catalog is checked at 23 minutes past every UTC hour. An unchanged catalog stops without aggregation or a catalog-driven deployment; a month-end snapshot can still make that run publish history. A newly merged bot or version normally reaches the dashboard after a changed check, then waits for clients to produce its first ranked battles. The dashboard timestamp reports when ranking data changed, not when automation last ran.
 
 ## Current availability
 
