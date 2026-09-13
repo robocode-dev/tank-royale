@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +22,16 @@ class BaseBotConstructorTypeParsingTest extends AbstractBotTest {
 
     @SystemStub
     final EnvironmentVariables envVars = new EnvironmentVariables(
-            SERVER_URL, "ws://localhost:" + MockedServer.PORT,
+            SERVER_URL, "ws://localhost:0",
             BOT_NAME, "TypeParseBot",
             BOT_VERSION, "1.0",
             BOT_AUTHORS, "Alice, Bob"
     );
+
+    @BeforeEach
+    void setServerUrl() {
+        envVars.set(SERVER_URL, server.getServerUri().toString());
+    }
 
     @Test
     @DisplayName("TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling")
@@ -36,7 +42,7 @@ class BaseBotConstructorTypeParsingTest extends AbstractBotTest {
         envVars.set(BOT_NAME, "TypeParseBot");
         envVars.set(BOT_VERSION, "1.0");
         envVars.set(BOT_AUTHORS, "Alice, Bob");
-        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
+        envVars.set(SERVER_URL, "ws://localhost:" + server.getPort());
         envVars.set("TEAM_ID", "  42  ");
         envVars.set(BOT_INITIAL_POS, "  10, 20, 30  ");
 

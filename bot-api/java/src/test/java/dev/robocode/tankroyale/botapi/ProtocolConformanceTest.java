@@ -29,7 +29,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
     @Test
     @Tag("TR-API-TCK-007")
     void tck007_botHandshake_containsCorrectFields() {
-        startAsync(new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {});
+        startAsync(new BaseBot(botInfo, server.getServerUri()) {});
         assertThat(server.awaitBotHandshake(3000)).isTrue();
 
         var handshake = server.getBotHandshake();
@@ -47,7 +47,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
     @Test
     @Tag("TR-API-TCK-008")
     void tck008_botSendsBotReadyAfterGameStarted() {
-        startAsync(new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {});
+        startAsync(new BaseBot(botInfo, server.getServerUri()) {});
         assertThat(server.awaitBotReadyMessage(3000)).isTrue();
     }
 
@@ -61,7 +61,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
         var latch = new CountDownLatch(1);
         var roundNumber = new AtomicReference<Integer>();
 
-        startAsync(new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        startAsync(new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onRoundStarted(RoundStartedEvent event) {
                 roundNumber.set(event.getRoundNumber());
@@ -84,7 +84,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
         var capturedRound = new AtomicReference<Integer>();
         var capturedTurn = new AtomicReference<Integer>();
 
-        startAsync(new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        startAsync(new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onRoundEnded(RoundEndedEvent event) {
                 capturedRound.set(event.getRoundNumber());
@@ -111,7 +111,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
         var latch = new CountDownLatch(1);
         var capturedRounds = new AtomicReference<Integer>();
 
-        startAsync(new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        startAsync(new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onGameEnded(GameEndedEvent event) {
                 capturedRounds.set(event.getNumberOfRounds());
@@ -136,7 +136,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
         var latch = new CountDownLatch(1);
         var capturedTurn = new AtomicReference<Integer>();
 
-        var bot = new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        var bot = new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onSkippedTurn(SkippedTurnEvent event) {
                 capturedTurn.set(event.getTurnNumber());
@@ -165,7 +165,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
         var latch = new CountDownLatch(1);
         var capturedMessage = new AtomicReference<String>();
 
-        startAsync(new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        startAsync(new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onConnectionError(ConnectionErrorEvent event) {
                 capturedMessage.set(event.getError().getMessage());
@@ -189,7 +189,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
     void tck014_botDeathEventSelf_triggersOnDeath() throws InterruptedException {
         var latch = new CountDownLatch(1);
 
-        var bot = new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        var bot = new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onDeath(DeathEvent event) {
                 latch.countDown();
@@ -218,7 +218,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
         var latch = new CountDownLatch(1);
         var capturedId = new AtomicReference<Integer>();
 
-        var bot = new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        var bot = new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onBotDeath(BotDeathEvent event) {
                 capturedId.set(event.getVictimId());
@@ -248,7 +248,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
     void tck016_bulletHitBotEventSelf_triggersOnHitByBullet() throws InterruptedException {
         var latch = new CountDownLatch(1);
 
-        var bot = new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        var bot = new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onHitByBullet(HitByBulletEvent event) {
                 latch.countDown();
@@ -275,7 +275,7 @@ class ProtocolConformanceTest extends AbstractBotTest {
     void tck017_bulletHitBotEventOther_triggersOnBulletHit() throws InterruptedException {
         var latch = new CountDownLatch(1);
 
-        var bot = new BaseBot(botInfo, java.net.URI.create(MockedServer.SERVER_URL)) {
+        var bot = new BaseBot(botInfo, server.getServerUri()) {
             @Override
             public void onBulletHit(BulletHitBotEvent event) {
                 latch.countDown();

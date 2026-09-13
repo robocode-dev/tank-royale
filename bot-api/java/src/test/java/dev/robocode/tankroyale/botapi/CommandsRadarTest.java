@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import test_utils.MockedServer;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
@@ -21,6 +22,7 @@ class CommandsRadarTest extends AbstractBotTest {
 
     private static class RadarTestBot extends Bot {
         private final AtomicBoolean blockingRescanRequested = new AtomicBoolean();
+        private final ConcurrentLinkedQueue<Runnable> pendingCommands = new ConcurrentLinkedQueue<>();
 
         RadarTestBot() {
             super(botInfo, MockedServer.getServerUrl());
@@ -32,6 +34,10 @@ class CommandsRadarTest extends AbstractBotTest {
                 if (blockingRescanRequested.compareAndSet(true, false)) {
                     rescan();
                 } else {
+                    var command = pendingCommands.poll();
+                    if (command != null) {
+                        command.run();
+                    }
                     go();
                 }
             }
@@ -39,6 +45,10 @@ class CommandsRadarTest extends AbstractBotTest {
 
         void requestBlockingRescan() {
             blockingRescanRequested.set(true);
+        }
+
+        void requestCommand(Runnable command) {
+            pendingCommands.add(command);
         }
     }
 
@@ -89,7 +99,7 @@ class CommandsRadarTest extends AbstractBotTest {
     void testRescanIntent() {
         var bot = startRadarBot();
 
-        bot.setRescan();
+        bot.requestCommand(bot::setRescan);
         awaitExpectedIntent(intent -> Boolean.TRUE.equals(intent.getRescan()));
     }
 
@@ -108,7 +118,7 @@ class CommandsRadarTest extends AbstractBotTest {
     void testAdjustRadarBodyTrue() {
         var bot = startRadarBot();
 
-        bot.setAdjustRadarForBodyTurn(true);
+        bot.requestCommand(() -> bot.setAdjustRadarForBodyTurn(true));
         awaitExpectedIntent(intent -> Boolean.TRUE.equals(intent.getAdjustRadarForBodyTurn()));
     }
 
@@ -118,10 +128,10 @@ class CommandsRadarTest extends AbstractBotTest {
         var bot = startRadarBot();
 
         // Set to true first, then to false
-        bot.setAdjustRadarForBodyTurn(true);
+        bot.requestCommand(() -> bot.setAdjustRadarForBodyTurn(true));
         awaitExpectedIntent(intent -> Boolean.TRUE.equals(intent.getAdjustRadarForBodyTurn()));
 
-        bot.setAdjustRadarForBodyTurn(false);
+        bot.requestCommand(() -> bot.setAdjustRadarForBodyTurn(false));
         awaitExpectedIntent(intent -> Boolean.FALSE.equals(intent.getAdjustRadarForBodyTurn()));
     }
 
@@ -130,7 +140,7 @@ class CommandsRadarTest extends AbstractBotTest {
     void testAdjustRadarGunTrue() {
         var bot = startRadarBot();
 
-        bot.setAdjustRadarForGunTurn(true);
+        bot.requestCommand(() -> bot.setAdjustRadarForGunTurn(true));
         awaitExpectedIntent(intent -> Boolean.TRUE.equals(intent.getAdjustRadarForGunTurn()));
     }
 
@@ -140,10 +150,10 @@ class CommandsRadarTest extends AbstractBotTest {
         var bot = startRadarBot();
 
         // Set to true first, then to false
-        bot.setAdjustRadarForGunTurn(true);
+        bot.requestCommand(() -> bot.setAdjustRadarForGunTurn(true));
         awaitExpectedIntent(intent -> Boolean.TRUE.equals(intent.getAdjustRadarForGunTurn()));
 
-        bot.setAdjustRadarForGunTurn(false);
+        bot.requestCommand(() -> bot.setAdjustRadarForGunTurn(false));
         awaitExpectedIntent(intent -> Boolean.FALSE.equals(intent.getAdjustRadarForGunTurn()));
     }
 }

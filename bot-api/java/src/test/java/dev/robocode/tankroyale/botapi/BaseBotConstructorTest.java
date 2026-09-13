@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,7 +67,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
 
     @SystemStub
     final static EnvironmentVariables envVars = new EnvironmentVariables(
-            SERVER_URL, "ws://localhost:" + MockedServer.PORT,
+            SERVER_URL, "ws://localhost:0",
             BOT_NAME, "TestBot",
             BOT_VERSION, "1.0",
             BOT_AUTHORS, "Author 1, Author 2",
@@ -78,6 +79,11 @@ class BaseBotConstructorTest extends AbstractBotTest {
             BOT_PROG_LANG, "Java 19"
     );
 
+    @BeforeEach
+    void setServerUrl() {
+        envVars.set(SERVER_URL, server.getServerUri().toString());
+    }
+
     @Test
     void givenAllRequiredEnvVarsSet_whenCallingDefaultConstructor_thenBotIsCreated() {
         new TestBot();
@@ -87,7 +93,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void givenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotIsCreatedButHandshakeWillFail() throws InterruptedException {
         envVars.set(BOT_NAME, null);
-        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
+        envVars.set(SERVER_URL, "ws://localhost:" + server.getPort());
         try {
             var bot = new TestBot();
             startAsync(bot);
@@ -104,7 +110,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void givenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotIsCreatedButHandshakeWillFail() throws InterruptedException {
         envVars.set(BOT_VERSION, null);
-        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
+        envVars.set(SERVER_URL, "ws://localhost:" + server.getPort());
         try {
             var bot = new TestBot();
             startAsync(bot);
@@ -121,7 +127,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void givenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotIsCreatedButHandshakeWillFail() throws InterruptedException {
         envVars.set(BOT_AUTHORS, null);
-        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
+        envVars.set(SERVER_URL, "ws://localhost:" + server.getPort());
         try {
             var bot = new TestBot();
             startAsync(bot);
@@ -176,14 +182,14 @@ class BaseBotConstructorTest extends AbstractBotTest {
 
     @Test
     void givenServerUrlWithValidPortAsParameter_whenCallingConstructor_thenBotIsConnectingToServer() throws URISyntaxException {
-        var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT)); // valid port
+        var bot = new TestBot(null, new URI("ws://localhost:" + server.getPort())); // valid port
         startAsync(bot);
         assertThat(server.awaitConnection(5000)).isTrue();
     }
 
     @Test
     void givenServerUrlWithInvalidPortAsParameter_whenCallingConstructor_thenBotIsNotConnectingToServer() throws URISyntaxException {
-        var bot = new TestBot(null, new URI("ws://localhost:" + (MockedServer.PORT + 1))); // invalid port
+        var bot = new TestBot(null, new URI("ws://localhost:" + (server.getPort() + 1))); // invalid port
         startAsync(bot);
         assertThat(server.awaitConnection(5000)).isFalse();
     }
@@ -191,7 +197,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void givenServerSecretConstructor_whenCallingConstructor_thenReturnedBotHandshakeContainsSecret() throws URISyntaxException {
         var secret = UUID.randomUUID().toString();
-        var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT), secret);
+        var bot = new TestBot(null, new URI("ws://localhost:" + server.getPort()), secret);
         startAsync(bot);
         awaitBotHandshake();
         var botHandshake = server.getBotHandshake();
@@ -216,7 +222,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @ParameterizedTest
     @ValueSource(strings = {"file", "dict", "ftp", "gopher"})
     void givenUnknownScheme_whenCallingConstructor_thenThrowException(String scheme) throws Exception {
-        var bot = new TestBot(null, new URI(scheme + "://localhost:" + MockedServer.PORT));
+        var bot = new TestBot(null, new URI(scheme + "://localhost:" + server.getPort()));
         try {
             startAsync(bot).join();
         } catch (Exception e) {
@@ -228,12 +234,12 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void test_TR_API_BOT_001c_precedence_explicit_args_over_env_and_sysprop() throws Exception {
         // ENV set to invalid port
-        envVars.set(SERVER_URL, "ws://localhost:" + (MockedServer.PORT + 1));
+        envVars.set(SERVER_URL, "ws://localhost:" + (server.getPort() + 1));
         // System property set to invalid as well
-        System.setProperty(SERVER_URL_PROPERTY_KEY, "ws://localhost:" + (MockedServer.PORT + 2));
+        System.setProperty(SERVER_URL_PROPERTY_KEY, "ws://localhost:" + (server.getPort() + 2));
         try {
-            // Explicit arg should win and connect to MockedServer.PORT
-            var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT));
+            // Explicit arg should win and connect to the mocked server.
+            var bot = new TestBot(null, new URI("ws://localhost:" + server.getPort()));
             startAsync(bot);
             assertThat(server.awaitConnection(5000)).isTrue();
         } finally {
@@ -244,9 +250,9 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void test_TR_API_BOT_001c_precedence_sysprop_over_env_when_no_explicit_arg() {
         // ENV set to invalid port
-        envVars.set(SERVER_URL, "ws://localhost:" + (MockedServer.PORT + 1));
+        envVars.set(SERVER_URL, "ws://localhost:" + (server.getPort() + 1));
         // System property set to valid port
-        System.setProperty(SERVER_URL_PROPERTY_KEY, "ws://localhost:" + MockedServer.PORT);
+        System.setProperty(SERVER_URL_PROPERTY_KEY, "ws://localhost:" + server.getPort());
         try {
             var bot = new TestBot(); // no explicit args
             startAsync(bot);

@@ -76,8 +76,8 @@ public class BaseBotConstructorTest : AbstractBotTest
         ClearEnvVar(BotName);
         var bot = new TestBotWithErrorCapture();
         StartAsync(bot);
-        Assert.That(Server.AwaitConnection(5_000), Is.True);
-        var error = bot.AwaitError();
+        Assert.That(Server.AwaitConnection(CiWaitMs), Is.True);
+        var error = bot.AwaitError(CiWaitMs);
         Assert.That(error, Is.Not.Null);
         Assert.That(error?.Message, Does.Contain("Required bot property 'name' is missing"));
     }
@@ -88,8 +88,8 @@ public class BaseBotConstructorTest : AbstractBotTest
         ClearEnvVar(BotVersion);
         var bot = new TestBotWithErrorCapture();
         StartAsync(bot);
-        Assert.That(Server.AwaitConnection(5_000), Is.True);
-        var error = bot.AwaitError();
+        Assert.That(Server.AwaitConnection(CiWaitMs), Is.True);
+        var error = bot.AwaitError(CiWaitMs);
         Assert.That(error, Is.Not.Null);
         Assert.That(error?.Message, Does.Contain("Required bot property 'version' is missing"));
     }
@@ -100,8 +100,8 @@ public class BaseBotConstructorTest : AbstractBotTest
         ClearEnvVar(BotAuthors);
         var bot = new TestBotWithErrorCapture();
         StartAsync(bot);
-        Assert.That(Server.AwaitConnection(5_000), Is.True);
-        var error = bot.AwaitError();
+        Assert.That(Server.AwaitConnection(CiWaitMs), Is.True);
+        var error = bot.AwaitError(CiWaitMs);
         Assert.That(error, Is.Not.Null);
         Assert.That(error?.Message, Does.Contain("Required bot property 'authors' is missing"));
     }

@@ -21,8 +21,7 @@ import static dev.robocode.tankroyale.schema.Message.Type.*;
 
 public final class MockedServer {
 
-    public static final int PORT = findAvailablePort();
-    public static final String SERVER_URL = "ws://localhost:" + PORT;
+    private static final ThreadLocal<MockedServer> currentServer = new ThreadLocal<>();
 
     public static final String SESSION_ID = "123abc";
     public static final String NAME = MockedServer.class.getSimpleName();
@@ -75,7 +74,8 @@ public final class MockedServer {
     private Double radarDirectionMinLimit;
     private Double radarDirectionMaxLimit;
 
-    private final WebSocketServerImpl server = new WebSocketServerImpl();
+    private final int port;
+    private final WebSocketServerImpl server;
 
     private final CountDownLatch startedLatch = new CountDownLatch(1);
     private final CountDownLatch openedLatch = new CountDownLatch(1);
@@ -93,12 +93,30 @@ public final class MockedServer {
     private volatile BotIntent botIntent;
 
 
+    public MockedServer() {
+        port = findAvailablePort();
+        server = new WebSocketServerImpl(port);
+        currentServer.set(this);
+    }
+
     public static URI getServerUrl() {
+        var server = currentServer.get();
+        if (server == null) {
+            throw new IllegalStateException("MockedServer has not been created for this test thread");
+        }
+        return server.getServerUri();
+    }
+
+    public URI getServerUri() {
         try {
-            return new URI(SERVER_URL);
+            return new URI("ws://localhost:" + port);
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public void start() {
@@ -607,8 +625,8 @@ public final class MockedServer {
 
     private class WebSocketServerImpl extends WebSocketServer {
 
-        public WebSocketServerImpl() {
-            super(new InetSocketAddress(PORT));
+        public WebSocketServerImpl(int port) {
+            super(new InetSocketAddress(port));
             setReuseAddr(true);
         }
 
