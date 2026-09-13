@@ -2,11 +2,13 @@
 
 import pytest
 import threading
-import time
 import unittest
 
 from tests.test_utils.mocked_server import MockedServer
 from tests.test_utils.test_bot_factory import TestBotBuilder, BotBehavior
+
+
+CALLBACK_TIMEOUT_SECONDS = 5.0
 
 
 class TestBotBuilderTest(unittest.TestCase):
@@ -76,8 +78,7 @@ class TestBotBuilderTest(unittest.TestCase):
             # Wait for bot to be ready and receive tick
             self.assertTrue(self.server.await_bot_ready(2000))
 
-            # Give time for tick callback to be invoked
-            self.assertTrue(tick_called.wait(timeout=1.0))
+            self.assertTrue(tick_called.wait(timeout=CALLBACK_TIMEOUT_SECONDS))
         finally:
             # Cleanup
             self.server.stop()
@@ -100,8 +101,7 @@ class TestBotBuilderTest(unittest.TestCase):
             # Wait for bot to be ready
             self.assertTrue(self.server.await_bot_ready(2000))
 
-            # Give time for run callback to be invoked
-            self.assertTrue(run_called.wait(timeout=1.0))
+            self.assertTrue(run_called.wait(timeout=CALLBACK_TIMEOUT_SECONDS))
         finally:
             # Cleanup
             self.server.stop()
@@ -146,8 +146,7 @@ class TestBotBuilderTest(unittest.TestCase):
             # Wait for bot to be ready and receive tick
             self.assertTrue(self.server.await_bot_ready(2000))
 
-            # Give time for tick callback to be invoked
-            self.assertTrue(custom_tick_handled.wait(timeout=1.0))
+            self.assertTrue(custom_tick_handled.wait(timeout=CALLBACK_TIMEOUT_SECONDS))
         finally:
             # Cleanup
             self.server.stop()

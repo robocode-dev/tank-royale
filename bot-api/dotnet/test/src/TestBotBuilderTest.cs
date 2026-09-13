@@ -15,6 +15,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 public class TestBotBuilderTest
 {
     private const int BotReadyTimeoutMs = 10_000;
+    private const int CallbackTimeoutMs = 5_000;
 
     private MockedServer _server = null!;
 
@@ -82,10 +83,10 @@ public class TestBotBuilderTest
     [Timeout(15000)]
     public void TestOnTickCallback()
     {
-        var tickCalled = false;
+        using var tickCalled = new ManualResetEventSlim(false);
 
         var bot = TestBotBuilder.Create()
-            .OnTick(_ => tickCalled = true)
+            .OnTick(_ => tickCalled.Set())
             .Build(_server.ServerUrl);
 
         // Start bot in separate thread
@@ -97,10 +98,7 @@ public class TestBotBuilderTest
             // Wait for bot to be ready and receive tick
             Assert.That(_server.AwaitBotReady(BotReadyTimeoutMs), Is.True);
 
-            // Give time for tick callback to be invoked
-            Thread.Sleep(100);
-
-            Assert.That(tickCalled, Is.True);
+            Assert.That(tickCalled.Wait(CallbackTimeoutMs), Is.True, "Tick callback was not invoked");
         }
         finally
         {
@@ -115,10 +113,10 @@ public class TestBotBuilderTest
     [Timeout(15000)]
     public void TestOnRunCallback()
     {
-        var runCalled = false;
+        using var runCalled = new ManualResetEventSlim(false);
 
         var bot = TestBotBuilder.Create()
-            .OnRun(() => runCalled = true)
+            .OnRun(runCalled.Set)
             .Build(_server.ServerUrl);
 
         // Start bot in separate thread
@@ -130,10 +128,7 @@ public class TestBotBuilderTest
             // Wait for bot to be ready
             Assert.That(_server.AwaitBotReady(BotReadyTimeoutMs), Is.True);
 
-            // Give time for run callback to be invoked
-            Thread.Sleep(100);
-
-            Assert.That(runCalled, Is.True);
+            Assert.That(runCalled.Wait(CallbackTimeoutMs), Is.True, "Run callback was not invoked");
         }
         finally
         {
@@ -167,11 +162,11 @@ public class TestBotBuilderTest
     [Timeout(15000)]
     public void TestCustomBehavior()
     {
-        var customTickHandled = false;
+        using var customTickHandled = new ManualResetEventSlim(false);
 
         var bot = TestBotBuilder.Create()
             .WithBehavior(TestBotBuilder.BotBehavior.Custom)
-            .OnTick(_ => customTickHandled = true)
+            .OnTick(_ => customTickHandled.Set())
             .Build(_server.ServerUrl);
 
         // Start bot in separate thread
@@ -183,10 +178,7 @@ public class TestBotBuilderTest
             // Wait for bot to be ready and receive tick
             Assert.That(_server.AwaitBotReady(BotReadyTimeoutMs), Is.True);
 
-            // Give time for tick callback to be invoked
-            Thread.Sleep(100);
-
-            Assert.That(customTickHandled, Is.True);
+            Assert.That(customTickHandled.Wait(CallbackTimeoutMs), Is.True, "Custom tick callback was not invoked");
         }
         finally
         {

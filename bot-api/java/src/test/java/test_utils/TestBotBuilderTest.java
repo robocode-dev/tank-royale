@@ -7,7 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit tests for TestBotBuilder.
  */
 class TestBotBuilderTest {
+
+    private static final int CALLBACK_TIMEOUT_MS = 5_000;
 
     private MockedServer server;
 
@@ -80,54 +83,50 @@ class TestBotBuilderTest {
     @Test
     @DisplayName("TestBotBuilder onTick callback is invoked")
     void testOnTickCallback() throws InterruptedException {
-        AtomicBoolean tickCalled = new AtomicBoolean(false);
+        CountDownLatch tickCalled = new CountDownLatch(1);
 
         Bot bot = TestBotBuilder.create()
-                .onTick(e -> tickCalled.set(true))
+                .onTick(e -> tickCalled.countDown())
                 .build();
 
         // Start bot in separate thread
         Thread botThread = new Thread(bot::start);
         botThread.start();
 
-        // Wait for bot to be ready and receive tick
-        assertThat(server.awaitBotReady(2000)).isTrue();
+        try {
+            // Wait for bot to be ready and receive tick
+            assertThat(server.awaitBotReady(2000)).isTrue();
 
-        // Give time for tick callback to be invoked
-        Thread.sleep(100);
-
-        assertThat(tickCalled.get()).isTrue();
-
-        // Cleanup
-        botThread.interrupt();
-        botThread.join(1000);
+            assertThat(tickCalled.await(CALLBACK_TIMEOUT_MS, TimeUnit.MILLISECONDS)).isTrue();
+        } finally {
+            botThread.interrupt();
+            botThread.join(1000);
+        }
     }
 
     @Tag("Unit")
     @Test
     @DisplayName("TestBotBuilder onRun callback is invoked")
     void testOnRunCallback() throws InterruptedException {
-        AtomicBoolean runCalled = new AtomicBoolean(false);
+        CountDownLatch runCalled = new CountDownLatch(1);
 
         Bot bot = TestBotBuilder.create()
-                .onRun(() -> runCalled.set(true))
+                .onRun(runCalled::countDown)
                 .build();
 
         // Start bot in separate thread
         Thread botThread = new Thread(bot::start);
         botThread.start();
 
-        // Wait for bot to be ready
-        assertThat(server.awaitBotReady(2000)).isTrue();
+        try {
+            // Wait for bot to be ready
+            assertThat(server.awaitBotReady(2000)).isTrue();
 
-        // Give time for run callback to be invoked
-        Thread.sleep(100);
-
-        assertThat(runCalled.get()).isTrue();
-
-        // Cleanup
-        botThread.interrupt();
-        botThread.join(1000);
+            assertThat(runCalled.await(CALLBACK_TIMEOUT_MS, TimeUnit.MILLISECONDS)).isTrue();
+        } finally {
+            botThread.interrupt();
+            botThread.join(1000);
+        }
     }
 
     @Tag("Unit")
@@ -153,28 +152,26 @@ class TestBotBuilderTest {
     @Test
     @DisplayName("TestBotBuilder custom behavior relies on callbacks only")
     void testCustomBehavior() throws InterruptedException {
-        AtomicBoolean customTickHandled = new AtomicBoolean(false);
+        CountDownLatch customTickHandled = new CountDownLatch(1);
 
         Bot bot = TestBotBuilder.create()
                 .withBehavior(TestBotBuilder.BotBehavior.CUSTOM)
-                .onTick(e -> customTickHandled.set(true))
+                .onTick(e -> customTickHandled.countDown())
                 .build();
 
         // Start bot in separate thread
         Thread botThread = new Thread(bot::start);
         botThread.start();
 
-        // Wait for bot to be ready and receive tick
-        assertThat(server.awaitBotReady(2000)).isTrue();
+        try {
+            // Wait for bot to be ready and receive tick
+            assertThat(server.awaitBotReady(2000)).isTrue();
 
-        // Give time for tick callback to be invoked
-        Thread.sleep(100);
-
-        assertThat(customTickHandled.get()).isTrue();
-
-        // Cleanup
-        botThread.interrupt();
-        botThread.join(1000);
+            assertThat(customTickHandled.await(CALLBACK_TIMEOUT_MS, TimeUnit.MILLISECONDS)).isTrue();
+        } finally {
+            botThread.interrupt();
+            botThread.join(1000);
+        }
     }
 
     @Tag("Unit")
