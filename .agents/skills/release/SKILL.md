@@ -77,6 +77,18 @@ Determine whether you are running on Windows or Unix/macOS. This affects the Gra
 
 Print: `"📋 Platform: Windows"` or `"📋 Platform: Unix/macOS"`
 
+### 1.7 — Build and smoke-test executable jars
+
+Run the Gradle command (use the platform-appropriate wrapper):
+```
+./gradlew smokeTestRelease
+```
+
+This assembles and runs `java -jar <jar> --version` against each of the four executable release jars — booter, server, recorder, and gui. (`runner` and the Bot API jars are libraries with no `--version` entry point and are intentionally excluded.) This step catches a jar that fails to even start (e.g. a bytecode-shrinking or dependency-version incompatibility) before any credential checks or publish steps run.
+
+- If the command **succeeds**: print `"✅ Executable jars verified: booter, server, recorder, gui all run --version successfully"`.
+- If the command **fails**: print `"❌ ERROR: One or more executable jars failed to run. See Gradle output above for which module failed."` and **STOP**.
+
 ---
 
 ## Phase 2 — Validate Credentials

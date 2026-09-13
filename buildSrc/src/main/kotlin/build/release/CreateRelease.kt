@@ -36,9 +36,17 @@ fun createRelease(projectDir: File, version: String, token: String) {
         JAR_MIME_TYPE, "Battle Runner (jar)"
     )
 
-//    // Booter
-//    uploadAsset(projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
-//        JAR_MIME_TYPE, "Booter (jar)")
+    // Booter
+    uploadAsset(
+        projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
+        JAR_MIME_TYPE, "Booter (jar)"
+    )
+
+    // Recorder
+    uploadAsset(
+        projectDir, releaseId, token, "recorder/build/libs/robocode-tankroyale-recorder-$version.jar",
+        JAR_MIME_TYPE, "Recorder (jar)"
+    )
 
     // Sample Bots
     val sampleBotsDir = File(projectDir, "sample-bots")

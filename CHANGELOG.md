@@ -1,4 +1,20 @@
+## [1.3.1] - 2026-09-13 - Server jar startup fix
+
+### 🐞 Bug Fixes
+
+- Server:
+    - Fixed the server jar failing to start with a `VerifyError` on launch, caused by a Clikt 5.1.0 / R8 bytecode incompatibility. Clikt is pinned back to 5.0.3.
+
+### 🔧 Changes
+
+- Release process:
+    - Executable jars (booter, server, recorder, gui) are now smoke-tested by running `--version` before a release is published, so a jar that fails to start can no longer ship undetected.
+    - The recorder jar is now built and attached to GitHub releases (previously missing entirely).
+    - The booter jar is attached to GitHub releases again (previously omitted).
+
 ## [1.3.0] - 2026-09-13 - Round lifecycle isolation
+
+> ⚠️ **Broken release:** the published server jar fails to start (`VerifyError` at launch, see 1.3.1). Use 1.3.1 or later instead.
 
 ### ✨ Features
 

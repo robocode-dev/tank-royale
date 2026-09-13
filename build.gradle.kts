@@ -599,9 +599,21 @@ tasks {
             "bot-api:dotnet:assemble",   // Bot API for .NET
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
+            "recorder:assemble",         // Recorder
             "runner:assemble",           // Battle Runner
             "gui:assemble",              // GUI
             "sample-bots:zip",           // Sample bots
+        )
+    }
+
+    register("smokeTestRelease") {
+        description = "Smoke tests all executable release jars (booter, server, recorder, gui) with --version. " +
+            "runner and the Bot API jars are libraries with no --version entry point and are intentionally excluded."
+        dependsOn(
+            "booter:smokeTest",
+            "server:smokeTest",
+            "recorder:smokeTest",
+            "gui:smokeTest",
         )
     }
 
@@ -617,7 +629,7 @@ tasks {
 
     register("create-release") {
         description = "Creates a release (use 'upload-docs' separately to build and upload documentation)"
-        dependsOn("build-release")
+        dependsOn("build-release", "smokeTestRelease")
 
         doLast {
             val version = project.version.toString()
