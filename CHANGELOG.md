@@ -1,4 +1,4 @@
-## [Unreleased] - Round lifecycle isolation
+## [1.3.0] - 2026-09-13 - Round lifecycle isolation
 
 ### ✨ Features
 
