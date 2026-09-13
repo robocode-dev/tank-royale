@@ -13,7 +13,7 @@ reversal-cost: low
 > **Status: DRAFT** - design direction captured.
 > Part of the [Tank Royale Rumble umbrella design](./README.md).
 
-**Implementation note (CH-034, P-003/M-009):** the plan promised one quickstart per audience under `/web/docs/rumble/`, which now exists as `bot-author-guide.md`, `client-guide.md`, `moderator-guide.md`, and an `index.md` landing page. The moderator guide lives under `/web/docs/rumble/` rather than as a separate `rumble-data/docs/moderator-handbook.md`, since no such handbook exists yet; it links to each repository's `GOVERNANCE.md` instead. `onboarding.md` and `faq.md` below remain aspirational: folded into the shipped guides for now, not yet split out as their own documents.
+**Implementation note:** CH-034 delivered the audience quickstarts and landing page under `/web/docs/rumble/`. CH-045 adds `rankings.md` as the canonical scoring, version-eligibility, freshness, and history reference linked by the dashboard. The moderator guide stays with the published Rumble docs and links to repository governance. A separate onboarding page remains aspirational; onboarding instructions are currently folded into the client guide.
 
 ## Scope
 
@@ -75,7 +75,7 @@ flowchart TD
 | `web/docs/rumble/bot-author-guide.md` | Bot authors | Tank Royale web docs | Quickstart: first bot from template to merged PR; practice mode; 1v1, TwinDuel, and Melee entry rules; versioning rules; slots; license how-to |
 | `web/docs/rumble/client-guide.md` | Battle contributors | Tank Royale web docs | Quickstart: container pull or install script, onboarding PR, configuration, ranked vs. practice, evidence backups, upgrading on engine bumps |
 | `web/docs/rumble/onboarding.md` | Battle contributors | Tank Royale web docs | The one-time registration PR: what to add under `clients/`, what the token needs, what happens next |
-| `web/docs/rumble/faq.md` | Everyone | Tank Royale web docs | Rankings explained (APS and friends), supported battle types, why mini/micro/nano/giga categories are out of v1, "why is my bot not ranked yet", troubleshooting, ToS posture |
+| `web/docs/rumble/rankings.md` | Everyone | Tank Royale web docs | Exact APS, samples and pairings, active bot versions, behavior epochs, update cadence, publication freshness, and immutable cumulative month snapshots |
 | `docs/moderator-handbook.md` | Moderators | `rumble-data` | Review checklists, quarantine and ban procedures, spam handling, operations runbook (cron re-enablement, compaction, fork drill) |
 | Dashboard "Participate" page | Everyone | `rumble-data/site` | Static entry page linking every document above; the only doc that lives on the Pages site itself |
 
@@ -83,10 +83,10 @@ Notes:
 
 - Internal Rumble architecture and ADR material belongs under `docs/`, because it is for game developers, contributors, and coding agents. User-facing docs for bot authors and battle contributors belong under `web/`.
 - The moderator handbook doubles as the **bus-factor runbook** (P8): everything a successor needs is a document, not tribal knowledge. The quarterly fork drill includes following the docs cold, which keeps them honest.
-- The FAQ owns the explanations that would otherwise be repeated in issues: what APS means, how long until a new bot is ranked, why results were rejected, what an epoch reset is, and why v1 supports 1v1, TwinDuel, and Melee but not bytecode-size categories.
+- The rankings guide owns APS, active-version eligibility, behavior epochs, update cadence, freshness, and historical snapshots. Audience quickstarts link to it rather than maintaining separate versions of the algorithm.
 - Error messages link into the docs: every validation rejection and client refusal (engine-pin mismatch, unregistered account, license missing) carries the URL of the section that resolves it. Documentation nobody can find might as well not exist; error messages are where users actually are.
 - `rumble-bots` ships a per-platform template bot directory (copy, rename, go) as the first step of the author quickstart, derived from the sample bots in the main Tank Royale repository.
-- The dashboard links metric column headers to the FAQ's explanations rather than maintaining its own tooltip machinery; one place to keep correct, no drift between site and docs.
+- The dashboard links its APS explanation to the rankings guide; one public reference stays authoritative instead of drifting tooltip copy.
 
 ## Onboarding Friction Budget
 

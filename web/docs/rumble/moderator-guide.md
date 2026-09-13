@@ -50,7 +50,7 @@ The validator detects identical normalized name skeletons and restricted code co
 
 ## Keep the automation healthy
 
-Result submissions normally trigger ingestion when GitHub applies the `result-submission` label. A scheduled fallback runs at 17 and 47 minutes past every UTC hour. Catalog synchronization runs at 23 minutes past every UTC hour. The Pages workflow publishes dashboard changes after accepted data is pushed.
+Result submissions normally trigger ingestion when GitHub applies the `result-submission` label. A scheduled fallback runs at 17 and 47 minutes past every UTC hour. Catalog checks run at 23 minutes past every UTC hour and skip aggregation when unchanged. Changed writers explicitly request Pages, while a 41-minute-past hourly reconciliation deploys only when the site differs from the latest successful deployment. See [Rumble rankings and APS](rankings.md) for the public freshness, active-version, and immutable snapshot contract.
 
 If GitHub disables scheduled workflows after repository inactivity, re-enable them. A newly labelled result issue also wakes the ingestion workflow, but moderators should not rely on incoming traffic as the only health check.
 

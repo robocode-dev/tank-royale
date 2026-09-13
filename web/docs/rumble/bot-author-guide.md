@@ -86,7 +86,7 @@ git push --set-upstream origin add-<bot-name>
 
 Use the repository's bot-submission checklist in the PR description. CI runs the validator again, and a moderator reviews the submission. A green check is required, but it does not replace review.
 
-When the PR is merged, CI adds the bot to the generated catalog. `rumble-data` synchronizes that catalog at 23 minutes past every UTC hour. The bot then appears on the [dashboard](https://robocode-dev.github.io/rumble-data/) and waits for its first ranked battles.
+When the PR is merged, CI adds the bot to the generated catalog. `rumble-data` checks that catalog at 23 minutes past every UTC hour. A changed catalog is regenerated into the [dashboard](https://robocode-dev.github.io/rumble-data/), where the new active version starts at APS 0 and waits for its first eligible battles. [Ranking and version rules](rankings.md) explain exactly when results count.
 
 ## Submit a TwinDuel team
 
@@ -110,7 +110,7 @@ Member versions are part of the published team identity. To use a different memb
 
 The first merged PR for a bot or team name reserves that name for your GitHub account. Only that account, or another account registered to the same owner, may submit later versions.
 
-Published source versions are immutable. When the source changes, increase the version in the bot configuration and submit it again. The latest version becomes active; older results remain in history but no longer determine the current rank.
+Published source versions are immutable. When the source changes, increase the version in the bot configuration and submit it again. The latest version becomes active; the previous identity and matchups containing it leave the current ranking, while immutable month-end snapshots remain available. See [What happens when a bot gets a new version](rankings.md#what-happens-when-a-bot-gets-a-new-version).
 
 Each owner may have five active catalog entries by default. An individual bot or a TwinDuel team each uses one slot. Updating an existing entry to a new version does not consume another slot.
 

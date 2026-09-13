@@ -21,17 +21,16 @@ The "server" side that is not a server: how submitted results are ingested into 
 
 ```
 rumble-data/
-├── results/raw/<year>/<month>/*.json    (immutable facts, append-only)
-├── leaderboard/leaderboard.json         (projection)
+├── results/raw/<year>/<month>/*.json       (immutable facts, append-only)
+├── results/rollups/*.json                  (compacted immutable facts)
+├── leaderboard/<game-type>.json            (current projections)
 ├── leaderboard/bots/<name>-<version>.json  (per-bot detail shards)
-├── matchmaking/matches_needed.json      (projection: advice for clients)
-├── matchmaking/pairings.json            (projection: per-pairing stats)
-├── clients.json                         (projection: per-client stats + flags)
-├── engine.json                          (pinned behaviorVersion + release/image)
-├── wellknown/rumble.json                (canonical-location pointer)
-├── scripts/validate.py                  (payload validation)
-├── scripts/aggregate.py                 (facts → all projections, pure function)
-└── site/                                (static dashboard, served by Pages)
+├── matchmaking/{pairings,matches_needed}-<game-type>.json
+├── clients.json                            (per-client battle totals)
+├── engine.json                             (pinned behaviorVersion + settings)
+├── scripts/aggregate.py                    (deterministic current projections)
+├── scripts/publication.py                  (freshness + month rollover)
+└── site/data/snapshots/<year>-<month>/     (immutable published history)
 ```
 
 ## Ingestion: Single Writer, Batch Drain
@@ -120,11 +119,11 @@ stateDiagram-v2
 
 ## Aggregation: A Pure Function
 
-The core invariant (P5): **every projection is a pure function of `results/raw/` plus the exclusion list.** No projection may depend on ingestion order, wall-clock time (beyond a "computedAt" stamp), or anything outside the repo. Anyone can run `python scripts/aggregate.py` locally and reproduce the leaderboard bit-for-bit. This is what makes the rumble auditable and fork-restartable without permission from anyone.
+The core invariant (P5): every current projection is a pure function of raw facts and rollups plus the repository-tracked catalog, behavior version, registrations, bans, disqualifications, and exclusions. Aggregation owns no clock. Anyone can run `python scripts/aggregate.py --root .` locally and reproduce the current leaderboard bit for bit. Operational freshness and immutable publication history are maintained separately by `publication.py`.
 
-### Ruleset and scoring: adopt LiteRumble, do not reinvent
+### Current scoring contract
 
-**Decision direction: the rumble uses the RoboRumble/LiteRumble ruleset and scoring system unchanged.** These rules have been battle tested for two decades; the design contribution here is the delivery mechanism, not new game math.
+Tank Royale Rumble adopts the proven RoboRumble/LiteRumble principle of averaging by distinct pairing, while publishing only the metrics the current `rumble-data` implementation actually derives.
 
 Battle parameters are frozen in `engine.json` per ranked game type:
 
@@ -136,17 +135,13 @@ Battle parameters are frozen in `engine.json` per ranked game type:
 
 These names intentionally follow the popular LiteRumble/RoboRumble categories for the original game: 1v1, TwinDuel, and Melee. Mini, micro, nano, and giga categories are not part of v1 because they depend on bytecode-size limits. Tank Royale Rumble distributes source code across multiple programming languages, so any size-class system needs a separate source-size design per language.
 
-Scoring metrics, matching the LiteRumble columns (all except Glicko-2 are per-pairing statistics and therefore order-independent):
+Current leaderboard columns are:
 
 | Metric | Meaning |
 |--------|---------|
-| **APS** (primary) | Average Percentage Score: mean over pairings of the mean score share per pairing (formula below) |
-| **Win%** | Fraction of pairings won (LiteRumble's replacement for PL, so it does not fluctuate with the number of bots) |
-| **Survival** | Survival percentage (`1v1` and `twinduel`: per pairing; `melee`: out of total rounds, per LiteRumble) |
-| **Vote** | Percentage of bots that score worst against you ("percentage you are best against") |
-| **NPP / ANPP** | (Average) Normalised Percentage Pairs, computed in the batch pass |
-| **KNNPBI** | K-Nearest-Neighbours Problem Bot Index, computed in the batch pass |
-| **Glicko-2** | Rating for incomplete-pairing robustness; sequence-dependent, so computed as a batch projection with a deterministic ordering rule (timestamp, then payload hash) to stay reproducible |
+| **APS** | Average Percentage Score: mean over distinct pairings of the mean battle score share within each pairing |
+| **Battles** | Accepted eligible battle samples contributing to the entry |
+| **Pairings** | Exact distinct participant sets contributing to the entry |
 
 The APS core:
 
@@ -156,11 +151,11 @@ APS(bot, pairing)    = mean of share(bot, battle) over that pairing's battles
 APS(bot)             = mean of APS(bot, pairing) over all the bot's pairings
 ```
 
-Averaging per-pairing first means extra samples of one pairing (e.g. from own-bot priority, see the [client document](./client-battles-and-results.md)) improve precision without skewing weight. LiteRumble computes the heavier batch metrics (ANPP, NPP, KNNPBI, Vote) twice a day rather than on every update; the same split applies here (every-drain APS/Win%/Survival, daily batch for the rest) if full recompute proves slow.
+A zero battle-total produces zero shares. Averaging per pairing first means extra samples of one pairing (for example, from own-bot priority in the [client document](./client-battles-and-results.md)) improve precision without skewing weight. APS is stored to four decimal places, displayed to two, and sorted descending with exact identity as the stable tie-break. Win%, Survival, Vote, NPP/ANPP, KNNPBI, and Glicko-2 are not current Tank Royale Rumble outputs; adding one would require a separate accepted contract and implementation.
 
 ### Ranked pool and result epochs
 
-- The leaderboard ranks only the **latest active version** of each bot (`status: active` in `bots/index.json`, see the submission document). Superseded, retired, and disqualified versions keep their facts and per-version detail shards but leave the ranked table, exactly like a RoboRumble version bump.
+- The leaderboard ranks only the **latest active version** of each bot (`status: active` in `bots/index.json`, see the submission document). A matchup contributes only while every participant's exact identity is active and game-type eligible. A new version starts with no samples; matchups containing its superseded predecessor stop affecting every participant's current APS. Accepted facts and already published month snapshots remain immutable.
 - Results are partitioned into **epochs by `behaviorVersion`** (the server-owned integer that bumps only on game-observable changes; see the client document's Engine Pinning section). The release version is irrelevant here: a GUI-only release, whatever its semver bump, keeps the behavior version and therefore the epoch. A `behaviorVersion` bump opens a new epoch: the ranked leaderboard is computed from the current epoch only, while old epochs remain browsable archives. This is the honest consequence of "mixed game behavior corrupts comparability": rather than pretending results across behavior versions are comparable, the rumble restarts sampling and lets matchmaking (everything is suddenly under-sampled) rebuild the table quickly.
 
 Before accepting a fact or emitting matchmaking advice, `rumble-data` resolves every entry against the synchronized catalog. `1v1` and `melee` use only distinct active individual entries. TwinDuel uses only pairs of distinct active team entries whose immutable `teamMembers` each resolve to active individuals, expand to the pin's participant count, and are disjoint across the two teams. Any result or proposed pairing that does not meet its game type's eligibility is rejected or omitted, respectively.
@@ -193,15 +188,11 @@ These rules deliberately mirror the classic RoboRumble server behavior (verified
 ```json
 {
   "schemaVersion": 1,
-  "computedAt": "2026-07-02T15:00:00Z",
-  "computedFromCommit": "abc1234",
   "gameType": "1v1",
+  "behaviorVersion": 7,
+  "projectionId": "sha256-derived-id",
   "entries": [
-    { "bot": "Raven 2.2", "platform": "JVM", "owner": "flemming", "authors": ["..."],
-      "aps": 78.42, "winPct": 91.4, "survival": 84.1, "vote": 3.2,
-      "anpp": 81.7, "knnpbi": -0.4, "glicko2": 1834,
-      "battles": 412, "pairings": 148, "pairingsTotal": 152, "unconfirmedPairings": 2,
-      "epoch": 7, "firstSeen": "2026-05-01" }
+    { "bot": "Raven 2.2", "name": "Raven", "version": "2.2", "platform": "JVM", "owner": "flemming", "aps": 78.42, "battles": 412, "pairings": 148, "epoch": 7 }
   ]
 }
 ```
@@ -210,11 +201,17 @@ Per-bot detail shards (`leaderboard/bots/<name>-<version>.json`) hold the full p
 
 ### Client accountability projection
 
-`clients.json` carries per-client statistics: battles submitted, pairings covered, mean deviation from consensus on shared pairings, and flags. Moderators use it to decide quarantine; the dashboard can show a public "contributors" view, which doubles as recognition (another motivation lever alongside own-bot priority).
+`clients.json` currently carries accepted battle totals by client ID. More elaborate trust or contributor statistics remain future design work rather than current dashboard behavior.
+
+## Publication freshness and monthly history
+
+The result and catalog workflows share one non-cancelling writer concurrency group. Before either reads new external input, `publication.py` checks the UTC month. The first writer after a boundary copies current leaderboard and bot-detail JSON byte for byte into `site/data/snapshots/YYYY-MM/`, adds the month to `site/data/history.json`, and refuses to change an existing snapshot. Multiple missed months receive the same last published cumulative state. The live ranking remains cumulative and does not reset.
+
+The history manifest records a hash of the complete current ranking-visible tree. `lastUpdatedAt` advances only when that hash changes, including after a moderation pull request regenerated data outside the publisher. Polls, identical aggregation, snapshot creation, and deployment alone do not advance it.
 
 ## Static Dashboard
 
-Plain `site/index.html` plus vanilla JS on Pages, fetching leaderboard JSON at runtime. No build step: the aggregator already produced the JSON, so the "site generator" is nothing. Client-side sort/search over a few hundred rows per game type is trivial. A bot or team row links to its detail shard. Pages exists on GitHub, GitLab, and Codeberg, and since the site is static files reading sibling JSON, it also works from any web server or locally from a checkout.
+Plain `site/index.html` plus vanilla JavaScript on Pages fetches leaderboard JSON at runtime. The Ranking period selector uses `site/data/history.json` to choose current data or an immutable month prefix, labels archives read-only, and shows the selected ranking's update time. A bot or team row links to the corresponding detail shard. Changed writer commits explicitly dispatch Pages because pushes made with the built-in Actions token do not trigger another workflow; an hourly scheduled comparison deploys only when the current `site/` tree differs from the latest successful Pages run.
 
 ## Forge Terms of Service
 
@@ -240,4 +237,4 @@ Is storing results in a repo and running the pipeline on CI a misuse of GitHub? 
 | Forge migration | All logic in `scripts/*.py`; CI YAML is a thin wrapper. Forgejo Actions is GitHub-Actions-compatible; a GitLab CI wrapper is a page of YAML. The single seam: how a payload reaches `validate.py`. |
 | Disputed leaderboard | Anyone recomputes locally from facts. Quarantine is a reviewable exclusion list, not deletion, so every governance action is auditable in Git history. |
 | Rejected payloads | Keep a 30-day `rejected/` log on the archive branch, then prune. |
-| Aggregation cadence | Full recompute on every drain is the preferred model. Prototype `aggregate.py` early and measure whether it holds at the expected scale or whether the LiteRumble-style split (light metrics per drain, heavy batch metrics daily) is needed from launch. |
+| Aggregation cadence | Result drains regenerate current projections; catalog checks skip aggregation entirely when normalized content is unchanged. Full recomputation remains fast enough for the current data set. |

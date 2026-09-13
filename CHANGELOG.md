@@ -18,6 +18,8 @@
 
 ### 🔧 Changes
 
+- Documentation (Rumble):
+    - Added the canonical APS and rankings guide covering active bot versions, behavior epochs, update cadence, publication freshness, and immutable cumulative month-end snapshots.
 - Bot API (.NET, TypeScript):
     - `X`, `Y`, `Direction`, `GunDirection`, and `RadarDirection` now fall back to the bot's initial position when read before the first turn of a game, which is what the Java and Python Bot APIs already did. They still throw a `BotException` when no initial position is available.
 - Bot API (Python):

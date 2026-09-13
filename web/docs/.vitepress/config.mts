@@ -109,6 +109,7 @@ export default withMermaid(defineConfig({
         text: 'Rumble',
         items: [
           { text: 'Overview', link: '/rumble/' },
+          { text: 'Rankings and APS', link: '/rumble/rankings' },
           { text: 'Bot Author Quickstart', link: '/rumble/bot-author-guide' },
           { text: 'Battle Contributor Quickstart', link: '/rumble/client-guide' },
           { text: 'Moderator Quickstart', link: '/rumble/moderator-guide' },

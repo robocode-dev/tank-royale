@@ -91,7 +91,7 @@ Changes (CH-xxx, via the `clue-delta` loop) should be created in this order; eac
 | 2 | `create-rumble-bots-repo` | Define and scaffold the bot submission repository: source-only layout, validation, ownership, slot budget, templates, governance, and generated catalog. | Tank Royale prep |
 | 3 | `create-rumble-data-repo` | Define and scaffold the data repository: result inbox, validation, raw facts, aggregation, compaction, matchmaking projections, dashboard, and GitHub Pages publishing. | Tank Royale prep |
 | 4 | `create-rumble-client` | Build the ranked/practice client, local journal, replay evidence store, container, and issue-ops submission transport; defer fork-PR submission until `rumble-data` supports it. | `rumble-bots` catalog and `rumble-data` engine/matchmaking files |
-| 5 | `publish-rumble-docs` | Publish the user guides, onboarding flow, moderator handbook, FAQ, dashboard participation page, ADRs, and contributor-facing architecture docs. | Interfaces from the previous proposals |
+| 5 | `publish-rumble-docs` | Publish the audience guides, canonical rankings reference, dashboard links, governance guidance, and contributor-facing architecture docs. | Interfaces from the previous proposals |
 
 The first proposal is intentionally a Tank Royale preparation change, not a Rumble implementation. It should make the existing engine, schema, Battle Runner, and bot metadata ready for the later repositories without creating those repositories.
 
@@ -112,7 +112,7 @@ These directions keep the sub-documents consistent and should be reflected in th
 
 | Direction | Where detailed |
 |-----------|----------------|
-| **Ruleset and scoring = RoboRumble/LiteRumble, unchanged** (APS primary; Win%, Survival, Vote, NPP/ANPP, KNNPBI, Glicko-2). Battle tested for two decades; do not reinvent. | Aggregation doc |
+| **APS uses the RoboRumble/LiteRumble pairing-first principle.** Current output is APS plus battle and pairing counts; unimplemented classic metrics are not part of the current contract. | Aggregation doc |
 | **V1 battle types are 1v1, TwinDuel, and Melee.** These follow the popular LiteRumble/RoboRumble categories for the original game. TwinDuel is the 2v2 twin-team format. Mini, micro, nano, and giga categories are out of v1 because bytecode-size limits do not translate cleanly to source-code bots across multiple languages. | Client + aggregation docs |
 | **Own-bot priority: yes**, with the self-reported-only marker plus independent confirmation for trust. | Client doc |
 | **Engine pinning by `behaviorVersion`.** Release versions stay lockstep across all Tank Royale artifacts (the right model for the product); a separate integer `behaviorVersion`, owned by the server and bumped only on game-observable changes (server physics/scoring/turn processing/RNG plus Bot API behavior), is the compatibility contract. Compatibility, client rollout, and result **epochs** all key on it; releases that do not bump it (e.g. GUI-only) cause no rollout and no epoch reset. Supersedes the earlier patch-vs-minor rule. | Client + aggregation docs |
@@ -140,7 +140,7 @@ These directions keep the sub-documents consistent and should be reflected in th
 | **Documentation is a first-class design area**: published user docs are Markdown under `/web/docs/rumble/`, internal ADRs and architecture descriptions stay under `/docs`, one quickstart exists per audience, error messages link into the published docs, and onboarding friction is budgeted. | User documentation doc |
 | **No per-client contribution cap**, matching the classic rumble (verified on the RoboWiki): saturation is handled by the priority mechanism alone; `targetSamplesPerPairing` plays the classic `BATTLESPERBOT` role. | Client + aggregation docs |
 | **SPDX `license` field joins the general booter bot config schema** (not rumble-only); implementation lands in the Tank Royale repo when the design leaves draft. | Submission doc |
-| **Docs and repos are versioned by the Tank Royale version**: both repos are tagged at every engine pin change; docs always describe the pinned engine, old tags serve old readers. Template bots per platform ship in `rumble-bots`; scoring explanations live in the Rumble FAQ, linked from dashboard column headers. | User documentation doc |
+| **Docs and repos are versioned by the Tank Royale version**: both repos are tagged at every engine pin change; docs always describe the pinned engine, old tags serve old readers. The canonical scoring explanation lives at `/rumble/rankings` and is linked from the dashboard. | User documentation doc |
 
 ## Game Type References
 

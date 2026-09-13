@@ -225,6 +225,6 @@ Never put the token in `rumble-client.json`, a shell script, Git, an issue, or a
 
 Repeat `--run` to produce more battles and `--submit` to send pending results. You can change `gameTypes` between sessions. The client uses published matchmaking advice to cover new and under-sampled matchups; that advice is guidance rather than a reservation, so two clients may safely run the same matchup.
 
-Accepted results usually reach the [dashboard](https://robocode-dev.github.io/rumble-data/) within minutes. A scheduled ingestion sweep runs twice an hour if the immediate GitHub event is delayed.
+Accepted results usually reach the [dashboard](https://robocode-dev.github.io/rumble-data/) within minutes. A scheduled ingestion sweep runs twice an hour if the immediate GitHub event is delayed. The [ranking guide](rankings.md) explains which accepted battles are eligible for current APS and why repeated samples improve a matchup without giving it more weight.
 
 For command and implementation details, see the [`rumble-client` README](https://github.com/robocode-dev/rumble-client#tank-royale-rumble-client).
