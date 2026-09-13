@@ -895,6 +895,11 @@ claims:
       state: reserved
       prefix: RDA
       component: "2"
+    - id: RDA-003
+      kind: numeric
+      state: reserved
+      prefix: RDA
+      component: "3"
     - id: TASKS-001
       kind: numeric
       state: reserved
@@ -996,11 +1001,11 @@ high-water:
       state: reserved
       prefix: RCL
       component: "11"
-    - id: RDA-001
+    - id: RDA-002
       kind: numeric
       state: reserved
       prefix: RDA
-      component: "1"
+      component: "2"
     - id: TASKS-001
       kind: numeric
       state: reserved
