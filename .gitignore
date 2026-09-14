@@ -15,6 +15,7 @@ target/
 !sample-bots/**/Target/
 build/
 !buildSrc/src/main/kotlin/build
+!buildSrc/src/test/kotlin/build
 dist/
 out/
 bin/
