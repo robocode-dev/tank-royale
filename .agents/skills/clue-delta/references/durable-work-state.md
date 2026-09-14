@@ -4,6 +4,16 @@ An agent's private memory is never where work lives. Anything needed to implemen
 
 A suggestion raised mid-change is triaged immediately, into one of two carriers, never into memory. If the change is wrong or incomplete without it, it becomes a task in `tasks.md`, handled before merge. Otherwise it becomes a goal with `status: proposed`, written in the digest so it survives the workspace's deletion. Neither carrier is optional, and "I will remember" is not a third: a suggestion that is neither actioned nor recorded has been declined without anyone deciding to decline it. State which carrier a suggestion went to, and why, when the triage happens.
 
+A reusable discovery earns capture only past an eligibility bar: it cost something to find — a wrong first attempt, an undocumented flag, a nonobvious recovery — and is plausibly recurring, so a fresh agent doing the same class of task would hit it again. Restating already-documented behaviour, or something observed once with no reason to expect recurrence, is not eligible; documenting an ineligible discovery is how a workaround hardens into policy.
+
+An eligible discovery is captured under these rules:
+
+- **Fix before documenting.** Ask whether the confusing step can instead be removed or automated; only what cannot yet be fixed gets written down.
+- **Home.** A capability-specific discovery goes into that capability's own `design.md`; a discovery about running the repository's own tooling, tied to no single capability, goes into the repository's own contributor or operational guidance (for example `CONTRIBUTING.md`), where one exists. Correct an existing home in preference to writing beside it.
+- **Shape and reach.** State the discovery's trigger, prerequisites, procedure, expected result, and recovery, and reach it from where the matching work already begins so finding it does not require reading every guide.
+- **Scope.** One observation in one session supports only a claim scoped to what was actually seen — the platform, the command form, the version — never a general claim from a single trial.
+- **Retirement.** Correct or retire guidance in the same change that finds it stale, the same way any other design-document content is kept current; it carries no separate lifecycle or tombstone.
+
 A durable record never states a figure a command computes — an artifact count, a coverage percentage, a reported population size. Name the command instead. A number written into prose becomes a hand-maintained obligation that goes stale on the next change and that every later reviewer re-derives, and repairing one writes new prose carrying new numbers, so the finding regenerates instead of converging. Measurements that are the point of a record — an analysis's own results, a milestone's observed evidence — are stated with what produced them and when.
 
 When a user asks what is next, run `clue next` before proposing work. It reports the first unfinished milestone in an active plan, gives alternatives with `--all`, and names unfinished rows in draft plans as proposed rather than actionable. Read the selected plan context, check that the plan still holds, and ask before starting. After a human reports a Cliewen change's merge, use the same orientation path before beginning anything else.
