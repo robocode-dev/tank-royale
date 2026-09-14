@@ -77,9 +77,9 @@ Feature: user-documentation — TBD - created by archiving change document-gui-i
   @UD-008
   Scenario: Maintainer stages user documentation for verification or publication
     Test-type: Integration
-    Given repository-root `/docs` is the permanent Cliewen corpus
-    When the documentation generation tasks stage the VitePress site and API references
-    Then every generated artifact SHALL be written under the repository-root build directory
+    Given every documentation generator obtains its destination from the shared Pages output resolver
+    When the VitePress site and API-reference destinations are resolved
+    Then every destination SHALL be under the repository-root build directory
     And an output path that escapes the Pages staging root SHALL be rejected
-    And the published site layout SHALL remain unchanged inside the staged artifact
+    And each destination SHALL retain its published site-relative path inside the staged artifact
 ```

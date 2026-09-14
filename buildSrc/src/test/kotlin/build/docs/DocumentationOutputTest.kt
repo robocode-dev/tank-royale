@@ -10,7 +10,19 @@ class DocumentationOutputTest {
     @Test
     @Tag("UD-008")
     fun testUD008_IntegrationPositive_stagesGeneratedDocumentationUnderBuildPages() {
-        assertEquals("pages/api/java", documentationOutputRelativePath("api/java"))
+        val publishedDestinations = listOf(
+            "" to "pages",
+            ".nojekyll" to "pages/.nojekyll",
+            "api/dotnet" to "pages/api/dotnet",
+            "api/java" to "pages/api/java",
+            "api/python" to "pages/api/python",
+            "api/runner" to "pages/api/runner",
+            "api/typescript" to "pages/api/typescript",
+        )
+
+        publishedDestinations.forEach { (relativePath, expectedPath) ->
+            assertEquals(expectedPath, documentationOutputRelativePath(relativePath))
+        }
     }
 
     @Test
