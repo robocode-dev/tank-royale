@@ -303,6 +303,24 @@ events:
     - {id: RBC-005, kind: numeric, state: live, prefix: RBC, component: "5"}
     - {id: CH-046, kind: numeric, state: reserved, prefix: CH, component: "46"}
     - {id: CH-046, kind: numeric, state: live, prefix: CH, component: "46"}
+    - {id: PDR-014, kind: numeric, state: reserved, prefix: PDR, component: "14"}
+    - {id: UD-001, kind: numeric, state: reserved, prefix: UD, component: "1"}
+    - {id: UD-002, kind: numeric, state: reserved, prefix: UD, component: "2"}
+    - {id: UD-001, kind: numeric, state: live, prefix: UD, component: "1"}
+    - {id: UD-002, kind: numeric, state: live, prefix: UD, component: "2"}
+    - {id: UD-003, kind: numeric, state: reserved, prefix: UD, component: "3"}
+    - {id: UD-003, kind: numeric, state: live, prefix: UD, component: "3"}
+    - {id: UD-004, kind: numeric, state: reserved, prefix: UD, component: "4"}
+    - {id: UD-004, kind: numeric, state: live, prefix: UD, component: "4"}
+    - {id: UD-005, kind: numeric, state: reserved, prefix: UD, component: "5"}
+    - {id: UD-005, kind: numeric, state: live, prefix: UD, component: "5"}
+    - {id: UD-006, kind: numeric, state: reserved, prefix: UD, component: "6"}
+    - {id: UD-006, kind: numeric, state: live, prefix: UD, component: "6"}
+    - {id: UD-007, kind: numeric, state: reserved, prefix: UD, component: "7"}
+    - {id: UD-007, kind: numeric, state: live, prefix: UD, component: "7"}
+    - {id: UD-008, kind: numeric, state: reserved, prefix: UD, component: "8"}
+    - {id: PDR-014, kind: numeric, state: live, prefix: PDR, component: "14"}
+    - {id: UD-008, kind: numeric, state: live, prefix: UD, component: "8"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

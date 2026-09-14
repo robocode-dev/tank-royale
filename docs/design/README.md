@@ -6,6 +6,8 @@ The `rumble/` folder is the umbrella design for **Tank Royale Rumble**, a server
 
 Capability-local design (how one capability works) belongs in that capability's `design.md` under [../capabilities/](../capabilities/README.md); records here cover cross-cutting design.
 
+Documentation publishing keeps permanent and generated material on opposite sides of an explicit boundary: `/docs` contains only the Cliewen corpus, user-facing sources live under `web/docs`, and the disposable GitHub Pages tree is assembled under `build/pages`. See [CAP-012 design](../capabilities/CAP-012-user-documentation/design.md) and [PDR-014](../decisions/PDR-014-generated-documentation-outside-corpus.md).
+
 <!-- clue:index:start -->
 - [ARCH-020 — Real-Time Game Loop — Design Specification](game-loop-architecture.md) · `draft`
 - [ARCH-021 — WebSocket Protocol — Design Specification](websocket-protocol.md) · `draft`
