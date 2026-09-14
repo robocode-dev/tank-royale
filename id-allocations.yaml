@@ -975,6 +975,11 @@ claims:
       state: reserved
       prefix: UD
       component: "2"
+    - id: UD-003
+      kind: numeric
+      state: reserved
+      prefix: UD
+      component: "3"
 high-water:
     - id: ADR-047
       kind: numeric
@@ -1071,8 +1076,8 @@ high-water:
       state: reserved
       prefix: TNP
       component: "3"
-    - id: UD-001
+    - id: UD-002
       kind: numeric
       state: reserved
       prefix: UD
-      component: "1"
+      component: "2"
