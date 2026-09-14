@@ -301,6 +301,8 @@ events:
     - {id: RDA-008, kind: numeric, state: live, prefix: RDA, component: "8"}
     - {id: RDA-009, kind: numeric, state: live, prefix: RDA, component: "9"}
     - {id: RBC-005, kind: numeric, state: live, prefix: RBC, component: "5"}
+    - {id: CH-046, kind: numeric, state: reserved, prefix: CH, component: "46"}
+    - {id: CH-046, kind: numeric, state: live, prefix: CH, component: "46"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
