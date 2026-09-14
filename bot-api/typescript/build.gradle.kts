@@ -1,3 +1,4 @@
+import build.docs.documentationOutputDirectory
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
@@ -126,7 +127,7 @@ tasks {
     }
 
     register<Copy>("copyTypescriptApiDocs") {
-        dependsOn(generateTypescriptApiDocs)
+        dependsOn(generateTypescriptApiDocs, ":cleanDocumentationOutput")
 
         // Only copy docs when explicitly asked for via upload-docs task or this task itself
         onlyIf {
@@ -137,7 +138,7 @@ tasks {
             }
         }
 
-        val typescriptApiDir = layout.projectDirectory.dir("../../docs/api/typescript")
+        val typescriptApiDir = documentationOutputDirectory("api/typescript")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 

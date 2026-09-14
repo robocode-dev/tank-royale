@@ -74,4 +74,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [PDR-012 — Typed decision records replace the legacy decision log](PDR-012-typed-decision-record-carrier.md) · `inferred` — The legacy decision log mixed architecture, process, implementation, and routine history in one carrier that obscured the enduring subject of each choice.
 - [ADR-047 — Rumble catalog publishes immutable team membership](ADR-047-rumble-catalog-publishes-team-membership.md) · `verified` — The V1 engine pin counts the four bot processes in a TwinDuel battle, while Battle Runner starts two team entries and result ingestion receives two team results.
 - [PDR-013 — TypeScript console-output parity is a tracked plan, not a defect fix](PDR-013-typescript-console-output-plan.md) · `inferred` — P-005 tracked the TypeScript console-output gap through implementation and parity evidence rather than treating it as a defect fix.
+- [PDR-014 — Generated documentation stays outside the corpus](PDR-014-generated-documentation-outside-corpus.md) · `verified` — Repository-root `/docs` is the permanent Cliewen system-of-record.
 <!-- clue:index:end -->

@@ -1,3 +1,4 @@
+import build.docs.documentationOutputDirectory
 import build.tasks.FatJar
 
 description = "Robocode Tank Royale Battle Runner API"
@@ -143,6 +144,8 @@ tasks {
     }
 
     register<Copy>("copyRunnerApiDocs") {
+        dependsOn(":cleanDocumentationOutput")
+
         onlyIf {
             gradle.startParameter.taskNames.any {
                 it.contains("upload-docs") ||
@@ -151,7 +154,7 @@ tasks {
             }
         }
 
-        val apiDocsDir = layout.projectDirectory.dir("../docs/api/runner")
+        val apiDocsDir = documentationOutputDirectory("api/runner")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 

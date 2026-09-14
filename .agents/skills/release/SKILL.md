@@ -278,7 +278,7 @@ Run the Gradle command (use the platform-appropriate wrapper):
 
 - If the command **fails**: print `"❌ ERROR: Step 5 failed — documentation generation failed"` and **STOP**.
 
-`upload-docs` creates a local Pages artifact for verification. The generated site is intentionally not tracked; `.github/workflows/deploy-docs.yml` builds and publishes it from accepted `main`.
+`upload-docs` creates a local Pages artifact under `build/pages` for verification. It never writes generated output under the Cliewen corpus in `/docs`. The generated site is intentionally not tracked; `.github/workflows/deploy-docs.yml` builds and publishes it from accepted `main`.
 
 - Do **not** stage, commit, or push generated documentation from this workflow.
 - If the command succeeds: report that documentation was generated successfully and that `deploy-docs` will build and publish it from `main`.

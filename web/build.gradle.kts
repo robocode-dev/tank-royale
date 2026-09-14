@@ -1,4 +1,5 @@
 import com.github.gradle.node.npm.task.NpmTask
+import build.docs.documentationOutputDirectory
 
 description = "Robocode Tank Royale build documentation sources"
 
@@ -43,7 +44,6 @@ tasks {
         args = listOf("run", "dev")
     }
 
-    // Configure the local clean task: never touch ../docs on a plain `clean` run
     val clean = named<Delete>("clean") {
         delete(
             "./docs/.vitepress/cache",
@@ -52,12 +52,12 @@ tasks {
     }
 
     register<Copy>("copy-vitepress-docs") {
-        description = "Copy VitePress docs to /docs folder (without API generation)"
-        dependsOn(build)
+        description = "Copies VitePress docs into the Pages staging directory without API generation"
+        dependsOn(build, ":cleanDocumentationOutput")
 
         doLast {
             // Ensure GitHub Pages won't try to apply Jekyll processing
-            val noJekyll = File(rootProject.projectDir, "docs/.nojekyll")
+            val noJekyll = documentationOutputDirectory(".nojekyll").get().asFile
             noJekyll.parentFile.mkdirs()
             if (!noJekyll.exists()) {
                 noJekyll.createNewFile()
@@ -67,11 +67,11 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         from("./docs/.vitepress/dist")
-        into("../docs")
+        into(documentationOutputDirectory())
     }
 
     register("copy-generated-docs") {
-        description = "Copy all generated docs including API docs to /docs folder"
+        description = "Copies the generated VitePress site into the Pages staging directory"
         dependsOn("copy-vitepress-docs")
     }
 }

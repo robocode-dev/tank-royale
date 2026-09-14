@@ -1,9 +1,8 @@
 # Docs
 
-This module contains the documentation for Robocode Tank Royale.
+This module contains the user-facing documentation sources for Robocode Tank Royale under `web/docs`.
 
-[VitePress] is being used for generating static web content for the Robocode documentation. You will find all
-documentation under the `/docs` directory in the root directory.
+[VitePress] generates the static site. The complete publishable Pages artifact, including generated API references, is staged under the repository-root `build/pages` directory; repository-root `/docs` is reserved for the Cliewen corpus and must never receive generated output.
 
 ## Prerequisites
 
@@ -32,22 +31,14 @@ In order to run and view the generated documentation, you write:
 Now you can view the documentation with a browser from the link provided by VitePress as a result of generating the
 documentation.
 
-## Uploading the docs
+## Staging the published site
 
-After having built the docs you can upload the documentation to GitHub docs using this command:
-
-```shell
-../gradlew :web:clean
-```
-
-This will create new files, update existing ones, and remove others.
-
-The files need to be committed to git:
+Generate the VitePress site and every API reference in the same layout deployed by GitHub Pages:
 
 ```shell
-cd ../docs
-git add .
-git commit -m "Updated docs"
+../gradlew upload-docs
 ```
+
+The disposable output is written to `../build/pages`. Do not commit it; the Pages workflow regenerates the same artifact from accepted `main`.
 
 [VitePress]: https://vitepress.dev/ "VitePress home page"

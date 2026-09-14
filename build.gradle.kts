@@ -1,5 +1,6 @@
 import build.release.createRelease
 import build.release.dispatchWorkflow
+import build.docs.documentationOutputDirectory
 import build.isWindows
 import build.isMacOS
 import build.isLinux
@@ -540,6 +541,12 @@ gradle.projectsEvaluated {
 
 val schemaReadmeFile = file("schema/schemas/README.md")
 
+val cleanDocumentationOutput by tasks.registering(Delete::class) {
+    group = "documentation"
+    description = "Deletes the generated GitHub Pages staging tree under the root build directory"
+    delete(documentationOutputDirectory())
+}
+
 val generateSchemaDiagrams by tasks.registering {
     group = "documentation"
     description = "Regenerates Mermaid diagrams in schema/schemas/README.md (non-critical - won't fail build)"
@@ -618,12 +625,12 @@ tasks {
     }
 
     register("upload-docs") {
-        description = "Generate and upload all documentation"
+        description = "Generates all documentation in the root build/pages staging directory"
         dependsOn(*docTasks.toTypedArray())
     }
 
     register("upload-docs-vitepress-only") {
-        description = "Build and upload VitePress documentation only (without API generation)"
+        description = "Generates VitePress documentation in the root build/pages staging directory"
         dependsOn("web:copy-vitepress-docs")
     }
 

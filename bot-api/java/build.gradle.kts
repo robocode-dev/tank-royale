@@ -1,3 +1,4 @@
+import build.docs.documentationOutputDirectory
 import java.nio.file.Files
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
@@ -117,7 +118,7 @@ tasks {
     }
 
     register<Copy>("copyJavaApiDocs") {
-        dependsOn(javadoc)
+        dependsOn(javadoc, ":cleanDocumentationOutput")
 
         // Only copy docs when explicitly asked for via upload-docs task or this task itself
         onlyIf {
@@ -128,7 +129,7 @@ tasks {
             }
         }
 
-        val javadocDir = layout.projectDirectory.dir("../../docs/api/java")
+        val javadocDir = documentationOutputDirectory("api/java")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 

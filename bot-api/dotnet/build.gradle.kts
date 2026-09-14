@@ -1,3 +1,4 @@
+import build.docs.documentationOutputDirectory
 import org.apache.tools.ant.filters.ReplaceTokens
 import kotlin.text.lowercase
 
@@ -143,9 +144,9 @@ tasks {
     }
 
     register<Copy>("copyDotnetApiDocs") {
-        dependsOn(docfx)
+        dependsOn(docfx, ":cleanDocumentationOutput")
 
-        val dotnetApiDir = "../../docs/api/dotnet"
+        val dotnetApiDir = documentationOutputDirectory("api/dotnet").get().asFile
         val siteDir = file("docfx-project/_site")
 
         // Only attempt to copy files if the site directory exists after docfx task

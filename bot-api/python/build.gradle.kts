@@ -1,3 +1,4 @@
+import build.docs.documentationOutputDirectory
 import build.isWindows
 
 plugins {
@@ -181,8 +182,8 @@ tasks {
 
     register<Copy>("copyPythonApiDocs") {
         group = "documentation"
-        description = "Copies generated Python API docs into the /docs folder"
-        dependsOn(`sphinx-build`)
+        description = "Copies generated Python API docs into the Pages staging directory"
+        dependsOn(`sphinx-build`, ":cleanDocumentationOutput")
 
         // Only copy docs when explicitly asked for via upload-docs task or this task itself
         onlyIf {
@@ -193,7 +194,7 @@ tasks {
             }
         }
 
-        val pythonApiDir = layout.projectDirectory.dir("../../docs/api/python")
+        val pythonApiDir = documentationOutputDirectory("api/python")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 

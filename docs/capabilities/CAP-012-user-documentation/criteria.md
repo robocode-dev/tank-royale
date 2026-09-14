@@ -73,4 +73,13 @@ Feature: user-documentation — TBD - created by archiving change document-gui-i
     Then they SHALL find a section explaining how to configure a bot through code (setting name, version, and authors)
     And they SHALL be informed that a `.json` file is only a fallback mechanism
     And they SHALL find a list of required properties and the consequences of missing them (runtime exception)
+
+  @UD-008
+  Scenario: Maintainer stages user documentation for verification or publication
+    Test-type: Integration
+    Given every documentation generator obtains its destination from the shared Pages output resolver
+    When the VitePress site and API-reference destinations are resolved
+    Then every destination SHALL be under the repository-root build directory
+    And an output path that escapes the Pages staging root SHALL be rejected
+    And each destination SHALL retain its published site-relative path inside the staged artifact
 ```

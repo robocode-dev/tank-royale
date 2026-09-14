@@ -68,11 +68,11 @@ jobs:
                       python/index.html \
                       typescript/index.html \
                       runner/index.html; do
-            if [ ! -s "docs/api/$page" ]; then
-              echo "::error::Missing or empty API reference page: docs/api/$page"
+            if [ ! -s "build/pages/api/$page" ]; then
+              echo "::error::Missing or empty API reference page: build/pages/api/$page"
               missing=$((missing + 1))
             else
-              echo "OK  docs/api/$page"
+              echo "OK  build/pages/api/$page"
             fi
           done
           if [ "$missing" -ne 0 ]; then
@@ -86,7 +86,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
+          path: build/pages
 
   deploy:
     needs: build
