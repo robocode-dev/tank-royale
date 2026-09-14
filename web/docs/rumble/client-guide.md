@@ -6,19 +6,18 @@ You do not need to own a bot to contribute battles. If you do own one, you can a
 
 ## What works today
 
-The client can synchronize, run one ranked battle, and submit its result, either built from source natively or through its development container. You currently build the client yourself because there is no published production client image. The container image contains all four bot runtimes and can be run with Docker or Podman, including rootless Podman on Linux; its launcher scripts cover configuration validation, runtime checks, synchronization, ranked battles, and result submission. The native path below and the container path in [Container setup](#container-setup) both reach the same commands.
+The client can synchronize, run one ranked battle, and submit its result through the published `ghcr.io/robocode-dev/rumble-client` image or through a native source build. The published image is the default container path: it contains all four bot runtimes and its launcher scripts cover configuration validation, runtime checks, synchronization, ranked battles, and result submission. The native path below and the container path in [Container setup](#container-setup) reach the same client behavior.
 
-The client also accepts a practice-mode configuration: `--sync` and `--run` both work against local bot sources without a registered client identity. `--submit` rejects practice mode early, since a practice result is never journaled or submitted. Use the [Tank Royale GUI](../articles/gui-battle-setup.md) for local practice battles when you would rather not use the client at all.
+The client also accepts a practice-mode configuration: `--sync` and `--run` work without a registered client identity, while `--submit` rejects practice mode because practice results are never journaled or submitted. The client still reads the configured HTTPS bot catalog; it does not accept an arbitrary local bot folder. Use the [Tank Royale GUI](../articles/gui-battle-setup.md) to test an unsubmitted local bot.
 
 ## What you need
 
 - A GitHub account.
-- Git and JDK 17.
-- Java 25, .NET 10 SDK, Python 3.14, and Node.js 24 if you run natively. The client may select bots from any supported language.
-- Docker Engine/Desktop or Podman if you run the development container. On Windows, Podman Desktop uses a Linux virtual machine with either WSL2 or Hyper-V as the provider.
-- Two sibling source checkouts: [`tank-royale`](https://github.com/robocode-dev/tank-royale) and [`rumble-client`](https://github.com/robocode-dev/rumble-client).
+- Git and a [`rumble-client`](https://github.com/robocode-dev/rumble-client) checkout for the launcher scripts and example configuration.
+- Docker Engine/Desktop or Podman for the published image. On Windows, Podman Desktop uses a Linux virtual machine with either WSL2 or Hyper-V as the provider.
+- JDK 17, Java 25, .NET 10 SDK, Python 3.14, and Node.js 24 only if you choose the native path. Native builds also need a sibling [`tank-royale`](https://github.com/robocode-dev/tank-royale) checkout.
 
-The runtime check reports exactly what is missing and does not install or change anything.
+The published image needs no host language runtimes or Tank Royale checkout. Its runtime check reports exactly what is missing and does not install or change anything.
 
 ### Native Python setup
 
@@ -50,14 +49,30 @@ Use the same shell for the runtime check, synchronization, and ranked run. `RUMB
 
 ### Container setup
 
-The development image uses the current LTS-first Java 25, .NET 10, Python 3.14, and Node.js 24 lanes, with the Tank Royale API installed in an image-owned Python virtual environment. The container does not use your host Python environment, so the native Python setup above is unnecessary when all client commands run in the container. Exact image pins are maintained in the [Rumble client repository](https://github.com/robocode-dev/rumble-client/blob/main/src/main/resources/runtime-versions.properties) and refreshed by reviewed monthly pull requests. Podman Desktop/WSL2 on Windows and rootless Podman on Linux have both been manually verified for this image; neither is part of CI. The launcher scripts fully qualify the image's base images and add `--userns=keep-id` for the Podman engine so the bind-mounted `.rumble-client` state directory stays writable under rootless Podman. Rootless Podman also needs the `cpu`, `memory`, and `pids` cgroup controllers delegated to your user session for the launchers' resource limits to apply; recent systemd delegates all three by default on most current Linux distributions, so this is normally a non-issue, but a cgroup- or resource-limit-related failure instead of an application error is the sign to check delegation.
+The published image uses the current LTS-first Java 25, .NET 10, Python 3.14, and Node.js 24 lanes, with the Tank Royale API installed in an image-owned Python virtual environment. Pull `ghcr.io/robocode-dev/rumble-client:latest` before first use if you want to make the image download explicit; the launchers use it by default and pull it when it is not present. The container does not use your host Python environment, so the native Python setup above is unnecessary when all client commands run in the container. Exact image pins are maintained in the [Rumble client repository](https://github.com/robocode-dev/rumble-client/blob/main/src/main/resources/runtime-versions.properties) and refreshed by reviewed monthly pull requests. Podman Desktop/WSL2 on Windows and rootless Podman on Linux have both been manually verified for this image; neither is part of CI. The launcher scripts fully qualify the image's base images and add `--userns=keep-id` for the Podman engine so the bind-mounted `.rumble-client` state directory stays writable under rootless Podman. Rootless Podman also needs the `cpu`, `memory`, and `pids` cgroup controllers delegated to your user session for the launchers' resource limits to apply; recent systemd delegates all three by default on most current Linux distributions, so this is normally a non-issue, but a cgroup- or resource-limit-related failure instead of an application error is the sign to check delegation.
 
-From the `rumble-client` checkout, build the image with Docker or Podman:
+For normal use, pull the published image:
 
 ```shell
-docker build --tag rumble-client:dev .
-podman build --tag rumble-client:dev .
+docker pull ghcr.io/robocode-dev/rumble-client:latest
 ```
+
+To build a local development image instead, from the `rumble-client` checkout read the pinned Tank Royale commit and pass it to the Docker build:
+
+```shell
+TANK_ROYALE_COMMIT="$(tr -d '[:space:]' < TANK_ROYALE_COMMIT)"
+docker build --tag rumble-client:dev --build-arg "TANK_ROYALE_COMMIT=${TANK_ROYALE_COMMIT}" .
+podman build --tag rumble-client:dev --build-arg "TANK_ROYALE_COMMIT=${TANK_ROYALE_COMMIT}" .
+```
+
+On Windows PowerShell, use:
+
+```powershell
+$env:TANK_ROYALE_COMMIT = (Get-Content TANK_ROYALE_COMMIT -Raw).Trim()
+docker build --tag rumble-client:dev --build-arg "TANK_ROYALE_COMMIT=$env:TANK_ROYALE_COMMIT" .
+```
+
+With Podman, replace `docker` with `podman` in the corresponding build command.
 
 On Windows, create and start a Podman machine once if needed. Choose one provider when initializing it:
 
@@ -71,31 +86,33 @@ podman machine init --provider hyperv
 podman machine start
 ```
 
-Run the supported container phases with the launcher scripts. Docker is the default; select Podman with `CONTAINER_ENGINE=podman` on Unix-like shells or `-Engine podman` in PowerShell:
+Run the supported container phases with the launcher scripts. Docker is the default and uses the published image; select Podman with `CONTAINER_ENGINE=podman` on Unix-like shells or `-Engine podman` in PowerShell:
 
 ```shell
 ./docker/rumble.sh runtimes
 CONTAINER_ENGINE=podman ./docker/rumble.sh runtimes
-./docker/rumble.sh validate rumble-client.json rumble-client:dev
-CONTAINER_ENGINE=podman ./docker/rumble.sh sync rumble-client.json rumble-client:dev
-./docker/rumble.sh run rumble-client.json rumble-client:dev
+./docker/rumble.sh validate rumble-client.json
+CONTAINER_ENGINE=podman ./docker/rumble.sh sync rumble-client.json
+./docker/rumble.sh run rumble-client.json
 export RUMBLE_CLIENT_TOKEN='<your token>'
-./docker/rumble.sh submit rumble-client.json rumble-client:dev
+./docker/rumble.sh submit rumble-client.json
 ```
 
 ```powershell
 .\docker\rumble.ps1 runtimes
 .\docker\rumble.ps1 runtimes -Engine podman
-.\docker\rumble.ps1 validate rumble-client.json rumble-client:dev -Engine podman
-.\docker\rumble.ps1 sync rumble-client.json rumble-client:dev -Engine podman
-.\docker\rumble.ps1 run rumble-client.json rumble-client:dev -Engine podman
+.\docker\rumble.ps1 validate rumble-client.json
+.\docker\rumble.ps1 sync rumble-client.json
+.\docker\rumble.ps1 run rumble-client.json
 $env:RUMBLE_CLIENT_TOKEN = '<your token>'
-.\docker\rumble.ps1 submit rumble-client.json rumble-client:dev -Engine podman
+.\docker\rumble.ps1 submit rumble-client.json
 ```
 
 The launcher mounts the configuration read-only and keeps `.rumble-client` writable because synchronization creates the immutable bot cache and the client stores journals and replay evidence there. `runtimes` runs with no network; `validate`, `sync`, `run`, and `submit` need network access, since `run` re-synchronizes before executing a battle and `submit` reaches the GitHub Issues API. This covers the same ranked and practice-mode commands as the native path in steps 4 through 6 below; use whichever path fits your setup.
 
-When a containerized Battle Runner boots bot archives directly, mount a bot root directory rather than a zip file. Java and Python archives can remain read-only. C# and TypeScript first-run dependency setup may write files and change permissions, so copy those archives into writable container storage before booting them; this avoids `EPERM` errors on Windows bind mounts. If Podman Desktop reports `ssh-keygen` is missing, enable Windows OpenSSH and add `C:\Windows\System32\OpenSSH` to the user `PATH`, then restart the terminal and Podman Desktop.
+To use a locally built `rumble-client:dev` image, pass it as the third argument after the configuration path, for example `./docker/rumble.sh runtimes rumble-client.json rumble-client:dev` or `.\docker\rumble.ps1 runtimes rumble-client.json rumble-client:dev`.
+
+The normal launcher workflow does not run an arbitrary local bot folder. When a specialized containerized Battle Runner harness boots bot archives directly, mount a bot root directory rather than a zip file. Java and Python archives can remain read-only. C# and TypeScript first-run dependency setup may write files and change permissions, so copy those archives into writable container storage before booting them; this avoids `EPERM` errors on Windows bind mounts. If Podman Desktop reports `ssh-keygen` is missing, enable Windows OpenSSH and add `C:\Windows\System32\OpenSSH` to the user `PATH`, then restart the terminal and Podman Desktop.
 
 ## 1. Register your client
 
@@ -111,9 +128,11 @@ Each battle contributor registers once so result submissions can be tied to a Gi
 
 The filename and `account` must match your GitHub account exactly. Choose a stable `clientId` for each computer you plan to use. Open a PR with this file; a moderator reviews and merges it. Ranked submissions from that account and client ID are accepted after the registration reaches `main`.
 
-## 2. Build the client
+## 2. Build the native client (optional)
 
-Clone the two repositories beside each other:
+The published-image path does not need a Tank Royale checkout or a native toolchain. Skip this step when using the published image; build the client only when you choose native execution or are changing the client itself.
+
+For the native path, clone the two repositories beside each other:
 
 ```text
 work/
@@ -161,7 +180,7 @@ Set `gameTypes` to the single format you want to run. During the current source-
 
 ## 4. Check and synchronize
 
-Every Gradle invocation needs the same two arguments as the build in step 2. `-PtankRoyaleSource` is what makes the client compile and run against your adjacent Tank Royale checkout; without it Gradle tries to download a Battle Runner release that does not exist yet, and the command fails to resolve its dependencies. `--no-configuration-cache` is required because the project enables the configuration cache by default.
+For the native path, every Gradle invocation needs the same two arguments as the build in step 2. `-PtankRoyaleSource` is what makes the client compile and run against your adjacent Tank Royale checkout; without it Gradle tries to download a Battle Runner release that does not exist yet, and the command fails to resolve its dependencies. `--no-configuration-cache` is required because the project enables the configuration cache by default.
 
 On Linux or macOS:
 
