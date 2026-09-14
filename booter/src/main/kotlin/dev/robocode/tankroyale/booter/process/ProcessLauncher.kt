@@ -9,7 +9,11 @@ internal object ProcessLauncher {
     fun createProcessBuilder(command: String): ProcessBuilder =
         when (getScriptType(command)) {
             ScriptType.WINDOWS_BATCH -> ProcessBuilder("cmd.exe", "/c", command)
-            ScriptType.SHELL_SCRIPT -> ProcessBuilder("bash", "-c", command)
+            // bash -c re-parses its argument as a shell command line, splitting on whitespace,
+            // so an unquoted path containing a space (e.g. a team member directory named
+            // "<Name> <Version>") gets torn into multiple words. Passing the path as bash's
+            // script argument instead runs it directly with no re-parsing.
+            ScriptType.SHELL_SCRIPT -> ProcessBuilder("bash", command)
             ScriptType.PYTHON_SCRIPT -> ProcessBuilder("python", command)
             ScriptType.OTHER -> ProcessBuilder(command)
         }
