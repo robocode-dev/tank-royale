@@ -580,6 +580,11 @@ claims:
       state: reserved
       prefix: CH
       component: "46"
+    - id: CH-047
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "47"
     - id: G-001
       kind: numeric
       state: reserved
@@ -1101,8 +1106,8 @@ high-water:
       state: reserved
       prefix: TNP
       component: "3"
-    - id: UD-007
+    - id: UD-008
       kind: numeric
       state: reserved
       prefix: UD
-      component: "7"
+      component: "8"
