@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.botapi.internal;
 
+import dev.robocode.tankroyale.botapi.BotException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -10,8 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class TeamMessageLimitsTest {
     @Test @Tag("Unit")
     void accepts128MessagesAndRejects129th() {
+        assertDoesNotThrow(() -> IntentValidator.validateTeamMessage("hello", 10));
         assertDoesNotThrow(() -> IntentValidator.validateTeamMessage("hello", 127));
-        assertThrows(RuntimeException.class, () -> IntentValidator.validateTeamMessage("hello", 128));
+        assertThrows(BotException.class, () -> IntentValidator.validateTeamMessage("hello", 128));
     }
 
     @Test @Tag("Unit")

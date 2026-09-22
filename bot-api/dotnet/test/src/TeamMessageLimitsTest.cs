@@ -11,8 +11,9 @@ public class TeamMessageLimitsTest
     [Test]
     public void CountBoundary()
     {
+        Assert.DoesNotThrow(() => IntentValidator.ValidateTeamMessage("hello", 10));
         Assert.DoesNotThrow(() => IntentValidator.ValidateTeamMessage("hello", Constants.MaxNumberOfTeamMessagesPerTurn - 1));
-        Assert.Throws<InvalidOperationException>(() => IntentValidator.ValidateTeamMessage("hello", Constants.MaxNumberOfTeamMessagesPerTurn));
+        Assert.Throws<BotException>(() => IntentValidator.ValidateTeamMessage("hello", Constants.MaxNumberOfTeamMessagesPerTurn));
     }
 
     [Test]

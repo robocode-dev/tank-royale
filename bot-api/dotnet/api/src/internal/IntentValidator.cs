@@ -118,7 +118,7 @@ public static class IntentValidator
     public static void ValidateTeamMessage(object message, int currentTeamMessageCount)
     {
         if (currentTeamMessageCount >= IBaseBot.MaxNumberOfTeamMessagesPerTurn)
-            throw new InvalidOperationException(
+            throw new BotException(
                 "The maximum number of team messages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
 

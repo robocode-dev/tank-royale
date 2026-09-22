@@ -2,6 +2,7 @@ import { MathUtil } from "../util/MathUtil.js";
 import { Color } from "../graphics/Color.js";
 import { ColorUtil } from "../util/ColorUtil.js";
 import { Constants } from "../Constants.js";
+import { BotException } from "../BotException.js";
 
 export class IntentValidator {
   static validateFirepower(firepower: number): number {
@@ -97,7 +98,7 @@ export class IntentValidator {
 
   static validateTeamMessage(message: unknown, currentTeamMessageCount: number): void {
     if (currentTeamMessageCount >= Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
-      throw new Error("The maximum number of team messages has already been reached: " + Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
+      throw new BotException("The maximum number of team messages has already been reached: " + Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
     }
     if (message === null || message === undefined) {
       throw new Error("The 'message' of a team message cannot be null");

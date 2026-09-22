@@ -25,6 +25,7 @@ import { SkippedTurnEvent } from "./events/SkippedTurnEvent.js";
 import { WonRoundEvent } from "./events/WonRoundEvent.js";
 import { CustomEvent } from "./events/CustomEvent.js";
 import { TeamMessageEvent } from "./events/TeamMessageEvent.js";
+import { BotException } from "./BotException.js";
 /**
  * Interface containing the core API for a bot.
  */
@@ -237,6 +238,8 @@ export interface IBaseBot {
    * Broadcasts a compact JSON message to all teammates for delivery on the next turn.
    * A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
    * Throws without enqueueing this message when any limit is exceeded.
+   * @throws {BotException} When the per-turn message count has been reached.
+   * @throws {Error} When the message or complete batch exceeds its UTF-8 byte limit.
    */
   broadcastTeamMessage(message: unknown): void;
 
@@ -244,6 +247,8 @@ export interface IBaseBot {
    * Sends a compact JSON message to a teammate for delivery on the next turn.
    * A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
    * Throws without enqueueing this message when the recipient is invalid or any limit is exceeded.
+   * @throws {BotException} When the per-turn message count has been reached.
+   * @throws {Error} When the recipient is invalid or the message or complete batch exceeds its UTF-8 byte limit.
    */
   sendTeamMessage(teammateId: number, message: unknown): void;
 

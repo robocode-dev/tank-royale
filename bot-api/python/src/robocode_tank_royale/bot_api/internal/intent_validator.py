@@ -129,7 +129,7 @@ class IntentValidator:
     def validate_team_message(message: Any, current_team_message_count: int) -> None:
         if current_team_message_count >= MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN:
             raise BotException(
-                f"The maximum number team messages has already been reached: {MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}"
+                f"The maximum number of team messages has already been reached: {MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}"
             )
         if message is None:
             raise ValueError("The 'message' of a team message cannot be null")

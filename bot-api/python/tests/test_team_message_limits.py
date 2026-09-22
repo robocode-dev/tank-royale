@@ -5,14 +5,16 @@ from robocode_tank_royale.bot_api.constants import (
     TEAM_MESSAGE_MAX_SIZE,
     TEAM_MESSAGES_MAX_BYTES_PER_TURN,
 )
+from robocode_tank_royale.bot_api.bot_exception import BotException
 from robocode_tank_royale.bot_api.internal.intent_validator import IntentValidator
 
 pytestmark = pytest.mark.Unit
 
 
 def test_count_boundary() -> None:
+    IntentValidator.validate_team_message("hello", 10)
     IntentValidator.validate_team_message("hello", MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN - 1)
-    with pytest.raises(Exception):
+    with pytest.raises(BotException):
         IntentValidator.validate_team_message("hello", MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN)
 
 
