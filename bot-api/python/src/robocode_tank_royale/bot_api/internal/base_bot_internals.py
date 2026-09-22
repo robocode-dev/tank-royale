@@ -867,7 +867,9 @@ class BaseBotInternals:
         self.send_team_message(None, message)
 
     def send_team_message(self, teammate_id: Optional[int], message: Any) -> None:
+        import json
         from ..team_message import serialize_team_message
+        from .json_util import MessageEncoder
 
         IntentValidator.validate_teammate_id(teammate_id, self.teammate_ids)
 
@@ -887,6 +889,9 @@ class BaseBotInternals:
             receiver_id=teammate_id,
             message=json_message_str,
         )
+        candidate_messages = [*team_messages_list, team_message]
+        compact_messages = json.dumps(candidate_messages, cls=MessageEncoder, separators=(",", ":"), ensure_ascii=False)
+        IntentValidator.validate_team_messages_size(compact_messages)
         team_messages_list.append(team_message)
 
     # Color and Graphics - Delegated

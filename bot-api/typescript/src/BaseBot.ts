@@ -41,6 +41,7 @@ import { MathUtil } from "./util/MathUtil.js";
 export abstract class BaseBot implements IBaseBot {
   readonly TEAM_MESSAGE_MAX_SIZE = Constants.TEAM_MESSAGE_MAX_SIZE;
   readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN;
+  readonly TEAM_MESSAGES_MAX_BYTES_PER_TURN = Constants.TEAM_MESSAGES_MAX_BYTES_PER_TURN;
 
   /** @internal */
   readonly _internals: BaseBotInternals;

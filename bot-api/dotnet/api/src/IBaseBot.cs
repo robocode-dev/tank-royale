@@ -13,14 +13,17 @@ namespace Robocode.TankRoyale.BotApi;
 public interface IBaseBot
 {
     /// <summary>
-    /// The maximum size of a team message, which is 32 KB (32.786 bytes).
+    /// The maximum size of an encoded team message, which is 48 KiB of UTF-8 bytes.
     /// </summary>
     const int TeamMessageMaxSize = Constants.TeamMessageMaxSize; // bytes
 
     /// <summary>
-    /// The maximum number of team messages that can be sent per turn, which is 10 messages.
+    /// The maximum number of team messages that can be sent per turn, which is 128 messages.
     /// </summary>
     const int MaxNumberOfTeamMessagesPerTurn = Constants.MaxNumberOfTeamMessagesPerTurn;
+
+    /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn.</summary>
+    const int TeamMessagesMaxBytesPerTurn = Constants.TeamMessagesMaxBytesPerTurn;
 
     /// <summary>
     /// The method used to start running the bot. You should call this method from the main

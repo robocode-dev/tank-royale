@@ -5,6 +5,7 @@ import { Condition } from "./Condition.js";
 import { EventPriorities } from "./EventPriorities.js";
 import { EventInterruption } from "./EventInterruption.js";
 import { BotEventHandlers } from "./BotEventHandlers.js";
+import { TeamMessageEvent } from "./TeamMessageEvent.js";
 
 const MAX_QUEUE_SIZE = 256;
 const MAX_EVENT_AGE = 2;
@@ -24,7 +25,8 @@ export class EventQueue {
   }
 
   addEvent(event: BotEvent): void {
-    if (this.events.length >= MAX_QUEUE_SIZE) {
+    if (!(event instanceof TeamMessageEvent) &&
+        this.events.filter(e => !(e instanceof TeamMessageEvent)).length >= MAX_QUEUE_SIZE) {
       return;
     }
     this.events.push(event);

@@ -293,7 +293,7 @@ sealed class EventQueue : IComparer<BotEvent>
     {
         lock (_events)
         {
-            if (_events.Count < MaxQueueSize)
+            if (botEvent is TeamMessageEvent || _events.Count(e => e is not TeamMessageEvent) < MaxQueueSize)
             {
                 _events.Add(botEvent);
             }

@@ -153,11 +153,14 @@ public static class Constants
     /// size of the message object. Messages exceeding this size are rejected.
     /// </summary>
     /// <value>The maximum team message size in bytes, which is 32768.</value>
-    public const int TeamMessageMaxSize = 32768;
+    public const int TeamMessageMaxSize = 48 * 1024;
 
     /// <summary>
     /// The maximum number of team messages that can be sent per turn, which is 10 messages.
     /// </summary>
     /// <value>The maximum number of team messages per turn, which is 10.</value>
-    public const int MaxNumberOfTeamMessagesPerTurn = 10;
+    public const int MaxNumberOfTeamMessagesPerTurn = 128;
+
+    /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn.</summary>
+    public const int TeamMessagesMaxBytesPerTurn = 256 * 1024;
 }

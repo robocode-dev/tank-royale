@@ -5,7 +5,7 @@ from threading import Lock
 if TYPE_CHECKING:
     from .base_bot_internals import BaseBotInternals
 
-from ..events import CustomEvent, BotEvent, TickEvent
+from ..events import CustomEvent, BotEvent, TickEvent, TeamMessageEvent
 from .bot_event_handlers import BotEventHandlers
 from .event_interruption import EventInterruption
 from .event_priorities import EventPriorities
@@ -183,7 +183,9 @@ class EventQueue:
 
     def add_event(self, bot_event: BotEvent):
         with self.events_lock:
-            if len(self.events) < EventQueue.MAX_QUEUE_SIZE:
+            if isinstance(bot_event, TeamMessageEvent) or sum(
+                not isinstance(event, TeamMessageEvent) for event in self.events
+            ) < EventQueue.MAX_QUEUE_SIZE:
                 self.events.append(bot_event)
             else:
                 print(f"Maximum event queue size has been reached: {EventQueue.MAX_QUEUE_SIZE}")

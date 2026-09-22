@@ -150,6 +150,8 @@ tasks {
             prepareJavaBot("WonRoundCounterJava")
             prepareCsharpBot("WonRoundCounterCSharp")
             prepareJavaBot("BreakpointStallBot")
+            prepareJavaBot("TeamMessageLoadBot")
+            prepareJavaBot("TeamMessageLoadTeam")
             prepareTsDependencies()
             prepareTypescriptBot("WonRoundCounterTs")
         }

@@ -85,9 +85,9 @@ properties:
     description: New text received from standard error (stderr)
     type: string
   teamMessages:
-    description: Messages to send to one or more individual teammates or broadcast to the entire team
+    description: Messages delivered in order on the next turn. At most 128 per bot per turn; the compact UTF-8 encoded array is limited to 262144 bytes. An invalid intent is rejected in full.
     type: array
-    maxItems: 4
+    maxItems: 128
     items:
       $ref: team-message.schema.yaml
   debugGraphics:

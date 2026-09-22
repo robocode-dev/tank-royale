@@ -29,11 +29,14 @@ import { TeamMessageEvent } from "./events/TeamMessageEvent.js";
  * Interface containing the core API for a bot.
  */
 export interface IBaseBot {
-  /** The maximum size of a team message in bytes (32 KB). */
-  readonly TEAM_MESSAGE_MAX_SIZE: 32768;
+  /** The maximum size of an encoded team message in UTF-8 bytes (48 KiB). */
+  readonly TEAM_MESSAGE_MAX_SIZE: number;
 
   /** The maximum number of team messages that can be sent per turn. */
-  readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: 10;
+  readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: number;
+
+  /** Maximum UTF-8 bytes of the compact encoded teamMessages array per turn. */
+  readonly TEAM_MESSAGES_MAX_BYTES_PER_TURN: number;
 
   /** Starts the bot, connecting to the server and running until the game ends. */
   start(): void;

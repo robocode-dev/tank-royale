@@ -92,12 +92,15 @@ The gun heat at the start of a round, which is 3.0. The gun cannot fire until it
 to zero, cooling at the rate defined by the game setup's gun cooling rate.
 """
 
-MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 10
+MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 128
 """
 Maximum number of team messages that can be sent per turn.
 """
 
-TEAM_MESSAGE_MAX_SIZE = 32768
+TEAM_MESSAGE_MAX_SIZE = 48 * 1024
+
+TEAM_MESSAGES_MAX_BYTES_PER_TURN = 256 * 1024
+"""Maximum UTF-8 bytes of the compact encoded teamMessages array per turn."""
 """
 Maximum size of a team message in bytes (32 KB).
 """

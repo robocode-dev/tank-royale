@@ -554,6 +554,16 @@ class GameServer(
     internal fun handleBotIntent(conn: WebSocket, intent: dev.robocode.tankroyale.schema.BotIntent) {
         if (lifecycleManager.serverState !== ServerState.GAME_RUNNING && lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
 
+        val senderId = participantRegistry.participantIds[conn]
+        val teamId = connectionHandler.getBotHandshakes()[conn]?.teamId
+        val teammateIds = senderId?.let { getTeammateIds(it, teamId) } ?: emptySet()
+        if (intent.teamMessages?.any { message ->
+                message.receiverId != null && BotId(message.receiverId) !in teammateIds
+            } == true) {
+            conn.close(1008 /* RFC 6455 policy violation */, "Team message receiverId is not a teammate")
+            return
+        }
+
         var shouldProcessBreakpointTurn = false
         synchronized(tickLock) {
             val existingIntent = botIntents[conn]

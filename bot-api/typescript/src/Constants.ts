@@ -125,10 +125,13 @@ export const Constants = {
    * The maximum size of a team message in bytes (32 KB), which is the serialized (compact JSON)
    * size of the message object. Messages exceeding this size are rejected.
    */
-  TEAM_MESSAGE_MAX_SIZE: 32768,
+  TEAM_MESSAGE_MAX_SIZE: 48 * 1024,
 
   /**
    * The maximum number of team messages that can be sent per turn, which is 10 messages.
    */
-  MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: 10,
+  MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: 128,
+
+  /** Maximum UTF-8 bytes of the compact encoded teamMessages array per turn. */
+  TEAM_MESSAGES_MAX_BYTES_PER_TURN: 256 * 1024,
 } as const;

@@ -3,9 +3,8 @@ $schema: https://json-schema.org/2020-12/schema#
 description: Message sent between teammates
 properties:
   message:
-    description: The received message, e.g. in JSON format
+    description: The encoded message payload, e.g. compact JSON. Its UTF-8 representation is limited to 49152 bytes.
     type: string
-    maxLength: 32768
   messageType:
     description: The message type, e.g. a class name
     type: string

@@ -1154,11 +1154,13 @@ export class BaseBotInternals {
     IntentValidator.validateTeamMessage(message, this.intent.teamMessages.length);
 
 
-    this.intent.teamMessages.push({
+    const teamMessage = {
       message: json,
       messageType: typeof message === "object" && message !== null ? message.constructor.name : "string",
       receiverId: teammateId ?? null,
-    });
+    };
+    IntentValidator.validateTeamMessagesSize(toJson([...this.intent.teamMessages, teamMessage]));
+    this.intent.teamMessages.push(teamMessage);
   }
 
   // ---------------------------------------------------------------------------

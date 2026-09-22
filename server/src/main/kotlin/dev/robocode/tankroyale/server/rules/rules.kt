@@ -90,8 +90,14 @@ const val BONUS_PER_RAM_KILL = 0.30
 /** Inactivity punishment damage per turn */
 const val INACTIVITY_DAMAGE = 0.1
 
-/** Max. number of characters allowed for a team message */
-const val MAX_TEAM_MESSAGE_SIZE = 4096
+/** Max. UTF-8 bytes of an encoded team-message payload. */
+const val MAX_TEAM_MESSAGE_SIZE = 48 * 1024
 
 /** Max. number of team messages per turn */
-const val MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 5
+const val MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 128
+
+/** Max. UTF-8 bytes of the compact encoded teamMessages array per bot intent. */
+const val MAX_TEAM_MESSAGES_BYTES_PER_TURN = 256 * 1024
+
+/** Max. UTF-8 bytes of an incoming WebSocket text message. */
+const val MAX_INBOUND_TEXT_BYTES = 1024 * 1024

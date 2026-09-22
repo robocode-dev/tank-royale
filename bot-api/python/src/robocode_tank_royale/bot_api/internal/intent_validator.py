@@ -12,6 +12,7 @@ from ..constants import (
     ACCELERATION,
     MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN,
     TEAM_MESSAGE_MAX_SIZE,
+    TEAM_MESSAGES_MAX_BYTES_PER_TURN,
 )
 
 
@@ -138,6 +139,13 @@ class IntentValidator:
         if len(json_message_str.encode("utf-8")) > TEAM_MESSAGE_MAX_SIZE:
             raise ValueError(
                 f"The team message is larger than the limit of {TEAM_MESSAGE_MAX_SIZE} bytes (compact JSON format)"
+            )
+
+    @staticmethod
+    def validate_team_messages_size(json_messages_str: str) -> None:
+        if len(json_messages_str.encode("utf-8")) > TEAM_MESSAGES_MAX_BYTES_PER_TURN:
+            raise ValueError(
+                f"The teamMessages array exceeds {TEAM_MESSAGES_MAX_BYTES_PER_TURN} UTF-8 bytes (compact JSON format)"
             )
 
     @staticmethod

@@ -811,12 +811,15 @@ sealed class BaseBotInternals
         var json = JsonConverter.ToJson(message);
         IntentValidator.ValidateTeamMessageSize(json);
 
-        BotIntent.TeamMessages.Add(new S.TeamMessage
+        var teamMessage = new S.TeamMessage
         {
             MessageType = message.GetType().ToString(),
             Message = json,
             ReceiverId = teammateId,
-        });
+        };
+        var candidateMessages = new System.Collections.Generic.List<S.TeamMessage>(BotIntent.TeamMessages) { teamMessage };
+        IntentValidator.ValidateTeamMessagesSize(JsonConverter.ToJson(candidateMessages));
+        BotIntent.TeamMessages.Add(teamMessage);
     }
 
     internal Color? BodyColor

@@ -780,6 +780,9 @@ public final class BaseBotInternals {
         teamMessage.setReceiverId(teammateId);
         teamMessage.setMessage(json);
 
+        var candidateMessages = new java.util.ArrayList<>(botIntent.getTeamMessages());
+        candidateMessages.add(teamMessage);
+        IntentValidator.validateTeamMessagesSize(JsonConverter.toJson(candidateMessages));
         botIntent.getTeamMessages().add(teamMessage);
     }
 
