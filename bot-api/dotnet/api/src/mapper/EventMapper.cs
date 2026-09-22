@@ -33,7 +33,7 @@ static class EventMapper
 
     private static IEnumerable<BotEvent> Map(JArray events, IBaseBot baseBot)
     {
-        var gameEvents = new HashSet<BotEvent>();
+        var gameEvents = new List<BotEvent>(events.Count);
         foreach (var jEvent in events)
         {
             var evt = (JObject)jEvent;

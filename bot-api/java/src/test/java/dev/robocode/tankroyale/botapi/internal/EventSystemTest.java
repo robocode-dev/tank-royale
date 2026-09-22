@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -237,6 +238,23 @@ class EventSystemTest {
         CustomEvent ce = new CustomEvent(19, condition);
         assertEquals(19, ce.getTurnNumber());
         assertEquals(condition, ce.getCondition());
+    }
+
+    @Test
+    @Tag("Unit")
+    void drainsAnAcceptedTeamMessageBatchInOrder() {
+        for (int index = 0; index < 512; index++) {
+            queue.addEvent(new TeamMessageEvent(7, "message-" + index, 1));
+        }
+
+        queue.dispatchEvents(7);
+
+        assertThat(botStub.firedEvents)
+                .hasSize(512)
+                .allMatch(event -> event instanceof TeamMessageEvent);
+        assertThat(botStub.firedEvents.stream()
+                .map(event -> ((TeamMessageEvent) event).getMessage()))
+                .containsExactly(IntStream.range(0, 512).mapToObj(index -> "message-" + index).toArray());
     }
 
     @Test

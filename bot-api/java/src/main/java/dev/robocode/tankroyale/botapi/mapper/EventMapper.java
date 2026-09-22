@@ -6,9 +6,9 @@ import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Utility class for mapping events.
@@ -28,8 +28,8 @@ public final class EventMapper {
                 map(event.getEvents(), baseBot));
     }
 
-    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> events, IBaseBot baseBot) {
-        Set<BotEvent> gameBotEvents = new HashSet<>();
+    private static List<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> events, IBaseBot baseBot) {
+        List<BotEvent> gameBotEvents = new ArrayList<>(events.size());
         events.forEach(event -> gameBotEvents.add(map(event, baseBot)));
         return gameBotEvents;
     }
