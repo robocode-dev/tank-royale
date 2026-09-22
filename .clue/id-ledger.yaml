@@ -321,6 +321,15 @@ events:
     - {id: UD-008, kind: numeric, state: reserved, prefix: UD, component: "8"}
     - {id: PDR-014, kind: numeric, state: live, prefix: PDR, component: "14"}
     - {id: UD-008, kind: numeric, state: live, prefix: UD, component: "8"}
+    - {id: CH-047, kind: numeric, state: reserved, prefix: CH, component: "47"}
+    - {id: CH-048, kind: numeric, state: reserved, prefix: CH, component: "48"}
+    - {id: CAP-018, kind: numeric, state: reserved, prefix: CAP, component: "18"}
+    - {id: CH-047, kind: numeric, state: live, prefix: CH, component: "47"}
+    - {id: CAP-018, kind: numeric, state: live, prefix: CAP, component: "18"}
+    - {id: TASKS-002, kind: numeric, state: reserved, prefix: TASKS, component: "2"}
+    - {id: OQ-002, kind: numeric, state: reserved, prefix: OQ, component: "2"}
+    - {id: TASKS-002, kind: numeric, state: live, prefix: TASKS, component: "2"}
+    - {id: OQ-002, kind: numeric, state: live, prefix: OQ, component: "2"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
