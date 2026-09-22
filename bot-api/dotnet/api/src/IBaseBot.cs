@@ -22,7 +22,7 @@ public interface IBaseBot
     /// </summary>
     const int MaxNumberOfTeamMessagesPerTurn = Constants.MaxNumberOfTeamMessagesPerTurn;
 
-    /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn.</summary>
+    /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB).</summary>
     const int TeamMessagesMaxBytesPerTurn = Constants.TeamMessagesMaxBytesPerTurn;
 
     /// <summary>
@@ -735,11 +735,13 @@ public interface IBaseBot
     /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>. This size is the size of the
     /// message when it is serialized into a JSON representation.
     ///
-    /// The maximum number of messages that can be send/broadcast per turn is defined by
-    /// <see cref="MaxNumberOfTeamMessagesPerTurn"/>.
+    /// A turn can contain at most <see cref="MaxNumberOfTeamMessagesPerTurn"/> messages, and the compact UTF-8 encoded
+    /// team-message array can contain at most <see cref="TeamMessagesMaxBytesPerTurn"/> bytes. Each accepted message
+    /// is delivered on the next turn. A failed call does not enqueue its message.
     /// </summary>
     /// <param name="message">The message to broadcast.</param>
-    /// <exception cref="ArgumentException">if the size of the message exceeds the size limit.</exception>
+    /// <exception cref="BotException">If the per-turn message count has been reached.</exception>
+    /// <exception cref="ArgumentException">If the message or complete batch exceeds its UTF-8 byte limit.</exception>
     /// <seealso cref="SendTeamMessage"/>
     /// <seealso cref="TeammateIds"/>
     void BroadcastTeamMessage(object message);
@@ -753,12 +755,14 @@ public interface IBaseBot
     /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>. This size is the size of the
     /// message when it is serialized into a JSON representation.
     ///
-    /// The maximum number of messages that can be send/broadcast per turn is defined by
-    /// <see cref="MaxNumberOfTeamMessagesPerTurn"/>.
+    /// A turn can contain at most <see cref="MaxNumberOfTeamMessagesPerTurn"/> messages, and the compact UTF-8 encoded
+    /// team-message array can contain at most <see cref="TeamMessagesMaxBytesPerTurn"/> bytes. Each accepted message
+    /// is delivered on the next turn. A failed call does not enqueue its message.
     /// </summary>
     /// <param name="teammateId">The id of the teammate to send the message to.</param>
     /// <param name="message">The message to broadcast.</param>
-    /// <exception cref="ArgumentException">if the size of the message exceeds the size limit.</exception>
+    /// <exception cref="BotException">If the per-turn message count has been reached.</exception>
+    /// <exception cref="ArgumentException">If the recipient is invalid or the message or complete batch exceeds its UTF-8 byte limit.</exception>
     /// <seealso cref="BroadcastTeamMessage"/>
     /// <seealso cref="TeammateIds"/>
     void SendTeamMessage(int teammateId, object message);

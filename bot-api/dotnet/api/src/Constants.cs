@@ -149,18 +149,18 @@ public static class Constants
     public const double StartingGunHeat = 3.0;
 
     /// <summary>
-    /// The maximum size of a team message in bytes (32 KB), which is the serialized (compact JSON)
+    /// The maximum size of a team message in UTF-8 bytes (48 KiB), which is the serialized (compact JSON)
     /// size of the message object. Messages exceeding this size are rejected.
     /// </summary>
-    /// <value>The maximum team message size in bytes, which is 32768.</value>
+    /// <value>The maximum team message size in UTF-8 bytes, which is 49152.</value>
     public const int TeamMessageMaxSize = 48 * 1024;
 
     /// <summary>
-    /// The maximum number of team messages that can be sent per turn, which is 10 messages.
+    /// The maximum number of team messages that can be sent per turn, which is 128 messages.
     /// </summary>
-    /// <value>The maximum number of team messages per turn, which is 10.</value>
+    /// <value>The maximum number of team messages per turn, which is 128.</value>
     public const int MaxNumberOfTeamMessagesPerTurn = 128;
 
-    /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn.</summary>
+    /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB).</summary>
     public const int TeamMessagesMaxBytesPerTurn = 256 * 1024;
 }

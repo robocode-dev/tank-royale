@@ -851,11 +851,13 @@ public interface IBaseBot {
      * {@value Constants#TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
      * JSON representation.<br>
      * <br>
-     * The maximum number of messages that can be send/broadcast per turn is limited to
-     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
+     * A turn can contain at most {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN} messages, and the compact
+     * UTF-8 encoded team-message array can contain at most {@value Constants#TEAM_MESSAGES_MAX_BYTES_PER_TURN} bytes.
+     * Each accepted message is delivered on the next turn. A failed call does not enqueue its message.
      *
      * @param message is the message to broadcast.
-     * @throws IllegalArgumentException if the size of the message exceeds the size limit.
+     * @throws BotException if the per-turn message count has been reached.
+     * @throws IllegalArgumentException if the message or complete batch exceeds its UTF-8 byte limit.
      * @see #sendTeamMessage
      * @see #getTeammateIds
      */
@@ -871,12 +873,14 @@ public interface IBaseBot {
      * {@value Constants#TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
      * JSON representation.<br>
      * <br>
-     * The maximum number of messages that can be sent/broadcast per turn is limited to
-     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
+     * A turn can contain at most {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN} messages, and the compact
+     * UTF-8 encoded team-message array can contain at most {@value Constants#TEAM_MESSAGES_MAX_BYTES_PER_TURN} bytes.
+     * Each accepted message is delivered on the next turn. A failed call does not enqueue its message.
      *
      * @param teammateId is the id of the teammate to send the message to.
      * @param message    is the message to send.
-     * @throws IllegalArgumentException if the size of the message exceeds the size limit.
+     * @throws BotException if the per-turn message count has been reached.
+     * @throws IllegalArgumentException if the recipient is invalid or the message or complete batch exceeds its UTF-8 byte limit.
      * @see #broadcastTeamMessage
      * @see #getTeammateIds
      */

@@ -35,7 +35,7 @@ export interface IBaseBot {
   /** The maximum number of team messages that can be sent per turn. */
   readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: number;
 
-  /** Maximum UTF-8 bytes of the compact encoded teamMessages array per turn. */
+  /** Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB). */
   readonly TEAM_MESSAGES_MAX_BYTES_PER_TURN: number;
 
   /** Starts the bot, connecting to the server and running until the game ends. */
@@ -233,10 +233,18 @@ export interface IBaseBot {
   /** Returns whether the given bot ID is a teammate. */
   isTeammate(botId: number): boolean;
 
-  /** Broadcasts a message to all teammates. */
+  /**
+   * Broadcasts a compact JSON message to all teammates for delivery on the next turn.
+   * A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
+   * Throws without enqueueing this message when any limit is exceeded.
+   */
   broadcastTeamMessage(message: unknown): void;
 
-  /** Sends a message to a specific teammate. */
+  /**
+   * Sends a compact JSON message to a teammate for delivery on the next turn.
+   * A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
+   * Throws without enqueueing this message when the recipient is invalid or any limit is exceeded.
+   */
   sendTeamMessage(teammateId: number, message: unknown): void;
 
   /** The body color of the bot. */

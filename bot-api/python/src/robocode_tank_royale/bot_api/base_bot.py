@@ -698,7 +698,10 @@ class BaseBot(BaseBotABC):
         return self._internals.is_teammate(bot_id)
 
     def broadcast_team_message(self, message: Any) -> None:
-        """Broadcasts a message to all teammates.
+        """Broadcasts a compact JSON message to all teammates for delivery on the next turn.
+
+        A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
+        A failed call does not enqueue its message.
 
         Args:
             message: The message to broadcast.
@@ -707,7 +710,10 @@ class BaseBot(BaseBotABC):
         self._internals.broadcast_team_message(message)
 
     def send_team_message(self, teammate_id: int, message: Any) -> None:
-        """Sends a message to a specific teammate.
+        """Sends a compact JSON message to a teammate for delivery on the next turn.
+
+        A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
+        A failed call does not enqueue its message.
 
         Args:
             teammate_id: The ID of the teammate to send the message to.
