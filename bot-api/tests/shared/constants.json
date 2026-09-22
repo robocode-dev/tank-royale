@@ -112,7 +112,7 @@
       "type": "positive",
       "method": "getConstant",
       "args": ["MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN"],
-      "expected": { "returns": 128 }
+      "expected": { "returns": 64 }
     },
     {
       "id": "TR-API-VAL-005-constants-team-messages-max-bytes-per-turn",

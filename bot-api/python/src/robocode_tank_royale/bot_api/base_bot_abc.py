@@ -20,7 +20,7 @@ class BaseBotABC(ABC):
     """Maximum UTF-8 bytes of one compact JSON-encoded team message (48 KiB)."""
 
     MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: int = _C.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN
-    """Maximum number of team messages that can be sent per turn (128)."""
+    """Maximum number of team messages that can be sent per turn (64)."""
 
     TEAM_MESSAGES_MAX_BYTES_PER_TURN: int = _C.TEAM_MESSAGES_MAX_BYTES_PER_TURN
     """Maximum UTF-8 bytes of the compact encoded team-message array per turn (256 KiB)."""

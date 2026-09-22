@@ -21,15 +21,15 @@ class TeamMessagePolicyTest : FunSpec({
 
     fun intent(messages: JsonArray) = JsonObject().apply { add("teamMessages", messages) }
 
-    test("Unit: 11 and 128 messages are accepted in order; 129 are rejected") {
+    test("Unit: 11 and 64 messages are accepted in order; 65 are rejected") {
         val messages = JsonArray()
         repeat(11) { messages.add(item("message-$it")) }
         TeamMessagePolicy.validate(intent(messages))
         messages.size() shouldBe 11
         messages[10].asJsonObject.get("message").asString shouldBe "message-10"
-        repeat(117) { messages.add(item("message-${it + 11}")) }
+        repeat(53) { messages.add(item("message-${it + 11}")) }
         TeamMessagePolicy.validate(intent(messages))
-        messages.add(item("message-128"))
+        messages.add(item("message-64"))
         shouldThrow<IllegalArgumentException> { TeamMessagePolicy.validate(intent(messages)) }
     }
 

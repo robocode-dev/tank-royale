@@ -4,7 +4,7 @@ import { IntentValidator } from "../src/internal/intentValidator.js";
 import { BotException } from "../src/BotException.js";
 
 describe("Unit: team message limits", () => {
-  test("accepts 128 messages and rejects the 129th", () => {
+  test("accepts 64 messages and rejects the 65th", () => {
     expect(() => IntentValidator.validateTeamMessage("hello", 10)).not.toThrow();
     expect(() => IntentValidator.validateTeamMessage("hello", Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN - 1)).not.toThrow();
     expect(() => IntentValidator.validateTeamMessage("hello", Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN)).toThrow(BotException);

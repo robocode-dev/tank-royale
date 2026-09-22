@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TeamMessageLimitsTest {
     @Test @Tag("Unit")
-    void accepts128MessagesAndRejects129th() {
+    void accepts64MessagesAndRejects65th() {
         assertDoesNotThrow(() -> IntentValidator.validateTeamMessage("hello", 10));
-        assertDoesNotThrow(() -> IntentValidator.validateTeamMessage("hello", 127));
-        assertThrows(BotException.class, () -> IntentValidator.validateTeamMessage("hello", 128));
+        assertDoesNotThrow(() -> IntentValidator.validateTeamMessage("hello", MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN - 1));
+        assertThrows(BotException.class, () -> IntentValidator.validateTeamMessage("hello", MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN));
     }
 
     @Test @Tag("Unit")

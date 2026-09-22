@@ -156,10 +156,10 @@ public static class Constants
     public const int TeamMessageMaxSize = 48 * 1024;
 
     /// <summary>
-    /// The maximum number of team messages that can be sent per turn, which is 128 messages.
+    /// The maximum number of team messages that can be sent per turn, which is 64 messages.
     /// </summary>
-    /// <value>The maximum number of team messages per turn, which is 128.</value>
-    public const int MaxNumberOfTeamMessagesPerTurn = 128;
+    /// <value>The maximum number of team messages per turn, which is 64.</value>
+    public const int MaxNumberOfTeamMessagesPerTurn = 64;
 
     /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB).</summary>
     public const int TeamMessagesMaxBytesPerTurn = 256 * 1024;

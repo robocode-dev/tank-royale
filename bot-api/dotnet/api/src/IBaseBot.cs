@@ -18,7 +18,7 @@ public interface IBaseBot
     const int TeamMessageMaxSize = Constants.TeamMessageMaxSize; // bytes
 
     /// <summary>
-    /// The maximum number of team messages that can be sent per turn, which is 128 messages.
+    /// The maximum number of team messages that can be sent per turn, which is 64 messages.
     /// </summary>
     const int MaxNumberOfTeamMessagesPerTurn = Constants.MaxNumberOfTeamMessagesPerTurn;
 

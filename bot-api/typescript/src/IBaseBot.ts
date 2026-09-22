@@ -236,7 +236,7 @@ export interface IBaseBot {
 
   /**
    * Broadcasts a compact JSON message to all teammates for delivery on the next turn.
-   * A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
+   * A turn accepts at most 64 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
    * Throws without enqueueing this message when any limit is exceeded.
    * @throws {BotException} When the per-turn message count has been reached.
    * @throws {Error} When the message or complete batch exceeds its UTF-8 byte limit.
@@ -245,7 +245,7 @@ export interface IBaseBot {
 
   /**
    * Sends a compact JSON message to a teammate for delivery on the next turn.
-   * A turn accepts at most 128 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
+   * A turn accepts at most 64 messages, each up to 48 KiB UTF-8, and up to 256 KiB for the complete compact array.
    * Throws without enqueueing this message when the recipient is invalid or any limit is exceeded.
    * @throws {BotException} When the per-turn message count has been reached.
    * @throws {Error} When the recipient is invalid or the message or complete batch exceeds its UTF-8 byte limit.

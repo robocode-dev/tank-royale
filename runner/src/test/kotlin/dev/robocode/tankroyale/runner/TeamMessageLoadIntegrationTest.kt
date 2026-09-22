@@ -67,7 +67,7 @@ class TeamMessageLoadIntegrationTest {
                 assertTrue(fields[0] >= 62)
                 assertEquals(0, fields[2], "Message order failed for $path")
                 assertEquals(0, fields[3], "Skipped turns recorded by $path")
-                assertTrue(fields[1] >= 4 * 128 * 60, "Missing team messages for $path: ${fields[1]}")
+                assertTrue(fields[1] >= 4 * 64 * 60, "Missing team messages for $path: ${fields[1]}")
             }
         }
     }

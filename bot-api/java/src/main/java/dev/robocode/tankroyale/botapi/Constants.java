@@ -136,9 +136,9 @@ public final class Constants {
     public static final int TEAM_MESSAGE_MAX_SIZE = 48 * 1024;
 
     /**
-     * The maximum number of team messages that can be sent per turn, which is 128 messages.
+     * The maximum number of team messages that can be sent per turn, which is 64 messages.
      */
-    public static final int MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 128;
+    public static final int MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 64;
 
     /** Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB). */
     public static final int TEAM_MESSAGES_MAX_BYTES_PER_TURN = 256 * 1024;

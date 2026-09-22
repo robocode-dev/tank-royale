@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Local trial workload: five copies broadcast 128 messages on each of 60 turns. */
+/** Local trial workload: five copies broadcast 64 messages on each of 60 turns. */
 public class TeamMessageLoadBot extends Bot {
     private final Map<Integer, String> lastBySender = new HashMap<>();
     private int received;
@@ -23,7 +23,7 @@ public class TeamMessageLoadBot extends Bot {
     public void run() {
         while (isRunning()) {
             if (getTurnNumber() <= 60) {
-                for (int index = 0; index < 128; index++) {
+                for (int index = 0; index < 64; index++) {
                     broadcastTeamMessage(getTurnNumber() + ":" + index);
                 }
             }
@@ -44,7 +44,7 @@ public class TeamMessageLoadBot extends Bot {
             var parts = prior.split(":");
             int expectedTurn = Integer.parseInt(parts[0]);
             int expectedIndex = Integer.parseInt(parts[1]) + 1;
-            if (expectedIndex == 128) { expectedIndex = 0; expectedTurn++; }
+            if (expectedIndex == 64) { expectedIndex = 0; expectedTurn++; }
             if (!payload.equals(expectedTurn + ":" + expectedIndex)) outOfOrder++;
         }
     }
