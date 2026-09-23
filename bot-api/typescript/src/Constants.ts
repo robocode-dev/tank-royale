@@ -122,15 +122,17 @@ export const Constants = {
   STARTING_GUN_HEAT: 3.0,
 
   /**
-   * The maximum size of a team message in UTF-8 bytes (48 KiB), which is the serialized (compact JSON)
-   * size of the message object. Messages exceeding this size are rejected.
+   * The maximum size of one team-message packet in UTF-8 bytes (48 KiB), measured on its compact JSON payload.
+   * Messages exceeding this size are rejected.
    */
   TEAM_MESSAGE_MAX_SIZE: 48 * 1024,
 
   /**
-   * The maximum number of team messages that can be sent per turn, which is 64 messages.
-   */
+   * The maximum number of team-message packets that can be sent per turn, including each batch as one packet.
+  */
   MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: 64,
+  /** Maximum logical payloads per turn, counting each entry in a batch. */
+  MAX_LOGICAL_TEAM_MESSAGES_PER_TURN: 128,
 
   /** Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB). */
   TEAM_MESSAGES_MAX_BYTES_PER_TURN: 256 * 1024,

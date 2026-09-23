@@ -22,6 +22,7 @@ export type { IBot } from "./IBot.js";
 export { BaseBot } from "./BaseBot.js";
 export { Bot } from "./Bot.js";
 export { BotException } from "./BotException.js";
+export { TeamMessageBatch } from "./TeamMessageBatch.js";
 
 // Events
 export { BotEvent } from "./events/BotEvent.js";

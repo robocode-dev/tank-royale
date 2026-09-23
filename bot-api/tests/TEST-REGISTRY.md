@@ -72,6 +72,7 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | TR-API-TCK-019 | Final-turn events still drain once the bot thread stops owning the round | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-TCK-020 | An unexpected error from run() still drains final-turn events | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-TCK-021 | onWonRound fires once per won round, not once per delivery path | 2 | ❌ | ❌ | ❌ | ✅ |
+| TR-API-TCK-022 | Team message batches preserve order, reject empty/null items, and enforce the 128-item limit | 2 | ✅ | ✅ | ✅ | ✅ |
 
 ## EVT — Events
 
@@ -86,6 +87,8 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | TR-API-EVT-007 | EventQueue size cap (MAX_QUEUE_SIZE = 256) | 1 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-EVT-008 | Condition.test() callable and overridable | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-EVT-009 | CustomEvent dispatches when Condition.test() is true | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-EVT-010 | EventQueue keeps same-turn team messages in arrival order (64 events) | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-EVT-011 | EventQueue drops stale team messages on add, bounding undispatched messages | 1 | ✅ | ✅ | ✅ | ✅ |
 
 ## MDL — Data Models
 
@@ -137,13 +140,13 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 |----------|-----------|------|----|--------|------------|
 | VAL | 5 | 5 | 5 | 5 | 5 |
 | CMD | 3 | 3 | 3 | 3 | 3 |
-| TCK | 18 | 17 | 17 | 17 | 18 |
+| TCK | 19 | 18 | 18 | 18 | 19 |
 | EVT | 9 | 9 | 9 | 9 | 9 |
 | MDL | 4 | 4 | 4 | 4 | 4 |
 | BOT | 11 | 11 | 11 | 11 | 11 |
 | UTL | 3 | 3 | 3 | 3 | 3 |
 | GFX | 4 | 4 | 4 | 4 | 4 |
-| **Total** | **57** | **56** | **56** | **56** | **57** |
+| **Total** | **58** | **57** | **57** | **57** | **58** |
 
 ---
 

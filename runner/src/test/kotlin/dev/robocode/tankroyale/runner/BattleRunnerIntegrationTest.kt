@@ -21,7 +21,9 @@ import java.util.zip.GZIPInputStream
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import java.util.Collections
+import java.nio.charset.StandardCharsets
 import kotlin.io.path.exists
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Integration tests that run real battles against the embedded server with sample bots.
@@ -434,6 +436,111 @@ class BattleRunnerIntegrationTest {
                 }
             }
         }
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBotsDeliverOrdered128ItemBatchesWithoutSkippedTurns() {
+        val expectedTurn = 80
+        val measuredFromTurn = 10
+        val firstTickTurn = AtomicReference<Int?>()
+        val startedAtNanos = AtomicReference<Long?>()
+        val finishedAtNanos = AtomicReference<Long?>()
+        val finalStates = AtomicReference<List<dev.robocode.tankroyale.client.model.BotState>?>()
+        val completed = CountDownLatch(1)
+        val owner = Any()
+
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val handle = runner.startBattleAsync(
+                BattleSetup.custom {
+                    numberOfRounds = 1
+                    minNumberOfParticipants = 7
+                    maxNumberOfParticipants = 7
+                    maxInactivityTurns = 120
+                    turnTimeoutMicros = 30_000
+                    defaultTurnsPerSecond = 30
+                },
+                listOf(
+                    BotEntry.of(botDir("TeamMessageBatchStressTeam")),
+                    BotEntry.of(botDir("Walls")),
+                    BotEntry.of(botDir("SpinBot"))
+                )
+            )
+            handle.onTickEvent.on(owner) { tick ->
+                if (firstTickTurn.get() == null && tick.turnNumber >= measuredFromTurn) {
+                    firstTickTurn.set(tick.turnNumber)
+                    startedAtNanos.set(System.nanoTime())
+                }
+                if (tick.turnNumber >= expectedTurn && completed.count > 0) {
+                    finalStates.set(tick.botStates.toList())
+                    finishedAtNanos.set(System.nanoTime())
+                    completed.countDown()
+                }
+            }
+
+            assertThat(completed.await(90, TimeUnit.SECONDS))
+                .describedAs("the five-bot batch workload must reach turn $expectedTurn")
+                .isTrue()
+            handle.onTickEvent.off(owner)
+            handle.stop()
+            val states = finalStates.get()!!.filter { it.name == "TeamMessageBatchStress" }
+            assertThat(states).hasSize(5)
+            println(
+                "BATCH_STRESS_STATE " + states.joinToString { state ->
+                    "id=${state.id},body=${state.bodyColor},tracks=${state.tracksColor}," +
+                        "turret=${state.turretColor},radar=${state.radarColor}"
+                }
+            )
+            states.forEach { state ->
+                val hex = state.bodyColor!!.removePrefix("#")
+                val received = (hex.substring(0, 2).toInt(16) shl 8) or hex.substring(2, 4).toInt(16)
+                val protocolErrors = hex.substring(4, 6).toInt(16)
+                val skippedTurns = state.tracksColor!!.removePrefix("#").substring(2, 4).toInt(16)
+                assertThat(received)
+                    .describedAs("ordered logical messages received by bot ${state.id}; errors=$protocolErrors skipped=$skippedTurns")
+                    .isEqualTo(4 * 60 * 128)
+                assertThat(skippedTurns)
+                    .describedAs("skipped turns recorded by bot ${state.id}")
+                    .isZero()
+                assertThat(protocolErrors)
+                    .describedAs("batch order and protocol errors recorded by bot ${state.id}")
+                    .isZero()
+            }
+
+            val elapsedSeconds = (finishedAtNanos.get()!! - startedAtNanos.get()!!) / 1_000_000_000.0
+            val measuredTps = (expectedTurn - firstTickTurn.get()!!) / elapsedSeconds
+            val outboundBytes = estimateBatchArrayBytes()
+            println(
+                "BATCH_STRESS bots=5 turns=60 tps=$measuredTps outboundTeamMessagesBytes=$outboundBytes " +
+                    "estimatedTeamPayloadFanoutBytes=${outboundBytes * 4} receivedPerBot=${4 * 60 * 128} skipped=0"
+            )
+            assertThat(measuredTps)
+                .describedAs("measured turn rate under the 30 TPS workload")
+                .isGreaterThanOrEqualTo(30.0)
+        }
+    }
+
+    private fun estimateBatchArrayBytes(): Long {
+        fun encodedString(value: String) = JsonPrimitive(value).toString()
+        var totalBytes = 0L
+        for (botId in 1..5) {
+            for (turn in 1..60) {
+                val entries = (0 until 128).joinToString(",") { item ->
+                    "{\"messageType\":\"java.lang.String\",\"message\":" +
+                        encodedString(encodedString("$botId:$turn:$item")) + "}"
+                }
+                val batchPayload = "{\"messages\":[$entries]}"
+                val packet = "[{\"message\":" + encodedString(batchPayload) +
+                    ",\"messageType\":\"team-message-batch-v1\"}]"
+                totalBytes += packet.toByteArray(StandardCharsets.UTF_8).size
+            }
+        }
+        return totalBytes
     }
 
     // -------------------------------------------------------------------------------------

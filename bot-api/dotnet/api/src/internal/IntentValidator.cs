@@ -126,6 +126,13 @@ public static class IntentValidator
             throw new ArgumentException("The 'message' of a team message cannot be null");
     }
 
+    public static void ValidateLogicalTeamMessageCount(int logicalMessageCount)
+    {
+        if (logicalMessageCount > Constants.MaxLogicalTeamMessagesPerTurn)
+            throw new BotException("The maximum number of logical team messages has already been reached: " +
+                                   Constants.MaxLogicalTeamMessagesPerTurn);
+    }
+
     public static void ValidateTeamMessageSize(string json)
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(json);

@@ -1,3 +1,19 @@
+## [1.4.0] - 2026-09-23 - Batched team messages
+
+### ✨ Features
+
+- Bot API (Java, .NET, Python, TypeScript): Added ordered `TeamMessageBatch` APIs for broadcast and directed team messages. A batch is delivered as one event on the next turn. Team messages from the same turn are handled in the order they were sent, do not count toward the 256-event queue limit, and are discarded once older than two turns.
+- Server and Bot APIs: Accepted up to 64 team-message packets and 128 logical payloads per bot per turn, with a 48 KiB UTF-8 limit per encoded packet and a 256 KiB UTF-8 limit for the compact `teamMessages` array. Invalid client calls fail before enqueue; invalid server intents are rejected as a whole. Messages to a teammate that has left the game are dropped without disconnecting the sender.
+- Server: Added batch protocol version 1 to bot handshakes. A sender can use batches only when every recipient advertises support.
+
+### 📚 Documentation
+
+- Documented batch usage and the count, byte, delivery, compatibility, and rejection rules across the Bot APIs and protocol references.
+
+### 🐞 Bug Fixes
+
+- Build: R8 shrink tasks now track their intermediate jars and version input, so rebuilt runner distributions embed the matching server and booter versions.
+
 ## [1.3.1] - 2026-09-13 - Server jar startup fix
 
 ### 🐞 Bug Fixes

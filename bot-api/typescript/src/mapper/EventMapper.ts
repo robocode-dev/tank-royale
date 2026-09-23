@@ -28,6 +28,7 @@ import { BulletHitWallEvent } from "../events/BulletHitWallEvent.js";
 import { ScannedBotEvent } from "../events/ScannedBotEvent.js";
 import { WonRoundEvent } from "../events/WonRoundEvent.js";
 import { TeamMessageEvent } from "../events/TeamMessageEvent.js";
+import { TeamMessageBatch } from "../TeamMessageBatch.js";
 import { SkippedTurnEvent } from "../events/SkippedTurnEvent.js";
 import { BotStateMapper } from "./BotStateMapper.js";
 import { BulletStateMapper } from "./BulletStateMapper.js";
@@ -91,6 +92,13 @@ export class EventMapper {
       }
       case MessageType.TeamMessageEvent: {
         const ev = e as SchemaTeamMessageEvent;
+        if (ev.messageType === "team-message-batch-v1") {
+          const payload = JSON.parse(ev.message) as { messages?: Array<{ message?: string; messageType?: string }> };
+          if (!Array.isArray(payload.messages) || payload.messages.length === 0 || payload.messages.some((item) => typeof item.message !== "string" || typeof item.messageType !== "string")) {
+            throw new Error("Invalid team message batch payload");
+          }
+          return new TeamMessageEvent(ev.turnNumber, new TeamMessageBatch(payload.messages.map((item) => JSON.parse(item.message!))), ev.senderId);
+        }
         return new TeamMessageEvent(ev.turnNumber, ev.message, ev.senderId);
       }
       case MessageType.SkippedTurnEvent: {

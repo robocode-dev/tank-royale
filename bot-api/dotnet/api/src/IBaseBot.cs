@@ -18,9 +18,12 @@ public interface IBaseBot
     const int TeamMessageMaxSize = Constants.TeamMessageMaxSize; // bytes
 
     /// <summary>
-    /// The maximum number of team messages that can be sent per turn, which is 64 messages.
+    /// The maximum number of physical team-message packets that can be sent per turn, which is 64.
     /// </summary>
     const int MaxNumberOfTeamMessagesPerTurn = Constants.MaxNumberOfTeamMessagesPerTurn;
+
+    /// <summary>Maximum logical payloads per turn, counting each batch entry, which is 128.</summary>
+    const int MaxLogicalTeamMessagesPerTurn = Constants.MaxLogicalTeamMessagesPerTurn;
 
     /// <summary>Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB).</summary>
     const int TeamMessagesMaxBytesPerTurn = Constants.TeamMessagesMaxBytesPerTurn;
@@ -735,9 +738,11 @@ public interface IBaseBot
     /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>. This size is the size of the
     /// message when it is serialized into a JSON representation.
     ///
-    /// A turn can contain at most <see cref="MaxNumberOfTeamMessagesPerTurn"/> messages, and the compact UTF-8 encoded
-    /// team-message array can contain at most <see cref="TeamMessagesMaxBytesPerTurn"/> bytes. Each accepted message
-    /// is delivered on the next turn. A failed call does not enqueue its message.
+    /// A turn accepts at most <see cref="MaxNumberOfTeamMessagesPerTurn"/> packets and
+    /// <see cref="MaxLogicalTeamMessagesPerTurn"/> logical payloads, counting batch entries. Each packet is limited to
+    /// <see cref="TeamMessageMaxSize"/> UTF-8 bytes and the compact array to <see cref="TeamMessagesMaxBytesPerTurn"/>
+    /// UTF-8 bytes. A batch is delivered as one event with entries in order on the next turn. All recipients must
+    /// support batch version 1. A failed call does not enqueue its packet.
     /// </summary>
     /// <param name="message">The message to broadcast.</param>
     /// <exception cref="BotException">If the per-turn message count has been reached.</exception>
@@ -745,6 +750,13 @@ public interface IBaseBot
     /// <seealso cref="SendTeamMessage"/>
     /// <seealso cref="TeammateIds"/>
     void BroadcastTeamMessage(object message);
+
+    /// <summary>
+    /// Broadcasts ordered messages as one packet and one event on the next turn. A batch counts as one per-turn
+    /// packet and each entry counts toward the 128 logical-payload limit. Every recipient must support batch version
+    /// 1. Empty batches, null entries, and packets or intents over the documented limits are rejected before enqueue.
+    /// </summary>
+    void BroadcastTeamMessageBatch(System.Collections.IEnumerable messages);
 
     /// <summary>
     /// Sends a message to a specific teammate.
@@ -755,9 +767,11 @@ public interface IBaseBot
     /// The maximum team message size limit is defined by <see cref="TeamMessageMaxSize"/>. This size is the size of the
     /// message when it is serialized into a JSON representation.
     ///
-    /// A turn can contain at most <see cref="MaxNumberOfTeamMessagesPerTurn"/> messages, and the compact UTF-8 encoded
-    /// team-message array can contain at most <see cref="TeamMessagesMaxBytesPerTurn"/> bytes. Each accepted message
-    /// is delivered on the next turn. A failed call does not enqueue its message.
+    /// A turn accepts at most <see cref="MaxNumberOfTeamMessagesPerTurn"/> packets and
+    /// <see cref="MaxLogicalTeamMessagesPerTurn"/> logical payloads, counting batch entries. Each packet is limited to
+    /// <see cref="TeamMessageMaxSize"/> UTF-8 bytes and the compact array to <see cref="TeamMessagesMaxBytesPerTurn"/>
+    /// UTF-8 bytes. A batch is delivered as one event with entries in order on the next turn. All recipients must
+    /// support batch version 1. A failed call does not enqueue its packet.
     /// </summary>
     /// <param name="teammateId">The id of the teammate to send the message to.</param>
     /// <param name="message">The message to broadcast.</param>
@@ -766,6 +780,14 @@ public interface IBaseBot
     /// <seealso cref="BroadcastTeamMessage"/>
     /// <seealso cref="TeammateIds"/>
     void SendTeamMessage(int teammateId, object message);
+
+    /// <summary>
+    /// Sends ordered messages to one teammate as one packet and one event on the next turn. A batch counts as one
+    /// per-turn packet and each entry counts toward the 128 logical-payload limit. The recipient must support batch
+    /// version 1. Empty batches, null entries, and packets or intents over the documented limits are rejected before
+    /// enqueue.
+    /// </summary>
+    void SendTeamMessageBatch(int teammateId, System.Collections.IEnumerable messages);
 
     /// <summary>
     /// The color of the body. Colors can (only) be changed each turn.

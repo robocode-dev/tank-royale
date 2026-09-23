@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.Constants;
+import dev.robocode.tankroyale.botapi.TeamMessageBatch;
 import dev.robocode.tankroyale.botapi.graphics.Color;
 import dev.robocode.tankroyale.schema.BotIntent;
 import dev.robocode.tankroyale.botapi.events.Condition;
@@ -199,6 +200,9 @@ public class SharedTestRunner {
                         lastActionValue[0] = getStaticField(dev.robocode.tankroyale.botapi.DefaultEventPriority.class, (String) args[0]);
                     }
                     break;
+                case "createTeamMessageBatch":
+                    lastActionValue[0] = new TeamMessageBatch((Collection<?>) args[0]).getMessages();
+                    break;
                 case "isCritical":
                     lastActionValue[0] = createEvent((String) args[0]).isCritical();
                     break;
@@ -369,13 +373,14 @@ public class SharedTestRunner {
         }
     }
 
-    private BotEvent createEventAt(String eventName, int turnNumber) {
+    private BotEvent createEventAt(String eventName, int turnNumber, int sequence) {
         switch (eventName) {
             case "WonRoundEvent":   return new WonRoundEvent(turnNumber);
             case "DeathEvent":      return new DeathEvent(turnNumber);
             case "ScannedBotEvent": return new ScannedBotEvent(turnNumber, 0, 0, 0, 0, 0, 0, 0);
             case "SkippedTurnEvent":return new SkippedTurnEvent(turnNumber);
             case "BotDeathEvent":   return new BotDeathEvent(turnNumber, 0);
+            case "TeamMessageEvent":return new TeamMessageEvent(turnNumber, String.valueOf(sequence), 0);
             default: throw new IllegalArgumentException("Unknown event for scenario: " + eventName);
         }
     }
@@ -459,6 +464,7 @@ public class SharedTestRunner {
         BaseBotInternals internals = new BaseBotInternals(botStub, botInfo, URI.create("ws://localhost:7654"), null);
         EventQueue queue = new EventQueue(internals, internals.getBotEventHandlers());
 
+        int sequence = 0;
         for (Map<String, Object> step : testCase.steps) {
             String action = (String) step.get("action");
             if ("addEvent".equals(action)) {
@@ -466,7 +472,7 @@ public class SharedTestRunner {
                 int turnNumber = ((Number) step.get("turnNumber")).intValue();
                 int repeat = step.containsKey("repeat") ? ((Number) step.get("repeat")).intValue() : 1;
                 for (int i = 0; i < repeat; i++) {
-                    queue.addEvent(createEventAt(eventType, turnNumber));
+                    queue.addEvent(createEventAt(eventType, turnNumber, sequence++));
                 }
             } else if ("dispatchEvents".equals(action)) {
                 int atTurn = ((Number) step.get("atTurn")).intValue();
@@ -485,9 +491,19 @@ public class SharedTestRunner {
                         "Event at index " + i + " mismatch");
             }
         }
+        if (expectAfter.containsKey("dispatchedMessages")) {
+            @SuppressWarnings("unchecked")
+            List<String> expectedMessages = (List<String>) expectAfter.get("dispatchedMessages");
+            List<Object> actualMessages = new ArrayList<>();
+            for (BotEvent event : botStub.firedEvents) {
+                if (event instanceof TeamMessageEvent) actualMessages.add(((TeamMessageEvent) event).getMessage());
+            }
+            assertEquals(expectedMessages, actualMessages, "Team message dispatch order mismatch");
+        }
         if (expectAfter.containsKey("queueSize")) {
             int expectedSize = ((Number) expectAfter.get("queueSize")).intValue();
-            assertEquals(expectedSize, queue.getEvents(999).size(), "Queue size mismatch");
+            int atTurn = expectAfter.containsKey("queueSizeAtTurn") ? ((Number) expectAfter.get("queueSizeAtTurn")).intValue() : 999;
+            assertEquals(expectedSize, queue.getEvents(atTurn).size(), "Queue size mismatch");
         }
     }
 
@@ -596,7 +612,9 @@ public class SharedTestRunner {
         @Override public Set<Integer> getTeammateIds() { return Collections.emptySet(); }
         @Override public boolean isTeammate(int botId) { return false; }
         @Override public void broadcastTeamMessage(Object message) {}
+        @Override public void broadcastTeamMessageBatch(Collection<?> messages) {}
         @Override public void sendTeamMessage(int teammateId, Object message) {}
+        @Override public void sendTeamMessageBatch(int teammateId, Collection<?> messages) {}
         @Override public boolean isStopped() { return false; }
         @Override public Color getBodyColor() { return null; }
         @Override public void setBodyColor(Color color) {}

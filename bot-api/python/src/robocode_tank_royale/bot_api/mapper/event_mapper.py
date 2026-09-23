@@ -209,6 +209,14 @@ class EventMapper:
             raise BotException("message_type in TeamMessageEvent is None")
 
         try:
+            if message_type == "team-message-batch-v1":
+                from ..team_message_batch import TeamMessageBatch
+                payload = json.loads(message)
+                items = payload.get("messages") if isinstance(payload, dict) else None
+                if not isinstance(items, list) or not items:
+                    raise BotException("Invalid team message batch payload")
+                values = [deserialize_team_message(item["message"], item["messageType"]) for item in items]
+                return TeamMessageEvent(source.turn_number, TeamMessageBatch(values), source.sender_id)
             message_object = deserialize_team_message(message, message_type)
             return TeamMessageEvent(source.turn_number, message_object, source.sender_id)
         except json.JSONDecodeError as e:

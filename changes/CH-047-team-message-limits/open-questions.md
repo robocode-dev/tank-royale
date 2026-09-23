@@ -1,7 +1,7 @@
 ---
 id: OQ-002
 type: open-question
-status: active
+status: draft
 links: [CH-047]
 title: CH-047 open questions
 ---
@@ -20,6 +20,14 @@ With that repair and a 100 ms test deadline, the five-bot workload delivered all
 
 The five-bot workload at 64 messages per bot per turn also failed at the normal 30 ms deadline. The runner measured 57.49 TPS and captured 19,200 sent messages with 128,520 payload bytes. Four recipients received 14,912 of 15,360 expected messages and recorded 6 ordering violations and 2 skipped turns; the fifth received 14,848 messages, with 4 ordering violations and 1 skipped turn. The reduced count improves throughput but does not meet the zero-skipped-turn acceptance gate.
 
+## Acceptance result — 2026-09-23
+
+The batching gate passed on the matched local Tank Royale API and runner. The five-bot team sent 128 ordered items in one batch per turn for 60 turns, after a ten-turn warm-up, with the standard 30 ms intent timeout and a 30 TPS default. Every bot received all 30,720 expected items in order; there were zero skipped turns during the workload. The runner measured 94.94 turns/s from turn 10 through turn 80. The compact encoded outbound team-message arrays totaled 2,747,040 bytes; estimated teammate payload fan-out was 10,988,160 bytes, excluding WebSocket framing and transport overhead. The passing result accepts the 64-packet, 128-logical-payload, 49,152-byte packet, and 262,144-byte per-turn array limits without compression.
+
+The shared cross-platform boundary suite includes the exact 262,144-byte boundary and rejects 262,145 bytes. It also exercises malformed raw intents, Unicode byte accounting, directed and broadcast batches, order, and next-turn delivery. The bridge team-message conformance tests pass against the matched build. The CombatTeam run completes in both engines with zero reported errors; its score difference is recorded separately below.
+
+The five-round CombatTeam compatibility run against the matched 1.4.0 API and runner completed in both engines with zero reported errors. Classic scored 10,645 and Tank Royale 13,367 (+25.6%); score parity remains a separate discrepancy and is outside the messaging delivery gate.
+
 ## Blocking decision
 
-Should the next trial lower the per-turn message count again, starting at 32, or should it profile and remove the remaining deadline misses before selecting another limit? The acceptance gate requires a human decision before either policy is adopted.
+Resolved by the user on 2026-09-23: trial standard ordered batching in one existing packet and event, with no compression at first. Retain the trial packet and byte caps, require batch version 1 from all recipients, and compare the five-bot 30 TPS result against the same zero-loss, zero-skipped-turn gate. The trial does not become a published policy unless that gate passes.

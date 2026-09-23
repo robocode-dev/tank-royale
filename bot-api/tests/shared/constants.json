@@ -115,6 +115,14 @@
       "expected": { "returns": 64 }
     },
     {
+      "id": "TR-API-VAL-005-constants-max-logical-team-messages-per-turn",
+      "description": "Maximum logical team message payloads per turn",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_LOGICAL_TEAM_MESSAGES_PER_TURN"],
+      "expected": { "returns": 128 }
+    },
+    {
       "id": "TR-API-VAL-005-constants-team-messages-max-bytes-per-turn",
       "description": "Maximum aggregate team message bytes per turn",
       "type": "positive",

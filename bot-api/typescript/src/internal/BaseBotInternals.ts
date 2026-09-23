@@ -37,6 +37,7 @@ import { InitialPosition } from "../InitialPosition.js";
 import { EventMapper } from "../mapper/EventMapper.js";
 import { toJson } from "../json/JsonUtil.js";
 import { IntentValidator } from "./intentValidator.js";
+import { TeamMessageBatch } from "../TeamMessageBatch.js";
 import { Constants } from "../Constants.js";
 import type { BotIntent as SchemaBotIntent } from "../protocol/schema.js";
 import { MessageType } from "../protocol/MessageType.js";
@@ -1147,7 +1148,14 @@ export class BaseBotInternals {
   }
 
   sendTeamMessage(teammateId: number | undefined, message: unknown): void {
-    const json = toJson(message);
+    IntentValidator.validateTeammateId(teammateId, this.teammateIds);
+    const batch = message instanceof TeamMessageBatch;
+    const json = batch
+      ? toJson({ messages: message.messages.map((value) => ({
+        messageType: typeof value === "object" && value !== null ? value.constructor.name : "string",
+        message: toJson(value),
+      })) })
+      : toJson(message);
     IntentValidator.validateTeamMessageSize(json);
 
     if (!this.intent.teamMessages) this.intent.teamMessages = [];
@@ -1156,10 +1164,14 @@ export class BaseBotInternals {
 
     const teamMessage = {
       message: json,
-      messageType: typeof message === "object" && message !== null ? message.constructor.name : "string",
+      messageType: batch ? "team-message-batch-v1" : (typeof message === "object" && message !== null ? message.constructor.name : "string"),
       receiverId: teammateId ?? null,
     };
-    IntentValidator.validateTeamMessagesSize(toJson([...this.intent.teamMessages, teamMessage]));
+    const candidateMessages = [...this.intent.teamMessages, teamMessage];
+    const logicalCount = candidateMessages.reduce((count, candidate) => count +
+      (candidate.messageType === "team-message-batch-v1" ? (JSON.parse(candidate.message) as { messages: unknown[] }).messages.length : 1), 0);
+    IntentValidator.validateLogicalTeamMessageCount(logicalCount);
+    IntentValidator.validateTeamMessagesSize(toJson(candidateMessages));
     this.intent.teamMessages.push(teamMessage);
   }
 

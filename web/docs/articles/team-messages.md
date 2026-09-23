@@ -34,6 +34,83 @@ In the `MyFirstTeam` example, two message types are used:
 | `RobotColors` | Synchronize team colors across all bots             | At the start of a round  |
 | `Point`       | Share enemy position coordinates for droids to fire | When an enemy is scanned |
 
+## Sending a Batch in One Event
+
+When several updates belong together, send them as one ordered batch. The receiving bot gets one `TeamMessageEvent` whose
+`message` is a `TeamMessageBatch`; iterate `messages` to process the entries. The batch remains one packet and one callback,
+so the server and Bot API do not create a separate event for every entry. Batching reduces per-message framing and callback
+work, but does not compress the JSON entries.
+
+::: code-group
+
+```java [Java]
+sendTeamMessageBatch(teammateId, List.of(new Point(250, 300), new Point(400, 180)));
+
+@Override
+public void onTeamMessage(TeamMessageEvent event) {
+    if (event.getMessage() instanceof TeamMessageBatch batch) {
+        for (Object message : batch.getMessages()) {
+            // Process each entry in send order.
+        }
+    }
+}
+```
+
+```csharp [C#]
+SendTeamMessageBatch(teammateId, new object[] { new Point(250, 300), new Point(400, 180) });
+
+public override void OnTeamMessage(TeamMessageEvent evt) {
+    if (evt.Message is TeamMessageBatch batch) {
+        foreach (var message in batch.Messages) {
+            // Process each entry in send order.
+        }
+    }
+}
+```
+
+```python [Python]
+self.send_team_message_batch(teammate_id, [Point(250, 300), Point(400, 180)])
+
+async def on_team_message(self, event: TeamMessageEvent) -> None:
+    if isinstance(event.message, TeamMessageBatch):
+        for message in event.message.messages:
+            # Process each entry in send order.
+            pass
+```
+
+```typescript [TypeScript]
+this.sendTeamMessageBatch(teammateId, [point1, point2]);
+
+override onTeamMessage(event: TeamMessageEvent) {
+    if (event.message instanceof TeamMessageBatch) {
+        for (const message of event.message.messages) {
+            // Process each entry in send order.
+        }
+    }
+}
+```
+
+:::
+
+All members of the team must advertise batch version 1; otherwise the server rejects the sender's intent. A batch is
+delivered on the next turn, and entries keep their send order.
+
+## Limits and errors
+
+Each bot may send up to 64 team-message packets per turn and up to 128 logical payloads total across ordinary messages
+and batches. An encoded packet may contain at most 48 KiB (49,152 UTF-8 bytes), and the compact JSON
+`teamMessages` array may contain at most 256 KiB (262,144 UTF-8 bytes) per turn. The byte counts use UTF-8 after compact
+JSON encoding. Each client API checks a call before enqueueing it and throws if the packet or the complete turn would
+exceed a limit; empty batches and null entries are rejected. The server rejects an invalid intent as a whole, so no
+messages from that intent are delivered. Incoming WebSocket text frames are limited to 1 MiB before JSON parsing.
+
+Batching groups payloads in one packet and callback; it does not compress their contents. These Tank Royale per-turn
+limits are separate from classic Robocode's 32,768-byte limit on the original Java-serialized message object.
+
+Legacy Robocode robots can put a serializable collection inside one `broadcastMessage` or `sendMessage` call and iterate
+that collection from one `MessageEvent`. The original Java-serialized object must fit classic Robocode's 32,768-byte
+message limit.
+
 ## Defining Message Classes
 
 Each bot must define its own message classes. The classes are matched by name, so they must have the same name and
@@ -590,8 +667,13 @@ class MyFirstDroid extends Bot implements Droid {
 
 ## Limitations
 
-- **Maximum messages per turn**: 10 team messages per bot per turn
-- **Maximum message size**: 32,768 bytes (JSON format)
+- **Maximum packets per turn**: 64 per bot, including batches
+- **Maximum logical payloads per turn**: 128, counting all messages inside batches
+- **Maximum packet size**: 49,152 UTF-8 bytes; the compact `teamMessages` array is limited to 262,144 UTF-8 bytes
+- **Delivery**: accepted packets arrive on the next turn; batch entries remain ordered and share one event
+- **Failure behavior**: a client rejects an invalid call before enqueueing it, and the server rejects an invalid intent in full
+- **Batch compatibility**: every recipient must use a Bot API that advertises batch version 1
+- **WebSocket input**: text frames above 1 MiB are closed before the server parses the JSON
 - **Serialization**: Messages must be serializable to JSON (no circular references)
 
 ## Best Practices

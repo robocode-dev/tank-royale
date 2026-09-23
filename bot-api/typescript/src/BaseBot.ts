@@ -1,5 +1,6 @@
 import { IBaseBot } from "./IBaseBot.js";
 import { BotInfo } from "./BotInfo.js";
+import { TeamMessageBatch } from "./TeamMessageBatch.js";
 import { BulletState } from "./BulletState.js";
 import { Color } from "./graphics/Color.js";
 import { IGraphics } from "./graphics/IGraphics.js";
@@ -41,6 +42,7 @@ import { MathUtil } from "./util/MathUtil.js";
 export abstract class BaseBot implements IBaseBot {
   readonly TEAM_MESSAGE_MAX_SIZE = Constants.TEAM_MESSAGE_MAX_SIZE;
   readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN;
+  readonly MAX_LOGICAL_TEAM_MESSAGES_PER_TURN = Constants.MAX_LOGICAL_TEAM_MESSAGES_PER_TURN;
   readonly TEAM_MESSAGES_MAX_BYTES_PER_TURN = Constants.TEAM_MESSAGES_MAX_BYTES_PER_TURN;
 
   /** @internal */
@@ -178,6 +180,8 @@ export abstract class BaseBot implements IBaseBot {
   isTeammate(botId: number): boolean { return this._internals.isTeammate(botId); }
   broadcastTeamMessage(message: unknown): void { this._internals.broadcastTeamMessage(message); }
   sendTeamMessage(teammateId: number, message: unknown): void { this._internals.sendTeamMessage(teammateId, message); }
+  broadcastTeamMessageBatch(messages: readonly unknown[]): void { this._internals.broadcastTeamMessage(new TeamMessageBatch(messages)); }
+  sendTeamMessageBatch(teammateId: number, messages: readonly unknown[]): void { this._internals.sendTeamMessage(teammateId, new TeamMessageBatch(messages)); }
 
   getBodyColor(): Color | null { return this._internals.getBodyColor(); }
   setBodyColor(color: Color | null): void { this._internals.setBodyColor(color); }

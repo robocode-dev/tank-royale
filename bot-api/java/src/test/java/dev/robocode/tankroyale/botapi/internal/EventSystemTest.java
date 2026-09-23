@@ -84,7 +84,9 @@ class EventSystemTest {
         @Override public Set<Integer> getTeammateIds() { return Collections.emptySet(); }
         @Override public boolean isTeammate(int botId) { return false; }
         @Override public void broadcastTeamMessage(Object message) {}
+        @Override public void broadcastTeamMessageBatch(java.util.Collection<?> messages) {}
         @Override public void sendTeamMessage(int teammateId, Object message) {}
+        @Override public void sendTeamMessageBatch(int teammateId, java.util.Collection<?> messages) {}
         @Override public boolean isStopped() { return false; }
         @Override public Color getBodyColor() { return null; }
         @Override public void setBodyColor(Color color) {}

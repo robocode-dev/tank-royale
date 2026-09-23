@@ -121,6 +121,13 @@ public final class IntentValidator {
         }
     }
 
+    public static void validateLogicalTeamMessageCount(int logicalMessageCount) {
+        if (logicalMessageCount > MAX_LOGICAL_TEAM_MESSAGES_PER_TURN) {
+            throw new BotException("The maximum number of logical team messages has already been reached: "
+                    + MAX_LOGICAL_TEAM_MESSAGES_PER_TURN);
+        }
+    }
+
     public static void validateTeamMessageSize(String json) {
         if (json.getBytes(StandardCharsets.UTF_8).length > TEAM_MESSAGE_MAX_SIZE) {
             throw new IllegalArgumentException(

@@ -1,0 +1,30 @@
+{
+  "suite": "team-message-batch",
+  "description": "Shared batch construction, ordering, and invalid-entry behavior across all Bot APIs.",
+  "tests": [
+    {
+      "id": "TR-API-TCK-022-batch-preserves-order",
+      "description": "Positive: a batch preserves payload order.",
+      "type": "positive",
+      "method": "createTeamMessageBatch",
+      "args": [["first", "second"]],
+      "expected": { "returns": ["first", "second"] }
+    },
+    {
+      "id": "TR-API-TCK-022-batch-rejects-empty",
+      "description": "Negative: an empty batch is rejected.",
+      "type": "negative",
+      "method": "createTeamMessageBatch",
+      "args": [[]],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-TCK-022-batch-rejects-null-entry",
+      "description": "Negative: a batch containing a null payload is rejected.",
+      "type": "negative",
+      "method": "createTeamMessageBatch",
+      "args": [["first", null]],
+      "expected": { "throws": "IllegalArgumentException" }
+    }
+  ]
+}

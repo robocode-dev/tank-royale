@@ -105,6 +105,12 @@ export class IntentValidator {
     }
   }
 
+  static validateLogicalTeamMessageCount(logicalMessageCount: number): void {
+    if (logicalMessageCount > Constants.MAX_LOGICAL_TEAM_MESSAGES_PER_TURN) {
+      throw new BotException("The maximum number of logical team messages has already been reached: " + Constants.MAX_LOGICAL_TEAM_MESSAGES_PER_TURN);
+    }
+  }
+
   static validateTeamMessageSize(json: string): void {
     if (new TextEncoder().encode(json).length > Constants.TEAM_MESSAGE_MAX_SIZE) {
       throw new Error("The team message is larger than the limit of " + Constants.TEAM_MESSAGE_MAX_SIZE + " bytes (compact JSON format)");

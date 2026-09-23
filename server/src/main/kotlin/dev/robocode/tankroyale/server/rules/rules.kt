@@ -96,6 +96,9 @@ const val MAX_TEAM_MESSAGE_SIZE = 48 * 1024
 /** Max. number of team messages per turn */
 const val MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 64
 
+/** Max. logical team-message payloads across ordinary packets and batch entries per turn. */
+const val MAX_LOGICAL_TEAM_MESSAGES_PER_TURN = 128
+
 /** Max. UTF-8 bytes of the compact encoded teamMessages array per bot intent. */
 const val MAX_TEAM_MESSAGES_BYTES_PER_TURN = 256 * 1024
 

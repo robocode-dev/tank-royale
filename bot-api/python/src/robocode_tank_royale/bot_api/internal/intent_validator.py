@@ -11,6 +11,7 @@ from ..constants import (
     DECELERATION,
     ACCELERATION,
     MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN,
+    MAX_LOGICAL_TEAM_MESSAGES_PER_TURN,
     TEAM_MESSAGE_MAX_SIZE,
     TEAM_MESSAGES_MAX_BYTES_PER_TURN,
 )
@@ -133,6 +134,13 @@ class IntentValidator:
             )
         if message is None:
             raise ValueError("The 'message' of a team message cannot be null")
+
+    @staticmethod
+    def validate_logical_team_message_count(logical_message_count: int) -> None:
+        if logical_message_count > MAX_LOGICAL_TEAM_MESSAGES_PER_TURN:
+            raise BotException(
+                f"The maximum number of logical team messages has already been reached: {MAX_LOGICAL_TEAM_MESSAGES_PER_TURN}"
+            )
 
     @staticmethod
     def validate_team_message_size(json_message_str: str) -> None:

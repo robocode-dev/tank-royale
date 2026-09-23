@@ -93,12 +93,12 @@ to zero, cooling at the rate defined by the game setup's gun cooling rate.
 """
 
 MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 64
-"""
-Maximum number of team messages that can be sent per turn (64).
-"""
+"""Maximum physical team-message packets per turn."""
+MAX_LOGICAL_TEAM_MESSAGES_PER_TURN = 128
+"""Maximum logical messages counting entries in all batches per turn."""
 
 TEAM_MESSAGE_MAX_SIZE = 48 * 1024
-"""Maximum UTF-8 bytes of one compact JSON-encoded team message (48 KiB)."""
+"""Maximum UTF-8 bytes of one compact JSON-encoded team-message packet (48 KiB)."""
 
 TEAM_MESSAGES_MAX_BYTES_PER_TURN = 256 * 1024
 """Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB)."""

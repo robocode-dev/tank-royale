@@ -139,6 +139,9 @@ public class SharedTestRunner
                         ?? GetStaticField(typeof(GameType), (string)args[0])
                         ?? GetStaticField(typeof(DefaultEventPriority), (string)args[0]);
                     break;
+                case "createTeamMessageBatch":
+                    lastActionValue = new TeamMessageBatch((System.Collections.IEnumerable)args[0]).Messages;
+                    break;
                 case "isCritical": lastActionValue = CreateEvent((string)args[0]).IsCritical; break;
                 case "getDefaultPriority": lastActionValue = GetStaticField(typeof(DefaultEventPriority), (string)args[0]); break;
                 case "calcBulletSpeed": lastActionValue = mockBot.CalcBulletSpeed(Convert.ToDouble(args[0])); break;
@@ -274,13 +277,14 @@ public class SharedTestRunner
         };
     }
 
-    private BotEvent CreateEventAt(string eventName, int turnNumber) => eventName switch
+    private BotEvent CreateEventAt(string eventName, int turnNumber, int sequence) => eventName switch
     {
         "WonRoundEvent"    => new WonRoundEvent(turnNumber),
         "DeathEvent"       => new DeathEvent(turnNumber),
         "ScannedBotEvent"  => new ScannedBotEvent(turnNumber, 0, 0, 0, 0, 0, 0, 0),
         "SkippedTurnEvent" => new SkippedTurnEvent(turnNumber),
         "BotDeathEvent"    => new BotDeathEvent(turnNumber, 0),
+        "TeamMessageEvent" => new TeamMessageEvent(turnNumber, sequence.ToString(), 0),
         _ => throw new ArgumentException($"Unknown event for scenario: {eventName}")
     };
 
@@ -363,6 +367,7 @@ public class SharedTestRunner
         var internals = new BaseBotInternals(botStub, botInfo, new Uri("ws://localhost:7654"), null);
         var queue = new EventQueue(internals, internals.BotEventHandlers);
 
+        var sequence = 0;
         foreach (var step in testCase.Steps)
         {
             var action = (string)step["action"];
@@ -372,7 +377,7 @@ public class SharedTestRunner
                 var turnNumber = Convert.ToInt32(step["turnNumber"]);
                 var repeat = step.ContainsKey("repeat") ? Convert.ToInt32(step["repeat"]) : 1;
                 for (int i = 0; i < repeat; i++)
-                    queue.AddEvent(CreateEventAt(eventType, turnNumber));
+                    queue.AddEvent(CreateEventAt(eventType, turnNumber, sequence++));
             }
             else if (action == "dispatchEvents")
             {
@@ -389,10 +394,17 @@ public class SharedTestRunner
             for (int i = 0; i < expectedOrder.Count; i++)
                 Assert.That(fired[i].GetType().Name, Is.EqualTo(expectedOrder[i]), $"Event at index {i} mismatch");
         }
+        if (testCase.ExpectAfter.TryGetValue("dispatchedMessages", out var dispatchedMessagesRaw))
+        {
+            var expectedMessages = ((Newtonsoft.Json.Linq.JArray)dispatchedMessagesRaw).ToObject<List<string>>();
+            var actualMessages = botStub.FiredEvents.OfType<TeamMessageEvent>().Select(e => e.Message).ToList();
+            Assert.That(actualMessages, Is.EqualTo(expectedMessages), "Team message dispatch order mismatch");
+        }
         if (testCase.ExpectAfter.TryGetValue("queueSize", out var queueSizeRaw))
         {
             var expectedSize = Convert.ToInt32(queueSizeRaw);
-            Assert.That(queue.Events(999), Has.Count.EqualTo(expectedSize), "Queue size mismatch");
+            var atTurn = testCase.ExpectAfter.TryGetValue("queueSizeAtTurn", out var atTurnRaw) ? Convert.ToInt32(atTurnRaw) : 999;
+            Assert.That(queue.Events(atTurn), Has.Count.EqualTo(expectedSize), "Queue size mismatch");
         }
     }
 
@@ -450,7 +462,9 @@ public class SharedTestRunner
         public ICollection<int> TeammateIds => new List<int>();
         public bool IsTeammate(int id) => false;
         public void BroadcastTeamMessage(object m) {}
+        public void BroadcastTeamMessageBatch(System.Collections.IEnumerable messages) {}
         public void SendTeamMessage(int id, object m) {}
+        public void SendTeamMessageBatch(int id, System.Collections.IEnumerable messages) {}
         public Robocode.TankRoyale.BotApi.Graphics.Color? BodyColor { get; set; }
         public Robocode.TankRoyale.BotApi.Graphics.Color? TurretColor { get; set; }
         public Robocode.TankRoyale.BotApi.Graphics.Color? RadarColor { get; set; }

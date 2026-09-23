@@ -25,6 +25,14 @@ export class EventQueue {
   }
 
   addEvent(event: BotEvent): void {
+    // Team messages are bounded per sender by the protocol, so they do not count toward the ordinary
+    // queue limit. Old events are otherwise only removed on dispatch, so drop stale team messages here
+    // to keep the queue bounded when the bot does not call go().
+    if (!(event instanceof TeamMessageEvent)) {
+      this.events = this.events.filter(
+        (e) => !(e instanceof TeamMessageEvent) || e.isCritical || event.turnNumber - e.turnNumber <= MAX_EVENT_AGE,
+      );
+    }
     if (!(event instanceof TeamMessageEvent) &&
         this.events.filter(e => !(e instanceof TeamMessageEvent)).length >= MAX_QUEUE_SIZE) {
       return;

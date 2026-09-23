@@ -700,6 +700,18 @@ public abstract class BaseBot implements IBaseBot {
         baseBotInternals.sendTeamMessage(teammateId, message);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public final void broadcastTeamMessageBatch(java.util.Collection<?> messages) {
+        baseBotInternals.broadcastTeamMessage(new TeamMessageBatch(messages));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final void sendTeamMessageBatch(int teammateId, java.util.Collection<?> messages) {
+        baseBotInternals.sendTeamMessage(teammateId, new TeamMessageBatch(messages));
+    }
+
     /**
      * {@inheritDoc}
      */
