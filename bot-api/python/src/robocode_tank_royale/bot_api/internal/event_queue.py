@@ -5,7 +5,7 @@ from threading import Lock
 if TYPE_CHECKING:
     from .base_bot_internals import BaseBotInternals
 
-from ..events import CustomEvent, BotEvent, TickEvent
+from ..events import CustomEvent, BotEvent, TickEvent, TeamMessageEvent
 from .bot_event_handlers import BotEventHandlers
 from .event_interruption import EventInterruption
 from .event_priorities import EventPriorities
@@ -183,7 +183,17 @@ class EventQueue:
 
     def add_event(self, bot_event: BotEvent):
         with self.events_lock:
-            if len(self.events) < EventQueue.MAX_QUEUE_SIZE:
+            # Team messages are bounded per sender by the protocol, so they do not count toward the ordinary
+            # queue limit. Old events are otherwise only removed on dispatch, so drop stale team messages here
+            # to keep the queue bounded when the bot does not call go().
+            if not isinstance(bot_event, TeamMessageEvent):
+                self.events = deque(
+                    event for event in self.events
+                    if not (isinstance(event, TeamMessageEvent)
+                            and EventQueue.is_old_and_non_critical_event(event, bot_event.turn_number)))
+            if isinstance(bot_event, TeamMessageEvent) or sum(
+                not isinstance(event, TeamMessageEvent) for event in self.events
+            ) < EventQueue.MAX_QUEUE_SIZE:
                 self.events.append(bot_event)
             else:
                 print(f"Maximum event queue size has been reached: {EventQueue.MAX_QUEUE_SIZE}")

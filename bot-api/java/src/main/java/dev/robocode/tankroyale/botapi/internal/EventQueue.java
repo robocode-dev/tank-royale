@@ -230,12 +230,24 @@ final class EventQueue {
 
     void addEvent(BotEvent botEvent) {
         synchronized (events) {
-            if (events.size() < MAX_QUEUE_SIZE) {
+            // Team messages are already bounded per sender by the protocol. A recipient may receive
+            // more than 256 in one turn, so reserve the ordinary queue limit for other events.
+            if (!(botEvent instanceof TeamMessageEvent)) {
+                // Old events are otherwise only removed on dispatch, so drop stale team messages here
+                // to keep the queue bounded when the bot does not call go().
+                removeOldTeamMessages(botEvent.getTurnNumber());
+            }
+            if (botEvent instanceof TeamMessageEvent ||
+                    events.stream().filter(event -> !(event instanceof TeamMessageEvent)).count() < MAX_QUEUE_SIZE) {
                 events.add(botEvent);
             } else {
                 System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
             }
         }
+    }
+
+    private void removeOldTeamMessages(int turnNumber) {
+        events.removeIf(event -> event instanceof TeamMessageEvent && isOldAndNonCriticalEvent(event, turnNumber));
     }
 
     private void addCustomEvents() {

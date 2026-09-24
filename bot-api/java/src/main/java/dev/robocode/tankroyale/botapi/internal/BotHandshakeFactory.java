@@ -40,6 +40,7 @@ final class BotHandshakeFactory {
         // Set debuggerAttached field (ADR-035)
         boolean debuggerAttached = isDebuggerAttached();
         handshake.setDebuggerAttached(debuggerAttached);
+        handshake.setTeamMessageBatchVersion(1);
         
         // Log hint if debugger is detected
         if (debuggerAttached) {

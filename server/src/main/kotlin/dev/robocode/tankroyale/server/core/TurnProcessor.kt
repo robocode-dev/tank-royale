@@ -403,9 +403,7 @@ class TurnProcessor(
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent, turn: MutableTurn) {
         val teamMessages = intent.teamMessages ?: return
-        for (index in 0 until teamMessages.size.coerceAtMost(MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN)) {
-            val msg = teamMessages[index]
-            if (msg.message.length > MAX_TEAM_MESSAGE_SIZE) continue
+        for (msg in teamMessages) {
             if (msg.receiverId != null) {
                 turn.addPrivateBotEvent(
                     msg.receiverId, TeamMessageEvent(turn.turnNumber, msg.message, msg.messageType, bot.id)

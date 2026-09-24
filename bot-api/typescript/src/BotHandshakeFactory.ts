@@ -47,6 +47,7 @@ export class BotHandshakeFactory {
     // Set debuggerAttached field (ADR-035)
     const debuggerAttached = BotHandshakeFactory.isDebuggerAttached(envVars);
     handshake.debuggerAttached = debuggerAttached;
+    handshake.teamMessageBatchVersion = 1;
 
     // Log hint if debugger is detected
     if (debuggerAttached) {

@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.connection.GameServerConnectionListener
+import dev.robocode.tankroyale.server.connection.TeamMessagePolicy
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.InitialPosition
@@ -124,11 +125,21 @@ class GameServer(
         timerToShutdown?.shutdown()
     }
 
+    /**
+     * Teammate IDs each bot received in its game-started event. Team-message receivers are checked against this
+     * roster, since it is what the bot APIs validate against, even after a teammate disconnects.
+     */
+    @Volatile
+    private var gameStartTeammateIds: Map<BotId, Set<BotId>> = emptyMap()
+
     /** Send game-started event to all participant bots to get them started */
     private fun sendGameStartedToParticipants() {
         val gameSetup = GameSetupMapper.map(gameSetup)
         val botHandshakes = connectionHandler.getBotHandshakes()
 
+        gameStartTeammateIds = participantRegistry.participantIds.entries.associate { (conn, botId) ->
+            botId to getTeammateIds(botId, botHandshakes[conn]?.teamId)
+        }
         participantRegistry.participantIds.forEach { (conn, botId) ->
             val teamId = botHandshakes[conn]?.teamId
             val gameStartedForBot = createGameStartedEventForBot(botId, teamId, gameSetup)
@@ -554,6 +565,17 @@ class GameServer(
     internal fun handleBotIntent(conn: WebSocket, intent: dev.robocode.tankroyale.schema.BotIntent) {
         if (lifecycleManager.serverState !== ServerState.GAME_RUNNING && lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
 
+        val senderId = participantRegistry.participantIds[conn]
+        val teamId = connectionHandler.getBotHandshakes()[conn]?.teamId
+        val connectedTeammateIds = senderId?.let { getTeammateIds(it, teamId) } ?: emptySet()
+        val gameStartTeammates = senderId?.let { gameStartTeammateIds[it] } ?: emptySet()
+        TeamMessagePolicy.recipientViolation(
+            intent.teamMessages, gameStartTeammates, connectedTeammateIds, ::supportsTeamMessageBatch
+        )?.let { reason ->
+            conn.close(1008 /* RFC 6455 policy violation */, reason)
+            return
+        }
+
         var shouldProcessBreakpointTurn = false
         synchronized(tickLock) {
             val existingIntent = botIntents[conn]
@@ -584,6 +606,11 @@ class GameServer(
             resetTurnTimeout()
             lifecycleManager.turnTimeoutTimer?.notifyReady()
         }
+    }
+
+    private fun supportsTeamMessageBatch(botId: BotId): Boolean {
+        val socket = participantRegistry.participantIds.entries.firstOrNull { it.value == botId }?.key ?: return false
+        return (connectionHandler.getBotHandshakes()[socket]?.teamMessageBatchVersion ?: 0) >= 1
     }
 
     private fun checkAllBotsResponded() {

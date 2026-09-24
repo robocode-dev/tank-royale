@@ -25,15 +25,22 @@ import { SkippedTurnEvent } from "./events/SkippedTurnEvent.js";
 import { WonRoundEvent } from "./events/WonRoundEvent.js";
 import { CustomEvent } from "./events/CustomEvent.js";
 import { TeamMessageEvent } from "./events/TeamMessageEvent.js";
+import { BotException } from "./BotException.js";
 /**
  * Interface containing the core API for a bot.
  */
 export interface IBaseBot {
-  /** The maximum size of a team message in bytes (32 KB). */
-  readonly TEAM_MESSAGE_MAX_SIZE: 32768;
+  /** The maximum size of an encoded team message in UTF-8 bytes (48 KiB). */
+  readonly TEAM_MESSAGE_MAX_SIZE: number;
 
-  /** The maximum number of team messages that can be sent per turn. */
-  readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: 10;
+  /** The maximum number of team-message packets per turn, with each batch counting as one packet. */
+  readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: number;
+
+  /** Maximum logical payloads per turn, counting batch entries. */
+  readonly MAX_LOGICAL_TEAM_MESSAGES_PER_TURN: number;
+
+  /** Maximum UTF-8 bytes of the compact encoded teamMessages array per turn (256 KiB). */
+  readonly TEAM_MESSAGES_MAX_BYTES_PER_TURN: number;
 
   /** Starts the bot, connecting to the server and running until the game ends. */
   start(): void;
@@ -230,11 +237,29 @@ export interface IBaseBot {
   /** Returns whether the given bot ID is a teammate. */
   isTeammate(botId: number): boolean;
 
-  /** Broadcasts a message to all teammates. */
+  /**
+   * Broadcasts a compact JSON message to all teammates for delivery on the next turn.
+   * A turn accepts at most 64 packets and 128 logical payloads, counting batch entries. Each packet is at most 48 KiB
+   * UTF-8 and the compact array is at most 256 KiB. A batch arrives as one ordered event on the next turn. All
+   * recipients must support batch version 1. Throws without enqueueing the packet when any limit is exceeded.
+   * @throws {BotException} When the per-turn message count has been reached.
+   * @throws {Error} When the message or complete batch exceeds its UTF-8 byte limit.
+   */
   broadcastTeamMessage(message: unknown): void;
+  /** Sends ordered entries in one packet and one next-turn event. Every recipient must support batch version 1. */
+  broadcastTeamMessageBatch(messages: readonly unknown[]): void;
 
-  /** Sends a message to a specific teammate. */
+  /**
+   * Sends a compact JSON message to a teammate for delivery on the next turn.
+   * A turn accepts at most 64 packets and 128 logical payloads, counting batch entries. Each packet is at most 48 KiB
+   * UTF-8 and the compact array is at most 256 KiB. A batch arrives as one ordered event on the next turn. All
+   * recipients must support batch version 1. Throws without enqueueing the packet when any limit is exceeded.
+   * @throws {BotException} When the per-turn message count has been reached.
+   * @throws {Error} When the recipient is invalid or the message or complete batch exceeds its UTF-8 byte limit.
+   */
   sendTeamMessage(teammateId: number, message: unknown): void;
+  /** Sends ordered entries to one teammate in one packet and one next-turn event. */
+  sendTeamMessageBatch(teammateId: number, messages: readonly unknown[]): void;
 
   /** The body color of the bot. */
   getBodyColor(): Color | null;

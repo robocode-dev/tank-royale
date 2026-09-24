@@ -5,6 +5,7 @@ import { Condition } from "./Condition.js";
 import { EventPriorities } from "./EventPriorities.js";
 import { EventInterruption } from "./EventInterruption.js";
 import { BotEventHandlers } from "./BotEventHandlers.js";
+import { TeamMessageEvent } from "./TeamMessageEvent.js";
 
 const MAX_QUEUE_SIZE = 256;
 const MAX_EVENT_AGE = 2;
@@ -24,7 +25,16 @@ export class EventQueue {
   }
 
   addEvent(event: BotEvent): void {
-    if (this.events.length >= MAX_QUEUE_SIZE) {
+    // Team messages are bounded per sender by the protocol, so they do not count toward the ordinary
+    // queue limit. Old events are otherwise only removed on dispatch, so drop stale team messages here
+    // to keep the queue bounded when the bot does not call go().
+    if (!(event instanceof TeamMessageEvent)) {
+      this.events = this.events.filter(
+        (e) => !(e instanceof TeamMessageEvent) || e.isCritical || event.turnNumber - e.turnNumber <= MAX_EVENT_AGE,
+      );
+    }
+    if (!(event instanceof TeamMessageEvent) &&
+        this.events.filter(e => !(e instanceof TeamMessageEvent)).length >= MAX_QUEUE_SIZE) {
       return;
     }
     this.events.push(event);

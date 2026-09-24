@@ -808,15 +808,22 @@ sealed class BaseBotInternals
         IntentValidator.ValidateTeammateId(teammateId, TeammateIds);
         IntentValidator.ValidateTeamMessage(message, BotIntent.TeamMessages?.Count ?? 0);
 
-        var json = JsonConverter.ToJson(message);
+        var isBatch = message is TeamMessageBatch;
+        var json = isBatch ? TeamMessageBatchCodec.Encode((TeamMessageBatch)message) : JsonConverter.ToJson(message);
         IntentValidator.ValidateTeamMessageSize(json);
 
-        BotIntent.TeamMessages.Add(new S.TeamMessage
+        var teamMessage = new S.TeamMessage
         {
-            MessageType = message.GetType().ToString(),
+            MessageType = isBatch ? TeamMessageBatchCodec.MessageType : message.GetType().ToString(),
             Message = json,
             ReceiverId = teammateId,
-        });
+        };
+        var candidateMessages = new System.Collections.Generic.List<S.TeamMessage>(BotIntent.TeamMessages) { teamMessage };
+        var logicalCount = candidateMessages.Sum(item => item.MessageType == TeamMessageBatchCodec.MessageType
+            ? TeamMessageBatchCodec.DecodeItems(item.Message).Count : 1);
+        IntentValidator.ValidateLogicalTeamMessageCount(logicalCount);
+        IntentValidator.ValidateTeamMessagesSize(JsonConverter.ToJson(candidateMessages));
+        BotIntent.TeamMessages.Add(teamMessage);
     }
 
     internal Color? BodyColor

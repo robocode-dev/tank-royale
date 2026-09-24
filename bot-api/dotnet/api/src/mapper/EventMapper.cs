@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Internal;
 using Newtonsoft.Json.Linq;
 using Robocode.TankRoyale.BotApi.Internal.Json;
 
@@ -33,7 +34,7 @@ static class EventMapper
 
     private static IEnumerable<BotEvent> Map(JArray events, IBaseBot baseBot)
     {
-        var gameEvents = new HashSet<BotEvent>();
+        var gameEvents = new List<BotEvent>(events.Count);
         foreach (var jEvent in events)
         {
             var evt = (JObject)jEvent;
@@ -141,6 +142,12 @@ static class EventMapper
     {
         try
         {
+            if (source.MessageType == TeamMessageBatchCodec.MessageType)
+            {
+                var values = TeamMessageBatchCodec.DecodeItems(source.Message).Select(item =>
+                    JsonConverter.FromJson((string)item["message"], ResolveType((string)item["messageType"], baseBot))).ToArray();
+                return new TeamMessageEvent(source.TurnNumber, new TeamMessageBatch(values), source.SenderId);
+            }
             // Load the message type from the RECEIVING bot's assembly, not the sender's.
             // This allows each bot to have its own version of the message class.
             // For example, if MyFirstLeader sends a "RobotColors" message to MyFirstDroid,
@@ -203,5 +210,14 @@ static class EventMapper
         {
             throw new BotException("Could not parse team message", e);
         }
+    }
+
+    private static Type ResolveType(string messageType, IBaseBot baseBot)
+    {
+        var botAssembly = baseBot.GetType().Assembly;
+        var type = botAssembly.GetType(messageType) ?? botAssembly.GetTypes().FirstOrDefault(candidate =>
+            candidate.Name == messageType.Split('.').Last() || candidate.FullName == messageType);
+        type ??= Type.GetType(messageType + "," + botAssembly.GetName().Name) ?? Type.GetType(messageType);
+        return type ?? throw new BotException($"Could not find type '{messageType}' in bot assembly '{botAssembly.GetName().Name}' or other loaded assemblies");
     }
 }

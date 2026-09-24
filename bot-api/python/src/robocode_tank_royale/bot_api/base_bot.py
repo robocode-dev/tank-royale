@@ -698,7 +698,11 @@ class BaseBot(BaseBotABC):
         return self._internals.is_teammate(bot_id)
 
     def broadcast_team_message(self, message: Any) -> None:
-        """Broadcasts a message to all teammates.
+        """Broadcasts a compact JSON message to all teammates for delivery on the next turn.
+
+        A turn accepts at most 64 packets and 128 logical payloads, counting batch entries. Each packet is at most
+        48 KiB UTF-8 and the compact array is at most 256 KiB. Batches arrive as one event with entries in order on
+        the next turn. Every recipient must support batch version 1. A failed call does not enqueue its packet.
 
         Args:
             message: The message to broadcast.
@@ -706,8 +710,18 @@ class BaseBot(BaseBotABC):
         self._internals.get_current_tick_or_throw()
         self._internals.broadcast_team_message(message)
 
+    def broadcast_team_message_batch(self, messages: Any) -> None:
+        """Broadcasts ordered messages as one event on the next turn."""
+        from .team_message_batch import TeamMessageBatch
+        self._internals.get_current_tick_or_throw()
+        self._internals.broadcast_team_message(TeamMessageBatch(messages))
+
     def send_team_message(self, teammate_id: int, message: Any) -> None:
-        """Sends a message to a specific teammate.
+        """Sends a compact JSON message to a teammate for delivery on the next turn.
+
+        A turn accepts at most 64 packets and 128 logical payloads, counting batch entries. Each packet is at most
+        48 KiB UTF-8 and the compact array is at most 256 KiB. Batches arrive as one event with entries in order on
+        the next turn. Every recipient must support batch version 1. A failed call does not enqueue its packet.
 
         Args:
             teammate_id: The ID of the teammate to send the message to.
@@ -715,6 +729,12 @@ class BaseBot(BaseBotABC):
         """
         self._internals.get_current_tick_or_throw()
         self._internals.send_team_message(teammate_id, message)
+
+    def send_team_message_batch(self, teammate_id: int, messages: Any) -> None:
+        """Sends ordered messages to one teammate as one event on the next turn."""
+        from .team_message_batch import TeamMessageBatch
+        self._internals.get_current_tick_or_throw()
+        self._internals.send_team_message(teammate_id, TeamMessageBatch(messages))
 
     @property
     def stopped(self) -> bool:

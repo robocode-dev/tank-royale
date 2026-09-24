@@ -867,7 +867,10 @@ class BaseBotInternals:
         self.send_team_message(None, message)
 
     def send_team_message(self, teammate_id: Optional[int], message: Any) -> None:
+        import json
         from ..team_message import serialize_team_message
+        from ..team_message_batch import TeamMessageBatch
+        from .json_util import MessageEncoder
 
         IntentValidator.validate_teammate_id(teammate_id, self.teammate_ids)
 
@@ -879,14 +882,31 @@ class BaseBotInternals:
         IntentValidator.validate_team_message(message, len(team_messages_list))
 
         # Serialize the message using team_message module which handles Color objects
-        json_message_str = serialize_team_message(message)
+        is_batch = isinstance(message, TeamMessageBatch)
+        if is_batch:
+            payload = {"messages": [
+                {"messageType": type(item).__name__, "message": serialize_team_message(item)}
+                for item in message.messages
+            ]}
+            json_message_str = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
+        else:
+            json_message_str = serialize_team_message(message)
         IntentValidator.validate_team_message_size(json_message_str)
 
         team_message = TeamMessage(
-            message_type=type(message).__name__,
+            message_type="team-message-batch-v1" if is_batch else type(message).__name__,
             receiver_id=teammate_id,
             message=json_message_str,
         )
+        candidate_messages = [*team_messages_list, team_message]
+        logical_count = sum(
+            len(json.loads(item.message)["messages"])
+            if item.message_type == "team-message-batch-v1" else 1
+            for item in candidate_messages
+        )
+        IntentValidator.validate_logical_team_message_count(logical_count)
+        compact_messages = json.dumps(candidate_messages, cls=MessageEncoder, separators=(",", ":"), ensure_ascii=False)
+        IntentValidator.validate_team_messages_size(compact_messages)
         team_messages_list.append(team_message)
 
     # Color and Graphics - Delegated

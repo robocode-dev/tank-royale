@@ -243,6 +243,7 @@ subprojects {
 
         // Make sure to replace $version token in version.txt when processing the resources
         withType<ProcessResources> {
+            inputs.property("version", project.version)
             filesMatching("version.properties") {
                 expand(mapOf("version" to version))
             }

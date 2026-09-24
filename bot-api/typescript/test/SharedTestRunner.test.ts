@@ -19,6 +19,7 @@ import { EventQueue } from '../src/events/EventQueue.js';
 import { EventPriorities } from '../src/events/EventPriorities.js';
 import { EventInterruption } from '../src/events/EventInterruption.js';
 import { BotEventHandlers } from '../src/events/BotEventHandlers.js';
+import { TeamMessageBatch } from '../src/TeamMessageBatch.js';
 
 const sharedTestsDir = path.resolve(__dirname, '../../tests/shared');
 
@@ -33,6 +34,7 @@ interface Step {
 interface ExpectAfter {
   dispatchOrder?: string[];
   queueSize?: number;
+  dispatchedMessages?: string[];
 }
 
 interface TestCase {
@@ -146,6 +148,7 @@ describe('Unit: Shared Cross-Platform Tests', () => {
               case 'getConstant':
                 lastActionValue = (Constants as any)[args[0]] ?? (DefaultEventPriority as any)[args[0]] ?? (GameType as any)[args[0]];
                 break;
+              case 'createTeamMessageBatch': lastActionValue = new TeamMessageBatch(args[0]).messages; break;
               case 'isCritical': lastActionValue = createEvent(args[0]).isCritical; break;
               case 'getDefaultPriority': lastActionValue = getDefaultPriority(args[0]); break;
               case 'calcBulletSpeed': lastActionValue = mockBot.calcBulletSpeed(args[0]); break;
@@ -295,13 +298,14 @@ function getDefaultPriority(eventName: string): number {
   return (DefaultEventPriority as any)[normalized];
 }
 
-function createEventAt(name: string, turn: number): Events.BotEvent {
+function createEventAt(name: string, turn: number, sequence: number): Events.BotEvent {
   switch (name) {
     case "WonRoundEvent":    return new Events.WonRoundEvent(turn);
     case "DeathEvent":       return new Events.DeathEvent(turn);
     case "ScannedBotEvent":  return new Events.ScannedBotEvent(turn, 0, 0, 0, 0, 0, 0, 0);
     case "SkippedTurnEvent": return new Events.SkippedTurnEvent(turn);
     case "BotDeathEvent":    return new Events.BotDeathEvent(turn, 0);
+    case "TeamMessageEvent": return new Events.TeamMessageEvent(turn, String(sequence), 0);
     default: throw new Error(`Unknown event for scenario: ${name}`);
   }
 }
@@ -313,11 +317,12 @@ function executeScenario(testCase: TestCase): void {
   const handlers = new BotEventHandlers();
   const fireSpy = vi.spyOn(handlers, 'fireEvent');
 
+  let sequence = 0;
   for (const step of testCase.steps ?? []) {
     if (step.action === 'addEvent') {
       const repeat = step.repeat ?? 1;
       for (let i = 0; i < repeat; i++) {
-        queue.addEvent(createEventAt(step.eventType!, step.turnNumber!));
+        queue.addEvent(createEventAt(step.eventType!, step.turnNumber!, sequence++));
       }
     } else if (step.action === 'dispatchEvents') {
       queue.dispatchEvents(step.atTurn!, handlers);
@@ -331,6 +336,13 @@ function executeScenario(testCase: TestCase): void {
     for (let i = 0; i < expectAfter.dispatchOrder.length; i++) {
       expect(fired[i][0].constructor.name).toBe(expectAfter.dispatchOrder[i]);
     }
+  }
+  if (expectAfter?.dispatchedMessages) {
+    const actualMessages = fireSpy.mock.calls
+      .map(call => call[0])
+      .filter(event => event instanceof Events.TeamMessageEvent)
+      .map(event => (event as Events.TeamMessageEvent).message);
+    expect(actualMessages).toEqual(expectAfter.dispatchedMessages);
   }
   if (expectAfter?.queueSize !== undefined) {
     expect(queue.getEvents()).toHaveLength(expectAfter.queueSize);

@@ -772,15 +772,31 @@ public final class BaseBotInternals {
         IntentValidator.validateTeammateId(teammateId, getTeammateIds());
         IntentValidator.validateTeamMessage(message, botIntent.getTeamMessages().size());
 
-        var json = JsonConverter.toJson(message);
+        var json = message instanceof TeamMessageBatch
+                ? TeamMessageBatchCodec.encode((TeamMessageBatch) message)
+                : JsonConverter.toJson(message);
         IntentValidator.validateTeamMessageSize(json);
 
         var teamMessage = new TeamMessage();
-        teamMessage.setMessageType(message.getClass().getName());
+        teamMessage.setMessageType(message instanceof TeamMessageBatch
+                ? TeamMessageBatchCodec.MESSAGE_TYPE : message.getClass().getName());
         teamMessage.setReceiverId(teammateId);
         teamMessage.setMessage(json);
 
+        var candidateMessages = new java.util.ArrayList<>(botIntent.getTeamMessages());
+        candidateMessages.add(teamMessage);
+        IntentValidator.validateLogicalTeamMessageCount(logicalTeamMessageCount(candidateMessages));
+        IntentValidator.validateTeamMessagesSize(JsonConverter.toJson(candidateMessages));
         botIntent.getTeamMessages().add(teamMessage);
+    }
+
+    private static int logicalTeamMessageCount(Collection<TeamMessage> messages) {
+        int count = 0;
+        for (var message : messages) {
+            count += TeamMessageBatchCodec.MESSAGE_TYPE.equals(message.getMessageType())
+                    ? TeamMessageBatchCodec.decodeItems(message.getMessage()).size() : 1;
+        }
+        return count;
     }
 
     public Color getBodyColor() {

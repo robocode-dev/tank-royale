@@ -17,10 +17,16 @@ class BaseBotABC(ABC):
     """
 
     TEAM_MESSAGE_MAX_SIZE: int = _C.TEAM_MESSAGE_MAX_SIZE
-    """Maximum size of a team message, which is 32 KB."""
+    """Maximum UTF-8 bytes of one compact JSON-encoded team message (48 KiB)."""
 
     MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: int = _C.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN
-    """The maximum number of team messages that can be sent per turn, which is 10 messages."""
+    """Maximum number of team-message packets per turn, with each batch counting as one packet (64)."""
+
+    MAX_LOGICAL_TEAM_MESSAGES_PER_TURN: int = _C.MAX_LOGICAL_TEAM_MESSAGES_PER_TURN
+    """Maximum logical payloads per turn, counting each batch entry (128)."""
+
+    TEAM_MESSAGES_MAX_BYTES_PER_TURN: int = _C.TEAM_MESSAGES_MAX_BYTES_PER_TURN
+    """Maximum UTF-8 bytes of the compact encoded team-message array per turn (256 KiB)."""
 
     @abstractmethod
     def start(self) -> None:
@@ -891,17 +897,18 @@ class BaseBotABC(ABC):
         When the message is sent, it is serialized into a JSON representation. This means that all public
         fields, and only public fields, are serialized into a JSON representation as a data transfer object (DTO).
 
-        The maximum team message size limit is defined by `TEAM_MESSAGE_MAX_SIZE`, which is set to 32,768 bytes.
-        This size is calculated after serializing the message into a JSON representation.
-
-        The maximum number of messages that can be broadcast per turn is limited to `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN`,
-        which is set to 10.
+        A turn accepts at most `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN` packets and
+        `MAX_LOGICAL_TEAM_MESSAGES_PER_TURN` logical payloads, counting entries in batches. Each compact JSON packet
+        uses at most `TEAM_MESSAGE_MAX_SIZE` UTF-8 bytes, and the compact message array uses at most
+        `TEAM_MESSAGES_MAX_BYTES_PER_TURN` UTF-8 bytes. Accepted messages arrive on the next turn. A failed call does
+        not enqueue its packet.
 
         Args:
             message: The message to broadcast.
 
         Raises:
-            ValueError: If the size of the message exceeds the size limit.
+            BotException: If the per-turn message count has been reached.
+            ValueError: If the message or complete batch exceeds its UTF-8 byte limit.
 
         See Also:
             send_team_message: Method to send a message to teammates.
@@ -918,20 +925,37 @@ class BaseBotABC(ABC):
         meaning that all public fields, and only public fields, are being
         serialized into a JSON representation as a DTO (data transfer object).
 
-        The maximum team message size limit is defined by
-        `TEAM_MESSAGE_MAX_SIZE`, which is set to
-        `TEAM_MESSAGE_MAX_SIZE` bytes. This size is the size of the message
-        when it is serialized into a JSON representation.
-
-        The maximum number of messages that can be sent/broadcast per turn is
-        limited to `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN`.
+        A turn accepts at most `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN` packets and
+        `MAX_LOGICAL_TEAM_MESSAGES_PER_TURN` logical payloads, counting entries in batches. Each compact JSON packet
+        uses at most `TEAM_MESSAGE_MAX_SIZE` UTF-8 bytes, and the compact message array uses at most
+        `TEAM_MESSAGES_MAX_BYTES_PER_TURN` UTF-8 bytes. Accepted messages arrive on the next turn. A failed call does
+        not enqueue its packet.
 
         Args:
             teammate_id: The id of the teammate to send the message to.
             message: The message to send.
 
         Raises:
-            ValueError: If the size of the message exceeds the size limit.
+            BotException: If the per-turn message count has been reached.
+            ValueError: If the recipient is invalid or the message or complete batch exceeds its UTF-8 byte limit.
+        """
+        pass
+
+    @abstractmethod
+    def broadcast_team_message_batch(self, messages: Any) -> None:
+        """Broadcasts ordered entries in one packet and one next-turn event.
+
+        Every recipient must support batch version 1. Empty or null-containing batches and packets or intents over
+        the documented limits are rejected before enqueue.
+        """
+        pass
+
+    @abstractmethod
+    def send_team_message_batch(self, teammate_id: int, messages: Any) -> None:
+        """Sends ordered entries to one teammate in one packet and one next-turn event.
+
+        The recipient must support batch version 1. Empty or null-containing batches and packets or intents over
+        the documented limits are rejected before enqueue.
         """
         pass
 
