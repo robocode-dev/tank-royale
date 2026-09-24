@@ -450,7 +450,8 @@ class BattleRunnerIntegrationTest {
             teamName = "TeamMessageBatchStressTeam",
             botName = "TeamMessageBatchStress",
             expectedReceivedItemsPerBot = 4 * 60 * 128,
-            outboundTeamMessageBytes = estimateBatchArrayBytes()
+            outboundTeamMessageBytes = estimateBatchArrayBytes(128),
+            itemsPerBatch = 128
         )
     }
 
@@ -466,7 +467,42 @@ class BattleRunnerIntegrationTest {
             teamName = "TeamMessageBatchControlTeam",
             botName = "TeamMessageBatchControl",
             expectedReceivedItemsPerBot = 0,
-            outboundTeamMessageBytes = 0
+            outboundTeamMessageBytes = 0,
+            itemsPerBatch = 128
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBotsDeliverOrdered64ItemBatchesWithoutSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchStress64Team",
+            botName = "TeamMessageBatchStress64",
+            expectedReceivedItemsPerBot = 4 * 60 * 64,
+            outboundTeamMessageBytes = estimateBatchArrayBytes(64),
+            itemsPerBatch = 64
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBot64ItemNoMessageControlSustains30Tps() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchControl64Team",
+            botName = "TeamMessageBatchControl64",
+            expectedReceivedItemsPerBot = 0,
+            outboundTeamMessageBytes = 0,
+            itemsPerBatch = 64
         )
     }
 
@@ -474,7 +510,8 @@ class BattleRunnerIntegrationTest {
         teamName: String,
         botName: String,
         expectedReceivedItemsPerBot: Int,
-        outboundTeamMessageBytes: Long
+        outboundTeamMessageBytes: Long,
+        itemsPerBatch: Int
     ) {
         val expectedTurn = 80
         val measuredFromTurn = 10
@@ -563,7 +600,7 @@ class BattleRunnerIntegrationTest {
             val elapsedSeconds = (finishedAtNanos.get()!! - startedAtNanos.get()!!) / 1_000_000_000.0
             val measuredTps = (expectedTurn - firstTickTurn.get()!!) / elapsedSeconds
             println(
-                "TEAM_MESSAGE_TRIAL workload=$botName bots=5 turns=60 tps=$measuredTps " +
+                "TEAM_MESSAGE_TRIAL workload=$botName bots=5 turns=60 itemsPerBatch=$itemsPerBatch tps=$measuredTps " +
                     "outboundTeamMessagesBytes=$outboundTeamMessageBytes " +
                     "estimatedTeamPayloadFanoutBytes=${outboundTeamMessageBytes * 4} " +
                     "receivedPerBot=$expectedReceivedItemsPerBot skipped=0 " +
@@ -583,12 +620,12 @@ class BattleRunnerIntegrationTest {
 
     private fun decodeRgb(color: String?): Int = requireNotNull(color).removePrefix("#").take(6).toInt(16)
 
-    private fun estimateBatchArrayBytes(): Long {
+    private fun estimateBatchArrayBytes(itemsPerBatch: Int): Long {
         fun encodedString(value: String) = JsonPrimitive(value).toString()
         var totalBytes = 0L
         for (botId in 1..5) {
             for (turn in 1..60) {
-                val entries = (0 until 128).joinToString(",") { item ->
+                val entries = (0 until itemsPerBatch).joinToString(",") { item ->
                     "{\"messageType\":\"java.lang.String\",\"message\":" +
                         encodedString(encodedString("$botId:$turn:$item")) + "}"
                 }

@@ -44,6 +44,14 @@ The failure directly establishes that the candidate workload can exhaust a bot's
 
 For a next trial, consider limiting each bot to 64 logical payloads per turn while retaining the 49,152-byte packet and 262,144-byte per-turn array caps initially. The measured 128-entry batch packet was about 9.2 KiB, well below either byte cap, so lowering byte limits would not target the observed count-heavy workload. The 64-entry batch candidate is unverified; the earlier 64-message count-only workload used a different, unbatched path and also failed its gate. Do not change the trial policy until a human selects a candidate and its stress gate passes.
 
+## Batched 64-entry trial — 2026-09-24
+
+The five-bot team sent one batch of 64 ordered payloads per sender for 60 turns at the standard 30 ms timeout and 30 TPS setting. Ten fresh paired executions completed with all 15,360 expected logical items received by each bot in order, zero skipped turns, and no test failures. The matched control constructed 64 payload strings on the same turns and sent none; it also completed all ten runs without skipped turns or unexpected team messages. Each paired run used the same arena and opponents and forced the Gradle test task to rerun.
+
+Across the ten stress runs, measured throughput ranged from 99.1 to 118.6 turns/s, average remaining turn budget from 26.958 to 27.589 ms, and minimum remaining budget from 8.581 to 15.803 ms. Maximum batch construction and API submission time ranged from 8.716 to 13.655 ms; the slowest single receive-handler callback was 6.164 ms. The control's minimum remaining budget ranged from 21.234 to 25.461 ms, with a 29.325 to 29.453 ms average. The encoded outbound arrays totaled 1,378,320 bytes; estimated teammate payload fan-out was 5,513,280 bytes, excluding WebSocket framing and transport overhead.
+
+All ten 64-entry runs passed on the user's fast local PC, but their minimum budget fell as low as 8.581 ms. This does not establish reliability on average or lower-spec hardware, and it does not resolve the 128-entry failure. The 64-entry test fixture is measurement evidence only; do not change the candidate API limit or publish the policy based on this host's results. Keep PR 276 in draft until the chosen trial passes on representative slower hardware or an agreed calibrated CPU limit.
+
 ## Blocking decision
 
 Resolved by the user on 2026-09-23: trial standard ordered batching in one existing packet and event, with no compression at first. Retain the trial packet and byte caps, require batch version 1 from all recipients, and compare the five-bot 30 TPS result against the same zero-loss, zero-skipped-turn gate. The trial does not become a published policy unless that gate passes.
