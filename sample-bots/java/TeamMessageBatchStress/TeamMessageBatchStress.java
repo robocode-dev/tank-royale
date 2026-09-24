@@ -24,6 +24,11 @@ public class TeamMessageBatchStress extends Bot {
     private int sizeErrors;
     private int orderErrors;
     private int contentErrors;
+    private int minTimeLeftMicros = Integer.MAX_VALUE;
+    private long totalTimeLeftMicros;
+    private int timeLeftSamples;
+    private int maxMessageWorkMicros;
+    private int maxTeamMessageHandlerMicros;
 
     public static void main(String[] args) {
         new TeamMessageBatchStress().start();
@@ -33,12 +38,19 @@ public class TeamMessageBatchStress extends Bot {
     public void run() {
         while (isRunning()) {
             int turn = getTurnNumber();
+            long messageWorkStartedAt = System.nanoTime();
             if (turn >= FIRST_SEND_TURN && turn <= LAST_SEND_TURN) {
                 List<Object> messages = new ArrayList<>(ITEMS_PER_BATCH);
                 for (int item = 0; item < ITEMS_PER_BATCH; item++) {
                     messages.add(getMyId() + ":" + turn + ":" + item);
                 }
                 broadcastTeamMessageBatch(messages);
+                int timeLeftMicros = Math.max(0, getTimeLeft());
+                minTimeLeftMicros = Math.min(minTimeLeftMicros, timeLeftMicros);
+                totalTimeLeftMicros += timeLeftMicros;
+                timeLeftSamples++;
+                maxMessageWorkMicros = Math.max(maxMessageWorkMicros,
+                        (int) ((System.nanoTime() - messageWorkStartedAt) / 1_000));
             }
             if (turn >= LAST_SEND_TURN + 10 || turn % 5 == 0) {
                 setBodyColor(Color.fromRgb((receivedItems >>> 8) & 0xff, receivedItems & 0xff,
@@ -46,7 +58,13 @@ public class TeamMessageBatchStress extends Bot {
                 setTracksColor(Color.fromRgb(0, Math.min(skippedTurns, 0xff), 0));
                 setTurretColor(Color.fromRgb(Math.min(typeErrors, 0xff), Math.min(sizeErrors, 0xff),
                         Math.min(orderErrors, 0xff)));
-                setRadarColor(Color.fromRgb(Math.min(contentErrors, 0xff), 0, 0));
+                int averageTimeLeftMicros = timeLeftSamples == 0 ? 0
+                        : (int) Math.min(0xffff, totalTimeLeftMicros / timeLeftSamples);
+                setRadarColor(Color.fromRgb(Math.min(contentErrors, 0xff),
+                        (averageTimeLeftMicros >>> 8) & 0xff, averageTimeLeftMicros & 0xff));
+                setScanColor(encodedColor(minTimeLeftMicros == Integer.MAX_VALUE ? 0 : minTimeLeftMicros));
+                setGunColor(encodedColor(maxMessageWorkMicros));
+                setBulletColor(encodedColor(maxTeamMessageHandlerMicros));
             }
             go();
         }
@@ -54,6 +72,16 @@ public class TeamMessageBatchStress extends Bot {
 
     @Override
     public void onTeamMessage(TeamMessageEvent event) {
+        long handlerStartedAt = System.nanoTime();
+        try {
+            handleTeamMessage(event);
+        } finally {
+            maxTeamMessageHandlerMicros = Math.max(maxTeamMessageHandlerMicros,
+                    (int) ((System.nanoTime() - handlerStartedAt) / 1_000));
+        }
+    }
+
+    private void handleTeamMessage(TeamMessageEvent event) {
         if (!(event.getMessage() instanceof TeamMessageBatch)) {
             protocolErrors++;
             typeErrors++;
@@ -94,6 +122,11 @@ public class TeamMessageBatchStress extends Bot {
         }
         lastTurnBySender.put(senderId, senderTurn);
         receivedItems += ITEMS_PER_BATCH;
+    }
+
+    private static Color encodedColor(int value) {
+        int rgb = Math.min(Math.max(value, 0), 0xffffff);
+        return Color.fromRgb((rgb >>> 16) & 0xff, (rgb >>> 8) & 0xff, rgb & 0xff);
     }
 
     @Override

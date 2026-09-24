@@ -1,0 +1,14 @@
+{
+  "name": "TeamMessageBatchControlTeam",
+  "version": "1.0",
+  "authors": ["Robocode Tank Royale"],
+  "description": "Five copies of the no-message control bot for the local 30 TPS trial.",
+  "teamMembers": [
+    "TeamMessageBatchControl",
+    "TeamMessageBatchControl",
+    "TeamMessageBatchControl",
+    "TeamMessageBatchControl",
+    "TeamMessageBatchControl"
+  ],
+  "license": "Apache-2.0"
+}

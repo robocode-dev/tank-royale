@@ -446,6 +446,36 @@ class BattleRunnerIntegrationTest {
     @Test
     @Timeout(120)
     fun testPRO006_IntegrationPositive_fiveBotsDeliverOrdered128ItemBatchesWithoutSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchStressTeam",
+            botName = "TeamMessageBatchStress",
+            expectedReceivedItemsPerBot = 4 * 60 * 128,
+            outboundTeamMessageBytes = estimateBatchArrayBytes()
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBotNoMessageControlSustains30Tps() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchControlTeam",
+            botName = "TeamMessageBatchControl",
+            expectedReceivedItemsPerBot = 0,
+            outboundTeamMessageBytes = 0
+        )
+    }
+
+    private fun runFiveBotTeamMessageTrial(
+        teamName: String,
+        botName: String,
+        expectedReceivedItemsPerBot: Int,
+        outboundTeamMessageBytes: Long
+    ) {
         val expectedTurn = 80
         val measuredFromTurn = 10
         val firstTickTurn = AtomicReference<Int?>()
@@ -466,7 +496,7 @@ class BattleRunnerIntegrationTest {
                     defaultTurnsPerSecond = 30
                 },
                 listOf(
-                    BotEntry.of(botDir("TeamMessageBatchStressTeam")),
+                    BotEntry.of(botDir(teamName)),
                     BotEntry.of(botDir("Walls")),
                     BotEntry.of(botDir("SpinBot"))
                 )
@@ -484,46 +514,74 @@ class BattleRunnerIntegrationTest {
             }
 
             assertThat(completed.await(90, TimeUnit.SECONDS))
-                .describedAs("the five-bot batch workload must reach turn $expectedTurn")
+                .describedAs("the five-bot $botName workload must reach turn $expectedTurn")
                 .isTrue()
             handle.onTickEvent.off(owner)
             handle.stop()
-            val states = finalStates.get()!!.filter { it.name == "TeamMessageBatchStress" }
+            val states = finalStates.get()!!.filter { it.name == botName }
             assertThat(states).hasSize(5)
             println(
-                "BATCH_STRESS_STATE " + states.joinToString { state ->
+                "TEAM_MESSAGE_TRIAL_STATE workload=$botName " + states.joinToString { state ->
                     "id=${state.id},body=${state.bodyColor},tracks=${state.tracksColor}," +
-                        "turret=${state.turretColor},radar=${state.radarColor}"
+                        "turret=${state.turretColor},radar=${state.radarColor}," +
+                        "scan=${state.scanColor},gun=${state.gunColor},bullet=${state.bulletColor}"
                 }
             )
+            val minTimeLeftMicros = mutableListOf<Int>()
+            val averageTimeLeftMicros = mutableListOf<Int>()
+            val maxMessageWorkMicros = mutableListOf<Int>()
+            val maxTeamMessageHandlerMicros = mutableListOf<Int>()
             states.forEach { state ->
                 val hex = state.bodyColor!!.removePrefix("#")
                 val received = (hex.substring(0, 2).toInt(16) shl 8) or hex.substring(2, 4).toInt(16)
                 val protocolErrors = hex.substring(4, 6).toInt(16)
                 val skippedTurns = state.tracksColor!!.removePrefix("#").substring(2, 4).toInt(16)
+                val radar = decodeRgb(state.radarColor)
+                val contentErrors = (radar ushr 16) and 0xff
+                val averageLeftMicros = radar and 0xffff
+                val minLeftMicros = decodeRgb(state.scanColor)
+                val maxWorkMicros = decodeRgb(state.gunColor)
+                val maxHandlerMicros = decodeRgb(state.bulletColor)
                 assertThat(received)
-                    .describedAs("ordered logical messages received by bot ${state.id}; errors=$protocolErrors skipped=$skippedTurns")
-                    .isEqualTo(4 * 60 * 128)
+                    .describedAs("ordered logical messages received by $botName ${state.id}; errors=$protocolErrors skipped=$skippedTurns")
+                    .isEqualTo(expectedReceivedItemsPerBot)
                 assertThat(skippedTurns)
-                    .describedAs("skipped turns recorded by bot ${state.id}")
+                    .describedAs("skipped turns recorded by $botName ${state.id}")
                     .isZero()
                 assertThat(protocolErrors)
-                    .describedAs("batch order and protocol errors recorded by bot ${state.id}")
+                    .describedAs("message and protocol errors recorded by $botName ${state.id}")
                     .isZero()
+                assertThat(contentErrors)
+                    .describedAs("message content errors recorded by $botName ${state.id}")
+                    .isZero()
+                minTimeLeftMicros.add(minLeftMicros)
+                averageTimeLeftMicros.add(averageLeftMicros)
+                maxMessageWorkMicros.add(maxWorkMicros)
+                maxTeamMessageHandlerMicros.add(maxHandlerMicros)
             }
 
             val elapsedSeconds = (finishedAtNanos.get()!! - startedAtNanos.get()!!) / 1_000_000_000.0
             val measuredTps = (expectedTurn - firstTickTurn.get()!!) / elapsedSeconds
-            val outboundBytes = estimateBatchArrayBytes()
             println(
-                "BATCH_STRESS bots=5 turns=60 tps=$measuredTps outboundTeamMessagesBytes=$outboundBytes " +
-                    "estimatedTeamPayloadFanoutBytes=${outboundBytes * 4} receivedPerBot=${4 * 60 * 128} skipped=0"
+                "TEAM_MESSAGE_TRIAL workload=$botName bots=5 turns=60 tps=$measuredTps " +
+                    "outboundTeamMessagesBytes=$outboundTeamMessageBytes " +
+                    "estimatedTeamPayloadFanoutBytes=${outboundTeamMessageBytes * 4} " +
+                    "receivedPerBot=$expectedReceivedItemsPerBot skipped=0 " +
+                    "minTimeLeftMicros=${minTimeLeftMicros.minOrNull()} " +
+                    "averageTimeLeftMicros=${averageTimeLeftMicros.average().toLong()} " +
+                    "maxMessageWorkMicros=${maxMessageWorkMicros.maxOrNull()} " +
+                    "maxTeamMessageHandlerMicros=${maxTeamMessageHandlerMicros.maxOrNull()}"
             )
             assertThat(measuredTps)
-                .describedAs("measured turn rate under the 30 TPS workload")
+                .describedAs("measured turn rate under the $botName workload")
                 .isGreaterThanOrEqualTo(30.0)
+            if (expectedReceivedItemsPerBot == 0) {
+                assertThat(maxTeamMessageHandlerMicros).containsOnly(0)
+            }
         }
     }
+
+    private fun decodeRgb(color: String?): Int = requireNotNull(color).removePrefix("#").take(6).toInt(16)
 
     private fun estimateBatchArrayBytes(): Long {
         fun encodedString(value: String) = JsonPrimitive(value).toString()
