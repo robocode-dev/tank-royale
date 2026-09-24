@@ -20,13 +20,19 @@ With that repair and a 100 ms test deadline, the five-bot workload delivered all
 
 The five-bot workload at 64 messages per bot per turn also failed at the normal 30 ms deadline. The runner measured 57.49 TPS and captured 19,200 sent messages with 128,520 payload bytes. Four recipients received 14,912 of 15,360 expected messages and recorded 6 ordering violations and 2 skipped turns; the fifth received 14,848 messages, with 4 ordering violations and 1 skipped turn. The reduced count improves throughput but does not meet the zero-skipped-turn acceptance gate.
 
-## Acceptance result — 2026-09-23
+## Initial acceptance result — 2026-09-23
 
 The batching gate passed on the matched local Tank Royale API and runner. The five-bot team sent 128 ordered items in one batch per turn for 60 turns, after a ten-turn warm-up, with the standard 30 ms intent timeout and a 30 TPS default. Every bot received all 30,720 expected items in order; there were zero skipped turns during the workload. The runner measured 94.94 turns/s from turn 10 through turn 80. The compact encoded outbound team-message arrays totaled 2,747,040 bytes; estimated teammate payload fan-out was 10,988,160 bytes, excluding WebSocket framing and transport overhead. The passing result accepts the 64-packet, 128-logical-payload, 49,152-byte packet, and 262,144-byte per-turn array limits without compression.
 
 The shared cross-platform boundary suite includes the exact 262,144-byte boundary and rejects 262,145 bytes. It also exercises malformed raw intents, Unicode byte accounting, directed and broadcast batches, order, and next-turn delivery. The bridge team-message conformance tests pass against the matched build. The CombatTeam run completes in both engines with zero reported errors; its score difference is recorded separately below.
 
 The five-round CombatTeam compatibility run against the matched 1.4.0 API and runner completed in both engines with zero reported errors. Classic scored 10,645 and Tank Royale 13,367 (+25.6%); score parity remains a separate discrepancy and is outside the messaging delivery gate.
+
+## Repeatability check — 2026-09-24
+
+On the final PR commit, eleven fresh executions of the five-bot workload ran at the standard 30 ms intent timeout and 30 TPS setting. Ten delivered all 30,720 expected items to every bot in order with no skipped turns. Nine captured passing runs measured 81.1 to 89.3 turns/s; the tenth passed, but its throughput output was not captured. One run failed: one bot recorded a skipped turn, and each of the other four recorded one missing 128-item batch and an ordering gap. This leaves the stress acceptance gate unresolved despite the ten passing executions.
+
+The measured failure is a missed intent deadline during the messaging workload. Per-turn latency traces and a control run without messaging were not captured, so the cause cannot yet be attributed to message processing or host scheduling, and no revised limit is justified by these measurements. Keep the change and PR in draft pending a human decision on further diagnosis or revised trial limits.
 
 ## Blocking decision
 
