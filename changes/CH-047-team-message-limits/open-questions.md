@@ -62,6 +62,14 @@ The matched no-message control passed under the same cap with no skipped turns o
 
 The zero-loss, zero-skip gate failed for the 64-entry batch under this CPU-capped run. Keep PR 276 in draft and do not publish or change the candidate policy from this result alone. For a human-selected next trial, consider a limit of 32 logical payloads per bot per turn while initially retaining the 49,152-byte packet and 262,144-byte per-turn array caps; those byte limits were not approached by this count-heavy workload. This is only a trial recommendation and needs its own stress gate before becoming policy.
 
+## CPU-capped 32-entry trial — 2026-09-27
+
+The 32-entry stress fixture now records the exact skipped-turn numbers in the measured window, turns 11–70; turns 1–10 remain warm-up and are not counted. Two five-bot stress runs failed the delivery gate. In the first, each bot received 7,296 of 7,680 expected items and skipped turns 15, 32, and 61. In the second, bots 1, 2, and 7 skipped turn 18; bots 4 and 5 had no skipped turns. Recipients received 7,584 or 7,616 items, with the deficits matching the batches sent on the skipped turn. The second run measured 39.61 turns/s, a 16,786 µs minimum and 27,879 µs average remaining budget.
+
+The matched 32-entry no-message control also failed once: all five bots skipped turn 32. It received no messages, measured 96.31 turns/s, and reported a 24,512 µs minimum and 29,458 µs average remaining budget. Since the control also skipped a turn, not every skip can be attributed to team-message processing. The stress run's turn-18 losses still show that the 32-entry messaging workload can miss intents under this cap.
+
+All three runs used a 25% Windows Job Object CPU hard cap across the Gradle, runner, and bot process tree on the Ryzen 7 9800X3D with 16 logical processors. The initial invocation measured 366.0 job CPU seconds over 100.1 seconds, about 22.9% of total system capacity; later invocations used the same cap, but the local summary script did not emit their CPU averages. Because both stress and control runs recorded skips, this does not establish 32 as reliable or identify a single messaging bottleneck. Keep the policy unchanged and PR 276 in draft; do not lower the candidate limit or publish it from these measurements. A further human decision is needed on whether to measure on representative hardware or isolate runner scheduling under the same CPU cap.
+
 ## Blocking decision
 
 Resolved by the user on 2026-09-23: trial standard ordered batching in one existing packet and event, with no compression at first. Retain the trial packet and byte caps, require batch version 1 from all recipients, and compare the five-bot 30 TPS result against the same zero-loss, zero-skipped-turn gate. The trial does not become a published policy unless that gate passes.
