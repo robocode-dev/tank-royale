@@ -14,6 +14,8 @@ import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 
 class TeamMessageRawClientTest : FunSpec({
+    tags(Tag("Unit"))
+
     val listener = mockk<IConnectionListener>(relaxed = true)
     val handler = ClientWebSocketsHandler(
         setup = ServerSetup(),

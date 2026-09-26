@@ -52,6 +52,16 @@ Across the ten stress runs, measured throughput ranged from 99.1 to 118.6 turns/
 
 All ten 64-entry runs passed on the user's fast local PC, but their minimum budget fell as low as 8.581 ms. This does not establish reliability on average or lower-spec hardware, and it does not resolve the 128-entry failure. The 64-entry test fixture is measurement evidence only; do not change the candidate API limit or publish the policy based on this host's results. Keep PR 276 in draft until the chosen trial passes on representative slower hardware or an agreed calibrated CPU limit.
 
+## CPU-capped 64-entry trial — 2026-09-27
+
+The first paired run used a Windows Job Object hard cap of 25% of total host CPU capacity across the full Gradle, runner, and bot process tree on the AMD Ryzen 7 9800X3D (8 physical and 16 logical processors). Windows accounting measured 19.2% average use of total system CPU over the 36.2-second pair. This is a constrained run on the user's fast PC, not a run on lower-spec hardware; the cap also does not establish a general minimum hardware profile. The repeat loop stopped after this first failing pair.
+
+Under stress, each bot received 14,336 of 15,360 expected logical items, a deficit of 1,024 items or 16 batches of 64 per bot. Each bot recorded 16 ordering gaps and 4 skipped turns; the bot telemetry showed no message-type, batch-size, or content errors. Every bot's minimum `getTimeLeft()` was 0 µs; average remaining time ranged from 26,124 to 27,148 µs. Maximum batch construction and API submission time ranged from 4,744 to 17,162 µs, and maximum receive-handler callback duration ranged from 902 to 1,703 µs.
+
+The matched no-message control passed under the same cap with no skipped turns or unexpected messages. It measured 105.40 turns/s, a 25,547 µs minimum and 29,560 µs average remaining budget, and 3,831 µs maximum payload-construction time. The comparison points to the messaging workload as load-sensitive, but these measurements do not isolate serialization, server delivery, callback scheduling, or host scheduling as the bottleneck.
+
+The zero-loss, zero-skip gate failed for the 64-entry batch under this CPU-capped run. Keep PR 276 in draft and do not publish or change the candidate policy from this result alone. For a human-selected next trial, consider a limit of 32 logical payloads per bot per turn while initially retaining the 49,152-byte packet and 262,144-byte per-turn array caps; those byte limits were not approached by this count-heavy workload. This is only a trial recommendation and needs its own stress gate before becoming policy.
+
 ## Blocking decision
 
 Resolved by the user on 2026-09-23: trial standard ordered batching in one existing packet and event, with no compression at first. Retain the trial packet and byte caps, require batch version 1 from all recipients, and compare the five-bot 30 TPS result against the same zero-loss, zero-skipped-turn gate. The trial does not become a published policy unless that gate passes.
