@@ -680,6 +680,14 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
+    public final String getBotName(int botId) {
+        return baseBotInternals.getBotName(botId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final boolean isTeammate(int botId) {
         return baseBotInternals.isTeammate(botId);
     }

@@ -55,6 +55,7 @@ class BotInfo:
             platform: Optional[str] = None,
             programming_lang: Optional[str] = None,
             initial_position: Optional[InitialPosition] = None,
+            team_member_name: Optional[str] = None,
     ):
         """
         Initializes a new instance of the BotInfo class.
@@ -74,6 +75,7 @@ class BotInfo:
             platform (str): The platform used for running the bot (optional).
             programming_lang (str): The programming language used for developing the bot (optional).
             initial_position (InitialPosition): The initial position with starting coordinate and angle (optional).
+            team_member_name (str): The optional full name used by team APIs, without a display-name length limit.
         """
 
         # Required fields:
@@ -89,6 +91,7 @@ class BotInfo:
         self.programming_lang = self._process_programming_lang(programming_lang)
         # Optional special field:
         self.initial_position = initial_position
+        self.team_member_name = team_member_name
 
     # Validation and processing methods
     @staticmethod
@@ -193,6 +196,7 @@ class BotInfo:
             platform=data.get("platform"),
             programming_lang=data.get("programmingLang"),
             initial_position=data.get("initialPosition"),
+            team_member_name=data.get("teamMemberName"),
         )
 
     @classmethod
@@ -228,6 +232,12 @@ class BotInfo:
             self.platform = None
             self.programming_lang = None
             self.initial_position = None
+            self.team_member_name = None
+
+        def set_team_member_name(self, team_member_name: Optional[str]) -> "BotInfo.Builder":
+            """Sets the optional full name used to identify this bot in team APIs."""
+            self.team_member_name = team_member_name
+            return self
 
         def set_name(self, name: str) -> "BotInfo.Builder":
             """
@@ -502,4 +512,5 @@ class BotInfo:
                 platform=self.platform,
                 programming_lang=self.programming_lang,
                 initial_position=InitialPosition.from_string(self.initial_position) if self.initial_position else None,
+                team_member_name=self.team_member_name,
             )

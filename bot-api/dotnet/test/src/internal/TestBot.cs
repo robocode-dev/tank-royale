@@ -56,6 +56,7 @@ public class TestBot : Robocode.TankRoyale.BotApi.IBaseBot
     public void SetResume() {}
     public bool IsStopped => false;
     public ICollection<int> TeammateIds => new List<int>();
+    public string GetBotName(int botId) => null;
     public bool IsTeammate(int botId) => false;
     public void BroadcastTeamMessage(object message) {}
     public void BroadcastTeamMessageBatch(System.Collections.IEnumerable messages) {}

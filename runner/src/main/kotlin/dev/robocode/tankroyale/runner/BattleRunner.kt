@@ -295,7 +295,7 @@ class BattleRunner private constructor(
         expectedBotCount: Int = expectedIdentities.size,
         bootProgressEvent: dev.robocode.tankroyale.common.event.Event<BootProgress>? = null,
         onSubscribed: () -> Unit = {},
-    ): Set<BotAddress> {
+    ): List<BotAddress> {
         val timeoutMs = config.botConnectTimeoutMs
         val startMs = System.currentTimeMillis()
         val matcher = BotMatcher(expectedIdentities, preExistingBots, expectedBotCount)
@@ -328,7 +328,7 @@ class BattleRunner private constructor(
             // Check if bots already appeared before we subscribed
             if (latestResult.isComplete) {
                 fireProgress(latestResult)
-                return latestResult.matched
+                return latestResult.matched.toList()
             }
             // Poll every 500ms to fire periodic progress events
             val pollMs = 500L
@@ -336,7 +336,7 @@ class BattleRunner private constructor(
             while (remaining > 0) {
                 val waited = pollMs.coerceAtMost(remaining)
                 if (botsReadyLatch.await(waited, TimeUnit.MILLISECONDS)) {
-                    return latestResult.matched
+                    return latestResult.matched.toList()
                 }
                 remaining -= waited
                 fireProgress(latestResult)

@@ -82,7 +82,7 @@ object Client {
         currentPlayer?.start() ?: throw IllegalStateException("No active battle player")
     }
 
-    fun startGame(botAddresses: Set<BotAddress>, debugMode: Boolean = false) {
+    fun startGame(botAddresses: List<BotAddress>, debugMode: Boolean = false) {
         if (currentPlayer == liveBattlePlayer) {
             liveBattlePlayer.startGame(botAddresses, debugMode)
         } else {

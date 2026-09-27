@@ -138,8 +138,8 @@ sequenceDiagram
 
     Note over Server: Transition to WAIT_FOR_READY<br/>Select bots, initialize battle state
 
-    Server->>Bot1: game-started-event-for-bot {battleId, arena, opponents}
-    Server->>Bot2: game-started-event-for-bot {battleId, arena, opponents}
+    Server->>Bot1: game-started-event-for-bot {myId, teammateIds, botNames, gameSetup}
+    Server->>Bot2: game-started-event-for-bot {myId, teammateIds, botNames, gameSetup}
     Server->>Observer: game-started-event-for-observer {battleId, arena, bots}
 
     Bot1->>Bot1: Fire onGameStarted handler
@@ -176,20 +176,17 @@ sequenceDiagram
    ```json
    {
      "type": "game-started-event-for-bot",
-     "battleId": "uuid-battle-123",
-     "opponents": [
-       {
-         "botId": "uuid-bot-2",
-         "name": "OpponentBot",
-         "version": "2.0"
-       }
+     "myId": 12,
+     "teammateIds": [15],
+     "botNames": [
+       {"botId": 12, "name": "legacy.TeamRobot 1.2 (1)"},
+       {"botId": 15, "name": "legacy.Droid 1.2"}
      ],
-     "arena": {
-       "width": 800,
-       "height": 600
-     }
+     "gameSetup": {"gameType": "classic", "arenaWidth": 800, "arenaHeight": 600}
    }
    ```
+
+   `botNames` is optional for compatibility with older servers. When present, it includes only the bot itself and its teammates. Duplicate names receive suffixes across the selected roster in `start-game.botAddresses` order; numeric bot IDs remain transport identifiers.
 
 3. **Game Started Event (to Observer)**
    ```json

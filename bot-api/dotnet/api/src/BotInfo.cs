@@ -110,6 +110,35 @@ public sealed class BotInfo
         string platform,
         string programmingLang,
         InitialPosition initialPosition)
+        : this(name, version, authors, description, homepage, countryCodes, gameTypes, platform, programmingLang,
+            initialPosition, null)
+    {
+    }
+
+    /// <summary>Initializes BotInfo with an optional full name used by team APIs.</summary>
+    /// <param name="name">The display name of the bot.</param>
+    /// <param name="version">The version of the bot.</param>
+    /// <param name="authors">The author(s) of the bot.</param>
+    /// <param name="description">A short description of the bot.</param>
+    /// <param name="homepage">The URL to the bot's homepage.</param>
+    /// <param name="countryCodes">The country code(s) for the bot.</param>
+    /// <param name="gameTypes">The game types that this bot can handle.</param>
+    /// <param name="platform">The platform used for running the bot.</param>
+    /// <param name="programmingLang">The programming language used for the bot.</param>
+    /// <param name="initialPosition">The initial position used for debugging.</param>
+    /// <param name="teamMemberName">The optional full team-member name, without a display-name length limit.</param>
+    public BotInfo(
+        string name,
+        string version,
+        IList<string> authors,
+        string description,
+        string homepage,
+        IList<string> countryCodes,
+        ISet<string> gameTypes,
+        string platform,
+        string programmingLang,
+        InitialPosition initialPosition,
+        string teamMemberName)
     {
         Name = name;
         Version = version;
@@ -121,6 +150,7 @@ public sealed class BotInfo
         Platform = platform;
         ProgrammingLang = programmingLang;
         InitialPosition = initialPosition;
+        TeamMemberName = teamMemberName;
     }
 
     /// <summary>
@@ -364,6 +394,10 @@ public sealed class BotInfo
     /// <value>The initial starting position used for debugging only.</value>
     public InitialPosition InitialPosition { get; }
 
+    /// <summary>The optional full name used to identify this bot in team APIs.</summary>
+    /// <remarks>This value is not limited by the display-name length. If absent, the server uses the display name.</remarks>
+    public string TeamMemberName { get; }
+
     /// <summary>
     /// Reads the bot info from a file at the specified base path.
     /// The file is assumed to be in JSON format.
@@ -444,7 +478,8 @@ public sealed class BotInfo
             configuration.GetSection("gameTypes").Get<string[]>()?.ToHashSet() ?? new HashSet<string>(),
             configuration["platform"],
             configuration["programmingLang"],
-            InitialPosition.FromString(configuration["initialPosition"])
+            InitialPosition.FromString(configuration["initialPosition"]),
+            configuration["teamMemberName"]
         );
     }
 
@@ -483,6 +518,11 @@ public sealed class BotInfo
         /// <param name="name">The name of the bot.</param>
         /// <returns>This <see cref="BotInfo"/> instance provided for method chaining.</returns>
         IBuilder SetName(string name);
+
+        /// <summary>Sets the optional full name used by team APIs.</summary>
+        /// <param name="teamMemberName">The full team-member name, without a display-name length limit.</param>
+        /// <returns>This builder instance.</returns>
+        IBuilder SetTeamMemberName(string teamMemberName);
 
         /// <summary>
         /// Sets the bot version (required).
@@ -674,11 +714,12 @@ public sealed class BotInfo
         private string _platform;
         private string _programmingLang;
         private InitialPosition _initialPosition;
+        private string _teamMemberName;
 
         public BotInfo Build()
         {
             return new BotInfo(_name, _version, _authors, _description, _homepage, _countryCodes, _gameTypes, _platform,
-                _programmingLang, _initialPosition);
+                _programmingLang, _initialPosition, _teamMemberName);
         }
 
         public IBuilder Copy(BotInfo botInfo)
@@ -693,12 +734,19 @@ public sealed class BotInfo
             _platform = botInfo.Platform;
             _programmingLang = botInfo.ProgrammingLang;
             _initialPosition = botInfo.InitialPosition;
+            _teamMemberName = botInfo.TeamMemberName;
             return this;
         }
 
         public IBuilder SetName(string newName)
         {
             _name = newName;
+            return this;
+        }
+
+        public IBuilder SetTeamMemberName(string newTeamMemberName)
+        {
+            _teamMemberName = newTeamMemberName;
             return this;
         }
 

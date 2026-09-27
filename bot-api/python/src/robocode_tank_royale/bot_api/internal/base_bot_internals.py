@@ -6,7 +6,7 @@ import math
 import os
 import sys
 import threading
-from typing import Any, Optional, Set, Sequence
+from typing import Any, Dict, Optional, Set, Sequence
 
 from ..base_bot_abc import BaseBotABC
 from ..bot_abc import BotABC
@@ -86,6 +86,7 @@ class BaseBotInternals:
         )
         self._my_id: Optional[int] = None
         self._teammate_ids: Set[int] = set()
+        self._bot_names: Optional[Dict[int, str]] = None
         self._game_setup: Optional[GameSetup] = None
         self._initial_position: Optional[InitialPosition] = None
         self._tick_event: Optional[TickEvent] = None
@@ -234,6 +235,19 @@ class BaseBotInternals:
     @teammate_ids.setter
     def teammate_ids(self, value: Set[int]):
         self._teammate_ids = value
+
+    @property
+    def bot_names(self) -> Dict[int, str]:
+        if self._my_id is None or self._bot_names is None:
+            raise BotException(GAME_NOT_RUNNING_MSG)
+        return self._bot_names
+
+    @bot_names.setter
+    def bot_names(self, value: Dict[int, str]):
+        self._bot_names = value
+
+    def get_bot_name(self, bot_id: int) -> Optional[str]:
+        return self.bot_names.get(bot_id)
 
     @property
     def game_setup(self) -> GameSetup:

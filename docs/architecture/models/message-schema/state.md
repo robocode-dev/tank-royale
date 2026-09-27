@@ -58,6 +58,9 @@ Battle outcomes, statistics
 ### 5. Metadata Objects
 Bot information, participant data
 
+### BotName
+`BotName` pairs a numeric `botId` with the name visible to that bot's team. `game-started-event-for-bot.botNames` contains the receiving bot and its teammates only; the server assigns duplicate ` (n)` suffixes in the ordered battle roster.
+
 ---
 
 ## State Object Hierarchy

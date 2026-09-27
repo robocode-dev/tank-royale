@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Tests.Test_utils;
+using BotName = Robocode.TankRoyale.Schema.BotName;
 
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 /// <summary>
-/// Cross-platform protocol conformance tests (TR-API-TCK-007 through TR-API-TCK-017).
+/// Cross-platform protocol conformance tests, including TR-API-TCK-023 and TR-API-TCK-024.
 ///
 /// <para>These tests verify that the .NET Bot API correctly handles protocol messages
 /// as defined in the Tank Royale cross-platform TCK.</para>
@@ -19,6 +21,74 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 [Category("TCK")]
 public class ProtocolConformanceTest : AbstractBotTest
 {
+    [Test]
+    [Category("PRO-012")]
+    [Property("ID", "TR-API-TCK-023")]
+    [Property("Test-type", "Integration")]
+    [Property("Direction", "Positive")]
+    public void Tck023_BotNameLookupReturnsOwnAndTeammateNames()
+    {
+        Server.GameStartedTeammateIds = new List<int> { 2 };
+        Server.GameStartedBotNames = new List<BotName>
+        {
+            new() { BotId = 1, Name = "legacy.TeamBot 1.2 (1)" },
+            new() { BotId = 2, Name = "legacy.TeamBot 1.2 (2)" }
+        };
+        var bot = new TckBot(Server.ServerUrl);
+
+        StartAsync(bot);
+        Assert.That(Server.AwaitBotReadyMessage(CiWaitMs), Is.True);
+
+        Assert.That(bot.GetBotName(1), Is.EqualTo("legacy.TeamBot 1.2 (1)"));
+        Assert.That(bot.GetBotName(2), Is.EqualTo("legacy.TeamBot 1.2 (2)"));
+    }
+
+    [Test]
+    [Category("PRO-012a")]
+    [Property("ID", "TR-API-TCK-023")]
+    [Property("Test-type", "Integration")]
+    [Property("Direction", "Negative")]
+    public void Tck023_BotNameLookupThrowsBeforeStartAndReturnsNullForUnmappedIds()
+    {
+        var bot = new TckBot(Server.ServerUrl);
+        Assert.That(() => bot.GetBotName(1), Throws.TypeOf<BotException>());
+
+        StartAsync(bot);
+        Assert.That(Server.AwaitBotReadyMessage(CiWaitMs), Is.True);
+
+        Assert.That(bot.GetBotName(2), Is.Null);
+        Assert.That(bot.GetBotName(99), Is.Null);
+    }
+
+    [Test]
+    [Category("PRO-011")]
+    [Property("ID", "TR-API-TCK-024")]
+    [Property("Test-type", "Integration")]
+    [Property("Direction", "Positive")]
+    public void Tck024_BotHandshakePreservesLongTeamMemberName()
+    {
+        const string teamMemberName = "legacy.package.TeamRobotNameThatExceedsThirtyCharacters";
+        var info = BotInfo.Builder().SetName("TCKBot").SetVersion("1.0").AddAuthor("Author")
+            .SetTeamMemberName(teamMemberName).Build();
+        StartAsync(new TckBot(Server.ServerUrl, info));
+        Assert.That(Server.AwaitBotHandshake(CiWaitMs), Is.True);
+
+        Assert.That(Server.Handshake.TeamMemberName, Is.EqualTo(teamMemberName));
+    }
+
+    [Test]
+    [Category("PRO-011a")]
+    [Property("ID", "TR-API-TCK-024")]
+    [Property("Test-type", "Integration")]
+    [Property("Direction", "Negative")]
+    public void Tck024_BotHandshakeOmitsUnsetTeamMemberName()
+    {
+        StartAsync(new TckBot(Server.ServerUrl));
+        Assert.That(Server.AwaitBotHandshake(CiWaitMs), Is.True);
+
+        Assert.That(Server.Handshake.TeamMemberName, Is.Null);
+    }
+
     // -----------------------------------------------------------------------
     // TCK-007: BotHandshake contains correct sessionId, name, version, authors, isDroid
     // -----------------------------------------------------------------------
@@ -347,6 +417,7 @@ public class ProtocolConformanceTest : AbstractBotTest
         public Action<BulletHitBotEvent> OnBulletHitAction { get; set; }
 
         public TckBot(Uri serverUrl) : base(BotInfo, serverUrl) { }
+        public TckBot(Uri serverUrl, BotInfo botInfo) : base(botInfo, serverUrl) { }
 
         public override void OnRoundStarted(RoundStartedEvent botEvent) => OnRoundStartedAction?.Invoke(botEvent);
         public override void OnRoundEnded(RoundEndedEvent botEvent) => OnRoundEndedAction?.Invoke(botEvent);

@@ -73,6 +73,8 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | TR-API-TCK-020 | An unexpected error from run() still drains final-turn events | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-TCK-021 | onWonRound fires once per won round, not once per delivery path | 2 | ❌ | ❌ | ❌ | ✅ |
 | TR-API-TCK-022 | Team message batches preserve order, reject empty/null items, and enforce the 128-item limit | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-023 | Bot name lookup returns own and teammate names, and null for unmapped IDs | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-024 | BotHandshake preserves optional full teamMemberName and omits it when unset | 2 | ✅ | ✅ | ✅ | ✅ |
 
 ## EVT — Events
 
@@ -140,13 +142,13 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 |----------|-----------|------|----|--------|------------|
 | VAL | 5 | 5 | 5 | 5 | 5 |
 | CMD | 3 | 3 | 3 | 3 | 3 |
-| TCK | 19 | 18 | 18 | 18 | 19 |
+| TCK | 21 | 20 | 20 | 20 | 21 |
 | EVT | 9 | 9 | 9 | 9 | 9 |
 | MDL | 4 | 4 | 4 | 4 | 4 |
 | BOT | 11 | 11 | 11 | 11 | 11 |
 | UTL | 3 | 3 | 3 | 3 | 3 |
 | GFX | 4 | 4 | 4 | 4 | 4 |
-| **Total** | **58** | **57** | **57** | **57** | **58** |
+| **Total** | **60** | **59** | **59** | **59** | **60** |
 
 ---
 

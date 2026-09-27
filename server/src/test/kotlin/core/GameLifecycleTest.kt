@@ -88,7 +88,7 @@ class GameLifecycleTest : FunSpec({
         val bot2 = mockk<WebSocket>()
         val botAddresses = listOf(mockk<BotAddress>(), mockk<BotAddress>())
 
-        every { connectionHandler.mapToBotSockets(any()) } returns setOf(bot1, bot2)
+        every { connectionHandler.mapToBotSockets(any()) } returns listOf(bot1, bot2)
         every { connectionHandler.getBotHandshakes() } returns mapOf(
             bot1 to createBotHandshake("Bot1"),
             bot2 to createBotHandshake("Bot2")
@@ -138,7 +138,7 @@ class GameLifecycleTest : FunSpec({
             teammate to createBotHandshake("Teammate").also { it.teamId = 1 },
             enemy to createBotHandshake("Enemy"),
         )
-        every { connectionHandler.mapToBotSockets(any()) } returns setOf(sender, teammate, enemy)
+        every { connectionHandler.mapToBotSockets(any()) } returns listOf(sender, teammate, enemy)
         every { connectionHandler.getBotHandshakes() } answers { handshakes.toMap() }
 
         gameServer.handleStartGame(createValidGameSetup(), List(3) { mockk<BotAddress>() })
@@ -190,7 +190,7 @@ class GameLifecycleTest : FunSpec({
         val lifecycleManager = GameLifecycleManager()
         val gameServer = createGameServer(connectionHandler, participantRegistry, lifecycleManager)
 
-        every { connectionHandler.mapToBotSockets(any()) } returns emptySet()
+        every { connectionHandler.mapToBotSockets(any()) } returns emptyList()
 
         val gameSetup = createValidGameSetup()
         gameServer.handleStartGame(gameSetup, emptyList())
@@ -208,7 +208,7 @@ class GameLifecycleTest : FunSpec({
         val bot2 = mockk<WebSocket>()
         val botAddresses = listOf(mockk<BotAddress>(), mockk<BotAddress>())
 
-        every { connectionHandler.mapToBotSockets(any()) } returns setOf(bot1, bot2)
+        every { connectionHandler.mapToBotSockets(any()) } returns listOf(bot1, bot2)
         every { connectionHandler.getBotHandshakes() } returns mapOf(
             bot1 to createBotHandshake("Bot1").apply { sessionId = "session-bot1" },
             bot2 to createBotHandshake("Bot2").apply { sessionId = "session-bot2" }

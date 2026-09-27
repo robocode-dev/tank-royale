@@ -94,4 +94,58 @@ Feature: protocol — WebSocket protocol
     Test-type: Unit
     When a client sends a text message larger than 1,048,576 UTF-8 bytes
     Then the server SHALL close the connection with a message-too-big status before JSON parsing
+
+  # Requirement: Team Bot Identity
+  # The server SHALL provide team bots with their own and teammate names without exposing opponent names.
+
+  @PRO-010
+  Scenario: Server assigns battle names to a bot and its teammates
+    Test-type: Integration
+    Given a start-game request contains bot addresses in battle order
+    And participants advertise a name and an optional version
+    When the server sends `game-started-event-for-bot`
+    Then `botNames` SHALL contain the bot's own id and every teammate id
+    And each name SHALL combine the advertised `teamMemberName`, or the display name when `teamMemberName` is absent or blank, with its optional version
+    And repeated full names SHALL receive ` (n)` suffixes numbered from 1 in battle order across the full roster
+
+  @PRO-010a
+  Scenario: Server hides opponent names from bot events
+    Test-type: Integration
+    Given a participant is not the bot itself or one of its teammates
+    When the server sends `game-started-event-for-bot`
+    Then `botNames` SHALL NOT contain that participant's id
+
+  # Requirement: Team Member Identity Metadata
+  # Each official Bot API SHALL send the optional unbounded teamMemberName unchanged in bot-handshake.
+
+  @PRO-011
+  Scenario: Bot API sends the configured team member name
+    Test-type: Integration
+    Given BotInfo has a `teamMemberName` longer than 30 characters
+    When the Bot API sends `bot-handshake`
+    Then `teamMemberName` SHALL preserve the configured value exactly
+
+  @PRO-011a
+  Scenario: Bot API omits an unset team member name
+    Test-type: Integration
+    Given BotInfo has no `teamMemberName`
+    When the Bot API sends `bot-handshake`
+    Then `teamMemberName` SHALL be omitted
+
+  # Requirement: Bot Name Lookup
+  # Every official Bot API SHALL expose the same lookup behavior for the name map supplied at game start.
+
+  @PRO-012
+  Scenario: Bot API resolves its own and teammate names
+    Test-type: Integration
+    Given `game-started-event-for-bot` contains `botNames` entries for the bot and its teammates
+    When a bot calls `getBotName(botId)` for one of those ids
+    Then Java, .NET, Python, and TypeScript APIs SHALL return the same corresponding name
+
+  @PRO-012a
+  Scenario: Bot API returns null for an id without a name
+    Test-type: Integration
+    Given `game-started-event-for-bot` has been received
+    When a bot calls `getBotName(botId)` for an unknown id or an opponent id omitted from the map
+    Then Java, .NET, Python, and TypeScript APIs SHALL return null or the language-equivalent `None`
 ```

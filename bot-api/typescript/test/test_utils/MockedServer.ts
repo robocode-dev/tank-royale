@@ -10,6 +10,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { MessageType } from "../../src/protocol/MessageType.js";
 import type {
   ServerHandshake,
+  BotName,
   GameStartedEventForBot,
   RoundStartedEvent,
   TickEventForBot,
@@ -91,6 +92,8 @@ export const BOT_GUN_HEAT = 7.6;
 export class MockedServer {
   private readonly port: number;
   readonly serverUrl: string;
+  private gameStartedTeammateIds: number[] = [];
+  private gameStartedBotNames: BotName[] | undefined;
 
   private wss: WebSocketServer | null = null;
   private conn: WebSocket | null = null;
@@ -367,7 +370,8 @@ export class MockedServer {
     const msg: GameStartedEventForBot = {
       type: MessageType.GameStartedEventForBot,
       myId: MY_ID,
-      teammateIds: [],
+      teammateIds: this.gameStartedTeammateIds,
+      botNames: this.gameStartedBotNames,
       gameSetup: {
         gameType: GAME_TYPE,
         arenaWidth: ARENA_WIDTH,
@@ -380,6 +384,11 @@ export class MockedServer {
       },
     };
     this.send(msg);
+  }
+
+  setGameStartedNames(teammateIds: number[], botNames: BotName[]): void {
+    this.gameStartedTeammateIds = [...teammateIds];
+    this.gameStartedBotNames = [...botNames];
   }
 
   private sendRoundStarted(): void {

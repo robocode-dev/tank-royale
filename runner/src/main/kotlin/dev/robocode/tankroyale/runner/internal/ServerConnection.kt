@@ -210,7 +210,7 @@ internal class ServerConnection(
      * @param gameSetup the game configuration
      * @param botAddresses addresses of bots participating in the battle
      */
-    fun startBattle(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
+    fun startBattle(gameSetup: GameSetup, botAddresses: List<BotAddress>) {
         requireConnected()
         val msg = json.encodeToString(
             PolymorphicSerializer(Message::class),

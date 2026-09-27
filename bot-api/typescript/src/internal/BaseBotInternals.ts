@@ -87,6 +87,7 @@ export class BaseBotInternals {
   private tickEvent: TickEvent | null = null;
   private tickStartTime = 0;
   private teammateIds: Set<number> = new Set();
+  private botNames: Map<number, string> | null = null;
 
   // Bot intent (mutable, sent each turn)
   private intent: SchemaBotIntent = { type: MessageType.BotIntent };
@@ -532,6 +533,7 @@ export class BaseBotInternals {
     this.myId = msg.myId;
     this.gameSetup = GameSetupMapper.map(msg.gameSetup);
     this.teammateIds = new Set(msg.teammateIds ?? []);
+    this.botNames = new Map((msg.botNames ?? []).map(({ botId, name }) => [botId, name]));
     this.initialPosition = new InitialPosition(msg.startX ?? null, msg.startY ?? null, msg.startDirection ?? null);
     const e = new GameStartedEvent(msg.myId, this.initialPosition, this.gameSetup);
     this.botEventHandlers.onGameStarted.publish(e);
@@ -1141,6 +1143,10 @@ export class BaseBotInternals {
   // ---------------------------------------------------------------------------
 
   getTeammateIds(): ReadonlySet<number> { return this.teammateIds; }
+  getBotName(botId: number): string | null {
+    if (this.botNames === null) throw new BotException(GAME_NOT_RUNNING_MSG);
+    return this.botNames.get(botId) ?? null;
+  }
   isTeammate(botId: number): boolean { return this.teammateIds.has(botId); }
 
   broadcastTeamMessage(message: unknown): void {

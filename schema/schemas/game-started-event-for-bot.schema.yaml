@@ -21,6 +21,11 @@ properties:
     type: array
     items:
       type: integer
+  botNames:
+    description: The names of this bot and its teammates in the current battle. Other participants are not included.
+    type: array
+    items:
+      $ref: bot-name.schema.yaml
   gameSetup:
     description: Game setup
     $ref: game-setup.schema.yaml

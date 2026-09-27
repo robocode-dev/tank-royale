@@ -73,7 +73,7 @@ class LiveBattlePlayer : BattlePlayer {
         connect()
     }
 
-    fun startGame(botAddresses: Set<BotAddress>, debugMode: Boolean = false) {
+    fun startGame(botAddresses: List<BotAddress>, debugMode: Boolean = false) {
         savedStdOutput.clear()
         savedStdError.clear()
 

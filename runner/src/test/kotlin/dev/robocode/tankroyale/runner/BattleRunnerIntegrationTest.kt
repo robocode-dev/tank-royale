@@ -1376,7 +1376,7 @@ class BattleRunnerIntegrationTest {
             val handle = runner.startBattleAsync(setup, botEntries)
             val conn = runner.connection!!
             val store = runner.intentDiagnostics!!
-            val botAddresses = conn.latestBotList.get().map { it.botAddress }.toSet()
+            val botAddresses = conn.latestBotList.get().map { it.botAddress }.toList()
 
             val game1TickLatch = CountDownLatch(1)
             val policyActiveLatch = CountDownLatch(1)

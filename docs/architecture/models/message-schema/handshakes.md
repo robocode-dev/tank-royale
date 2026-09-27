@@ -101,6 +101,7 @@ classDiagram
         +string type = "bot-handshake"
         +string sessionId
         +string name
+        +string teamMemberName
         +string version
         +string[] authors
         +string description
@@ -241,6 +242,7 @@ classDiagram
   "type": "bot-handshake",
   "sessionId": "550e8400-e29b-41d4-a716-446655440000",
   "name": "Killer Bee",
+  "teamMemberName": "legacy.package.KillerBee",
   "version": "2.1.0",
   "authors": ["Jane Doe", "John Smith"],
   "description": "Aggressive close-combat bot with radar lock",
@@ -262,6 +264,7 @@ classDiagram
 | `type` | string | ✅ | - | Always `"bot-handshake"` |
 | `sessionId` | string | ✅ | - | Must match sessionId from server-handshake |
 | `name` | string | ✅ | 30 | Bot name (displayed in UI) |
+| `teamMemberName` | string | ❌ | - | Optional full name used for team identity; has no display-name length limit |
 | `version` | string | ✅ | 20 | Bot version (semver recommended) |
 | `authors` | string[] | ✅ | 20 items, 50 chars each | Author names/emails |
 | `description` | string | ❌ | 250 | Short bot description |

@@ -58,7 +58,7 @@ class GameServerConnectionListener(private val gameServerProvider: () -> GameSer
         log.info("Controller left: {}", getDisplayName(handshake.name, handshake.version))
     }
 
-    override fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>, debugMode: Boolean) {
+    override fun onStartGame(gameSetup: GameSetup, botAddresses: List<BotAddress>, debugMode: Boolean) {
         log.debug("Game is requested to start")
         gameServer.handleStartGame(gameSetup, botAddresses, debugMode)
     }

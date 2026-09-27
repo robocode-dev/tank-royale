@@ -1,5 +1,5 @@
 """
-Cross-platform protocol conformance tests (TR-API-TCK-007 through TR-API-TCK-017).
+Cross-platform protocol conformance tests, including TR-API-TCK-023 and TR-API-TCK-024.
 
 These tests verify that the Python Bot API correctly handles protocol messages
 as defined in the Tank Royale cross-platform TCK.
@@ -11,7 +11,7 @@ import threading
 import time
 import pytest
 
-from robocode_tank_royale.bot_api import Bot, BotInfo
+from robocode_tank_royale.bot_api import Bot, BotException, BotInfo
 from robocode_tank_royale.bot_api.events import (
     RoundStartedEvent,
     RoundEndedEvent,
@@ -24,6 +24,7 @@ from robocode_tank_royale.bot_api.events import (
     BulletHitBotEvent,
 )
 from robocode_tank_royale.schema import (
+    BotName as SchemaBotName,
     BotDeathEvent as SchemaBotDeathEvent,
     BulletHitBotEvent as SchemaBulletHitBotEvent,
     BulletState as SchemaBulletState,
@@ -34,6 +35,48 @@ from tests.bot_api.abstract_bot_test import AbstractBotTest
 
 @pytest.mark.TCK
 class TestProtocolConformance(AbstractBotTest):
+
+    @pytest.mark.PRO_012
+    def test_pro012_integration_positive_tck023_bot_name_lookup_returns_own_and_teammate_names(self):
+        self.server.set_game_started_names(
+            [2],
+            [
+                SchemaBotName(bot_id=1, name="legacy.TeamBot 1.2 (1)"),
+                SchemaBotName(bot_id=2, name="legacy.TeamBot 1.2 (2)"),
+            ],
+        )
+        bot = Bot(self.bot_info, self.server.server_url)
+        self.start_bot(bot)
+
+        self.assertEqual(bot.get_bot_name(1), "legacy.TeamBot 1.2 (1)")
+        self.assertEqual(bot.get_bot_name(2), "legacy.TeamBot 1.2 (2)")
+
+    @pytest.mark.PRO_012a
+    def test_pro012a_integration_negative_tck023_bot_name_lookup_throws_before_start_and_returns_none_for_unmapped_ids(self):
+        bot = Bot(self.bot_info, self.server.server_url)
+        with self.assertRaises(BotException):
+            bot.get_bot_name(1)
+
+        self.start_bot(bot)
+
+        self.assertIsNone(bot.get_bot_name(2))
+        self.assertIsNone(bot.get_bot_name(99))
+
+    @pytest.mark.PRO_011
+    def test_pro011_integration_positive_tck024_bot_handshake_preserves_long_team_member_name(self):
+        team_member_name = "legacy.package.TeamRobotNameThatExceedsThirtyCharacters"
+        info = BotInfo(name="TCKBot", version="1.0", authors=["Author"], team_member_name=team_member_name)
+        self.start_async(Bot(info, self.server.server_url))
+        self.assertTrue(self.server.await_bot_handshake(3000))
+
+        self.assertEqual(self.server.get_handshake().team_member_name, team_member_name)
+
+    @pytest.mark.PRO_011a
+    def test_pro011a_integration_negative_tck024_bot_handshake_omits_unset_team_member_name(self):
+        self.start_async(Bot(self.bot_info, self.server.server_url))
+        self.assertTrue(self.server.await_bot_handshake(3000))
+
+        self.assertIsNone(self.server.get_handshake().team_member_name)
 
     # -----------------------------------------------------------------------
     # TCK-007: BotHandshake contains correct sessionId, name, version, authors, isDroid

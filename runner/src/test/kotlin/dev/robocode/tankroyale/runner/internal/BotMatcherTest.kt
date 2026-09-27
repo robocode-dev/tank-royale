@@ -49,6 +49,29 @@ class BotMatcherTest {
         assertThat(result.matched).containsExactlyInAnyOrder(address("host-a"), address("host-b"))
     }
 
+    @Tag("PRO-010")
+    @Tag("Unit")
+    @Tag("Positive")
+    @Test
+    fun testPRO010_UnitPositive_keepsExpectedRosterOrder() {
+        val matcher = BotMatcher(
+            expectedIdentities = listOf(identity("BotA"), identity("BotB"), identity("BotA")),
+            preExistingBots = emptySet(),
+        )
+        val bots = linkedSetOf(
+            botInfo("BotA", "1.0", "host-a1"),
+            botInfo("BotB", "1.0", "host-b"),
+            botInfo("BotA", "1.0", "host-a2", port = 7655),
+        )
+
+        val result = matcher.update(bots)
+
+        assertThat(result.isComplete).isTrue()
+        assertThat(result.matched).containsExactly(
+            address("host-a1"), address("host-b"), address("host-a2", port = 7655)
+        )
+    }
+
     @Tag("Unit")
     @Test
     fun `same bot directory twice - needs 2 connections with same name and version`() {

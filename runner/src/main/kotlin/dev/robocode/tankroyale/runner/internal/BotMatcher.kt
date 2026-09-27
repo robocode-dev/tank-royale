@@ -15,7 +15,7 @@ import dev.robocode.tankroyale.runner.BotIdentity
  * @param preExistingBots bots that were already connected before this battle; excluded from matching
  */
 internal class BotMatcher(
-    expectedIdentities: List<BotIdentity>,
+    private val expectedIdentities: List<BotIdentity>,
     private val preExistingBots: Set<BotAddress>,
     private val expectedBotCount: Int = expectedIdentities.size,
 ) {
@@ -67,17 +67,23 @@ internal class BotMatcher(
             )
         }
 
-        val matched = mutableSetOf<BotAddress>()
+        val matched = linkedSetOf<BotAddress>()
         val connected = mutableMapOf<BotIdentity, Int>()
         val pending = mutableMapOf<BotIdentity, Int>()
 
+        // Match one connection per expected slot in the original roster order. Grouping only by
+        // identity would reorder mixed teams and change the server's duplicate-name suffix order.
+        val matchedByIdentity = mutableMapOf<BotIdentity, Int>()
+        for (identity in expectedIdentities) {
+            val bot = candidates.firstOrNull { candidate ->
+                candidate.botAddress !in matched && candidate.matches(identity)
+            } ?: continue
+            matched.add(bot.botAddress)
+            matchedByIdentity[identity] = (matchedByIdentity[identity] ?: 0) + 1
+        }
+
         for ((identity, needed) in expectedMultiset) {
-            // Find candidate bots matching this identity
-            val matchingBots = candidates.filter { bot ->
-                bot.name == identity.name && bot.version == identity.version && bot.authors.joinToString(", ") == identity.authors
-            }
-            val taken = minOf(matchingBots.size, needed)
-            matchingBots.take(taken).forEach { matched.add(it.botAddress) }
+            val taken = matchedByIdentity[identity] ?: 0
 
             if (taken > 0) connected[identity] = taken
             val stillNeeded = needed - taken
@@ -91,4 +97,7 @@ internal class BotMatcher(
             pending = pending,
         )
     }
+
+    private fun BotInfo.matches(identity: BotIdentity): Boolean =
+        name == identity.name && version == identity.version && authors.joinToString(", ") == identity.authors
 }

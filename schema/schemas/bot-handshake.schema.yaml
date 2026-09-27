@@ -12,6 +12,9 @@ properties:
     type: string
     minLength: 1
     maxLength: 30
+  teamMemberName:
+    description: Optional full name used to identify this bot in team APIs; defaults to name when absent
+    type: string
   version:
     description: Bot version, e.g. 1.0
     type: string

@@ -234,6 +234,12 @@ export interface IBaseBot {
   /** Returns the set of teammate bot IDs. */
   getTeammateIds(): ReadonlySet<number>;
 
+  /**
+   * Returns the server-provided name for this bot or a teammate, including version and any
+   * battle-wide duplicate suffix. Opponent and unknown IDs return null. Available after game start.
+   */
+  getBotName(botId: number): string | null;
+
   /** Returns whether the given bot ID is a teammate. */
   isTeammate(botId: number): boolean;
 

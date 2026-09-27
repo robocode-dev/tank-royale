@@ -697,6 +697,10 @@ class BaseBot(BaseBotABC):
         self._internals.get_current_tick_or_throw()
         return self._internals.is_teammate(bot_id)
 
+    def get_bot_name(self, bot_id: int) -> Optional[str]:
+        """Returns this bot's or a teammate's server-provided battle name."""
+        return self._internals.get_bot_name(bot_id)
+
     def broadcast_team_message(self, message: Any) -> None:
         """Broadcasts a compact JSON message to all teammates for delivery on the next turn.
 

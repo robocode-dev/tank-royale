@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.schema.BotName;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import test_utils.MockedServer;
@@ -10,9 +12,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Cross-platform protocol conformance tests (TR-API-TCK-007 through TR-API-TCK-017).
+ * Cross-platform protocol conformance tests, including TR-API-TCK-023 and TR-API-TCK-024.
  *
  * <p>These tests verify that the Java Bot API correctly handles protocol messages
  * as defined in the Tank Royale cross-platform TCK.
@@ -21,6 +24,76 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Tag("TCK")
 class ProtocolConformanceTest extends AbstractBotTest {
+
+    @Test
+    @Tag("PRO-012")
+    @Tag("Integration")
+    @Tag("Positive")
+    @DisplayName("TR-API-TCK-023: bot name lookup returns own and teammate names")
+    void testPRO012_IntegrationPositive_TR_API_TCK_023_botNameLookupReturnsOwnAndTeammateNames() {
+        server.setGameStartedNames(
+                java.util.List.of(2),
+                java.util.List.of(botName(1, "legacy.TeamBot 1.2 (1)"), botName(2, "legacy.TeamBot 1.2 (2)")));
+        var bot = new BaseBot(botInfo, server.getServerUri()) {};
+
+        startAsync(bot);
+        assertThat(server.awaitBotReadyMessage(3000)).isTrue();
+
+        assertThat(bot.getBotName(1)).isEqualTo("legacy.TeamBot 1.2 (1)");
+        assertThat(bot.getBotName(2)).isEqualTo("legacy.TeamBot 1.2 (2)");
+    }
+
+    @Test
+    @Tag("PRO-012a")
+    @Tag("Integration")
+    @Tag("Negative")
+    @DisplayName("TR-API-TCK-023: bot name lookup throws before start and returns null for unmapped ids")
+    void testPRO012a_IntegrationNegative_TR_API_TCK_023_botNameLookupThrowsBeforeStartAndReturnsNullForUnmappedIds() {
+        var bot = new BaseBot(botInfo, server.getServerUri()) {};
+        assertThatThrownBy(() -> bot.getBotName(1)).isInstanceOf(BotException.class);
+
+        startAsync(bot);
+        assertThat(server.awaitBotReadyMessage(3000)).isTrue();
+
+        assertThat(bot.getBotName(2)).isNull();
+        assertThat(bot.getBotName(99)).isNull();
+    }
+
+    @Test
+    @Tag("PRO-011")
+    @Tag("Integration")
+    @Tag("Positive")
+    @DisplayName("TR-API-TCK-024: bot handshake preserves a long team member name")
+    void testPRO011_IntegrationPositive_TR_API_TCK_024_botHandshakePreservesLongTeamMemberName() {
+        var teamMemberName = "legacy.package.TeamRobotNameThatExceedsThirtyCharacters";
+        var info = BotInfo.builder().setName("TCKBot").setVersion("1.0").addAuthor("Author")
+                .setTeamMemberName(teamMemberName).build();
+        var bot = new BaseBot(info, server.getServerUri()) {};
+
+        startAsync(bot);
+        assertThat(server.awaitBotHandshake(3000)).isTrue();
+
+        assertThat(server.getBotHandshake().getTeamMemberName()).isEqualTo(teamMemberName);
+    }
+
+    @Test
+    @Tag("PRO-011a")
+    @Tag("Integration")
+    @Tag("Negative")
+    @DisplayName("TR-API-TCK-024: bot handshake omits an unset team member name")
+    void testPRO011a_IntegrationNegative_TR_API_TCK_024_botHandshakeOmitsUnsetTeamMemberName() {
+        startAsync(new BaseBot(botInfo, server.getServerUri()) {});
+        assertThat(server.awaitBotHandshake(3000)).isTrue();
+
+        assertThat(server.getBotHandshake().getTeamMemberName()).isNull();
+    }
+
+    private static BotName botName(int id, String name) {
+        var botName = new BotName();
+        botName.setBotId(id);
+        botName.setName(name);
+        return botName;
+    }
 
     // -----------------------------------------------------------------------
     // TCK-007: BotHandshake contains correct sessionId, name, version, authors, isDroid

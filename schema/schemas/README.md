@@ -122,6 +122,7 @@ Reusable data structures embedded in events and commands.
 |--------|---------|
 | [bot-state.schema.yaml](bot-state.schema.yaml) | Bot position, energy, direction (no ID) |
 | [bot-state-with-id.schema.yaml](bot-state-with-id.schema.yaml) | Bot state including bot ID |
+| [bot-name.schema.yaml](bot-name.schema.yaml) | Bot ID and its team-visible name |
 | [bot-info.schema.yaml](bot-info.schema.yaml) | Bot metadata (name, version, authors) |
 | [bot-address.schema.yaml](bot-address.schema.yaml) | Bot network address |
 | [bullet-state.schema.yaml](bullet-state.schema.yaml) | Bullet position, direction, power |

@@ -108,7 +108,8 @@ classDiagram
     class GameStartedEventForBot {
         +GameSetup gameSetup
         +int myId
-        +Participant[] participants
+        +int[] teammateIds
+        +BotName[] botNames
     }
 
     Message <|-- Event
@@ -131,6 +132,8 @@ classDiagram
 
 **Purpose:** Notify bot that battle is starting, provide initial configuration
 
+The optional `botNames` list contains the receiving bot's name and its teammates' names; it excludes opponents. Servers assign duplicate suffixes using the ordered addresses in `start-game`. Older servers may omit the list.
+
 ```mermaid
 classDiagram
     class GameStartedEventForBot {
@@ -138,7 +141,8 @@ classDiagram
         +int turnNumber
         +GameSetup gameSetup
         +int myId
-        +Participant[] participants
+        +int[] teammateIds
+        +BotName[] botNames
     }
 ```
 
@@ -155,10 +159,10 @@ classDiagram
     "gunCoolingRate": 0.1
   },
   "myId": 1,
-  "participants": [
-    {"id": 1, "name": "MyBot", "version": "1.0"},
-    {"id": 2, "name": "Opponent1", "version": "2.0"},
-    {"id": 3, "name": "Opponent2", "version": "1.5"}
+  "teammateIds": [3],
+  "botNames": [
+    {"botId": 1, "name": "legacy.TeamRobot 1.2 (1)"},
+    {"botId": 3, "name": "legacy.Droid 1.2"}
   ]
 }
 ```

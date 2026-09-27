@@ -20,6 +20,9 @@ public class MockedServer
     /// </summary>
     public Uri ServerUrl { get; }
 
+    public ICollection<int> GameStartedTeammateIds { get; set; } = new List<int>();
+    public ICollection<BotName> GameStartedBotNames { get; set; } = new List<BotName>();
+
     private static int _lastPort = FindAvailablePort();
 
     /// <summary>
@@ -581,12 +584,14 @@ public class MockedServer
         Send(_conn, roundEnded);
     }
 
-    private static void SendGameStartedForBot(IWebSocketConnection conn)
+    private void SendGameStartedForBot(IWebSocketConnection conn)
     {
         var gameStarted = new GameStartedEventForBot
         {
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.GameStartedEventForBot),
-            MyId = MyId
+            MyId = MyId,
+            TeammateIds = new List<int>(GameStartedTeammateIds),
+            BotNames = new List<BotName>(GameStartedBotNames)
         };
         var gameSetup = new Schema.GameSetup
         {
