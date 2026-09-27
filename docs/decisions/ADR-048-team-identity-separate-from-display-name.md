@@ -2,10 +2,10 @@
 id: ADR-048
 type: decision
 author: agent
-status: inferred
+status: verified
 links: [CAP-006]
 title: Keep full team identity separate from the display name
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-09-27, Codex conversation)
 ---
 
 # ADR-048 — Keep full team identity separate from the display name
