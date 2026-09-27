@@ -52,11 +52,18 @@ import java.util.logging.Logger
  */
 class BattleRunner private constructor(
     val config: Config,
+    private val turnTimingDiagnosticsEnabled: Boolean = false,
+    private val turnTimingDiagnosticsTps: Int = 30,
 ) : AutoCloseable {
 
     private val logger = Logger.getLogger(BattleRunner::class.java.name)
 
-    internal val serverManager = ServerManager(config.serverMode, config.captureServerOutput)
+    internal val serverManager = ServerManager(
+        config.serverMode,
+        config.captureServerOutput,
+        turnTimingDiagnosticsEnabled,
+        turnTimingDiagnosticsTps,
+    )
     internal var connection: ServerConnection? = null
     internal var booterManager: BooterManager? = null
     internal var intentProxy: IntentDiagnosticsProxy? = null
@@ -122,6 +129,9 @@ class BattleRunner private constructor(
             "A battle is already in progress"
         }
         check(!closed.get()) { "BattleRunner has been closed" }
+        check(!turnTimingDiagnosticsEnabled || config.serverMode is ServerMode.Embedded) {
+            "Turn timing diagnostics require an embedded server"
+        }
 
         var handle: BattleHandle? = null
 
@@ -164,7 +174,12 @@ class BattleRunner private constructor(
             // 2. Boot bots
             val botUrl = if (config.intentDiagnosticsEnabled) intentProxy!!.proxyUrl else serverManager.serverUrl
             logger.info("Booting bots...")
-            booterManager = BooterManager(botUrl, serverManager.botSecret, config.captureServerOutput)
+            booterManager = BooterManager(
+                botUrl,
+                serverManager.botSecret,
+                config.captureServerOutput,
+                turnTimingDiagnosticsEnabled,
+            )
             booterManager!!.boot(bots.map { it.path })
 
             // Wait for bots to connect (detected via BotListUpdate)
@@ -415,6 +430,8 @@ class BattleRunner private constructor(
     class Builder {
         private var serverMode: ServerMode = ServerMode.Embedded()
         private var intentDiagnosticsEnabled: Boolean = false
+        private var turnTimingDiagnosticsEnabled: Boolean = false
+        private var turnTimingDiagnosticsTps: Int = 30
         private var recordingPath: Path? = null
         private var captureServerOutput: Boolean = true
         private var botConnectTimeoutMs: Long = 30_000L
@@ -448,6 +465,17 @@ class BattleRunner private constructor(
          */
         fun enableIntentDiagnostics(): Builder = apply {
             intentDiagnosticsEnabled = true
+        }
+
+        /**
+         * Enables timing traces for server tick dispatch, intent arrival, and skipped-turn
+         * detection and delivery. Sets the embedded server to [tps] and passes a timing flag to
+         * launched bots. Requires an embedded server and is disabled by default.
+         */
+        fun enableTurnTimingDiagnostics(tps: Int = 30): Builder = apply {
+            require(tps > 0) { "Diagnostic TPS must be positive" }
+            turnTimingDiagnosticsEnabled = true
+            turnTimingDiagnosticsTps = tps
         }
 
         /**
@@ -506,6 +534,8 @@ class BattleRunner private constructor(
                 botConnectTimeoutMs = botConnectTimeoutMs,
                 requiredBehaviorVersion = requiredBehaviorVersion,
             ),
+            turnTimingDiagnosticsEnabled = turnTimingDiagnosticsEnabled,
+            turnTimingDiagnosticsTps = turnTimingDiagnosticsTps,
         )
     }
 

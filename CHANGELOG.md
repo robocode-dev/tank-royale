@@ -12,6 +12,7 @@
 
 ### 🐞 Bug Fixes
 
+- Server: Fixed a long-standing turn-scheduling race that could cause turns to be skipped when bots responded while the next-turn timer was being re-armed, and corrected pacing so server processing time and late wake-ups do not compound.
 - Build: R8 shrink tasks now track their intermediate jars and version input, so rebuilt runner distributions embed the matching server and booter versions.
 
 ## [1.3.1] - 2026-09-13 - Server jar startup fix
