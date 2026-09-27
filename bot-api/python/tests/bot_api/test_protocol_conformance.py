@@ -77,6 +77,7 @@ class TestProtocolConformance(AbstractBotTest):
         self.assertTrue(self.server.await_bot_handshake(3000))
 
         self.assertIsNone(self.server.get_handshake().team_member_name)
+        self.assertNotIn("teamMemberName", json.loads(self.server.get_handshake_json()))
 
     # -----------------------------------------------------------------------
     # TCK-007: BotHandshake contains correct sessionId, name, version, authors, isDroid

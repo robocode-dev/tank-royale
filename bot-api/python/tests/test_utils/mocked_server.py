@@ -119,6 +119,7 @@ class MockedServer:
         # state captured
         # These are accessed from multiple threads and must be protected by _lock
         self._handshake = None
+        self._handshake_json = None
         self._bot_intent = None
         self._game_started_teammate_ids: Optional[List[int]] = None
         self._game_started_bot_names: Optional[List[BotName]] = None
@@ -478,6 +479,11 @@ class MockedServer:
         with self._lock:
             return self._handshake
 
+    def get_handshake_json(self):
+        """Get the raw captured bot handshake JSON for protocol assertions."""
+        with self._lock:
+            return self._handshake_json
+
     def set_speed_increment(self, inc: float) -> None:
         with self._lock:
             self._speed_increment = inc
@@ -640,6 +646,7 @@ class MockedServer:
                     if msg_type == "BotHandshake":
                         with self._lock:
                             self._handshake = message
+                            self._handshake_json = msg
                         self._bot_handshake_event.set()
                         await self._send_game_started(websocket)
                         self._game_started_event.set()

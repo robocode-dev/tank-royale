@@ -85,6 +85,7 @@ describe("Unit: TR-API-TCK: Protocol Conformance", () => {
       await server.awaitBotHandshake(5000);
 
       expect(server.getBotHandshake()?.teamMemberName).toBeUndefined();
+      expect(JSON.parse(server.getBotHandshakeJson()!)).not.toHaveProperty("teamMemberName");
     });
   });
 

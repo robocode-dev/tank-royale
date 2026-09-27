@@ -407,6 +407,7 @@ public class MockedServer
     }
 
     public BotHandshake Handshake { get; private set; }
+    public string HandshakeJson { get; private set; }
 
 
     private void OnOpen(IWebSocketConnection conn)
@@ -439,6 +440,7 @@ public class MockedServer
         switch (msgType)
         {
             case MessageType.BotHandshake:
+                HandshakeJson = messageJson;
                 Handshake = JsonConverter.FromJson<BotHandshake>(messageJson);
                 _botHandshakeEvent.Set();
 

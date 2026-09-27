@@ -90,6 +90,7 @@ public final class MockedServer {
     private CountDownLatch tickHoldLatch = new CountDownLatch(1);
 
     private volatile BotHandshake botHandshake;
+    private volatile String botHandshakeJson;
     private volatile BotIntent botIntent;
     private volatile List<Integer> gameStartedTeammateIds = List.of();
     private volatile List<BotName> gameStartedBotNames = List.of();
@@ -408,6 +409,10 @@ public final class MockedServer {
 
     public BotHandshake getBotHandshake() {
         return botHandshake;
+    }
+
+    public String getBotHandshakeJson() {
+        return botHandshakeJson;
     }
 
     public BotIntent getBotIntent() {
@@ -735,6 +740,7 @@ public final class MockedServer {
         private void handleBotHandshake(WebSocket conn, String text) {
             System.out.println("BOT_HANDSHAKE");
 
+            botHandshakeJson = text;
             botHandshake = JsonConverter.fromJson(text, BotHandshake.class);
             botHandshakeLatch.countDown();
 

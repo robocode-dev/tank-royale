@@ -141,6 +141,7 @@ export class MockedServer {
 
   // Captured state
   private botHandshakeData: BotHandshake | null = null;
+  private botHandshakeJson: string | null = null;
   private botIntentData: BotIntent | null = null;
 
   constructor() {
@@ -169,6 +170,7 @@ export class MockedServer {
 
         switch (msg.type as MessageType) {
           case MessageType.BotHandshake:
+            this.botHandshakeJson = json;
             this.botHandshakeData = msg as unknown as BotHandshake;
             this.botHandshakeLatch.signal();
             this.sendGameStarted();
@@ -277,6 +279,7 @@ export class MockedServer {
   getEnergy(): number { return this.energy; }
   getGunHeat(): number { return this.gunHeat; }
   getBotHandshake(): BotHandshake | null { return this.botHandshakeData; }
+  getBotHandshakeJson(): string | null { return this.botHandshakeJson; }
   getBotIntent(): BotIntent | null { return this.botIntentData; }
 
   // ---------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
+import com.google.gson.JsonParser;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.schema.BotName;
 import org.junit.jupiter.api.DisplayName;
@@ -86,6 +87,8 @@ class ProtocolConformanceTest extends AbstractBotTest {
         assertThat(server.awaitBotHandshake(3000)).isTrue();
 
         assertThat(server.getBotHandshake().getTeamMemberName()).isNull();
+        assertThat(JsonParser.parseString(server.getBotHandshakeJson()).getAsJsonObject().has("teamMemberName"))
+                .isFalse();
     }
 
     private static BotName botName(int id, String name) {

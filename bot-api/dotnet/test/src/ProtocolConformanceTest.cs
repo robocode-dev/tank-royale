@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading;
 using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Events;
@@ -87,6 +88,8 @@ public class ProtocolConformanceTest : AbstractBotTest
         Assert.That(Server.AwaitBotHandshake(CiWaitMs), Is.True);
 
         Assert.That(Server.Handshake.TeamMemberName, Is.Null);
+        using var handshakeJson = JsonDocument.Parse(Server.HandshakeJson);
+        Assert.That(handshakeJson.RootElement.TryGetProperty("teamMemberName", out _), Is.False);
     }
 
     // -----------------------------------------------------------------------
