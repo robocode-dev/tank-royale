@@ -6,6 +6,7 @@ import { BotInfo } from "../src/BotInfo.js";
 import { BaseBotInternals } from "../src/internal/BaseBotInternals.js";
 import { MessageType } from "../src/protocol/MessageType.js";
 import { TickEvent } from "../src/events/TickEvent.js";
+import { BotException } from "../src/BotException.js";
 
 describe("Unit: TR-API-TCK: Protocol Conformance", () => {
   let server: MockedServer;
@@ -21,6 +22,71 @@ describe("Unit: TR-API-TCK: Protocol Conformance", () => {
 
   afterEach(async () => {
     await server.stop();
+  });
+
+  describe("PRO-012", () => {
+    it("Integration Positive: TR-API-TCK-023 bot name lookup returns own and teammate names", async () => {
+      server.setGameStartedNames(
+        [2],
+        [
+          { botId: 1, name: "legacy.TeamBot 1.2 (1)" },
+          { botId: 2, name: "legacy.TeamBot 1.2 (2)" },
+        ],
+      );
+      const bot = new BaseBot(info, server.serverUrl);
+      bot.start();
+
+      await server.awaitBotHandshake(5000);
+      server.sendGameStarted(1, ["classic"], [2]);
+      expect(await server.awaitBotReady(5000)).toBe(true);
+
+      expect(bot.getBotName(1)).toBe("legacy.TeamBot 1.2 (1)");
+      expect(bot.getBotName(2)).toBe("legacy.TeamBot 1.2 (2)");
+    });
+
+  });
+
+  describe("PRO-012a", () => {
+    it("Integration Negative: TR-API-TCK-023 bot name lookup throws before start and returns null for unmapped IDs", async () => {
+      const bot = new BaseBot(info, server.serverUrl);
+      expect(() => bot.getBotName(1)).toThrow(BotException);
+      bot.start();
+
+      await server.awaitBotHandshake(5000);
+      server.sendGameStarted();
+      expect(await server.awaitBotReady(5000)).toBe(true);
+
+      expect(bot.getBotName(2)).toBeNull();
+      expect(bot.getBotName(99)).toBeNull();
+    });
+  });
+
+  describe("PRO-011", () => {
+    it("Integration Positive: TR-API-TCK-024 bot handshake preserves a long team member name", async () => {
+      const teamMemberName = "legacy.package.TeamRobotNameThatExceedsThirtyCharacters";
+      const infoWithTeamName = new BotInfo(
+        "TCKBot", "1.0", ["Author"], null, null, [], ["classic"], null, null, null, teamMemberName,
+      );
+      const bot = new BaseBot(infoWithTeamName, server.serverUrl);
+      bot.start();
+
+      await server.awaitBotHandshake(5000);
+
+      expect(server.getBotHandshake()?.teamMemberName).toBe(teamMemberName);
+    });
+
+  });
+
+  describe("PRO-011a", () => {
+    it("Integration Negative: TR-API-TCK-024 bot handshake omits an unset team member name", async () => {
+      const bot = new BaseBot(info, server.serverUrl);
+      bot.start();
+
+      await server.awaitBotHandshake(5000);
+
+      expect(server.getBotHandshake()?.teamMemberName).toBeUndefined();
+      expect(JSON.parse(server.getBotHandshakeJson()!)).not.toHaveProperty("teamMemberName");
+    });
   });
 
   it("TR-API-TCK-004: Bot sees first tick state and sends initial intent", async () => {

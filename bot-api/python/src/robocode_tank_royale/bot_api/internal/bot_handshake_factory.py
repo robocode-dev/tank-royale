@@ -17,6 +17,7 @@ class BotHandshakeFactory:
             session_id=session_id,
             type=Message.Type.BOT_HANDSHAKE,  # type: ignore
             name=bot_info.name,
+            team_member_name=bot_info.team_member_name,
             version=bot_info.version,
             authors=list(bot_info.authors),
             description=bot_info.description,  # type: ignore

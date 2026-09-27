@@ -37,7 +37,10 @@ class MessageEncoder(json.JSONEncoder):
         if hasattr(o, "to_hex_color") and callable(o.to_hex_color):
             return o.to_hex_color()
         if hasattr(o, "__dict__"):
-            return {to_camel_case(k): v for k, v in o.__dict__.items() if not k.startswith("_")}
+            fields = {k: v for k, v in o.__dict__.items() if not k.startswith("_")}
+            if isinstance(o, schema.BotHandshake) and o.team_member_name is None:
+                fields.pop("team_member_name", None)
+            return {to_camel_case(k): v for k, v in fields.items()}
         return super().default(o)
 
 

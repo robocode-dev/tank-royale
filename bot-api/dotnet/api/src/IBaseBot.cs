@@ -708,6 +708,16 @@ public interface IBaseBot
     ICollection<int> TeammateIds { get; }
 
     /// <summary>
+    /// Gets the server-provided name for this bot or a teammate, including version and any
+    /// battle-wide duplicate suffix. Opponent and unknown bot ids return <see langword="null"/>.
+    /// This lookup is available after the game has started.
+    /// </summary>
+    /// <param name="botId">The id of the bot whose name is requested.</param>
+    /// <returns>The battle name, or <see langword="null"/> when the id is not this bot or a teammate.</returns>
+    /// <exception cref="BotException">The game has not started.</exception>
+    string GetBotName(int botId);
+
+    /// <summary>
     /// Checks if the provided bot id is a teammate or not.
     /// </summary>
     /// <example>

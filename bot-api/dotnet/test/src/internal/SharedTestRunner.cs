@@ -460,6 +460,7 @@ public class SharedTestRunner
         public void SetResume() {}
         public bool IsStopped => false;
         public ICollection<int> TeammateIds => new List<int>();
+        public string GetBotName(int botId) => null;
         public bool IsTeammate(int id) => false;
         public void BroadcastTeamMessage(object m) {}
         public void BroadcastTeamMessageBatch(System.Collections.IEnumerable messages) {}

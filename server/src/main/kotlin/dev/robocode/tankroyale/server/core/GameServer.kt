@@ -68,6 +68,12 @@ class GameServer(
     /** Tick lock for onNextTurn() */
     private val tickLock = Any()
 
+    /** Participant connection order from the controller's start-game request. */
+    private var participantOrder: List<WebSocket> = emptyList()
+
+    /** Server-assigned names for the current battle, keyed by the existing bot ids. */
+    private var botNamesById: Map<Int, String> = emptyMap()
+
     /** Map over bots that sent their intent this turn */
     private val botsThatSentIntent = ConcurrentHashMap.newKeySet<WebSocket>()
 
@@ -114,6 +120,17 @@ class GameServer(
         lifecycleManager.stopTimers()
 
         participantRegistry.prepareParticipantIds()
+        botNamesById = BotNameMapper.assignNames(
+            participantOrder.mapNotNull { conn ->
+                val botId = participantRegistry.participantIds[conn] ?: return@mapNotNull null
+                val handshake = connectionHandler.getBotHandshakes()[conn] ?: return@mapNotNull null
+                BotNameMapper.Identity(
+                    botId.value,
+                    handshake.teamMemberName?.takeIf { it.isNotBlank() } ?: handshake.name,
+                    handshake.version
+                )
+            }
+        )
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
@@ -172,7 +189,9 @@ class GameServer(
         GameStartedEventForBot().also { event ->
             event.type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
             event.myId = botId.value
-            event.teammateIds = getTeammateIds(botId, teamId).map { it.value }
+            val teammateIds = getTeammateIds(botId, teamId).map { it.value }
+            event.teammateIds = teammateIds
+            event.botNames = BotNameMapper.namesForBotAndTeammates(botId.value, teammateIds, botNamesById)
             event.gameSetup = gameSetup
 
             val initialPositions = requireNotNull(modelUpdater) { "modelUpdater is null" }.getBotInitialPositions()
@@ -751,12 +770,12 @@ class GameServer(
      * @param gameSetup the game setup configuration sent by the controller.
      * @param botAddresses the set of bot addresses that should participate.
      */
-    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>, debugMode: Boolean = false) {
+    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: List<BotAddress>, debugMode: Boolean = false) {
         this.gameSetup = GameSetupMapper.map(gameSetup)
         lifecycleManager.debugMode = debugMode
 
-        val sockets = connectionHandler.mapToBotSockets(botAddresses)
-        participantRegistry.setParticipants(sockets)
+        participantOrder = connectionHandler.mapToBotSockets(botAddresses)
+        participantRegistry.setParticipants(participantOrder)
         if (participantRegistry.participants.isNotEmpty()) {
             prepareGame()
         }

@@ -80,6 +80,7 @@ public final class BotInfo {
     private final String name;
     private final String version;
     private final List<String> authors;
+    private final String teamMemberName;
     // optional fields:
     private final String description;
     private final String homepage;
@@ -118,11 +119,43 @@ public final class BotInfo {
             final String platform,
             final String programmingLang,
             final InitialPosition initialPosition) {
+        this(name, version, authors, description, homepage, countryCodes, gameTypes, platform, programmingLang,
+                initialPosition, null);
+    }
+
+    /**
+     * Initializes a new instance of BotInfo with an optional full name used by team APIs.
+     *
+     * @param name            is the display name of the bot (required).
+     * @param version         is the version of the bot (required).
+     * @param authors         is the author(s) of the bot (required).
+     * @param description     is a short description of the bot (optional).
+     * @param homepage        is the link to a homepage for the bot (optional).
+     * @param countryCodes    is the country code(s) for the bot (optional).
+     * @param gameTypes       is the game types that this bot can handle (optional).
+     * @param platform        is the platform used for running the bot (optional).
+     * @param programmingLang is the programming language used for developing the bot (optional).
+     * @param initialPosition is the initial position with starting coordinate and angle (optional).
+     * @param teamMemberName  is the full team-member name, without a display-name length limit (optional).
+     */
+    public BotInfo(
+            final String name,
+            final String version,
+            final List<String> authors,
+            final String description,
+            final String homepage,
+            final List<String> countryCodes,
+            final Collection<String> gameTypes,
+            final String platform,
+            final String programmingLang,
+            final InitialPosition initialPosition,
+            final String teamMemberName) {
 
         // Required fields:
         this.name = processName(name);
         this.version = processVersion(version);
         this.authors = processAuthors(authors);
+        this.teamMemberName = teamMemberName;
         // Optional fields:
         this.description = processDescription(description);
         this.homepage = processHomepage(homepage);
@@ -161,6 +194,11 @@ public final class BotInfo {
      */
     public String getName() {
         return name;
+    }
+
+    /** Returns the optional full name used to identify this bot in team APIs. */
+    public String getTeamMemberName() {
+        return teamMemberName;
     }
 
     /**
@@ -365,7 +403,8 @@ public final class BotInfo {
                 data.gameTypes == null ? null : new HashSet<>(data.gameTypes),
                 data.platform,
                 data.programmingLang,
-                InitialPosition.fromString(data.initialPosition));
+                InitialPosition.fromString(data.initialPosition),
+                data.teamMemberName);
     }
 
     private static String processName(String name) {
@@ -522,6 +561,7 @@ public final class BotInfo {
         String platform;
         String programmingLang;
         String initialPosition;
+        String teamMemberName;
     }
 
     /**
@@ -557,6 +597,9 @@ public final class BotInfo {
          * @return this {@link IBuilder} instance provided for method chaining.
          */
         IBuilder setName(String name);
+
+        /** Sets the optional full team-member name without the display-name length limit. */
+        IBuilder setTeamMemberName(String teamMemberName);
 
         /**
          * Sets the bot version. (required)<br>
@@ -752,11 +795,12 @@ public final class BotInfo {
         private String platform;
         private String programmingLang;
         private InitialPosition initialPosition;
+        private String teamMemberName;
 
         @Override
         public BotInfo build() {
             return new BotInfo(name, version, authors, description, homepage, countryCodes, gameTypes, platform,
-                    programmingLang, initialPosition);
+                    programmingLang, initialPosition, teamMemberName);
         }
 
         @Override
@@ -771,12 +815,19 @@ public final class BotInfo {
             platform = botInfo.getPlatform();
             programmingLang = botInfo.getProgrammingLang();
             initialPosition = botInfo.getInitialPosition();
+            teamMemberName = botInfo.getTeamMemberName();
             return this;
         }
 
         @Override
         public IBuilder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        @Override
+        public IBuilder setTeamMemberName(String teamMemberName) {
+            this.teamMemberName = teamMemberName;
             return this;
         }
 

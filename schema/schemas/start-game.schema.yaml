@@ -8,7 +8,7 @@ properties:
     description: Game setup
     $ref: game-setup.schema.yaml
   botAddresses:
-    description: List of bot addresses
+    description: Ordered list of bot addresses. The order determines duplicate-name suffixes.
     type: array
     items:
       description: Bot address

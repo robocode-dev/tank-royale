@@ -1,3 +1,10 @@
+## [Unreleased]
+
+### ✨ Features
+
+- Bot API (Java, .NET, Python, TypeScript): Added optional `BotInfo.teamMemberName` metadata for full team-addressing names and `getBotName(botId)` lookup for the bot itself and teammates.
+- Protocol and Server: Added an optional `botNames` map to `game-started-event-for-bot`. The server uses selected roster order for duplicate suffixes and omits opponent names.
+
 ## [1.4.0] - 2026-09-23 - Batched team messages
 
 ### ✨ Features

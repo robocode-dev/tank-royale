@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.BotReady;
+import dev.robocode.tankroyale.schema.BotName;
 import dev.robocode.tankroyale.schema.GameEndedEventForBot;
 import dev.robocode.tankroyale.schema.GameStartedEventForBot;
 import dev.robocode.tankroyale.schema.Message;
@@ -25,6 +26,8 @@ import dev.robocode.tankroyale.schema.ServerHandshake;
 import java.net.URI;
 import java.net.http.WebSocket;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
@@ -198,6 +201,14 @@ final class WebSocketHandler implements WebSocket.Listener {
         Set<Integer> teammateIds = gameStartedEventForBot.getTeammateIds() == null ?
                 Set.of() : new HashSet<>(gameStartedEventForBot.getTeammateIds());
         baseBotInternals.setTeammateIds(teammateIds);
+
+        Map<Integer, String> botNames = new HashMap<>();
+        if (gameStartedEventForBot.getBotNames() != null) {
+            for (BotName botName : gameStartedEventForBot.getBotNames()) {
+                botNames.put(botName.getBotId(), botName.getName());
+            }
+        }
+        baseBotInternals.setBotNames(botNames);
 
         baseBotInternals.setGameSetup(GameSetupMapper.map(gameStartedEventForBot.getGameSetup()));
 

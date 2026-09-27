@@ -20,6 +20,9 @@ public class MockedServer
     /// </summary>
     public Uri ServerUrl { get; }
 
+    public ICollection<int> GameStartedTeammateIds { get; set; } = new List<int>();
+    public ICollection<BotName> GameStartedBotNames { get; set; } = new List<BotName>();
+
     private static int _lastPort = FindAvailablePort();
 
     /// <summary>
@@ -404,6 +407,7 @@ public class MockedServer
     }
 
     public BotHandshake Handshake { get; private set; }
+    public string HandshakeJson { get; private set; }
 
 
     private void OnOpen(IWebSocketConnection conn)
@@ -436,6 +440,7 @@ public class MockedServer
         switch (msgType)
         {
             case MessageType.BotHandshake:
+                HandshakeJson = messageJson;
                 Handshake = JsonConverter.FromJson<BotHandshake>(messageJson);
                 _botHandshakeEvent.Set();
 
@@ -581,12 +586,14 @@ public class MockedServer
         Send(_conn, roundEnded);
     }
 
-    private static void SendGameStartedForBot(IWebSocketConnection conn)
+    private void SendGameStartedForBot(IWebSocketConnection conn)
     {
         var gameStarted = new GameStartedEventForBot
         {
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.GameStartedEventForBot),
-            MyId = MyId
+            MyId = MyId,
+            TeammateIds = new List<int>(GameStartedTeammateIds),
+            BotNames = new List<BotName>(GameStartedBotNames)
         };
         var gameSetup = new Schema.GameSetup
         {

@@ -215,6 +215,7 @@ export interface BotHandshake extends Message {
   type: MessageType.BotHandshake;
   sessionId: string;
   name: string;
+  teamMemberName?: string | null;
   version: string;
   authors: string[];
   description?: string | null;
@@ -274,6 +275,12 @@ export interface TickEventForBot extends Message {
   events: TickEvent[];
 }
 
+/** BotName (1.7) */
+export interface BotName {
+  botId: number;
+  name: string;
+}
+
 /** GameStartedEventForBot (1.7) */
 export interface GameStartedEventForBot extends Message {
   type: MessageType.GameStartedEventForBot;
@@ -282,6 +289,7 @@ export interface GameStartedEventForBot extends Message {
   startY?: number | null;
   startDirection?: number | null;
   teammateIds?: number[] | null;
+  botNames?: BotName[] | null;
   gameSetup: GameSetup;
 }
 

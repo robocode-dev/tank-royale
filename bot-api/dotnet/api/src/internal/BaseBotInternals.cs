@@ -86,6 +86,7 @@ sealed class BaseBotInternals
     private RecordingTextWriter _recordingStdErr;
 
     private ICollection<int> _teammateIds;
+    private IDictionary<int, string> _botNames;
 
     private int _lastExecuteTurnNumber;
 
@@ -799,6 +800,13 @@ sealed class BaseBotInternals
 
     internal ICollection<int> TeammateIds => _teammateIds ?? throw new BotException(GameNotRunningMsg);
 
+    internal string GetBotName(int botId)
+    {
+        if (_botNames == null)
+            throw new BotException(GameNotRunningMsg);
+        return _botNames.TryGetValue(botId, out var name) ? name : null;
+    }
+
     internal bool IsTeammate(int botId) => TeammateIds.Contains(botId);
 
     internal void BroadcastTeamMessage(object message) => SendTeamMessage(null, message);
@@ -1047,6 +1055,8 @@ sealed class BaseBotInternals
 
         MyId = gameStartedEventForBot.MyId;
         _teammateIds = gameStartedEventForBot.TeammateIds;
+        _botNames = (gameStartedEventForBot.BotNames ?? new List<S.BotName>())
+            .ToDictionary(botName => botName.BotId, botName => botName.Name);
         _gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
 
         _initialPosition = new InitialPosition(

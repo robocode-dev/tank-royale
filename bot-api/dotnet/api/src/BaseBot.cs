@@ -379,6 +379,9 @@ public abstract class BaseBot : IBaseBot
     public ICollection<int> TeammateIds => BaseBotInternals.TeammateIds;
 
     /// <inheritdoc/>
+    public string GetBotName(int botId) => BaseBotInternals.GetBotName(botId);
+
+    /// <inheritdoc/>
     public bool IsTeammate(int botId) => BaseBotInternals.IsTeammate(botId);
 
     /// <inheritdoc/>

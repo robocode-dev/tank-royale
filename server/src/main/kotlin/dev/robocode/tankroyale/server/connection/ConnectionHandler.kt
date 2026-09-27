@@ -38,25 +38,13 @@ class ConnectionHandler(
 
     fun getBotHandshakes(): Map<WebSocket, BotHandshake> = clientHandler.getBotHandshakes()
 
-    fun mapToBotSockets(botAddresses: Collection<BotAddress>): Set<WebSocket> {
-        val botSockets = mutableSetOf<WebSocket>()
-        for (clientSocket in getBotHandshakes().keys) {
-            addBotSocketIfMatching(clientSocket, botAddresses, botSockets)
+    fun mapToBotSockets(botAddresses: List<BotAddress>): List<WebSocket> = botAddresses
+        .mapNotNull { botAddress ->
+            getBotHandshakes().keys.firstOrNull { clientSocket ->
+                clientSocket.remoteSocketAddress?.let { address -> isAddressMatching(address, botAddress) } == true
+            }
         }
-        return botSockets
-    }
-
-    private fun addBotSocketIfMatching(
-        clientSocket: WebSocket,
-        botAddresses: Collection<BotAddress>,
-        botSockets: MutableSet<WebSocket>
-    ) {
-        clientSocket.remoteSocketAddress?.let { address ->
-            botAddresses
-                .firstOrNull { isAddressMatching(address, it) }
-                ?.let { botSockets.add(clientSocket) }
-        }
-    }
+        .distinct()
 
     private fun isAddressMatching(address: InetSocketAddress, botAddress: BotAddress) =
         toIpAddress(address) == toIpAddress(botAddress) && botAddress.port == address.port

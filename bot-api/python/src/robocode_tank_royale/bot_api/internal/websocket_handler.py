@@ -221,6 +221,9 @@ class WebSocketHandler:
             self.base_bot_internals.teammate_ids = set(
                 id for id in game_started_event.teammate_ids if id is not None
             )
+        self.base_bot_internals.bot_names = {
+            bot_name.bot_id: bot_name.name for bot_name in (game_started_event.bot_names or [])
+        }
 
         self.base_bot_internals.game_setup = GameSetupMapper.map(
             game_started_event.game_setup

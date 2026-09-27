@@ -17,6 +17,7 @@ import java.net.http.WebSocket;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
@@ -56,6 +57,7 @@ public final class BaseBotInternals {
 
     private Integer myId;
     private Set<Integer> teammateIds;
+    private Map<Integer, String> botNames;
     private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
 
     private InitialPosition initialPosition;
@@ -758,6 +760,17 @@ public final class BaseBotInternals {
 
     void setTeammateIds(Set<Integer> teammateIds) {
         this.teammateIds = teammateIds;
+    }
+
+    public String getBotName(int botId) {
+        if (botNames == null) {
+            throw new BotException(GAME_NOT_RUNNING_MSG);
+        }
+        return botNames.get(botId);
+    }
+
+    void setBotNames(Map<Integer, String> botNames) {
+        this.botNames = Map.copyOf(botNames);
     }
 
     public boolean isTeammate(int botId) {

@@ -10,6 +10,7 @@ import websockets
 from robocode_tank_royale.bot_api.internal.json_util import to_json, from_json
 from robocode_tank_royale.schema import (
     Message,
+    BotName,
     ServerHandshake,
     GameStartedEventForBot,
     GameSetup,
@@ -118,7 +119,10 @@ class MockedServer:
         # state captured
         # These are accessed from multiple threads and must be protected by _lock
         self._handshake = None
+        self._handshake_json = None
         self._bot_intent = None
+        self._game_started_teammate_ids: Optional[List[int]] = None
+        self._game_started_bot_names: Optional[List[BotName]] = None
         self._bot_intent_lock = threading.Lock()  # Separate lock for intent to reduce contention
 
         # optional injections
@@ -136,6 +140,10 @@ class MockedServer:
     @property
     def server_url(self) -> str:
         return self._server_url
+
+    def set_game_started_names(self, teammate_ids: List[int], bot_names: List[BotName]) -> None:
+        self._game_started_teammate_ids = list(teammate_ids)
+        self._game_started_bot_names = list(bot_names)
 
     @classmethod
     def get_server_url(cls) -> str:
@@ -471,6 +479,11 @@ class MockedServer:
         with self._lock:
             return self._handshake
 
+    def get_handshake_json(self):
+        """Get the raw captured bot handshake JSON for protocol assertions."""
+        with self._lock:
+            return self._handshake_json
+
     def set_speed_increment(self, inc: float) -> None:
         with self._lock:
             self._speed_increment = inc
@@ -633,6 +646,7 @@ class MockedServer:
                     if msg_type == "BotHandshake":
                         with self._lock:
                             self._handshake = message
+                            self._handshake_json = msg
                         self._bot_handshake_event.set()
                         await self._send_game_started(websocket)
                         self._game_started_event.set()
@@ -774,7 +788,8 @@ class MockedServer:
             start_x=None,
             start_y=None,
             start_direction=None,
-            teammate_ids=None,
+            teammate_ids=self._game_started_teammate_ids,
+            bot_names=self._game_started_bot_names,
         )
         await websocket.send(to_json(evt))
 

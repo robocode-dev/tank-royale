@@ -28,6 +28,7 @@ export class BotHandshakeFactory {
       version: botInfo.version ?? "",
       authors: [...(botInfo.authors ?? [])],
     };
+    if (botInfo.teamMemberName != null) handshake.teamMemberName = botInfo.teamMemberName;
     if (botInfo.description != null) handshake.description = botInfo.description;
     if (botInfo.homepage != null) handshake.homepage = botInfo.homepage;
     if (botInfo.countryCodes.length > 0) handshake.countryCodes = [...botInfo.countryCodes];

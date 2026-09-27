@@ -149,6 +149,7 @@ flowchart TD
   "type": "bot-handshake",
   "sessionId": "550e8400-e29b-41d4-a716-446655440000",
   "name": "MyBot",
+  "teamMemberName": "legacy.package.MyBot",
   "version": "1.0",
   "authors": ["John Doe", "Jane Smith"],
   "secret": "optional-secret-token",
@@ -163,7 +164,8 @@ flowchart TD
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `sessionId` | string | ✅ | Must match server-handshake |
-| `name` | string | ✅ | Bot name (1-50 chars) |
+| `name` | string | ✅ | Display name (1-30 chars) |
+| `teamMemberName` | string | ❌ | Optional full name for team identity; no display-name length limit |
 | `version` | string | ✅ | Bot version (1-20 chars) |
 | `authors` | array | ✅ | Bot authors |
 | `secret` | string | ❌ | Optional secret for auth |
@@ -208,6 +210,8 @@ flowchart TD
    if not valid_version(bot.version):
      reject "Invalid version"
    ```
+
+   An optional `teamMemberName` carries a full team-addressing name without the 30-character display-name limit. The bot handshake preserves it unchanged; the server uses it only to create the team-visible name mapping.
 
 3. **Optional Secret Check**
    ```

@@ -177,6 +177,7 @@ export abstract class BaseBot implements IBaseBot {
   isStopped(): boolean { return this._internals.isStopped_(); }
 
   getTeammateIds(): ReadonlySet<number> { return this._internals.getTeammateIds(); }
+  getBotName(botId: number): string | null { return this._internals.getBotName(botId); }
   isTeammate(botId: number): boolean { return this._internals.isTeammate(botId); }
   broadcastTeamMessage(message: unknown): void { this._internals.broadcastTeamMessage(message); }
   sendTeamMessage(teammateId: number, message: unknown): void { this._internals.sendTeamMessage(teammateId, message); }

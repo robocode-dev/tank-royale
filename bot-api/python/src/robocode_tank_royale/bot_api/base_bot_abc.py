@@ -1,7 +1,7 @@
 import math
 import traceback
 from abc import ABC, abstractmethod
-from typing import Any, Sequence
+from typing import Any, Optional, Sequence
 
 from .graphics import GraphicsABC
 
@@ -870,6 +870,24 @@ class BaseBotABC(ABC):
 
         Returns:
             bool: True if the bot is a teammate; False otherwise.
+        """
+        pass
+
+    @abstractmethod
+    def get_bot_name(self, bot_id: int) -> Optional[str]:
+        """Returns the server-provided name for this bot or a teammate.
+
+        The name includes the advertised version and any battle-wide duplicate suffix.
+        Opponent and unknown IDs return None. The lookup is available after the game starts.
+
+        Args:
+            bot_id: The ID of the bot whose name is requested.
+
+        Returns:
+            The battle name, or None when the ID is not this bot or a teammate.
+
+        Raises:
+            BotException: If the game has not started.
         """
         pass
 

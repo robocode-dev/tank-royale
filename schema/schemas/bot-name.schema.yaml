@@ -1,0 +1,14 @@
+$id: bot-name.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: A bot id and its server-assigned battle name.
+type: object
+properties:
+  botId:
+    description: The id of a bot in the current battle.
+    type: integer
+  name:
+    description: The bot's full name for the current battle, including version and duplicate suffix when applicable.
+    type: string
+required:
+  - botId
+  - name

@@ -821,6 +821,18 @@ public interface IBaseBot {
     Set<Integer> getTeammateIds();
 
     /**
+     * Returns the name supplied by the server for the bot itself or a teammate.
+     * The returned name includes the advertised version and any battle-wide duplicate suffix.
+     * Opponents and unknown bot ids are not included in this lookup and return {@code null}.
+     * This method is available after the game has started.
+     *
+     * @param botId the id of the bot whose name is requested
+     * @return the bot's battle name, or {@code null} if the id is not the bot or a teammate
+     * @throws BotException if the game has not started
+     */
+    String getBotName(int botId);
+
+    /**
      * Checks if the provided bot id is a teammate or not.
      *
      * <p>Example:

@@ -43,6 +43,8 @@ export class BotInfo {
   readonly platform: string | null;
   readonly programmingLang: string | null;
   readonly initialPosition: InitialPosition | null;
+  /** Full name used by team APIs; optional and not limited by the display-name length. */
+  readonly teamMemberName: string | null;
 
   constructor(
     name: string | null | undefined,
@@ -55,6 +57,7 @@ export class BotInfo {
     platform: string | null,
     programmingLang: string | null,
     initialPosition: InitialPosition | null,
+    teamMemberName: string | null = null,
   ) {
     this.name = BotInfo.processName(name);
     this.version = BotInfo.processVersion(version);
@@ -66,6 +69,7 @@ export class BotInfo {
     this.platform = BotInfo.validatePlatform(platform);
     this.programmingLang = BotInfo.validateProgrammingLang(programmingLang);
     this.initialPosition = initialPosition ?? null;
+    this.teamMemberName = teamMemberName;
   }
 
   static builder(name: string | null, version: string | null, authors: string[] | null): BotInfoBuilder {
@@ -85,6 +89,7 @@ export class BotInfo {
       (d["platform"] as string | null) ?? null,
       (d["programmingLang"] as string | null) ?? null,
       null,
+      (d["teamMemberName"] as string | null) ?? null,
     );
   }
 
@@ -195,6 +200,7 @@ export class BotInfoBuilder {
   private _platform: string | null = null;
   private _programmingLang: string | null = null;
   private _initialPosition: InitialPosition | null = null;
+  private _teamMemberName: string | null = null;
 
   constructor(name: string | null, version: string | null, authors: string[] | null) {
     this._name = name;
@@ -242,6 +248,12 @@ export class BotInfoBuilder {
     return this;
   }
 
+  /** Sets the full optional name used to identify this bot in team APIs. */
+  setTeamMemberName(teamMemberName: string | null): this {
+    this._teamMemberName = teamMemberName;
+    return this;
+  }
+
   build(): BotInfo {
     return new BotInfo(
       this._name,
@@ -254,6 +266,7 @@ export class BotInfoBuilder {
       this._platform,
       this._programmingLang,
       this._initialPosition,
+      this._teamMemberName,
     );
   }
 }

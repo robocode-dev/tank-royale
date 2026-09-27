@@ -665,6 +665,10 @@ class MyFirstDroid extends Bot implements Droid {
 | `broadcastTeamMessage(message)`        | Send a message to all teammates       |
 | `sendTeamMessage(teammateId, message)` | Send a message to a specific teammate |
 
+Team bot IDs are numeric in Tank Royale. To show or log the corresponding team-visible name, use `getBotName(botId)` in Java and TypeScript, `GetBotName(botId)` in .NET, or `get_bot_name(bot_id)` in Python. The lookup returns the bot's own name or a teammate's name; it returns `null`/`None` for an opponent or an unknown ID. It is available after the game-start event. The server sends names only for the bot and its teammates.
+
+Each Bot API can send optional `BotInfo.teamMemberName` metadata in `bot-handshake`. The server then appends the bot version and a battle-wide ` (n)` suffix when names repeat. If `teamMemberName` is absent, the regular display name is used. This lets bridge APIs preserve long classic robot names without changing the bot's displayed name.
+
 ## Limitations
 
 - **Maximum packets per turn**: 64 per bot, including batches
