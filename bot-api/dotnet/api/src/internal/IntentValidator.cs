@@ -117,13 +117,20 @@ public static class IntentValidator
 
     public static void ValidateTeamMessage(object message, int currentTeamMessageCount)
     {
-        if (currentTeamMessageCount == IBaseBot.MaxNumberOfTeamMessagesPerTurn)
-            throw new InvalidOperationException(
-                "The maximum number team massages has already been reached: " +
+        if (currentTeamMessageCount >= IBaseBot.MaxNumberOfTeamMessagesPerTurn)
+            throw new BotException(
+                "The maximum number of team messages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
 
         if (message == null)
             throw new ArgumentException("The 'message' of a team message cannot be null");
+    }
+
+    public static void ValidateLogicalTeamMessageCount(int logicalMessageCount)
+    {
+        if (logicalMessageCount > Constants.MaxLogicalTeamMessagesPerTurn)
+            throw new BotException("The maximum number of logical team messages has already been reached: " +
+                                   Constants.MaxLogicalTeamMessagesPerTurn);
     }
 
     public static void ValidateTeamMessageSize(string json)
@@ -132,6 +139,13 @@ public static class IntentValidator
         if (bytes.Length > IBaseBot.TeamMessageMaxSize)
             throw new ArgumentException(
                 $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes (compact JSON format)");
+    }
+
+    public static void ValidateTeamMessagesSize(string json)
+    {
+        if (System.Text.Encoding.UTF8.GetByteCount(json) > IBaseBot.TeamMessagesMaxBytesPerTurn)
+            throw new ArgumentException(
+                $"The teamMessages array exceeds {IBaseBot.TeamMessagesMaxBytesPerTurn} UTF-8 bytes (compact JSON format)");
     }
 
     public static string ColorToHex(Color? color) => color == null ? null : "#" + ColorUtil.ToHex(color);

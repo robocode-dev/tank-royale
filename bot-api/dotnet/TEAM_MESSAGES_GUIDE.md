@@ -146,10 +146,30 @@ public override void OnTeamMessage(TeamMessageEvent evt)
 
 ## Limitations
 
-- Maximum 10 team messages per turn per bot
-- Maximum message size: 32,768 bytes (JSON format)
+- At most 64 packets per bot per turn, with a combined limit of 128 logical messages counting batch entries
+- Each packet is limited to 49,152 UTF-8 bytes, and the compact `teamMessages` array is limited to 262,144 UTF-8 bytes
+- Packets are delivered on the next turn; a batch arrives as one event and retains entry order
+- All team members must advertise batch version 1 or the server rejects a batch intent
+- Clients reject invalid sends before enqueueing them; the server rejects an invalid intent in full
 - Messages must be serializable to JSON (no circular references)
 - Complex objects may require custom JSON converters
+
+## Sending Several Messages as One Batch
+
+```csharp
+SendTeamMessageBatch(teammateId, new object[] { new Point(250, 300), new Point(400, 180) });
+
+public override void OnTeamMessage(TeamMessageEvent evt)
+{
+    if (evt.Message is TeamMessageBatch batch)
+    {
+        foreach (var message in batch.Messages)
+        {
+            // Process entries in their original order.
+        }
+    }
+}
+```
 
 ## Advanced: Custom Message Types
 

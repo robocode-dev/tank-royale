@@ -18,6 +18,7 @@ from .initial_position import InitialPosition
 from .base_bot import BaseBot
 from .bot import Bot
 from .team_message import team_message_type, register_team_message_type
+from .team_message_batch import TeamMessageBatch
 
 __all__ = [
     "BaseBotABC",
@@ -38,6 +39,7 @@ __all__ = [
     # Team message type registration
     "team_message_type",
     "register_team_message_type",
+    "TeamMessageBatch",
     # Constants - export all of them
     "MAX_SPEED",
     "MAX_TURN_RATE",

@@ -3,12 +3,14 @@ package dev.robocode.tankroyale.botapi.mapper;
 import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.IBaseBot;
+import dev.robocode.tankroyale.botapi.TeamMessageBatch;
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.botapi.internal.TeamMessageBatchCodec;
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Utility class for mapping events.
@@ -28,8 +30,8 @@ public final class EventMapper {
                 map(event.getEvents(), baseBot));
     }
 
-    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> events, IBaseBot baseBot) {
-        Set<BotEvent> gameBotEvents = new HashSet<>();
+    private static List<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> events, IBaseBot baseBot) {
+        List<BotEvent> gameBotEvents = new ArrayList<>(events.size());
         events.forEach(event -> gameBotEvents.add(map(event, baseBot)));
         return gameBotEvents;
     }
@@ -155,6 +157,19 @@ public final class EventMapper {
             throw new BotException("message in TeamMessageEvent is null");
         }
         try {
+            if (TeamMessageBatchCodec.MESSAGE_TYPE.equals(source.getMessageType())) {
+                var values = new ArrayList<Object>();
+                for (var item : TeamMessageBatchCodec.decodeItems(message)) {
+                    if (!item.isJsonObject()) throw new IllegalArgumentException("Invalid team message batch item");
+                    var object = item.getAsJsonObject();
+                    if (!object.has("messageType") || !object.has("message")) {
+                        throw new IllegalArgumentException("Invalid team message batch item");
+                    }
+                    var type = baseBot.getClass().getClassLoader().loadClass(object.get("messageType").getAsString());
+                    values.add(JsonConverter.fromJson(object.get("message").getAsString(), type));
+                }
+                return new TeamMessageEvent(source.getTurnNumber(), new TeamMessageBatch(values), source.getSenderId());
+            }
             var type = baseBot.getClass().getClassLoader().loadClass(source.getMessageType());
             var messageObject = JsonConverter.fromJson(message, type);
             return new TeamMessageEvent(source.getTurnNumber(), messageObject, source.getSenderId());

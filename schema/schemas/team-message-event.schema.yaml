@@ -4,20 +4,19 @@ description: >-
   Event occurring when a message has been received from a teammate.
   Inherits the required 1-based `turnNumber` from `event.schema.yaml`.
   The event is delivered privately to a teammate (either a specific recipient
-  or all teammates when broadcast). Server-side limits apply: each bot can send
-  at most `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN` team messages per turn, and a
-  single team message must not exceed `MAX_TEAM_MESSAGE_SIZE` bytes/characters.
-  If one message exceeds the size limit, that message and any following team
-  messages in the same turn are ignored by the server.
+  or all teammates when broadcast). A bot can send at most 64 packets and 128
+  logical messages per turn. Each encoded packet is limited to 49152 UTF-8
+  bytes and the compact outgoing array is limited to 262144 UTF-8 bytes.
+  Invalid intents are rejected in full. A `team-message-batch-v1` payload is
+  delivered as one event and retains the order of its contained messages.
 extends:
   $ref: event.schema.yaml
 properties:
   message:
     description: >-
-      Payload sent by the teammate, typically a JSON-encoded string. The server
-      enforces a maximum length of 4096 characters.
+      Compact JSON payload sent by the teammate. The server enforces a maximum
+      of 49152 UTF-8 bytes.
     type: string
-    maxLength: 4096
   messageType:
     description: >-
       Application-defined message type identifier, e.g., a class name or tag

@@ -8,12 +8,14 @@ import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.core.StatusCode
+import dev.robocode.tankroyale.server.rules.MAX_INBOUND_TEXT_BYTES
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ClientHandshake
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
@@ -68,6 +70,10 @@ class ClientWebSocketsHandler(
     }
 
     override fun onMessage(clientSocket: WebSocket, message: String) {
+        if (message.toByteArray(StandardCharsets.UTF_8).size > MAX_INBOUND_TEXT_BYTES) {
+            clientSocket.close(1009 /* RFC 6455 message too big */, "Text message exceeds $MAX_INBOUND_TEXT_BYTES UTF-8 bytes")
+            return
+        }
         processMessage(clientSocket, message)
     }
 
@@ -247,6 +253,12 @@ class ClientWebSocketsHandler(
 
     private fun handleIntent(clientSocket: WebSocket, message: String) {
         botHandshakes[clientSocket]?.let { botHandshake ->
+            try {
+                TeamMessagePolicy.validate(gson.fromJson(message, JsonObject::class.java))
+            } catch (exception: IllegalArgumentException) {
+                clientSocket.close(1008 /* RFC 6455 policy violation */, exception.message)
+                return
+            }
             val intent = gson.fromJson(message, BotIntent::class.java)
             listener.onBotIntent(clientSocket, botHandshake, intent)
         }

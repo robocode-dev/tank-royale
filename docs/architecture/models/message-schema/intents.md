@@ -66,9 +66,9 @@ classDiagram
     }
 
     class TeamMessage {
-        +string type = "team-message"
         +string message
-        +int receiverId
+        +string messageType
+        +int receiverId?
     }
 
     Message <|-- BotIntent
@@ -111,6 +111,10 @@ classDiagram
         +Color gunColor
     }
 ```
+
+An ordinary team-message packet contains one serialized payload. A bot may instead use the reserved `messageType` value `team-message-batch-v1` and put an ordered list of 1–128 typed payload entries in its JSON message. The batch is delivered as one `team-message-event` on the next turn. Directed and broadcast packets each have one destination mode; every recipient must advertise `teamMessageBatchVersion: 1` in its bot handshake.
+
+The server accepts at most 64 packets and 128 logical payloads across the complete `teamMessages` array in one bot intent. Each encoded packet is limited to 49,152 UTF-8 bytes, and the compact UTF-8 encoding of the complete array is limited to 262,144 bytes. Bot APIs validate before enqueueing; malformed or over-limit intents are rejected atomically. Incoming WebSocket text messages are bounded to 1 MiB before JSON parsing.
 
 ### Example
 
@@ -394,8 +398,8 @@ classDiagram
 
 ```json
 {
-  "type": "team-message",
   "message": "Enemy at (500, 300), energy 45",
+  "messageType": "EnemySpotted",
   "receiverId": 2
 }
 ```
@@ -404,9 +408,9 @@ classDiagram
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `type` | string | ✅ | Always `"team-message"` |
 | `message` | string | ✅ | Message content (serialized data) |
-| `receiverId` | integer | ✅ | Bot ID of teammate to receive message |
+| `messageType` | string | ✅ | Message type identifier, such as a class name or application tag |
+| `receiverId` | integer | — | Bot ID of one teammate; omit it to broadcast to all teammates |
 
 ### Server Processing
 
@@ -459,7 +463,7 @@ onTeamMessageEvent(event) {
 1. **Avoid complex calculations** — Keep turn logic under 20ms
 2. **Cache static data** — Don't recalculate arena dimensions every turn
 3. **Early intent sending** — Send intent as soon as calculated (don't wait until timeout)
-4. **Batch team messages** — Don't send multiple messages per turn
+4. **Batch related team messages** — Use the Bot API batch methods when multiple payloads should arrive together in one callback. A batch reduces packet and callback overhead, but does not compress the JSON payloads.
 
 ### Common Mistakes
 

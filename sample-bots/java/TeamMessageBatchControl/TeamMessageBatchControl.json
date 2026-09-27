@@ -1,0 +1,9 @@
+{
+  "name": "TeamMessageBatchControl",
+  "version": "1.0",
+  "authors": ["Robocode Tank Royale"],
+  "description": "Matched no-message control for the local 30 TPS team-message trial.",
+  "platform": "JVM",
+  "programmingLang": "Java 11",
+  "license": "Apache-2.0"
+}

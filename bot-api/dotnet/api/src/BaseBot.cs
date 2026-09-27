@@ -385,8 +385,16 @@ public abstract class BaseBot : IBaseBot
     public void BroadcastTeamMessage(object message) => BaseBotInternals.BroadcastTeamMessage(message);
 
     /// <inheritdoc/>
+    public void BroadcastTeamMessageBatch(System.Collections.IEnumerable messages) =>
+        BaseBotInternals.BroadcastTeamMessage(new TeamMessageBatch(messages));
+
+    /// <inheritdoc/>
     public void SendTeamMessage(int teammateId, object message) =>
         BaseBotInternals.SendTeamMessage(teammateId, message);
+
+    /// <inheritdoc/>
+    public void SendTeamMessageBatch(int teammateId, System.Collections.IEnumerable messages) =>
+        BaseBotInternals.SendTeamMessage(teammateId, new TeamMessageBatch(messages));
 
     /// <inheritdoc/>
     public Color? BodyColor

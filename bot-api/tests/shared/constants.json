@@ -104,7 +104,7 @@
       "type": "positive",
       "method": "getConstant",
       "args": ["TEAM_MESSAGE_MAX_SIZE"],
-      "expected": { "returns": 32768 }
+      "expected": { "returns": 49152 }
     },
     {
       "id": "TR-API-VAL-005-constants-max-team-messages-per-turn",
@@ -112,7 +112,23 @@
       "type": "positive",
       "method": "getConstant",
       "args": ["MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN"],
-      "expected": { "returns": 10 }
+      "expected": { "returns": 64 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-max-logical-team-messages-per-turn",
+      "description": "Maximum logical team message payloads per turn",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_LOGICAL_TEAM_MESSAGES_PER_TURN"],
+      "expected": { "returns": 128 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-team-messages-max-bytes-per-turn",
+      "description": "Maximum aggregate team message bytes per turn",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["TEAM_MESSAGES_MAX_BYTES_PER_TURN"],
+      "expected": { "returns": 262144 }
     }
   ]
 }

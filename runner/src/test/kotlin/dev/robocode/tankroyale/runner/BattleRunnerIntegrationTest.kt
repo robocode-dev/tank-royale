@@ -21,7 +21,9 @@ import java.util.zip.GZIPInputStream
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import java.util.Collections
+import java.nio.charset.StandardCharsets
 import kotlin.io.path.exists
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Integration tests that run real battles against the embedded server with sample bots.
@@ -434,6 +436,362 @@ class BattleRunnerIntegrationTest {
                 }
             }
         }
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBotsDeliverOrdered128ItemBatchesWithoutSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchStressTeam",
+            botName = "TeamMessageBatchStress",
+            expectedReceivedItemsPerBot = 4 * 60 * 128,
+            outboundTeamMessageBytes = estimateBatchArrayBytes(128),
+            itemsPerBatch = 128
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBotNoMessageControlHasNoSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchControlTeam",
+            botName = "TeamMessageBatchControl",
+            expectedReceivedItemsPerBot = 0,
+            outboundTeamMessageBytes = 0,
+            itemsPerBatch = 128
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBotsDeliverOrdered64ItemBatchesWithoutSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchStress64Team",
+            botName = "TeamMessageBatchStress64",
+            expectedReceivedItemsPerBot = 4 * 60 * 64,
+            outboundTeamMessageBytes = estimateBatchArrayBytes(64),
+            itemsPerBatch = 64
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBot64ItemNoMessageControlHasNoSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchControl64Team",
+            botName = "TeamMessageBatchControl64",
+            expectedReceivedItemsPerBot = 0,
+            outboundTeamMessageBytes = 0,
+            itemsPerBatch = 64
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBotsDeliverOrdered32ItemBatchesWithoutSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchStress32Team",
+            botName = "TeamMessageBatchStress32",
+            expectedReceivedItemsPerBot = 4 * 1000 * 32,
+            outboundTeamMessageBytes = estimateBatchArrayBytes(32, 11..1010),
+            itemsPerBatch = 32,
+            measuredSendTurns = 1000,
+            paceServerAtTps = true,
+            usePassiveOpponents = true,
+            recordExactSkippedTurnNumbers = true
+        )
+    }
+
+    @Tag("integration")
+    @Tag("slow")
+    @Tag("PRO-006")
+    @Tag("Integration")
+    @Tag("Positive")
+    @Test
+    @Timeout(120)
+    fun testPRO006_IntegrationPositive_fiveBot32ItemNoMessageControlHasNoSkippedTurns() {
+        runFiveBotTeamMessageTrial(
+            teamName = "TeamMessageBatchControl32Team",
+            botName = "TeamMessageBatchControl32",
+            expectedReceivedItemsPerBot = 0,
+            outboundTeamMessageBytes = 0,
+            itemsPerBatch = 32,
+            measuredSendTurns = 1000,
+            paceServerAtTps = true,
+            usePassiveOpponents = true,
+            recordExactSkippedTurnNumbers = true
+        )
+    }
+
+    private fun runFiveBotTeamMessageTrial(
+        teamName: String,
+        botName: String,
+        expectedReceivedItemsPerBot: Int,
+        outboundTeamMessageBytes: Long,
+        itemsPerBatch: Int,
+        measuredSendTurns: Int = 60,
+        paceServerAtTps: Boolean = false,
+        usePassiveOpponents: Boolean = false,
+        recordExactSkippedTurnNumbers: Boolean = false
+    ) {
+        val measuredFromTurn = 11 // Turns 1–10 are warm-up; measure from the first post-warm-up tick.
+        val lastMeasuredSendTurn = measuredFromTurn + measuredSendTurns - 1
+        val measuredThroughTurn = lastMeasuredSendTurn + 1
+        val finalStateTurn = ((lastMeasuredSendTurn + 1 + 4) / 5) * 5 + 1
+        val completionTurn = lastMeasuredSendTurn + 12
+        val firstTickTurn = AtomicReference<Int?>()
+        val startedAtNanos = AtomicReference<Long?>()
+        val finishedAtNanos = AtomicReference<Long?>()
+        val finalStates = AtomicReference<List<dev.robocode.tankroyale.client.model.BotState>?>()
+        val completed = CountDownLatch(1)
+        val owner = Any()
+        val observedSkippedTurnNumbersByBot = mutableMapOf<Int, MutableSet<Int>>()
+        val opponentNames = if (usePassiveOpponents) {
+            listOf("TeamMessageBatchControl", "TeamMessageBatchControl64")
+        } else {
+            listOf("Walls", "SpinBot")
+        }
+        val rootLogger = Logger.getLogger("")
+        val savedRootLogLevel = rootLogger.level
+        val timingLogHandler = CapturingHandler()
+        if (paceServerAtTps) {
+            rootLogger.level = Level.ALL
+            rootLogger.addHandler(timingLogHandler)
+        }
+
+        try {
+            BattleRunner.create {
+                embeddedServer()
+                if (paceServerAtTps) enableTurnTimingDiagnostics(tps = 30)
+            }.use { runner ->
+            val handle = runner.startBattleAsync(
+                BattleSetup.custom {
+                    numberOfRounds = 1
+                    minNumberOfParticipants = 7
+                    maxNumberOfParticipants = 7
+                    maxInactivityTurns = 120
+                    turnTimeoutMicros = 30_000
+                    defaultTurnsPerSecond = 30
+                },
+                listOf(BotEntry.of(botDir(teamName))) + opponentNames.map { BotEntry.of(botDir(it)) }
+            )
+            handle.onTickEvent.on(owner) { tick ->
+                if (firstTickTurn.get() == null && tick.turnNumber >= measuredFromTurn) {
+                    firstTickTurn.set(tick.turnNumber)
+                    startedAtNanos.set(System.nanoTime())
+                }
+                if (tick.turnNumber >= measuredThroughTurn && finishedAtNanos.get() == null) {
+                    finishedAtNanos.set(System.nanoTime())
+                }
+                if (tick.turnNumber >= finalStateTurn && finalStates.get() == null) {
+                    finalStates.set(tick.botStates.toList())
+                }
+                if (recordExactSkippedTurnNumbers) {
+                    val bitmapTurn = ((tick.turnNumber - 1) / 5) * 5
+                    tick.botStates.filter { it.name == botName }.forEach { state ->
+                        if (state.turretColor == null || state.gunColor == null || state.bulletColor == null) {
+                            return@forEach
+                        }
+                        val skipMask = decodeRgb(state.turretColor).toLong() or
+                            (decodeRgb(state.gunColor).toLong() shl 24) or
+                            ((decodeRgb(state.bulletColor).toLong() and 0xfff) shl 48)
+                        val observed = observedSkippedTurnNumbersByBot.getOrPut(state.id) { mutableSetOf() }
+                        for (bit in 0 until 60) {
+                            if ((skipMask and (1L shl bit)) == 0L) continue
+                            val firstTurnForBit = measuredFromTurn + bit
+                            val latestTurnForBit = firstTurnForBit +
+                                Math.floorDiv(bitmapTurn - firstTurnForBit, 60) * 60
+                            if (latestTurnForBit in measuredFromTurn..lastMeasuredSendTurn &&
+                                latestTurnForBit >= bitmapTurn - 59
+                            ) {
+                                observed += latestTurnForBit
+                            }
+                        }
+                    }
+                }
+                if (tick.turnNumber >= completionTurn && completed.count > 0) {
+                    completed.countDown()
+                }
+            }
+
+            assertThat(completed.await(90, TimeUnit.SECONDS))
+                .describedAs("the five-bot $botName workload must reach turn $completionTurn")
+                .isTrue()
+            assertThat(firstTickTurn.get())
+                .describedAs("the measured interval must start at the first post-warm-up tick")
+                .isEqualTo(measuredFromTurn)
+            handle.onTickEvent.off(owner)
+            handle.stop()
+            if (paceServerAtTps) runner.close()
+            val states = finalStates.get()!!.filter { it.name == botName }
+            assertThat(states).hasSize(5)
+            println(
+                "TEAM_MESSAGE_TRIAL_STATE workload=$botName " + states.joinToString { state ->
+                    "id=${state.id},body=${state.bodyColor},tracks=${state.tracksColor}," +
+                        "turret=${state.turretColor},radar=${state.radarColor}," +
+                        "scan=${state.scanColor},gun=${state.gunColor},bullet=${state.bulletColor}"
+                }
+            )
+            val minTimeLeftMicros = mutableListOf<Int>()
+            val averageTimeLeftMicros = mutableListOf<Int>()
+            val maxMessageWorkMicros = mutableListOf<Int>()
+            val maxTeamMessageHandlerMicros = mutableListOf<Int>()
+            val exactSkippedTurnNumbersByBot = mutableMapOf<Int, List<Int>>()
+            val skipMaskMatchesEventCountByBot = mutableMapOf<Int, Boolean>()
+            val receivedItemsByBot = mutableMapOf<Int, Int>()
+            val skippedTurnCountByBot = mutableMapOf<Int, Int>()
+            val protocolErrorsByBot = mutableMapOf<Int, Int>()
+            val contentErrorsByBot = mutableMapOf<Int, Int>()
+            states.forEach { state ->
+                val body = decodeRgb(state.bodyColor)
+                val tracks = decodeRgb(state.tracksColor)
+                val isWideCountWorkload = botName == "TeamMessageBatchStress32"
+                val received = if (isWideCountWorkload) body else (body ushr 8) and 0xffff
+                val protocolErrors = if (isWideCountWorkload) (tracks ushr 16) and 0xff else body and 0xff
+                val skippedTurns = (tracks ushr 8) and 0xff
+                val radar = decodeRgb(state.radarColor)
+                val contentErrors = (radar ushr 16) and 0xff
+                val averageLeftMicros = radar and 0xffff
+                val minLeftMicros = decodeRgb(state.scanColor)
+                receivedItemsByBot[state.id] = received
+                skippedTurnCountByBot[state.id] = skippedTurns
+                protocolErrorsByBot[state.id] = protocolErrors
+                contentErrorsByBot[state.id] = contentErrors
+                if (recordExactSkippedTurnNumbers) {
+                    val skippedTurnNumbers = observedSkippedTurnNumbersByBot[state.id].orEmpty().sorted()
+                    exactSkippedTurnNumbersByBot[state.id] = skippedTurnNumbers
+                    skipMaskMatchesEventCountByBot[state.id] = skippedTurnNumbers.size == skippedTurns
+                } else {
+                    maxMessageWorkMicros.add(decodeRgb(state.gunColor))
+                    maxTeamMessageHandlerMicros.add(decodeRgb(state.bulletColor))
+                }
+                minTimeLeftMicros.add(minLeftMicros)
+                averageTimeLeftMicros.add(averageLeftMicros)
+            }
+
+            val elapsedSeconds = (finishedAtNanos.get()!! - startedAtNanos.get()!!) / 1_000_000_000.0
+            val observerCallbackTps = measuredSendTurns / elapsedSeconds
+            val measuredTps = if (paceServerAtTps) {
+                val teamBotIds = states.map { it.id }.toSet()
+                val dispatchTimestampPattern = Regex(
+                    "TURN_TIMING source=server event=tick-dispatch botId=(\\d+) round=1 turn=(\\d+) nanos=(\\d+)"
+                )
+                val dispatchTimestampsByTurn = timingLogHandler.messages.mapNotNull { message ->
+                    dispatchTimestampPattern.find(message)?.let { match ->
+                        Triple(match.groupValues[1].toInt(), match.groupValues[2].toInt(), match.groupValues[3].toLong())
+                    }
+                }.filter { (botId, turn, _) ->
+                    botId in teamBotIds && turn in setOf(measuredFromTurn, measuredThroughTurn)
+                }.groupBy({ it.second }, { it.third })
+                val firstTurnTimestamps = dispatchTimestampsByTurn[measuredFromTurn].orEmpty()
+                val lastTurnTimestamps = dispatchTimestampsByTurn[measuredThroughTurn].orEmpty()
+                assertThat(firstTurnTimestamps).hasSize(states.size)
+                assertThat(lastTurnTimestamps).hasSize(states.size)
+                val elapsedNanos = lastTurnTimestamps.average() - firstTurnTimestamps.average()
+                measuredSendTurns * 1_000_000_000.0 / elapsedNanos
+            } else {
+                observerCallbackTps
+            }
+            println(
+                "TEAM_MESSAGE_TRIAL workload=$botName bots=5 turns=$measuredSendTurns itemsPerBatch=$itemsPerBatch tps=$measuredTps " +
+                    "observerCallbackTps=$observerCallbackTps " +
+                    "outboundTeamMessagesBytes=$outboundTeamMessageBytes " +
+                    "estimatedTeamPayloadFanoutBytes=${outboundTeamMessageBytes * 4} " +
+                    "receivedPerBot=$expectedReceivedItemsPerBot " +
+                    "exactSkippedTurnNumbersByBot=$exactSkippedTurnNumbersByBot " +
+                    "receivedItemsByBot=$receivedItemsByBot skippedTurnCountByBot=$skippedTurnCountByBot " +
+                    "protocolErrorsByBot=$protocolErrorsByBot contentErrorsByBot=$contentErrorsByBot " +
+                    "minTimeLeftMicros=${minTimeLeftMicros.minOrNull()} " +
+                    "averageTimeLeftMicros=${averageTimeLeftMicros.average().toLong()} " +
+                    "maxMessageWorkMicros=${maxMessageWorkMicros.maxOrNull() ?: "not-recorded"} " +
+                    "maxTeamMessageHandlerMicros=${maxTeamMessageHandlerMicros.maxOrNull() ?: "not-recorded"}"
+            )
+            // Effective TPS is diagnostic; the pass criteria are complete, error-free ordered delivery and zero skipped turns.
+            receivedItemsByBot.forEach { (botId, received) ->
+                assertThat(received)
+                    .describedAs("ordered logical messages received by $botName $botId; errors=${protocolErrorsByBot[botId]} skipped=${skippedTurnCountByBot[botId]}")
+                    .isEqualTo(expectedReceivedItemsPerBot)
+            }
+            skippedTurnCountByBot.forEach { (botId, skippedTurns) ->
+                assertThat(skippedTurns)
+                    .describedAs("skipped turns recorded by $botName $botId")
+                    .isZero()
+            }
+            protocolErrorsByBot.forEach { (botId, protocolErrors) ->
+                assertThat(protocolErrors)
+                    .describedAs("message and protocol errors recorded by $botName $botId")
+                    .isZero()
+            }
+            contentErrorsByBot.forEach { (botId, contentErrors) ->
+                assertThat(contentErrors)
+                    .describedAs("message content errors recorded by $botName $botId")
+                    .isZero()
+            }
+            skipMaskMatchesEventCountByBot.forEach { (botId, matches) ->
+                assertThat(matches)
+                    .describedAs("skip-turn bitmap matches the skipped-turn event count for $botName $botId")
+                    .isTrue()
+            }
+            exactSkippedTurnNumbersByBot.forEach { (botId, skippedTurns) ->
+                assertThat(skippedTurns)
+                    .describedAs("exact skipped-turn numbers reported by $botName $botId")
+                    .isEmpty()
+            }
+            if (expectedReceivedItemsPerBot == 0 && !recordExactSkippedTurnNumbers) {
+                assertThat(maxTeamMessageHandlerMicros).containsOnly(0)
+            }
+            }
+        } finally {
+            if (paceServerAtTps) {
+                rootLogger.removeHandler(timingLogHandler)
+                rootLogger.level = savedRootLogLevel
+            }
+        }
+    }
+
+    private fun decodeRgb(color: String?): Int = requireNotNull(color).removePrefix("#").take(6).toInt(16)
+
+    private fun estimateBatchArrayBytes(itemsPerBatch: Int, turns: IntRange = 1..60): Long {
+        fun encodedString(value: String) = JsonPrimitive(value).toString()
+        var totalBytes = 0L
+        for (botId in 1..5) {
+            for (turn in turns) {
+                val entries = (0 until itemsPerBatch).joinToString(",") { item ->
+                    "{\"messageType\":\"java.lang.String\",\"message\":" +
+                        encodedString(encodedString("$botId:$turn:$item")) + "}"
+                }
+                val batchPayload = "{\"messages\":[$entries]}"
+                val packet = "[{\"message\":" + encodedString(batchPayload) +
+                    ",\"messageType\":\"team-message-batch-v1\"}]"
+                totalBytes += packet.toByteArray(StandardCharsets.UTF_8).size
+            }
+        }
+        return totalBytes
     }
 
     // -------------------------------------------------------------------------------------

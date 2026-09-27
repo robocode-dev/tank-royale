@@ -138,6 +138,16 @@
           "type": "integer",
           "minimum": 0,
           "description": "Expected number of events remaining in the queue after all steps."
+        },
+        "queueSizeAtTurn": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current turn used when reading the queue size (APIs that cull old events on read). Defaults to 999."
+        },
+        "dispatchedMessages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Expected sequence of dispatched team-message payloads, in order."
         }
       }
     }

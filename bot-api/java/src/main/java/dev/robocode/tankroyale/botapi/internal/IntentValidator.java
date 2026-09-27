@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.graphics.Color;
 import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import java.util.Set;
+import java.nio.charset.StandardCharsets;
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 import static java.lang.Math.*;
@@ -111,19 +112,33 @@ public final class IntentValidator {
     }
 
     public static void validateTeamMessage(Object message, int currentTeamMessageCount) {
-        if (currentTeamMessageCount == MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
+        if (currentTeamMessageCount >= MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
             throw new BotException(
-                    "The maximum number team massages has already been reached: " + MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
+                    "The maximum number of team messages has already been reached: " + MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
         }
         if (message == null) {
             throw new IllegalArgumentException("The 'message' of a team message cannot be null");
         }
     }
 
+    public static void validateLogicalTeamMessageCount(int logicalMessageCount) {
+        if (logicalMessageCount > MAX_LOGICAL_TEAM_MESSAGES_PER_TURN) {
+            throw new BotException("The maximum number of logical team messages has already been reached: "
+                    + MAX_LOGICAL_TEAM_MESSAGES_PER_TURN);
+        }
+    }
+
     public static void validateTeamMessageSize(String json) {
-        if (json.getBytes().length > TEAM_MESSAGE_MAX_SIZE) {
+        if (json.getBytes(StandardCharsets.UTF_8).length > TEAM_MESSAGE_MAX_SIZE) {
             throw new IllegalArgumentException(
                     "The team message is larger than the limit of " + TEAM_MESSAGE_MAX_SIZE + " bytes (compact JSON format)");
+        }
+    }
+
+    public static void validateTeamMessagesSize(String json) {
+        if (json.getBytes(StandardCharsets.UTF_8).length > TEAM_MESSAGES_MAX_BYTES_PER_TURN) {
+            throw new IllegalArgumentException("The teamMessages array exceeds " +
+                    TEAM_MESSAGES_MAX_BYTES_PER_TURN + " UTF-8 bytes (compact JSON format)");
         }
     }
 

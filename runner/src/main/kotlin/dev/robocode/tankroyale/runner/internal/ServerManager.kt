@@ -32,6 +32,8 @@ import javax.crypto.KeyGenerator
 internal class ServerManager(
     private val serverMode: ServerMode,
     private val captureOutput: Boolean = true,
+    private val turnTimingDiagnosticsEnabled: Boolean = false,
+    private val turnTimingDiagnosticsTps: Int = 30,
 ) : AutoCloseable {
 
     private val logger = Logger.getLogger(ServerManager::class.java.name)
@@ -110,8 +112,11 @@ internal class ServerManager(
             "--port=$resolvedPort",
             "--controller-secrets=$controllerSecret",
             "--bot-secrets=$botSecret",
-            "--tps=-1", // 4.8: max-speed by default
+            "--tps=${if (turnTimingDiagnosticsEnabled) turnTimingDiagnosticsTps else -1}",
         )
+        if (turnTimingDiagnosticsEnabled) {
+            command.add(1, "-Drobocode.turnTimingDiagnostics=true")
+        }
 
         val process = ProcessBuilder(command)
             .redirectErrorStream(true)

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -83,7 +84,9 @@ class EventSystemTest {
         @Override public Set<Integer> getTeammateIds() { return Collections.emptySet(); }
         @Override public boolean isTeammate(int botId) { return false; }
         @Override public void broadcastTeamMessage(Object message) {}
+        @Override public void broadcastTeamMessageBatch(java.util.Collection<?> messages) {}
         @Override public void sendTeamMessage(int teammateId, Object message) {}
+        @Override public void sendTeamMessageBatch(int teammateId, java.util.Collection<?> messages) {}
         @Override public boolean isStopped() { return false; }
         @Override public Color getBodyColor() { return null; }
         @Override public void setBodyColor(Color color) {}
@@ -237,6 +240,23 @@ class EventSystemTest {
         CustomEvent ce = new CustomEvent(19, condition);
         assertEquals(19, ce.getTurnNumber());
         assertEquals(condition, ce.getCondition());
+    }
+
+    @Test
+    @Tag("Unit")
+    void drainsAnAcceptedTeamMessageBatchInOrder() {
+        for (int index = 0; index < 512; index++) {
+            queue.addEvent(new TeamMessageEvent(7, "message-" + index, 1));
+        }
+
+        queue.dispatchEvents(7);
+
+        assertThat(botStub.firedEvents)
+                .hasSize(512)
+                .allMatch(event -> event instanceof TeamMessageEvent);
+        assertThat(botStub.firedEvents.stream()
+                .map(event -> ((TeamMessageEvent) event).getMessage()))
+                .containsExactly(IntStream.range(0, 512).mapToObj(index -> "message-" + index).toArray());
     }
 
     @Test

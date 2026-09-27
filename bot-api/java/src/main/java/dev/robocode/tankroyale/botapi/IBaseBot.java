@@ -851,11 +851,16 @@ public interface IBaseBot {
      * {@value Constants#TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
      * JSON representation.<br>
      * <br>
-     * The maximum number of messages that can be send/broadcast per turn is limited to
-     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
+     * A turn can contain at most {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN} packets and
+     * {@value Constants#MAX_LOGICAL_TEAM_MESSAGES_PER_TURN} logical payloads, counting entries in batches. A packet is
+     * limited to {@value Constants#TEAM_MESSAGE_MAX_SIZE} UTF-8 bytes, and the compact team-message array to
+     * {@value Constants#TEAM_MESSAGES_MAX_BYTES_PER_TURN} UTF-8 bytes. Each accepted packet is delivered on the next
+     * turn. A batch is delivered through one event with entries in order. All recipients must support batch version 1.
+     * A failed call does not enqueue its packet.
      *
      * @param message is the message to broadcast.
-     * @throws IllegalArgumentException if the size of the message exceeds the size limit.
+     * @throws BotException if the per-turn message count has been reached.
+     * @throws IllegalArgumentException if the message or complete batch exceeds its UTF-8 byte limit.
      * @see #sendTeamMessage
      * @see #getTeammateIds
      */
@@ -871,16 +876,46 @@ public interface IBaseBot {
      * {@value Constants#TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
      * JSON representation.<br>
      * <br>
-     * The maximum number of messages that can be sent/broadcast per turn is limited to
-     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
+     * A turn can contain at most {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN} packets and
+     * {@value Constants#MAX_LOGICAL_TEAM_MESSAGES_PER_TURN} logical payloads, counting entries in batches. A packet is
+     * limited to {@value Constants#TEAM_MESSAGE_MAX_SIZE} UTF-8 bytes, and the compact team-message array to
+     * {@value Constants#TEAM_MESSAGES_MAX_BYTES_PER_TURN} UTF-8 bytes. Each accepted packet is delivered on the next
+     * turn. A batch is delivered through one event with entries in order. All recipients must support batch version 1.
+     * A failed call does not enqueue its packet.
      *
      * @param teammateId is the id of the teammate to send the message to.
      * @param message    is the message to send.
-     * @throws IllegalArgumentException if the size of the message exceeds the size limit.
+     * @throws BotException if the per-turn message count has been reached.
+     * @throws IllegalArgumentException if the recipient is invalid or the message or complete batch exceeds its UTF-8 byte limit.
      * @see #broadcastTeamMessage
      * @see #getTeammateIds
      */
     void sendTeamMessage(int teammateId, Object message);
+
+    /**
+     * Broadcasts ordered payloads as one packet and one team-message event on the next turn. Each entry counts toward
+     * {@value Constants#MAX_LOGICAL_TEAM_MESSAGES_PER_TURN}; the batch counts as one packet toward
+     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}. All recipients must support batch version 1.
+     * Invalid batches are rejected before enqueue.
+     *
+     * @param messages non-empty ordered payloads to broadcast
+     * @throws IllegalArgumentException if the collection is empty or contains {@code null}
+     * @throws BotException if the per-turn logical payload limit has been reached
+     */
+    void broadcastTeamMessageBatch(Collection<?> messages);
+
+    /**
+     * Sends ordered payloads to one teammate as one packet and one team-message event on the next turn. Each entry
+     * counts toward {@value Constants#MAX_LOGICAL_TEAM_MESSAGES_PER_TURN}; the batch counts as one packet toward
+     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}. The recipient must support batch version 1.
+     * Invalid batches are rejected before enqueue.
+     *
+     * @param teammateId recipient teammate ID
+     * @param messages non-empty ordered payloads to send
+     * @throws IllegalArgumentException if the recipient or batch is invalid
+     * @throws BotException if the per-turn logical payload limit has been reached
+     */
+    void sendTeamMessageBatch(int teammateId, Collection<?> messages);
 
     /**
      * Checks if the movement has been stopped.

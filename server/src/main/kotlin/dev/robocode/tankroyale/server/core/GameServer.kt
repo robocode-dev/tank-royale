@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.connection.GameServerConnectionListener
+import dev.robocode.tankroyale.server.connection.TeamMessagePolicy
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.InitialPosition
@@ -12,6 +13,7 @@ import org.java_websocket.WebSocket
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 
+private const val TURN_CALLBACK_HANDOFF_MARGIN_NANOS = 1_200_000L
 
 /**
  * Game server responsible for managing the full lifecycle of a Tank Royale game session.
@@ -73,8 +75,17 @@ class GameServer(
     @Volatile
     private var lastTickTurnNumber: Int = 0
 
+    /** Round number of the last processed tick, paired with [lastTickTurnNumber] for diagnostics. */
+    @Volatile
+    private var lastTickRoundNumber: Int = 0
+
+    /** Fixed-rate deadline for dispatching the next tick. */
+    @Volatile
+    private var nextTickDeadlineNanos: Long? = null
+
     /** Starts this server */
     fun start() {
+        TurnTimingDiagnostics.clear()
         log.info("Starting server on port ${config.port} with supporting game type(s): ${config.gameTypes.joinToString()}")
         connectionHandler.start()
     }
@@ -84,6 +95,8 @@ class GameServer(
         log.info("Stopping server")
         lifecycleManager.stopTimers()
         connectionHandler.stop()
+        TurnTimingDiagnostics.dumpSkippedTurnWindows()
+        TurnTimingDiagnostics.dumpSampledTiming()
     }
 
     /** Prepares the game and wait for participants to become 'ready' */
@@ -124,11 +137,21 @@ class GameServer(
         timerToShutdown?.shutdown()
     }
 
+    /**
+     * Teammate IDs each bot received in its game-started event. Team-message receivers are checked against this
+     * roster, since it is what the bot APIs validate against, even after a teammate disconnects.
+     */
+    @Volatile
+    private var gameStartTeammateIds: Map<BotId, Set<BotId>> = emptyMap()
+
     /** Send game-started event to all participant bots to get them started */
     private fun sendGameStartedToParticipants() {
         val gameSetup = GameSetupMapper.map(gameSetup)
         val botHandshakes = connectionHandler.getBotHandshakes()
 
+        gameStartTeammateIds = participantRegistry.participantIds.entries.associate { (conn, botId) ->
+            botId to getTeammateIds(botId, botHandshakes[conn]?.teamId)
+        }
         participantRegistry.participantIds.forEach { (conn, botId) ->
             val teamId = botHandshakes[conn]?.teamId
             val gameStartedForBot = createGameStartedEventForBot(botId, teamId, gameSetup)
@@ -170,6 +193,7 @@ class GameServer(
     /** Starts a new game */
     private fun startGame() {
         log.info("Starting game")
+        nextTickDeadlineNanos = null
         participantRegistry.clearReadyParticipants()
         participantRegistry.populateParticipantMap()
         participantRegistry.restorePersistedPolicies()
@@ -235,22 +259,61 @@ class GameServer(
     }
 
     private fun resetTurnTimeout() {
+        val maxDelayNanos = gameSetup.turnTimeout.inWholeNanoseconds
         lifecycleManager.turnTimeoutTimer?.schedule(
             minDelayNanos = 0L,
-            maxDelayNanos = gameSetup.turnTimeout.inWholeNanoseconds
+            maxDelayNanos = maxDelayNanos
         )
         turnStartTimeNanos = System.nanoTime()
+        TurnTimingDiagnostics.recordServer(
+            "turn-timeout-scheduled",
+            lastTickRoundNumber,
+            lastTickTurnNumber,
+            turnStartTimeNanos,
+            "maxDelayNanos=$maxDelayNanos tps=$tps",
+        )
     }
 
-    private fun applyVisualDelay(botProcessingDurationNanos: Long) {
+    private fun applyVisualDelay(nextTickDeadlineNanos: Long, expectedNextUpdateNanos: Long) {
         val currentTps = tps
         if (currentTps <= 0) return
 
-        val turnDurationNanos = 1_000_000_000L / currentTps
-        val sleepNanos = turnDurationNanos - botProcessingDurationNanos
+        val callbackDeadlineNanos = nextTickDeadlineNanos - expectedNextUpdateNanos
+        val sleepNanos = callbackDeadlineNanos - System.nanoTime()
+        val delayStartedAtNanos = System.nanoTime()
+        TurnTimingDiagnostics.recordServer(
+            "visual-delay-start",
+            lastTickRoundNumber,
+            lastTickTurnNumber,
+            delayStartedAtNanos,
+            "requestedSleepNanos=${sleepNanos.coerceAtLeast(0)} nextTickDeadlineNanos=$nextTickDeadlineNanos " +
+                "expectedNextUpdateNanos=$expectedNextUpdateNanos",
+        )
         if (sleepNanos > 0) {
             Thread.sleep(sleepNanos / 1_000_000, (sleepNanos % 1_000_000).toInt())
         }
+        val delayCompletedAtNanos = System.nanoTime()
+        TurnTimingDiagnostics.recordServer(
+            "visual-delay-complete",
+            lastTickRoundNumber,
+            lastTickTurnNumber,
+            delayCompletedAtNanos,
+            "actualDelayNanos=${delayCompletedAtNanos - delayStartedAtNanos} " +
+                "callbackDeadlineNanos=$callbackDeadlineNanos",
+        )
+    }
+
+    private fun advanceNextTickDeadline(updateCompletedAtNanos: Long): Long? {
+        val currentTps = tps
+        if (currentTps <= 0) {
+            nextTickDeadlineNanos = null
+            return null
+        }
+
+        val nextTickDurationNanos = 1_000_000_000L / currentTps
+        val nextTickDeadline = (nextTickDeadlineNanos ?: updateCompletedAtNanos) + nextTickDurationNanos
+        nextTickDeadlineNanos = nextTickDeadline
+        return nextTickDeadline
     }
 
     // Must be called while holding tickLock.
@@ -289,10 +352,18 @@ class GameServer(
         timerToShutdown?.shutdown()
     }
 
-    private fun onNextTurn() {
+    private fun onNextTurn(rescheduleTurnTimeout: Boolean = true) {
         if (lifecycleManager.serverState !== ServerState.GAME_RUNNING) return
 
-        val botProcessingDurationNanos = System.nanoTime() - turnStartTimeNanos
+        val advanceStartedAtNanos = System.nanoTime()
+        val botProcessingDurationNanos = advanceStartedAtNanos - turnStartTimeNanos
+        TurnTimingDiagnostics.recordServer(
+            "turn-advance-start",
+            lastTickRoundNumber,
+            lastTickTurnNumber,
+            advanceStartedAtNanos,
+            "elapsedSinceTimerStartNanos=$botProcessingDurationNanos",
+        )
 
         // Check for alive bots that have breakpoint mode enabled and have NOT sent an intent yet.
         // This must be done inside tickLock to get a consistent snapshot of botsThatSentIntent.
@@ -307,6 +378,7 @@ class GameServer(
         }
 
         if (breakpointBotIds.isNotEmpty()) {
+            nextTickDeadlineNanos = null
             lifecycleManager.breakpointPausedForBots.addAll(breakpointBotIds)
             lifecycleManager.pauseGame()
             broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.BREAKPOINT)
@@ -316,6 +388,8 @@ class GameServer(
             return
         }
 
+        var updateCompletedAtNanos = 0L
+        var nextTickDeadline: Long? = null
         synchronized(tickLock) {
             val snapshot = updateGameState()
             onNextTick(snapshot.lastRound)
@@ -324,24 +398,49 @@ class GameServer(
                 onGameEnded()
             }
             botsThatSentIntent.clear()
+
+            updateCompletedAtNanos = System.nanoTime()
+            if (
+                rescheduleTurnTimeout &&
+                lifecycleManager.serverState === ServerState.GAME_RUNNING &&
+                !lifecycleManager.debugMode
+            ) {
+                resetTurnTimeout()
+                if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+                    nextTickDeadline = advanceNextTickDeadline(updateCompletedAtNanos)
+                } else {
+                    lifecycleManager.turnTimeoutTimer?.pause()
+                    nextTickDeadlineNanos = null
+                }
+            } else {
+                nextTickDeadlineNanos = null
+            }
         }
 
-        applyVisualDelay(botProcessingDurationNanos)
+        TurnTimingDiagnostics.recordServer(
+            "tick-update-complete",
+            lastTickRoundNumber,
+            lastTickTurnNumber,
+            updateCompletedAtNanos,
+            "updateDurationNanos=${updateCompletedAtNanos - advanceStartedAtNanos}",
+        )
+
+        if (lifecycleManager.serverState !== ServerState.GAME_RUNNING) {
+            nextTickDeadlineNanos = null
+        } else if (nextTickDeadline != null) {
+            val currentUpdateDurationNanos = updateCompletedAtNanos - advanceStartedAtNanos
+            applyVisualDelay(
+                nextTickDeadline,
+                currentUpdateDurationNanos + TURN_CALLBACK_HANDOFF_MARGIN_NANOS,
+            )
+        }
 
         // In debug mode, pause after each turn instead of auto-advancing (ADR-033).
         if (lifecycleManager.debugMode && lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+            nextTickDeadlineNanos = null
             lifecycleManager.pauseGame()
             broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.DEBUG_STEP)
             return
-        }
-
-        // Only reschedule the timer if the game is still running (not paused or stopped).
-        // If pauseGame() was called while we were sleeping in applyVisualDelay(), it paused the timer,
-        // but resetTurnTimeout() → schedule() would reset pauseStartTimeNanos=0, making isPaused()
-        // return false and leaving the timer active — so resume() would then be a no-op and the game
-        // would be stuck. Skipping resetTurnTimeout() here lets the paused state remain intact.
-        if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
-            resetTurnTimeout()
         }
     }
 
@@ -361,13 +460,14 @@ class GameServer(
         lastRound?.apply {
             lastTurn?.apply {
                 lastTickTurnNumber = turnNumber
+                lastTickRoundNumber = roundNumber
                 if (turnNumber == 1) {
                     log.debug("Round started: $roundNumber")
                     botIntents.clear()
                     transferDebugGraphicsFlagToModel()
                     broadcastRoundStartedToAll(roundNumber)
                 } else {
-                    checkForSkippedTurns(turnNumber)
+                    checkForSkippedTurns(roundNumber, turnNumber)
                     botIntents.clear()
                 }
                 val aliveBotTeamIds = aliveBotToTeamIdMap()
@@ -447,6 +547,7 @@ class GameServer(
             val enemyCount = aliveBotTeamIds.filterValues { it != teamId }.count()
 
             val event = TurnToTickEventForBotMapper.map(roundNumber, turn, participantId, enemyCount) ?: continue
+            TurnTimingDiagnostics.record("tick-dispatch", participantId, roundNumber, turn.turnNumber)
             broadcaster.send(conn, event)
         }
     }
@@ -472,17 +573,23 @@ class GameServer(
         )
     }
 
-    private fun checkForSkippedTurns(currentTurnNumber: Int) {
+    private fun checkForSkippedTurns(roundNumber: Int, currentTurnNumber: Int) {
         val botsSkippingTurn = getParticipantsThatSkippedTurn()
 
         if (botsSkippingTurn.isNotEmpty()) {
+            val skippedTurnNumber = currentTurnNumber - 1
             val skippedTurn = SkippedTurnEvent().also {
                 it.type = Message.Type.SKIPPED_TURN_EVENT
-                it.turnNumber = currentTurnNumber - 1 // last turn number
+                it.turnNumber = skippedTurnNumber
             }
             val json = gson.toJson(skippedTurn)
 
-            botsSkippingTurn.forEach { bot -> connectionHandler.send(bot, json) }
+            botsSkippingTurn.forEach { bot ->
+                val botId = participantRegistry.participantIds[bot] ?: return@forEach
+                TurnTimingDiagnostics.record("skipped-turn-detected", botId, roundNumber, skippedTurnNumber)
+                connectionHandler.send(bot, json)
+                TurnTimingDiagnostics.record("skipped-turn-event-sent", botId, roundNumber, skippedTurnNumber)
+            }
         }
     }
 
@@ -552,7 +659,37 @@ class GameServer(
      * @param intent the bot intent received from the bot.
      */
     internal fun handleBotIntent(conn: WebSocket, intent: dev.robocode.tankroyale.schema.BotIntent) {
+        val intentReceivedAtNanos = TurnTimingDiagnostics.timestampIfEnabled()
         if (lifecycleManager.serverState !== ServerState.GAME_RUNNING && lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
+
+        val senderId = participantRegistry.participantIds[conn]
+        if (senderId != null && intentReceivedAtNanos != null) {
+            TurnTimingDiagnostics.record(
+                "intent-arrival",
+                senderId,
+                lastTickRoundNumber,
+                lastTickTurnNumber,
+                intentReceivedAtNanos,
+            )
+            intent.stdOut?.takeIf { "BOT_TIMING_BATCH" in it }?.let { trace ->
+                TurnTimingDiagnostics.record(
+                    "bot-timing-batch",
+                    senderId,
+                    lastTickRoundNumber,
+                    lastTickTurnNumber,
+                    detail = trace.replace('\n', '|').take(12_000),
+                )
+            }
+        }
+        val teamId = connectionHandler.getBotHandshakes()[conn]?.teamId
+        val connectedTeammateIds = senderId?.let { getTeammateIds(it, teamId) } ?: emptySet()
+        val gameStartTeammates = senderId?.let { gameStartTeammateIds[it] } ?: emptySet()
+        TeamMessagePolicy.recipientViolation(
+            intent.teamMessages, gameStartTeammates, connectedTeammateIds, ::supportsTeamMessageBatch
+        )?.let { reason ->
+            conn.close(1008 /* RFC 6455 policy violation */, reason)
+            return
+        }
 
         var shouldProcessBreakpointTurn = false
         synchronized(tickLock) {
@@ -586,11 +723,24 @@ class GameServer(
         }
     }
 
+    private fun supportsTeamMessageBatch(botId: BotId): Boolean {
+        val socket = participantRegistry.participantIds.entries.firstOrNull { it.value == botId }?.key ?: return false
+        return (connectionHandler.getBotHandshakes()[socket]?.teamMessageBatchVersion ?: 0) >= 1
+    }
+
     private fun checkAllBotsResponded() {
         val aliveParticipants = participantRegistry.participants.filter { conn ->
             participantRegistry.participantIds[conn]?.let { botId -> modelUpdater?.isAlive(botId) == true } ?: false
         }
         if (botsThatSentIntent.containsAll(aliveParticipants)) {
+            val readyAtNanos = System.nanoTime()
+            TurnTimingDiagnostics.recordServer(
+                "all-bots-responded",
+                lastTickRoundNumber,
+                lastTickTurnNumber,
+                readyAtNanos,
+                "elapsedSinceTimerStartNanos=${readyAtNanos - turnStartTimeNanos}",
+            )
             lifecycleManager.turnTimeoutTimer?.notifyReady()
         }
     }
@@ -631,6 +781,7 @@ class GameServer(
      * Broadcasts the paused event to observers if the state transitions to [ServerState.GAME_PAUSED].
      */
     internal fun handlePauseGame() {
+        nextTickDeadlineNanos = null
         lifecycleManager.pauseGame()
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
             broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.PAUSE)
@@ -644,6 +795,7 @@ class GameServer(
     internal fun handleResumeGame() {
         if (lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
         log.info("Resuming game")
+        nextTickDeadlineNanos = null
         lifecycleManager.debugMode = false
         lifecycleManager.serverState = ServerState.GAME_RUNNING
         broadcastGameResumedToObservers()
@@ -661,7 +813,7 @@ class GameServer(
     internal fun handleNextTurn() {
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
             lifecycleManager.serverState = ServerState.GAME_RUNNING
-            onNextTurn()
+            onNextTurn(rescheduleTurnTimeout = false)
             // In debug mode, onNextTurn() already paused and broadcast debug_step.
             // In normal mode, re-pause explicitly (no broadcast — client stays in paused state).
             if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
@@ -682,6 +834,7 @@ class GameServer(
         if (tps == newTps) return
         val wasPaused = tps == 0
         tps = newTps
+        nextTickDeadlineNanos = null
 
         broadcaster.broadcastToObserverAndControllers(TpsChangedEvent().also {
             it.type = Message.Type.TPS_CHANGED_EVENT
@@ -699,8 +852,8 @@ class GameServer(
             resetTurnTimeout()
         }
         // If changing between two nonzero TPS values while already running, do nothing:
-        // onNextTurn() calls resetTurnTimeout() at the end of each turn, which picks up the new TPS
-        // via applyVisualDelay(). Calling resetTurnTimeout() here would schedule an extra immediate
+        // onNextTurn() picks up the new TPS at the next tick deadline. Calling resetTurnTimeout() here
+        // would schedule an extra immediate
         // turn on the timer thread, racing with any in-progress turn and causing a double-turn.
     }
 

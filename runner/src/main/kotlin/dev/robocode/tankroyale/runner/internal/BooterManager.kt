@@ -30,6 +30,7 @@ internal class BooterManager(
     private val serverUrl: String,
     private val botSecret: String,
     private val captureOutput: Boolean = true,
+    private val turnTimingDiagnosticsEnabled: Boolean = false,
 ) : AutoCloseable {
 
     private val logger = Logger.getLogger(BooterManager::class.java.name)
@@ -82,6 +83,9 @@ internal class BooterManager(
         botDirs.forEach { args += it.toAbsolutePath().toString() }
 
         val process = ProcessBuilder(args).apply {
+            if (turnTimingDiagnosticsEnabled) {
+                environment()["ROBOCODE_TURN_TIMING_DIAGNOSTICS"] = "true"
+            }
             redirectErrorStream(true)
         }.start()
         processRef.set(process)

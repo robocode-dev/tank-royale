@@ -1,11 +1,15 @@
 $id: team-message.schema.yaml
 $schema: https://json-schema.org/2020-12/schema#
-description: Message sent between teammates
+description: >-
+  Message sent between teammates. When `messageType` is `team-message-batch-v1`, `message` contains the compact JSON
+  envelope `{"messages":[{"messageType":"...","message":"..."}]}`. The batch envelope carries ordered logical
+  payloads through one packet and one next-turn event.
 properties:
   message:
-    description: The received message, e.g. in JSON format
+    description: >-
+      The encoded message payload, e.g. compact JSON. Its UTF-8 representation is limited to 49152 bytes. A batch
+      packet carries an ordered `messages` array as one compact JSON string.
     type: string
-    maxLength: 32768
   messageType:
     description: The message type, e.g. a class name
     type: string
