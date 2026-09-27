@@ -15,6 +15,7 @@ from robocode_tank_royale.bot_api.internal.event_queue import EventQueue
 from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
 from robocode_tank_royale.bot_api.base_bot import BaseBot as BaseBotClass
 from robocode_tank_royale.bot_api.bot_exception import BotException
+from robocode_tank_royale.bot_api.team_message_batch import TeamMessageBatch
 from robocode_tank_royale.bot_api.bot_info import BotInfo
 from robocode_tank_royale.bot_api.initial_position import InitialPosition
 from robocode_tank_royale.bot_api.graphics import Color
@@ -88,12 +89,13 @@ def create_event(event_name):
     if event_name == "HitBotEvent": return HitBotEvent(turn_number=0, victim_id=0, energy=0, x=0, y=0, rammed=False)
     raise ValueError(f"Unknown event: {event_name}")
 
-def create_event_at(event_name, turn_number):
+def create_event_at(event_name, turn_number, sequence=0):
     if event_name == "WonRoundEvent":   return WonRoundEvent(turn_number=turn_number)
     if event_name == "DeathEvent":      return DeathEvent(turn_number=turn_number)
     if event_name == "ScannedBotEvent": return ScannedBotEvent(turn_number=turn_number, scanned_by_bot_id=0, scanned_bot_id=0, energy=0, x=0, y=0, direction=0, speed=0)
     if event_name == "SkippedTurnEvent":return SkippedTurnEvent(turn_number=turn_number)
     if event_name == "BotDeathEvent":   return BotDeathEvent(turn_number=turn_number, victim_id=0)
+    if event_name == "TeamMessageEvent":return TeamMessageEvent(turn_number=turn_number, message=str(sequence), sender_id=0)
     raise ValueError(f"Unknown event for scenario: {event_name}")
 
 @pytest.mark.Unit
@@ -164,6 +166,8 @@ def test_shared(suite_name, test_case):
             last_action_value[0] = getattr(Color, args[0].upper())
         elif method == "getConstant":
             last_action_value[0] = get_constant(args[0])
+        elif method == "createTeamMessageBatch":
+            last_action_value[0] = list(TeamMessageBatch(args[0]).messages)
         elif method == "isCritical":
             last_action_value[0] = create_event(args[0]).critical
         elif method == "getDefaultPriority":
@@ -248,6 +252,7 @@ def _run_scenario(test_case):
     handlers = MagicMock(spec=BotEventHandlers)
     queue = EventQueue(mock_internals, handlers)
 
+    sequence = 0
     for step in test_case.get('steps', []):
         action = step.get('action')
         if action == 'addEvent':
@@ -255,7 +260,8 @@ def _run_scenario(test_case):
             turn_number = step['turnNumber']
             repeat = step.get('repeat', 1)
             for _ in range(repeat):
-                queue.add_event(create_event_at(event_type, turn_number))
+                queue.add_event(create_event_at(event_type, turn_number, sequence))
+                sequence += 1
         elif action == 'dispatchEvents':
             at_turn = step['atTurn']
             queue.dispatch_events(at_turn)
@@ -268,6 +274,10 @@ def _run_scenario(test_case):
         for i, expected_type in enumerate(expected_order):
             actual = fired_calls[i][0][0]
             assert type(actual).__name__ == expected_type, f"Event at index {i}: got {type(actual).__name__}, expected {expected_type}"
+    if 'dispatchedMessages' in expect_after:
+        actual_messages = [call[0][0].message for call in handlers.fire_event.call_args_list
+                           if isinstance(call[0][0], TeamMessageEvent)]
+        assert actual_messages == expect_after['dispatchedMessages'], "Team message dispatch order mismatch"
     if 'queueSize' in expect_after:
         expected_size = expect_after['queueSize']
         assert len(queue.events) == expected_size, f"Queue size mismatch: got {len(queue.events)}, expected {expected_size}"

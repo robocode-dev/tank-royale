@@ -82,6 +82,10 @@ properties:
       Whether a debugger is attached to the bot process when connecting to
       the server. This is informational only and does not affect gameplay.
     type: boolean
+  teamMessageBatchVersion:
+    description: Highest supported standard team-message batch payload version. Omit when batching is unsupported.
+    type: integer
+    minimum: 1
 required:
   - sessionId
   - name

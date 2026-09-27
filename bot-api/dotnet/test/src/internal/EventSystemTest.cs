@@ -68,7 +68,9 @@ public class EventSystemTest
         public ICollection<int> TeammateIds => new List<int>();
         public bool IsTeammate(int botId) => false;
         public void BroadcastTeamMessage(object message) {}
+        public void BroadcastTeamMessageBatch(System.Collections.IEnumerable messages) {}
         public void SendTeamMessage(int teammateId, object message) {}
+        public void SendTeamMessageBatch(int teammateId, System.Collections.IEnumerable messages) {}
         public Color? BodyColor { get; set; }
         public Color? TurretColor { get; set; }
         public Color? RadarColor { get; set; }

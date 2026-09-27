@@ -2,7 +2,9 @@ package core
 
 import dev.robocode.tankroyale.schema.BotAddress
 import dev.robocode.tankroyale.schema.BotHandshake
+import dev.robocode.tankroyale.schema.BotIntent
 import dev.robocode.tankroyale.schema.BotPolicyUpdate
+import dev.robocode.tankroyale.schema.TeamMessage
 import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.core.*
@@ -12,6 +14,7 @@ import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.java_websocket.WebSocket
 
 class GameLifecycleTest : FunSpec({
@@ -118,6 +121,52 @@ class GameLifecycleTest : FunSpec({
         // Abort game -> GAME_STOPPED
         gameServer.handleAbortGame()
         lifecycleManager.serverState shouldBe ServerState.GAME_STOPPED
+    }
+
+    test("PRO-009: Positive: directed team message to a teammate that left keeps the sender connected")
+        .config(tags = setOf(Tag("PRO-009"))) {
+        val connectionHandler = mockk<ConnectionHandler>(relaxed = true)
+        val participantRegistry = ParticipantRegistry(connectionHandler)
+        val lifecycleManager = GameLifecycleManager()
+        val gameServer = createGameServer(connectionHandler, participantRegistry, lifecycleManager)
+
+        val sender = mockk<WebSocket>(relaxed = true)
+        val teammate = mockk<WebSocket>(relaxed = true)
+        val enemy = mockk<WebSocket>(relaxed = true)
+        val handshakes = mutableMapOf(
+            sender to createBotHandshake("Sender").also { it.teamId = 1 },
+            teammate to createBotHandshake("Teammate").also { it.teamId = 1 },
+            enemy to createBotHandshake("Enemy"),
+        )
+        every { connectionHandler.mapToBotSockets(any()) } returns setOf(sender, teammate, enemy)
+        every { connectionHandler.getBotHandshakes() } answers { handshakes.toMap() }
+
+        gameServer.handleStartGame(createValidGameSetup(), List(3) { mockk<BotAddress>() })
+        listOf(sender, teammate, enemy).forEach { gameServer.handleBotReady(it) }
+        gameServer.handlePauseGame() // keep turns from running while the intents are checked
+
+        val teammateId = participantRegistry.participantIds.getValue(teammate).value
+        val enemyId = participantRegistry.participantIds.getValue(enemy).value
+
+        // The connection handler drops the handshake of a bot that disconnects
+        handshakes.remove(teammate)
+        gameServer.handleBotLeft(teammate)
+
+        fun directedIntent(receiverId: Int) = BotIntent().also {
+            it.teamMessages = listOf(TeamMessage().also { message ->
+                message.message = "\"hello\""
+                message.messageType = "java.lang.String"
+                message.receiverId = receiverId
+            })
+        }
+
+        gameServer.handleBotIntent(sender, directedIntent(teammateId))
+        verify(exactly = 0) { sender.close(any<Int>(), any<String>()) }
+
+        gameServer.handleBotIntent(sender, directedIntent(enemyId))
+        verify(exactly = 1) { sender.close(1008, "Team message receiverId is not a teammate") }
+
+        gameServer.handleAbortGame()
     }
 
     test("TR-SRV-LIF-001: Negative: Ignore ready signals when not in WAIT_FOR_READY_PARTICIPANTS") {

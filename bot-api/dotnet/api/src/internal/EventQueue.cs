@@ -196,7 +196,10 @@ sealed class EventQueue : IComparer<BotEvent>
     {
         lock (_events)
         {
-            _events.Sort(this);
+            // List.Sort is unstable; OrderBy keeps same-turn, same-priority events (e.g. team messages) in arrival order
+            var sorted = _events.OrderBy(botEvent => botEvent, this).ToList();
+            _events.Clear();
+            _events.AddRange(sorted);
         }
     }
 
@@ -293,7 +296,15 @@ sealed class EventQueue : IComparer<BotEvent>
     {
         lock (_events)
         {
-            if (_events.Count < MaxQueueSize)
+            // Team messages are already bounded per sender by the protocol. A recipient may receive
+            // more than 256 in one turn, so reserve the ordinary queue limit for other events.
+            if (botEvent is not TeamMessageEvent)
+            {
+                // Old events are otherwise only removed on dispatch, so drop stale team messages here
+                // to keep the queue bounded when the bot does not call Go().
+                _events.RemoveAll(e => e is TeamMessageEvent && IsOldAndNonCriticalEvent(e, botEvent.TurnNumber));
+            }
+            if (botEvent is TeamMessageEvent || _events.Count(e => e is not TeamMessageEvent) < MaxQueueSize)
             {
                 _events.Add(botEvent);
             }

@@ -43,6 +43,7 @@ markers = [
     "VAL: Validation tests (BotInfo, constants, initial position)",
     "CMD: Command tests (fire, movement, radar)",
     "TCK: Protocol conformance / tick lifecycle tests",
+    "TR_API_TCK_022: Team-message batch API parity and validation",
     "BOT: Bot constructor and lifecycle tests",
     "UTL: Utility tests (color util, country code, JSON)",
     "GFX: Graphics tests (color, SVG, point)",

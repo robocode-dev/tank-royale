@@ -230,6 +230,7 @@ export interface BotHandshake extends Message {
   isDroid?: boolean | null;
   secret?: string | null;
   debuggerAttached?: boolean | null;
+  teamMessageBatchVersion?: number | null;
 }
 
 /** BotReady (1.4) */

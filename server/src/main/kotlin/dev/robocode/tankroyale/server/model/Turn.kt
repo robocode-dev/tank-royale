@@ -16,7 +16,7 @@ data class Turn(
     /** Observer events  */
     override val observerEvents: Set<Event>,
 
-    /** Map over bot events  */
-    override val botEvents: Map<BotId, Set<Event>>,
+    /** Ordered events for each bot. */
+    override val botEvents: Map<BotId, List<Event>>,
 
     ) : ITurn

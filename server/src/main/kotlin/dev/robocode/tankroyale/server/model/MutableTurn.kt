@@ -13,8 +13,8 @@ data class MutableTurn(
     /** Bullets */
     override val bullets: MutableSet<Bullet> = mutableSetOf(),
 
-    /** Map over bot events  */
-    override val botEvents: MutableMap<BotId, MutableSet<Event>> = mutableMapOf(),
+    /** Ordered events for each bot. Duplicates are significant for team messages. */
+    override val botEvents: MutableMap<BotId, MutableList<Event>> = mutableMapOf(),
 
     /** Observer events  */
     override val observerEvents: MutableSet<Event> = mutableSetOf(),
@@ -38,7 +38,7 @@ data class MutableTurn(
      * @param event is the bot event, only given to the specified bot.
      */
     fun addPrivateBotEvent(botId: BotId, event: Event) {
-        botEvents.getOrPut(botId) { HashSet() }.add(event)
+        botEvents.getOrPut(botId) { mutableListOf() }.add(event)
     }
 
     /**
@@ -66,8 +66,8 @@ data class MutableTurn(
     }
 
     /** Returns a deep copy of the bot events */
-    private fun copyBotEvents(): Map<BotId, Set<Event>> {
-        return botEvents.mapValues { (_, events) -> events.toSet() }
+    private fun copyBotEvents(): Map<BotId, List<Event>> {
+        return botEvents.mapValues { (_, events) -> events.toList() }
     }
 
     /**

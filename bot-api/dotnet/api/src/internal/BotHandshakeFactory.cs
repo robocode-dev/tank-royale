@@ -32,6 +32,7 @@ static class BotHandshakeFactory
             TeamVersion = EnvVars.GetTeamVersion(),
             IsDroid = isDroid,
             Secret = serverSecret,
+            TeamMessageBatchVersion = 1,
         };
 
         // Set DebuggerAttached field

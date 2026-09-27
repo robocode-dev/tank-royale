@@ -2,6 +2,7 @@ import { MathUtil } from "../util/MathUtil.js";
 import { Color } from "../graphics/Color.js";
 import { ColorUtil } from "../util/ColorUtil.js";
 import { Constants } from "../Constants.js";
+import { BotException } from "../BotException.js";
 
 export class IntentValidator {
   static validateFirepower(firepower: number): number {
@@ -96,17 +97,29 @@ export class IntentValidator {
   }
 
   static validateTeamMessage(message: unknown, currentTeamMessageCount: number): void {
-    if (currentTeamMessageCount >= 10) { // MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN
-      throw new Error("The maximum number team messages has already been reached: 10");
+    if (currentTeamMessageCount >= Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
+      throw new BotException("The maximum number of team messages has already been reached: " + Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
     }
     if (message === null || message === undefined) {
       throw new Error("The 'message' of a team message cannot be null");
     }
   }
 
+  static validateLogicalTeamMessageCount(logicalMessageCount: number): void {
+    if (logicalMessageCount > Constants.MAX_LOGICAL_TEAM_MESSAGES_PER_TURN) {
+      throw new BotException("The maximum number of logical team messages has already been reached: " + Constants.MAX_LOGICAL_TEAM_MESSAGES_PER_TURN);
+    }
+  }
+
   static validateTeamMessageSize(json: string): void {
-    if (json.length > 32768) { // TEAM_MESSAGE_MAX_SIZE
-      throw new Error("The team message is larger than the limit of 32768 bytes (compact JSON format)");
+    if (new TextEncoder().encode(json).length > Constants.TEAM_MESSAGE_MAX_SIZE) {
+      throw new Error("The team message is larger than the limit of " + Constants.TEAM_MESSAGE_MAX_SIZE + " bytes (compact JSON format)");
+    }
+  }
+
+  static validateTeamMessagesSize(json: string): void {
+    if (new TextEncoder().encode(json).length > Constants.TEAM_MESSAGES_MAX_BYTES_PER_TURN) {
+      throw new Error("The teamMessages array exceeds " + Constants.TEAM_MESSAGES_MAX_BYTES_PER_TURN + " UTF-8 bytes (compact JSON format)");
     }
   }
 }

@@ -36,6 +36,7 @@ class BotHandshakeFactory:
         # Set debugger_attached field (ADR-035)
         debugger_attached = BotHandshakeFactory.is_debugger_attached()
         handshake.debugger_attached = debugger_attached
+        handshake.team_message_batch_version = 1
 
         # Log hint if debugger is detected
         if debugger_attached:

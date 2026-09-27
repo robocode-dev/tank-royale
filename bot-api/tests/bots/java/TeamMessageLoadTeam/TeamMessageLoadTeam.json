@@ -1,0 +1,13 @@
+{
+  "name": "TeamMessageLoadTeam",
+  "version": "1.0",
+  "authors": ["Tank Royale test"],
+  "description": "Five-bot team-message throughput trial",
+  "teamMembers": [
+    "TeamMessageLoadBot",
+    "TeamMessageLoadBot",
+    "TeamMessageLoadBot",
+    "TeamMessageLoadBot",
+    "TeamMessageLoadBot"
+  ]
+}

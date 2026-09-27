@@ -16,8 +16,8 @@ interface ITurn {
     /** Observer events  */
     val observerEvents: Set<Event>
 
-    /** Map over bot events  */
-    val botEvents: Map<BotId, Set<Event>>
+    /** Ordered events for each bot. Duplicates are significant for team messages. */
+    val botEvents: Map<BotId, List<Event>>
 
     /**
      * Returns a bot instance by id.
@@ -29,7 +29,7 @@ interface ITurn {
     /**
      * Returns the event for a specific bot.
      * @param botId is the id of the bot.
-     * @return a set of bot events.
+     * @return ordered bot events, including duplicates.
      */
-    fun getEvents(botId: BotId): Set<Event> = botEvents[botId] ?: HashSet()
+    fun getEvents(botId: BotId): List<Event> = botEvents[botId] ?: emptyList()
 }

@@ -1,0 +1,14 @@
+{
+  "name": "TeamMessageBatchStress32Team",
+  "version": "1.0",
+  "authors": ["Robocode Tank Royale"],
+  "description": "Five copies of the 32-entry batch stress bot for the local 30 TPS trial.",
+  "teamMembers": [
+    "TeamMessageBatchStress32",
+    "TeamMessageBatchStress32",
+    "TeamMessageBatchStress32",
+    "TeamMessageBatchStress32",
+    "TeamMessageBatchStress32"
+  ],
+  "license": "Apache-2.0"
+}

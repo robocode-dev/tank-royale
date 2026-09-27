@@ -114,6 +114,8 @@ tasks {
     val r8ShrinkTask by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
         dependsOn(jar)
 
+        inputs.files(file(intermediateJar), file("r8-rules.pro"))
+        inputs.property("version", project.version)
         outputs.file(finalJar)
 
         doFirst {

@@ -1,0 +1,9 @@
+{
+  "name": "TeamMessageLoadBot",
+  "version": "1.0",
+  "authors": ["Tank Royale test"],
+  "description": "Team-message throughput trial bot",
+  "platform": "JVM",
+  "programmingLang": "Java 11",
+  "gameTypes": ["classic", "melee"]
+}

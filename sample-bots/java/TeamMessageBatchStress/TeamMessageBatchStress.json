@@ -1,0 +1,9 @@
+{
+  "name": "TeamMessageBatchStress",
+  "version": "1.0",
+  "authors": ["Robocode Tank Royale"],
+  "description": "Five-bot trial workload for ordered 128-entry team-message batches.",
+  "platform": "JVM",
+  "programmingLang": "Java 11",
+  "license": "Apache-2.0"
+}
