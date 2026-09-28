@@ -1,17 +1,12 @@
-## [Unreleased]
-
-### ✨ Features
-
-- Bot API (Java, .NET, Python, TypeScript): Added optional `BotInfo.teamMemberName` metadata for full team-addressing names and `getBotName(botId)` lookup for the bot itself and teammates.
-- Protocol and Server: Added an optional `botNames` map to `game-started-event-for-bot`. The server uses selected roster order for duplicate suffixes and omits opponent names.
-
-## [1.4.0] - 2026-09-23 - Batched team messages
+## [1.4.0] - 2026-09-28 - Batched team messages
 
 ### ✨ Features
 
 - Bot API (Java, .NET, Python, TypeScript): Added ordered `TeamMessageBatch` APIs for broadcast and directed team messages. A batch is delivered as one event on the next turn. Team messages from the same turn are handled in the order they were sent, do not count toward the 256-event queue limit, and are discarded once older than two turns.
 - Server and Bot APIs: Accepted up to 64 team-message packets and 128 logical payloads per bot per turn, with a 48 KiB UTF-8 limit per encoded packet and a 256 KiB UTF-8 limit for the compact `teamMessages` array. Invalid client calls fail before enqueue; invalid server intents are rejected as a whole. Messages to a teammate that has left the game are dropped without disconnecting the sender.
 - Server: Added batch protocol version 1 to bot handshakes. A sender can use batches only when every recipient advertises support.
+- Bot API (Java, .NET, Python, TypeScript): Added optional `BotInfo.teamMemberName` metadata for full team-addressing names and `getBotName(botId)` lookup for the bot itself and teammates.
+- Protocol and Server: Added an optional `botNames` map to `game-started-event-for-bot`. The server uses selected roster order for duplicate suffixes and omits opponent names.
 
 ### 📚 Documentation
 
