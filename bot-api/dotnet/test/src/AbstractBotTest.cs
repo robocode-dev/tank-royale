@@ -117,7 +117,7 @@ public class AbstractBotTest
     /// <returns>The task running the bot</returns>
     protected Task StartAsync(BaseBot bot)
     {
-        var task = Task.Run(bot.Start);
+        var task = Task.Factory.StartNew(bot.Start, TaskCreationOptions.LongRunning);
         _trackedTasks.Add(task);
         return task;
     }
@@ -129,7 +129,7 @@ public class AbstractBotTest
     /// <param name="bot">The bot to run</param>
     protected void GoAsync(BaseBot bot)
     {
-        var task = Task.Run(bot.Go);
+        var task = Task.Factory.StartNew(bot.Go, TaskCreationOptions.LongRunning);
         _trackedTasks.Add(task);
     }
 
