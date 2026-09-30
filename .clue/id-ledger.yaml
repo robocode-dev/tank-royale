@@ -346,6 +346,7 @@ events:
     - {id: TASKS-004, kind: numeric, state: reserved, prefix: TASKS, component: "4"}
     - {id: CH-050, kind: numeric, state: live, prefix: CH, component: "50"}
     - {id: TASKS-004, kind: numeric, state: live, prefix: TASKS, component: "4"}
+    - {id: CAP-019, kind: numeric, state: live, prefix: CAP, component: "19"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

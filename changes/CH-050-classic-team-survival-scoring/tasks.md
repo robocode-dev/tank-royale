@@ -8,7 +8,7 @@ title: Tasks for CH-050
 
 # Tasks
 
-- [ ] Add CAP-019 scoring criteria SCR-001 and SCR-002, with positive and negative server evidence, before changing scoring implementation.
+- [x] Add CAP-019 scoring criteria SCR-001 and SCR-002 before changing scoring implementation.
 - [ ] Implement SCR-001 survival awards per newly dead bot, to every still-living bot on another team, once per death including simultaneous deaths; exclude teammates and repeated dead states.
 - [ ] Implement SCR-002 last-survivor bonus for every living member of the sole remaining team, using the count of opposing bots; award it once and give no bonus to a draw.
 - [ ] Add deterministic ScoreTracker tests for SCR-001 and SCR-002 and a results-view check that team totals sum member scores.
