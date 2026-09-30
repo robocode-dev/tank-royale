@@ -11,11 +11,11 @@ class ScoreAndDamage {
     private val bulletKillEnemyIds = mutableSetOf<ParticipantId>()
     private val ramKillEnemyIds = mutableSetOf<ParticipantId>()
 
-    /** The survival count, which is the number of rounds where the bot has survived. */
+    /** The number of enemy bot deaths this bot survived. */
     var survivalCount: Int = 0
         private set
 
-    /** The last survivor count, which is the number of bots that was killed, before this bot became the last survivor. */
+    /** The number of opposing bots counted for this bot's last-survivor bonus. */
     var lastSurvivorCount: Int = 0
         private set
 
@@ -80,14 +80,14 @@ class ScoreAndDamage {
     }
 
     /**
-     * Increment the survival count, meaning that this bot has survived an additional round.
+     * Increment the number of enemy bot deaths this bot survived.
      */
     fun incrementSurvivalCount() {
         survivalCount++
     }
 
     /**
-     * Add number of dead enemies to the last survivor count, which only counts, if this bot becomes the last survivor.
+     * Add the number of opposing bots counted for this bot's last-survivor bonus.
      * @param numberOfDeadEnemies is the number of dead bots that must be added to the last survivor count.
      */
     fun addLastSurvivorCount(numberOfDeadEnemies: Int) {

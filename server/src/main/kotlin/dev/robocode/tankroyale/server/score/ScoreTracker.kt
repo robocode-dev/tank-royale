@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.server.model.Score
 import dev.robocode.tankroyale.server.rules.*
 
 /**
- * Utility class used for keeping track of the score for an individual bot and/or team in a game.
+ * Utility class used for keeping track of the score for each bot in a game.
  * @param participantIds is the ids of all participant bots and teams.
  */
 class ScoreTracker(private val participantIds: Set<ParticipantId>) {
@@ -16,7 +16,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     // Map over alive participants
     private val aliveParticipants = mutableSetOf<ParticipantId>()
 
-    private var lastSurvivors: Set<ParticipantId>? = null
+    private var lastSurvivorBonusAwarded = false
 
     init {
         participantIds.forEach { scoreAndDamages[it] = ScoreAndDamage() }
@@ -29,7 +29,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      */
     fun clear() {
         aliveParticipants.apply { clear(); addAll(participantIds) }
-        lastSurvivors = null
+        lastSurvivorBonusAwarded = false
         scoreAndDamages.values.forEach { it.clear() }
     }
 
@@ -88,28 +88,34 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     }
 
     /**
-     * Registers the deaths of bots.
-     * @param victimIds is the ids of all the victims.
+     * Registers newly defeated bots and awards survival and last-survivor scores.
+     * @param victimIds is the set of bots reported as defeated on this turn.
      */
     fun registerDeaths(victimIds: Set<ParticipantId>) {
-        if (victimIds.isNotEmpty()) {
-            aliveParticipants.apply {
-                val recentSurvivors = HashSet(this)
+        val newlyDefeated = aliveParticipants.intersect(victimIds)
+        if (newlyDefeated.isEmpty()) return
 
-                removeAll(victimIds)
-                forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
-
-                if (lastSurvivors == null) {
-                    val deadCount = participantIds.size - size
-                    lastSurvivors = when (size) {
-                        0 -> recentSurvivors
-                        1 -> aliveParticipants
-                        else -> null
-                    }
-                    lastSurvivors?.forEach { scoreAndDamages[it]?.addLastSurvivorCount(deadCount) }
-                }
-            }
+        // All deaths from this turn are already dead when Classic awards survival points.
+        aliveParticipants.removeAll(newlyDefeated)
+        newlyDefeated.forEach { defeated ->
+            aliveParticipants
+                .filter { survivor -> survivor.id != defeated.id }
+                .forEach { survivor -> scoreAndDamages[survivor]?.incrementSurvivalCount() }
         }
+
+        awardLastSurvivorBonusIfNeeded()
+    }
+
+    private fun awardLastSurvivorBonusIfNeeded() {
+        if (lastSurvivorBonusAwarded || aliveParticipants.isEmpty()) return
+
+        val remainingGroupIds = aliveParticipants.map { it.id }.toSet()
+        if (remainingGroupIds.size != 1) return
+
+        val winningGroupId = remainingGroupIds.single()
+        val opponentCount = participantIds.count { it.id != winningGroupId }
+        lastSurvivorBonusAwarded = true
+        aliveParticipants.forEach { scoreAndDamages[it]?.addLastSurvivorCount(opponentCount) }
     }
 
     private fun getScoreAndDamage(participantId: ParticipantId): ScoreAndDamage? =

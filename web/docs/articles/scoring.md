@@ -12,11 +12,11 @@ When a bot kills an enemy, it scores an additional 20% of all the damage it did 
 
 ### Survival Score
 
-Each bot that survives a round scores 50 points every time another bot dies.
+Each living bot scores 50 points when a bot on another team dies. A bot does not earn survival points for a teammate's death. In team battles, each member's individual score is calculated this way, then the team result adds its members' scores together.
 
 ### Last Survivor Bonus
 
-The last bot alive scores 10 additional points for each opponent bot that has died.
+When only one team remains, each living member of that team scores 10 additional points for every bot on opposing teams. An unteamed bot counts as its own team, so this rule also covers solo battles.
 
 ### Ram Damage
 

@@ -19,10 +19,10 @@ data class Score(
     /** Ram kill bonus (accumulated from killed opponents) */
     val ramKillBonus: Double = 0.0,
 
-    /** Survival score (whenever another participant is defeated) */
+    /** Survival score (for each defeated bot on another team) */
     val survivalScore: Double = 0.0,
 
-    /** Last survivor bonus (the last survivor) */
+    /** Last-survivor bonus (for each surviving member of the last team) */
     val lastSurvivorBonus: Double = 0.0,
 
     /** Number of 1st places */
