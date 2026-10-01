@@ -64,6 +64,22 @@ class ScoringCompatibilityTest {
     }
 
     @Test
+    @Tag("SCR-001")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testSCR001_UnitPositive_distinguishesNegativeTeamIdFromUnteamedBot() {
+        val unteamedBot = ParticipantId(BotId(1))
+        val negativeTeamMember = ParticipantId(BotId(2), TeamId(-1))
+        val otherTeamMember = ParticipantId(BotId(3), TeamId(30))
+        val tracker = ScoreTracker(setOf(unteamedBot, negativeTeamMember, otherTeamMember))
+
+        tracker.registerDeaths(setOf(unteamedBot))
+
+        assertEquals(SCORE_PER_SURVIVAL, tracker.calculateScore(negativeTeamMember).survivalScore, 0.0)
+        assertEquals(SCORE_PER_SURVIVAL, tracker.calculateScore(otherTeamMember).survivalScore, 0.0)
+    }
+
+    @Test
     @Tag("SCR-002")
     @Tag("Unit")
     @Tag("Positive")
@@ -87,6 +103,21 @@ class ScoringCompatibilityTest {
         val teamResult = results.single { it.participantId.teamId == teamA }
         assertEquals(4 * SCORE_PER_SURVIVAL, teamResult.survivalScore, 0.0)
         assertEquals(4 * BONUS_PER_LAST_SURVIVOR, teamResult.lastSurvivorBonus, 0.0)
+    }
+
+    @Test
+    @Tag("SCR-002")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testSCR002_UnitPositive_countsUnteamedOpponentWithNegativeTeamIdCollision() {
+        val unteamedBot = ParticipantId(BotId(1))
+        val negativeTeamMember = ParticipantId(BotId(2), TeamId(-1))
+        val otherOpponent = ParticipantId(BotId(3), TeamId(20))
+        val tracker = ScoreTracker(setOf(unteamedBot, negativeTeamMember, otherOpponent))
+
+        tracker.registerDeaths(setOf(unteamedBot, otherOpponent))
+
+        assertEquals(2 * BONUS_PER_LAST_SURVIVOR, tracker.calculateScore(negativeTeamMember).lastSurvivorBonus, 0.0)
     }
 
     @Test

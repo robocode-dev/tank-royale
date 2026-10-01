@@ -1,7 +1,9 @@
 package dev.robocode.tankroyale.server.score
 
+import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.Score
+import dev.robocode.tankroyale.server.model.TeamId
 import dev.robocode.tankroyale.server.rules.*
 
 /**
@@ -99,7 +101,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
         aliveParticipants.removeAll(newlyDefeated)
         newlyDefeated.forEach { defeated ->
             aliveParticipants
-                .filter { survivor -> survivor.id != defeated.id }
+                .filter { survivor -> survivor.scoringGroup() != defeated.scoringGroup() }
                 .forEach { survivor -> scoreAndDamages[survivor]?.incrementSurvivalCount() }
         }
 
@@ -109,14 +111,22 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     private fun awardLastSurvivorBonusIfNeeded() {
         if (lastSurvivorBonusAwarded || aliveParticipants.isEmpty()) return
 
-        val remainingGroupIds = aliveParticipants.map { it.id }.toSet()
-        if (remainingGroupIds.size != 1) return
+        val remainingGroups = aliveParticipants.map { it.scoringGroup() }.toSet()
+        if (remainingGroups.size != 1) return
 
-        val winningGroupId = remainingGroupIds.single()
-        val opponentCount = participantIds.count { it.id != winningGroupId }
+        val winningGroup = remainingGroups.single()
+        val opponentCount = participantIds.count { it.scoringGroup() != winningGroup }
         lastSurvivorBonusAwarded = true
         aliveParticipants.forEach { scoreAndDamages[it]?.addLastSurvivorCount(opponentCount) }
     }
 
     private fun getScoreAndDamage(participantId: ParticipantId): ScoreAndDamage? =
         scoreAndDamages[participantId]}
+
+private sealed interface ScoringGroup {
+    data class Team(val teamId: TeamId) : ScoringGroup
+    data class UnteamedBot(val botId: BotId) : ScoringGroup
+}
+
+private fun ParticipantId.scoringGroup(): ScoringGroup =
+    teamId?.let { ScoringGroup.Team(it) } ?: ScoringGroup.UnteamedBot(botId)
