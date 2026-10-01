@@ -1000,6 +1000,11 @@ claims:
       state: reserved
       prefix: RDA
       component: "9"
+    - id: RPR-001
+      kind: numeric
+      state: reserved
+      prefix: RPR
+      component: "1"
     - id: SCR-001
       kind: numeric
       state: reserved
@@ -1106,11 +1111,11 @@ high-water:
       state: reserved
       prefix: C
       component: "4"
-    - id: CAP-019
+    - id: CAP-020
       kind: numeric
       state: reserved
       prefix: CAP
-      component: "19"
+      component: "20"
     - id: CH-051
       kind: numeric
       state: reserved
