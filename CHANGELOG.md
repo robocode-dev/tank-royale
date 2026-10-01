@@ -15,6 +15,7 @@
 ### 🐞 Bug Fixes
 
 - Server: Corrected team survival scoring so only opponents earn points for a bot's death and every living member of the last team receives the last-survivor bonus.
+- Server: Fixed observer results omitting a bot or team when their IDs and scores tied.
 - Server: Fixed a long-standing turn-scheduling race that could cause turns to be skipped when bots responded while the next-turn timer was being re-armed, and corrected pacing so server processing time and late wake-ups do not compound.
 - Build: R8 shrink tasks now track their intermediate jars and version input, so rebuilt runner distributions embed the matching server and booter versions.
 
