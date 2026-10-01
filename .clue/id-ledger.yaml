@@ -353,6 +353,8 @@ events:
     - {id: SCR-002, kind: numeric, state: live, prefix: SCR, component: "2"}
     - {id: CAP-019-criteria, kind: opaque, state: live}
     - {id: CAP-019-design, kind: opaque, state: live}
+    - {id: AN-002, kind: numeric, state: reserved, prefix: AN, component: "2"}
+    - {id: AN-002, kind: numeric, state: live, prefix: AN, component: "2"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

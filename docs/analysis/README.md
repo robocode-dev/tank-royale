@@ -6,4 +6,5 @@ An analysis document (AN-xxx) records what was investigated, what was found, and
 
 <!-- clue:index:start -->
 - [AN-001 — OpenSpec extraction report](AN-001-openspec-extraction.md) · `active`
+- [AN-002 — CombatTeam scoring and skipped-turn retest](AN-002-combatteam-retest.md) · `active`
 <!-- clue:index:end -->
