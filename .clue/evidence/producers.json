@@ -1,0 +1,16 @@
+{
+  "producers": [
+    {
+      "id": "tank-royale-scoring",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        "server/build.gradle.kts",
+        "server/src/test/kotlin/score/*Scoring*Test.kt"
+      ],
+      "command": ["python", ".clue/evidence/junit_scoring_producer.py"]
+    }
+  ]
+}

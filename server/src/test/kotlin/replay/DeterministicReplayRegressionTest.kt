@@ -76,7 +76,7 @@ class DeterministicReplayRegressionTest : FunSpec({
         }
 
         // Update this baseline only with the corresponding behavior-version bump.
-        private const val SNAPSHOT_BEHAVIOR_VERSION = 1
+        private const val SNAPSHOT_BEHAVIOR_VERSION = 2
 
         private val expectedSnapshot = """
             rounds=1;bots=1:x=100.0,y=100.0,speed=0.0,gunHeat=2.9|2:x=700.0,y=500.0,speed=0.0,gunHeat=2.9;scores=

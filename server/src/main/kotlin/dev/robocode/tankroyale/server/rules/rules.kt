@@ -69,10 +69,10 @@ const val RAM_DAMAGE = 0.6
 /** Energy gain factor, when bullet hits */
 const val BULLET_HIT_ENERGY_GAIN_FACTOR = 3
 
-/** Score per survival */
+/** Score per enemy bot defeated while the recipient remains alive */
 const val SCORE_PER_SURVIVAL = 50.0
 
-/** Bonus for last survival */
+/** Last-survivor score per opposing bot */
 const val BONUS_PER_LAST_SURVIVOR = 10.0
 
 /** Score per bullet damage */

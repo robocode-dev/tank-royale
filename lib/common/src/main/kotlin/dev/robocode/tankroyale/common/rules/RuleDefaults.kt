@@ -4,7 +4,7 @@ package dev.robocode.tankroyale.common.rules
 const val DEFAULT_GAME_TYPE = "classic"
 
 /** Current server-owned behavior compatibility version. */
-const val CURRENT_BEHAVIOR_VERSION = 1
+const val CURRENT_BEHAVIOR_VERSION = 2
 
 /** Default comma-separated list of game types supported by the server. */
 const val DEFAULT_GAME_TYPES = "classic,1v1,twinduel,melee,custom"

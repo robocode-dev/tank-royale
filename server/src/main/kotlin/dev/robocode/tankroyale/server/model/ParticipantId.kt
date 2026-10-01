@@ -8,9 +8,8 @@ package dev.robocode.tankroyale.server.model
  * If a bot is a member of a team, the team id will take precedence to present the id of this participant id.
  * If the bot is not a member of any team, the bot id will be used instead to present the id of this participant id.
  *
- * Note that when a bot id takes precedence, the negated id of the bot will be used as participant id.
- * This is done to ensure that the participant id is unique, as a bot id and team id might otherwise collide
- * (be the same).
+ * When a bot id takes precedence, its negated value is used as the compact integer id. That integer can collide
+ * with a negative team id, so callers must use the typed team and bot ids when group identity matters.
  *
  * @param botId is the bot id of the participant bot.
  * @param teamId is the team id of the participant bot, or `null` if the bot is not a member of a team.

@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "producers": [
+    {
+      "id": "tank-royale-scoring",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/producers.json",
+        "server/build.gradle.kts",
+        "server/src/test/kotlin/score/*Scoring*Test.kt"
+      ],
+      "exclude": [],
+      "inputs": [
+        {
+          "path": ".clue/evidence/aggregate.py",
+          "sha256": "cf20a3f9d5a1072a7b2d3ddfc4bc9e25575b2cbd27441aba61e9d83d9ac4768c"
+        },
+        {
+          "path": ".clue/evidence/junit_scoring_producer.py",
+          "sha256": "78c73ad8beca9842b766585039d24044139f5883f54b3806315af25599392e85"
+        },
+        {
+          "path": ".clue/evidence/producers.json",
+          "sha256": "8f54df2dd9dca59b8d36cb24cc7dcc97b06182f5ff980eb88fcb6a2bd3bb69e5"
+        },
+        {
+          "path": "server/build.gradle.kts",
+          "sha256": "9d45b2605bdfe1d13d2e14c23b2ddfb5e52fe7482e648f372f7c1e6735c7ade8"
+        },
+        {
+          "path": "server/src/test/kotlin/score/GameScoringTest.kt",
+          "sha256": "712baf2a04d0ec9f9c3ebddf286248a5e72cd021f2e5802fb444c9688ce6108b"
+        },
+        {
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "sha256": "0b0036907cc3c25a40d74ce4b488ebbc15d8a2083200002de20f8efb654ac434"
+        }
+      ],
+      "references": [
+        {
+          "id": "SCR-001",
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "subject": "ScoringCompatibilityTest.testSCR001_UnitNegative_ignoresTeammateAndRepeatedDeaths",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "SCR-001",
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "subject": "ScoringCompatibilityTest.testSCR001_UnitPositive_awardsSurvivalForEachNewOpponentDeath",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "SCR-001",
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "subject": "ScoringCompatibilityTest.testSCR001_UnitPositive_countsSimultaneousDeathsSeparately",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "SCR-001",
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "subject": "ScoringCompatibilityTest.testSCR001_UnitPositive_distinguishesNegativeTeamIdFromUnteamedBot",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "SCR-002",
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "subject": "ScoringCompatibilityTest.testSCR002_UnitNegative_doesNotAwardLastSurvivorPointsForADraw",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "SCR-002",
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "subject": "ScoringCompatibilityTest.testSCR002_UnitPositive_awardsEveryLastTeamMemberOnceAndAggregatesTheirScores",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "SCR-002",
+          "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
+          "subject": "ScoringCompatibilityTest.testSCR002_UnitPositive_countsUnteamedOpponentWithNegativeTeamIdCollision",
+          "type": "Unit",
+          "direction": "positive"
+        }
+      ]
+    }
+  ]
+}

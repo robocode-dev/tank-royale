@@ -173,9 +173,10 @@ Build a team-wide view of the battlefield:
 
 Team scoring differs from 1v1:
 
-**Points awarded to team:**
+**Team results add each member's individual score:**
 - Damage dealt by any team member
-- Survival bonuses (last team standing)
+- Each living bot earns 50 survival points for every bot defeated on another team; teammate deaths do not earn survival points
+- When one team remains, each living member earns 10 last-survivor points per opposing bot
 - Droid bonuses (droids score 2× points)
 
 **Winning strategy:**

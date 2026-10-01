@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.slf4j.api)
 
     testImplementation(platform(testLibs.junit.bom))
+    testImplementation(testLibs.junit.api)
+    testRuntimeOnly(testLibs.junit.engine)
     testImplementation(testLibs.kotest.junit6)
     testImplementation(testLibs.mockk)
 }
