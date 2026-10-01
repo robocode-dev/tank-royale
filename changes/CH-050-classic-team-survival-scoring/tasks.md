@@ -16,5 +16,5 @@ title: Tasks for CH-050
 - [x] Update the public scoring and team-strategy articles and add a user-visible server bug fix under the existing 1.4.0 changelog entry; leave VERSION unchanged.
 - [x] Add a repository-owned Kotest evidence exporter and generated manifest for SCR-001 and SCR-002.
 - [x] Run the server test suite and full clean build.
-- [ ] Run the official 1200×1200, 10-round CombatTeam comparison five times with matched local Tank Royale artifacts and capture all score components and skipped-turn rounds.
+- [x] Run the official 1200×1200, 10-round CombatTeam comparison five times with matched local Tank Royale artifacts and capture all score components and skipped-turn rounds; two component-capture runs were error-free and three recorded bridge-side CombatTeam exceptions (see `combatteam-retest.json`).
 - [ ] Run the required full build and Cliewen verification, then prepare the PR for human acceptance.

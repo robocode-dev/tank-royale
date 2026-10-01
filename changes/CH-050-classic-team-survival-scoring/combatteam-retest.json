@@ -1,0 +1,1038 @@
+{
+  "scenario": "Official teamrumble CombatTeam 3.25.0 comparison",
+  "measured_date": "2026-10-01",
+  "setup": {
+    "battlefield": "1200x1200",
+    "rounds": 10,
+    "teams": 2,
+    "members_per_team": 5
+  },
+  "artifacts": {
+    "tank_royale_source_commit": "9ce6a9312a3017a28b1289d5f0098cbf168e8b42",
+    "tank_royale_version": "1.4.0",
+    "bot_api_version": "1.4.0",
+    "bridge_source_commit": "134494f32d62c794dd5f5136cd5d01b591fd3ad9",
+    "bridge_api_version": "0.5.0",
+    "robots_wrapper_version": "0.3.1",
+    "combat_team_sha256": "64618918a708b58cd8877b78071e64dc77239fdf43113fade60f566962f04268"
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "setup": {
+        "width": 1200,
+        "height": 1200,
+        "rounds": 10,
+        "participants": 2,
+        "team": true
+      },
+      "classic": {
+        "completed": true,
+        "score": 21350.0,
+        "team_results": [
+          {
+            "score": 12045,
+            "thirds": 0,
+            "seconds": 4,
+            "bulletDamageBonus": 515,
+            "ramDamageBonus": 0,
+            "survival": 7350,
+            "name": "mn.CombatTeam 3.25.0 (1)",
+            "firsts": 6,
+            "rank": 1,
+            "lastSurvivorBonus": 850,
+            "ramDamage": 0,
+            "bulletDamage": 3330
+          },
+          {
+            "score": 9305,
+            "thirds": 0,
+            "seconds": 6,
+            "bulletDamageBonus": 451,
+            "ramDamageBonus": 0,
+            "survival": 5150,
+            "name": "mn.CombatTeam 3.25.0 (2)",
+            "firsts": 4,
+            "rank": 2,
+            "lastSurvivorBonus": 600,
+            "ramDamage": 0,
+            "bulletDamage": 3104
+          }
+        ]
+      },
+      "tank_royale": {
+        "completed": true,
+        "score": 19889.0,
+        "team_results": [
+          {
+            "score": 11775,
+            "thirds": 7,
+            "seconds": 5,
+            "bulletDamageBonus": 124,
+            "ramDamageBonus": 0,
+            "survival": 7650,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 7,
+            "rank": 1,
+            "lastSurvivorBonus": 1050,
+            "ramDamage": 0,
+            "bulletDamage": 2950
+          },
+          {
+            "score": 8114,
+            "thirds": 3,
+            "seconds": 5,
+            "bulletDamageBonus": 94,
+            "ramDamageBonus": 0,
+            "survival": 4850,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 3,
+            "rank": 2,
+            "lastSurvivorBonus": 450,
+            "ramDamage": 0,
+            "bulletDamage": 2719
+          }
+        ],
+        "bot_errors": [],
+        "skipped_turn_telemetry": {
+          "status": "captured",
+          "events": [
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 4,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 135
+            }
+          ]
+        }
+      }
+    },
+    {
+      "attempt": 2,
+      "setup": {
+        "width": 1200,
+        "height": 1200,
+        "rounds": 10,
+        "participants": 2,
+        "team": true
+      },
+      "classic": {
+        "completed": true,
+        "score": 20940.0,
+        "team_results": [
+          {
+            "score": 13085,
+            "thirds": 0,
+            "seconds": 3,
+            "bulletDamageBonus": 566,
+            "ramDamageBonus": 0,
+            "survival": 8100,
+            "name": "mn.CombatTeam 3.25.0 (1)",
+            "firsts": 7,
+            "rank": 1,
+            "lastSurvivorBonus": 1100,
+            "ramDamage": 0,
+            "bulletDamage": 3319
+          },
+          {
+            "score": 7855,
+            "thirds": 0,
+            "seconds": 6,
+            "bulletDamageBonus": 315,
+            "ramDamageBonus": 0,
+            "survival": 4350,
+            "name": "mn.CombatTeam 3.25.0 (2)",
+            "firsts": 4,
+            "rank": 2,
+            "lastSurvivorBonus": 350,
+            "ramDamage": 0,
+            "bulletDamage": 2839
+          }
+        ]
+      },
+      "tank_royale": {
+        "completed": true,
+        "score": 19509.0,
+        "team_results": [
+          {
+            "score": 9955,
+            "thirds": 6,
+            "seconds": 6,
+            "bulletDamageBonus": 117,
+            "ramDamageBonus": 0,
+            "survival": 6200,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 7,
+            "rank": 1,
+            "lastSurvivorBonus": 750,
+            "ramDamage": 0,
+            "bulletDamage": 2888
+          },
+          {
+            "score": 9554,
+            "thirds": 4,
+            "seconds": 4,
+            "bulletDamageBonus": 115,
+            "ramDamageBonus": 0,
+            "survival": 6300,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 3,
+            "rank": 2,
+            "lastSurvivorBonus": 550,
+            "ramDamage": 0,
+            "bulletDamage": 2589
+          }
+        ],
+        "bot_errors": [],
+        "skipped_turn_telemetry": {
+          "status": "captured",
+          "events": [
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 4,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 2
+            },
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 4,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 79
+            },
+            {
+              "bot_id": 2,
+              "round": 3,
+              "turn": 46
+            },
+            {
+              "bot_id": 5,
+              "round": 3,
+              "turn": 46
+            },
+            {
+              "bot_id": 7,
+              "round": 3,
+              "turn": 46
+            },
+            {
+              "bot_id": 8,
+              "round": 3,
+              "turn": 46
+            },
+            {
+              "bot_id": 9,
+              "round": 3,
+              "turn": 46
+            },
+            {
+              "bot_id": 10,
+              "round": 3,
+              "turn": 46
+            },
+            {
+              "bot_id": 1,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 2,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 3,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 4,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 5,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 6,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 7,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 8,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 9,
+              "round": 3,
+              "turn": 47
+            },
+            {
+              "bot_id": 10,
+              "round": 3,
+              "turn": 47
+            }
+          ]
+        }
+      }
+    },
+    {
+      "attempt": 3,
+      "setup": {
+        "width": 1200,
+        "height": 1200,
+        "rounds": 10,
+        "participants": 2,
+        "team": true
+      },
+      "classic": {
+        "completed": true,
+        "score": 20936.0,
+        "team_results": [
+          {
+            "score": 12482,
+            "thirds": 0,
+            "seconds": 5,
+            "bulletDamageBonus": 503,
+            "ramDamageBonus": 0,
+            "survival": 7950,
+            "name": "mn.CombatTeam 3.25.0 (1)",
+            "firsts": 5,
+            "rank": 1,
+            "lastSurvivorBonus": 800,
+            "ramDamage": 0,
+            "bulletDamage": 3229
+          },
+          {
+            "score": 8454,
+            "thirds": 0,
+            "seconds": 5,
+            "bulletDamageBonus": 381,
+            "ramDamageBonus": 0,
+            "survival": 4550,
+            "name": "mn.CombatTeam 3.25.0 (2)",
+            "firsts": 5,
+            "rank": 2,
+            "lastSurvivorBonus": 600,
+            "ramDamage": 0,
+            "bulletDamage": 2923
+          }
+        ]
+      },
+      "tank_royale": {
+        "completed": true,
+        "score": 19909.0,
+        "team_results": [
+          {
+            "score": 10353,
+            "thirds": 4,
+            "seconds": 4,
+            "bulletDamageBonus": 124,
+            "ramDamageBonus": 0,
+            "survival": 6650,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 5,
+            "rank": 1,
+            "lastSurvivorBonus": 700,
+            "ramDamage": 0,
+            "bulletDamage": 2879
+          },
+          {
+            "score": 9556,
+            "thirds": 6,
+            "seconds": 6,
+            "bulletDamageBonus": 113,
+            "ramDamageBonus": 0,
+            "survival": 5800,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 5,
+            "rank": 2,
+            "lastSurvivorBonus": 750,
+            "ramDamage": 0,
+            "bulletDamage": 2892
+          }
+        ],
+        "bot_errors": [
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null",
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null",
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null"
+        ],
+        "skipped_turn_telemetry": {
+          "status": "captured",
+          "events": [
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 4,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 4,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 1,
+              "round": 2,
+              "turn": 6
+            },
+            {
+              "bot_id": 3,
+              "round": 2,
+              "turn": 6
+            },
+            {
+              "bot_id": 4,
+              "round": 2,
+              "turn": 6
+            },
+            {
+              "bot_id": 5,
+              "round": 2,
+              "turn": 6
+            },
+            {
+              "bot_id": 7,
+              "round": 2,
+              "turn": 6
+            },
+            {
+              "bot_id": 9,
+              "round": 2,
+              "turn": 6
+            },
+            {
+              "bot_id": 10,
+              "round": 2,
+              "turn": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "attempt": 4,
+      "setup": {
+        "width": 1200,
+        "height": 1200,
+        "rounds": 10,
+        "participants": 2,
+        "team": true
+      },
+      "classic": {
+        "completed": true,
+        "score": 20894.0,
+        "team_results": [
+          {
+            "score": 11602,
+            "thirds": 0,
+            "seconds": 4,
+            "bulletDamageBonus": 535,
+            "ramDamageBonus": 0,
+            "survival": 7150,
+            "name": "mn.CombatTeam 3.25.0 (1)",
+            "firsts": 6,
+            "rank": 1,
+            "lastSurvivorBonus": 800,
+            "ramDamage": 0,
+            "bulletDamage": 3117
+          },
+          {
+            "score": 9292,
+            "thirds": 0,
+            "seconds": 6,
+            "bulletDamageBonus": 395,
+            "ramDamageBonus": 0,
+            "survival": 5350,
+            "name": "mn.CombatTeam 3.25.0 (2)",
+            "firsts": 4,
+            "rank": 2,
+            "lastSurvivorBonus": 550,
+            "ramDamage": 0,
+            "bulletDamage": 2998
+          }
+        ]
+      },
+      "tank_royale": {
+        "completed": true,
+        "score": 19285.0,
+        "team_results": [
+          {
+            "score": 9709,
+            "thirds": 7,
+            "seconds": 5,
+            "bulletDamageBonus": 123,
+            "ramDamageBonus": 0,
+            "survival": 6400,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 4,
+            "rank": 1,
+            "lastSurvivorBonus": 400,
+            "ramDamage": 0,
+            "bulletDamage": 2785
+          },
+          {
+            "score": 9576,
+            "thirds": 3,
+            "seconds": 5,
+            "bulletDamageBonus": 105,
+            "ramDamageBonus": 0,
+            "survival": 6100,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 6,
+            "rank": 2,
+            "lastSurvivorBonus": 600,
+            "ramDamage": 0,
+            "bulletDamage": 2770
+          }
+        ],
+        "bot_errors": [
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null",
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null",
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null",
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null"
+        ],
+        "skipped_turn_telemetry": {
+          "status": "captured",
+          "events": [
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 4,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 80
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 136
+            }
+          ]
+        }
+      }
+    },
+    {
+      "attempt": 5,
+      "setup": {
+        "width": 1200,
+        "height": 1200,
+        "rounds": 10,
+        "participants": 2,
+        "team": true
+      },
+      "classic": {
+        "completed": true,
+        "score": 21061.0,
+        "team_results": [
+          {
+            "score": 10508,
+            "thirds": 0,
+            "seconds": 5,
+            "bulletDamageBonus": 449,
+            "ramDamageBonus": 20,
+            "survival": 6200,
+            "name": "mn.CombatTeam 3.25.0 (1)",
+            "firsts": 5,
+            "rank": 1,
+            "lastSurvivorBonus": 700,
+            "ramDamage": 1,
+            "bulletDamage": 3137
+          },
+          {
+            "score": 10553,
+            "thirds": 0,
+            "seconds": 5,
+            "bulletDamageBonus": 486,
+            "ramDamageBonus": 18,
+            "survival": 6300,
+            "name": "mn.CombatTeam 3.25.0 (2)",
+            "firsts": 5,
+            "rank": 2,
+            "lastSurvivorBonus": 750,
+            "ramDamage": 1,
+            "bulletDamage": 2998
+          }
+        ]
+      },
+      "tank_royale": {
+        "completed": true,
+        "score": 19916.0,
+        "team_results": [
+          {
+            "score": 10178,
+            "thirds": 4,
+            "seconds": 5,
+            "bulletDamageBonus": 141,
+            "ramDamageBonus": 0,
+            "survival": 6450,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 5,
+            "rank": 1,
+            "lastSurvivorBonus": 600,
+            "ramDamage": 0,
+            "bulletDamage": 2986
+          },
+          {
+            "score": 9738,
+            "thirds": 6,
+            "seconds": 5,
+            "bulletDamageBonus": 127,
+            "ramDamageBonus": 0,
+            "survival": 6050,
+            "name": "CombatTeam 3.25.0",
+            "firsts": 5,
+            "rank": 2,
+            "lastSurvivorBonus": 600,
+            "ramDamage": 0,
+            "bulletDamage": 2961
+          }
+        ],
+        "bot_errors": [
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null",
+          "java.lang.NullPointerException: Cannot read field \"d\" because \"<local2>\" is null"
+        ],
+        "skipped_turn_telemetry": {
+          "status": "captured",
+          "events": [
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 3,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 4,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 5,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 6,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 7,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 10,
+              "round": 1,
+              "turn": 1
+            },
+            {
+              "bot_id": 1,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 8,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 9,
+              "round": 1,
+              "turn": 78
+            },
+            {
+              "bot_id": 2,
+              "round": 1,
+              "turn": 239
+            },
+            {
+              "bot_id": 1,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 2,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 3,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 4,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 5,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 6,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 7,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 8,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 9,
+              "round": 3,
+              "turn": 108
+            },
+            {
+              "bot_id": 10,
+              "round": 3,
+              "turn": 108
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

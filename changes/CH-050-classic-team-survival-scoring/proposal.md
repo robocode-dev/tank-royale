@@ -27,3 +27,13 @@ An implementation could pass its unit tests and still fail bot authors if the se
 ## Scope
 
 The change adds explicit server scoring criteria, repairs per-bot survival and last-survivor scoring, bumps the battle behavior epoch, updates user-facing scoring documentation and changelog, and records matched CombatTeam regression evidence. It does not change Bot API behavior, message limits, skip telemetry, or the Tank Royale product version.
+
+## Post-fix CombatTeam verification
+
+On 2026-10-01, I ran CombatTeam 3.25.0 at the official teamrumble setup (1200×1200, 10 rounds, two teams of five) using the Tank Royale runner and Java Bot API built from this change branch at 1.4.0, plus bridge API 0.5.0 and wrapper 0.3.1 built from bridge commit `134494f32d62c794dd5f5136cd5d01b591fd3ad9`.
+
+The standard five-run score confirmation completed four runs without a bridge-only error; score deltas were −5.2%, −6.1%, −8.1%, and −7.3%, averaging −6.675%. The fifth run stopped on a bridge-only `NullPointerException` in `mn.c.e.equals`.
+
+A second five-run comparison captured every reported team score component and skipped-turn event. Attempts 1 and 2 completed without bot errors, with score deltas of −6.84% and −6.83%. Across those two clean component captures, aggregate survival was 12,500 in both engines in attempt 1, and 12,450 in Classic versus 12,500 in Tank Royale in attempt 2. Attempts 3, 4, and 5 completed at the runner level but logged three, four, and two bridge-side `NullPointerException`s respectively; their scores are recorded as diagnostic output, not clean parity evidence. Detailed per-team components, pinned artifacts, exceptions, and all `{bot_id, round, turn}` skip events are in [combatteam-retest.json](combatteam-retest.json).
+
+All ten Tank Royale bots reported the round 1, turn 1 warm-up skip in each component-capture attempt. Additional skips were also recorded later, including rounds 1, 2, and 3; the exact bot IDs and turns are in the linked JSON evidence. The score correction removes the prior +26.98% mean CombatTeam discrepancy in the error-free comparisons, while the repeated bot exception prevents treating the whole CombatTeam retest as a clean pass.

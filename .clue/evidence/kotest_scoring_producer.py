@@ -10,7 +10,7 @@ TEST_CALL = re.compile(r'\btest\s*\(\s*"(?P<name>[^"\n]+)"\s*\)', re.MULTILINE)
 TEST_INVOCATION = re.compile(r"\btest\s*\(")
 CLASS_NAME = re.compile(r"\bclass\s+([A-Za-z_][A-Za-z0-9_]*)")
 CLASSIFIED_NAME = re.compile(
-    r"test(?P<prefix>SCR)(?P<number>[0-9]+[a-z]*)_"
+    r"test(?P<prefix>SCR)_(?P<number>[0-9]+[a-z]*)_"
     r"(?P<type>Unit|Integration|E2E|Performance)"
     r"(?P<direction>Positive|Negative)_(?P<description>[A-Za-z0-9_$]+)"
 )

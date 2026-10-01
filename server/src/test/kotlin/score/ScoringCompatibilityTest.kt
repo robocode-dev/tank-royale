@@ -23,7 +23,7 @@ class ScoringCompatibilityTest : FunSpec({
     val teamB2 = ParticipantId(BotId(4), teamB)
     val participants = setOf(teamA1, teamA2, teamB1, teamB2)
 
-    test("testSCR001_UnitPositive_awardsSurvivalForEachNewOpponentDeath")
+    test("testSCR_001_UnitPositive_awardsSurvivalForEachNewOpponentDeath")
         .config(tags = setOf(Tag("SCR-001"))) {
         val tracker = ScoreTracker(participants)
 
@@ -34,7 +34,7 @@ class ScoringCompatibilityTest : FunSpec({
         tracker.calculateScore(teamB2).survivalScore shouldBe SCORE_PER_SURVIVAL
     }
 
-    test("testSCR001_UnitNegative_ignoresTeammateAndRepeatedDeaths")
+    test("testSCR_001_UnitNegative_ignoresTeammateAndRepeatedDeaths")
         .config(tags = setOf(Tag("SCR-001"))) {
         val tracker = ScoreTracker(participants)
 
@@ -45,7 +45,7 @@ class ScoringCompatibilityTest : FunSpec({
         tracker.calculateScore(teamB1).survivalScore shouldBe SCORE_PER_SURVIVAL
     }
 
-    test("testSCR001_UnitPositive_countsSimultaneousDeathsSeparately")
+    test("testSCR_001_UnitPositive_countsSimultaneousDeathsSeparately")
         .config(tags = setOf(Tag("SCR-001"))) {
         val teamC = ParticipantId(BotId(5), TeamId(30))
         val tracker = ScoreTracker(participants + teamC)
@@ -56,7 +56,7 @@ class ScoringCompatibilityTest : FunSpec({
         tracker.calculateScore(teamC).survivalScore shouldBe 2 * SCORE_PER_SURVIVAL
     }
 
-    test("testSCR002_UnitPositive_awardsEveryLastTeamMemberOnceAndAggregatesTheirScores")
+    test("testSCR_002_UnitPositive_awardsEveryLastTeamMemberOnceAndAggregatesTheirScores")
         .config(tags = setOf(Tag("SCR-002"))) {
         val tracker = ScoreTracker(participants)
         tracker.registerDeaths(setOf(teamB1, teamB2))
@@ -79,7 +79,7 @@ class ScoringCompatibilityTest : FunSpec({
         teamResult.lastSurvivorBonus shouldBe 4 * BONUS_PER_LAST_SURVIVOR
     }
 
-    test("testSCR002_UnitNegative_doesNotAwardLastSurvivorPointsForADraw")
+    test("testSCR_002_UnitNegative_doesNotAwardLastSurvivorPointsForADraw")
         .config(tags = setOf(Tag("SCR-002"))) {
         val tracker = ScoreTracker(participants)
 
