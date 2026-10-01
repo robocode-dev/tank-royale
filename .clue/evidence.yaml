@@ -3,11 +3,11 @@
   "producers": [
     {
       "id": "tank-royale-scoring",
-      "framework": "Kotest",
+      "framework": "JUnit",
       "language": "Kotlin",
       "include": [
         ".clue/evidence/aggregate.py",
-        ".clue/evidence/kotest_scoring_producer.py",
+        ".clue/evidence/junit_scoring_producer.py",
         ".clue/evidence/producers.json",
         "server/build.gradle.kts",
         "server/src/test/kotlin/score/*Scoring*Test.kt"
@@ -19,16 +19,16 @@
           "sha256": "cf20a3f9d5a1072a7b2d3ddfc4bc9e25575b2cbd27441aba61e9d83d9ac4768c"
         },
         {
-          "path": ".clue/evidence/kotest_scoring_producer.py",
-          "sha256": "cd25b548d37e3967f7c1705d6dc422fed833608d94c1e6459445806072492ffa"
+          "path": ".clue/evidence/junit_scoring_producer.py",
+          "sha256": "91553b442f7bc50b1f559914dd9d823ecf88caeab6dd12bf3a48a4ce609c4637"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "a6c52cb8d2db789e2bf60b737692283c714de21866e656ac62035be868f75540"
+          "sha256": "8f54df2dd9dca59b8d36cb24cc7dcc97b06182f5ff980eb88fcb6a2bd3bb69e5"
         },
         {
           "path": "server/build.gradle.kts",
-          "sha256": "7bef1e3b2a68a4d8314ea96fc287c6eb72aa2709c634b2b8cc62707ab2c31590"
+          "sha256": "9d45b2605bdfe1d13d2e14c23b2ddfb5e52fe7482e648f372f7c1e6735c7ade8"
         },
         {
           "path": "server/src/test/kotlin/score/GameScoringTest.kt",
@@ -36,7 +36,7 @@
         },
         {
           "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
-          "sha256": "f51aa734031b921a2abe725fffc07f3dfe4b8d5400b579282407b0bdce197469"
+          "sha256": "7f5e338c17b24d8bc73b9593413f6d4f1873186885168ae07cd023db3ea74ba1"
         }
       ],
       "references": [
