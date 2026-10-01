@@ -20,7 +20,7 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "91553b442f7bc50b1f559914dd9d823ecf88caeab6dd12bf3a48a4ce609c4637"
+          "sha256": "78c73ad8beca9842b766585039d24044139f5883f54b3806315af25599392e85"
         },
         {
           "path": ".clue/evidence/producers.json",
@@ -36,42 +36,42 @@
         },
         {
           "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
-          "sha256": "7f5e338c17b24d8bc73b9593413f6d4f1873186885168ae07cd023db3ea74ba1"
+          "sha256": "cfd3b3b5d8775f434229bf60c5062c3b52099981176f9969174de6884b40ed7e"
         }
       ],
       "references": [
         {
           "id": "SCR-001",
           "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
-          "subject": "ScoringCompatibilityTest.testSCR_001_UnitNegative_ignoresTeammateAndRepeatedDeaths",
+          "subject": "ScoringCompatibilityTest.testSCR001_UnitNegative_ignoresTeammateAndRepeatedDeaths",
           "type": "Unit",
           "direction": "negative"
         },
         {
           "id": "SCR-001",
           "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
-          "subject": "ScoringCompatibilityTest.testSCR_001_UnitPositive_awardsSurvivalForEachNewOpponentDeath",
+          "subject": "ScoringCompatibilityTest.testSCR001_UnitPositive_awardsSurvivalForEachNewOpponentDeath",
           "type": "Unit",
           "direction": "positive"
         },
         {
           "id": "SCR-001",
           "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
-          "subject": "ScoringCompatibilityTest.testSCR_001_UnitPositive_countsSimultaneousDeathsSeparately",
+          "subject": "ScoringCompatibilityTest.testSCR001_UnitPositive_countsSimultaneousDeathsSeparately",
           "type": "Unit",
           "direction": "positive"
         },
         {
           "id": "SCR-002",
           "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
-          "subject": "ScoringCompatibilityTest.testSCR_002_UnitNegative_doesNotAwardLastSurvivorPointsForADraw",
+          "subject": "ScoringCompatibilityTest.testSCR002_UnitNegative_doesNotAwardLastSurvivorPointsForADraw",
           "type": "Unit",
           "direction": "negative"
         },
         {
           "id": "SCR-002",
           "path": "server/src/test/kotlin/score/ScoringCompatibilityTest.kt",
-          "subject": "ScoringCompatibilityTest.testSCR_002_UnitPositive_awardsEveryLastTeamMemberOnceAndAggregatesTheirScores",
+          "subject": "ScoringCompatibilityTest.testSCR002_UnitPositive_awardsEveryLastTeamMemberOnceAndAggregatesTheirScores",
           "type": "Unit",
           "direction": "positive"
         }

@@ -23,7 +23,9 @@ class ScoringCompatibilityTest {
 
     @Test
     @Tag("SCR-001")
-    fun testSCR_001_UnitPositive_awardsSurvivalForEachNewOpponentDeath() {
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testSCR001_UnitPositive_awardsSurvivalForEachNewOpponentDeath() {
         val tracker = ScoreTracker(participants)
 
         tracker.registerDeaths(setOf(teamA1))
@@ -35,7 +37,9 @@ class ScoringCompatibilityTest {
 
     @Test
     @Tag("SCR-001")
-    fun testSCR_001_UnitNegative_ignoresTeammateAndRepeatedDeaths() {
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testSCR001_UnitNegative_ignoresTeammateAndRepeatedDeaths() {
         val tracker = ScoreTracker(participants)
 
         tracker.registerDeaths(setOf(teamA1))
@@ -47,7 +51,9 @@ class ScoringCompatibilityTest {
 
     @Test
     @Tag("SCR-001")
-    fun testSCR_001_UnitPositive_countsSimultaneousDeathsSeparately() {
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testSCR001_UnitPositive_countsSimultaneousDeathsSeparately() {
         val teamC = ParticipantId(BotId(5), TeamId(30))
         val tracker = ScoreTracker(participants + teamC)
 
@@ -59,7 +65,9 @@ class ScoringCompatibilityTest {
 
     @Test
     @Tag("SCR-002")
-    fun testSCR_002_UnitPositive_awardsEveryLastTeamMemberOnceAndAggregatesTheirScores() {
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testSCR002_UnitPositive_awardsEveryLastTeamMemberOnceAndAggregatesTheirScores() {
         val tracker = ScoreTracker(participants)
         tracker.registerDeaths(setOf(teamB1, teamB2))
         tracker.registerDeaths(setOf(teamB1, teamB2))
@@ -83,7 +91,9 @@ class ScoringCompatibilityTest {
 
     @Test
     @Tag("SCR-002")
-    fun testSCR_002_UnitNegative_doesNotAwardLastSurvivorPointsForADraw() {
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testSCR002_UnitNegative_doesNotAwardLastSurvivorPointsForADraw() {
         val tracker = ScoreTracker(participants)
 
         tracker.registerDeaths(participants)
