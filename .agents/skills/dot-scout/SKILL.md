@@ -1,62 +1,49 @@
 ---
 name: dot-scout
 description: Analyse a project to detect which principles apply and create or update .principles files encoding that analysis. Use when the user runs /dot-scout [path] to map principles to a codebase.
-argument-hint: "[directory-path]"
+argument-hint: "[directory-path] | --explain <path> | --yes"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 0.14.0
+version: 0.15.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 license: MIT
-generated-by: ".principles v0.14.0"
+generated-by: ".principles v0.15.0"
 ---
 
 
 # Scout
 
-You are analyzing a project to determine which principles apply and creating or updating `.principles` files to encode that. Follow these eight phases exactly.
+You are analyzing a project to determine which principles apply, creating or updating `.principles` files to encode that, and generating the review files agents use. Judgement (profiling, placement) is yours; everything mechanical is done by scripts in `.agents/principles-catalog/bin/`. Follow these six phases exactly.
 
-## Phase 1 - Resolve Target and Bootstrap Catalog
+**Shortcuts** (check `$ARGUMENTS` first):
+
+- `--explain <path>`: run `bash .agents/principles-catalog/bin/resolve.sh --format explain <path>`, show the output (the active principles for that path and which `.principles` file added, excluded, locked or waived each one), and stop.
+- `--yes`: skip the confirmation question in Phase 3 and write the proposal as shown. Everything else is unchanged.
+
+## Phase 1 - Resolve Target and Check the Catalog
 
 Determine the target directory:
 
 - If `$ARGUMENTS` is a **directory path**: use it as the target.
-- If `$ARGUMENTS` is **empty**: use the current working directory.
+- If `$ARGUMENTS` is **empty** (or only `--yes`): use the current working directory.
 - If `$ARGUMENTS` is a **file path**: use its containing directory.
 
 Confirm the target exists. If not, report an error and stop.
 
 Walk up from the target to find the **git root** (directory containing `.git/`). Record both the target directory and the git root - the hierarchy spans between them.
 
-### 1.1 - Bootstrap Catalog
+### 1.1 - Check the Catalog
 
-Check whether `.agents/principles-catalog/index.tsv` exists at the git root.
+Check that `.agents/principles-catalog/index.tsv` and `.agents/principles-catalog/bin/emit.sh` exist at the git root.
 
-If **not present**, try to auto-vendor it now (before any other phase):
+If either is missing, **stop** and report:
 
-1. Search for the dot-principles `install.sh` in these locations (in order):
-   - `<git-root>/../dot-principles/install.sh`
-   - `<git-root>/../../dot-principles/dot-principles/install.sh`
-   - `~/Code/dot-principles/dot-principles/install.sh`
-   - Run: `find ~ -maxdepth 5 -name "install.sh" -path "*/dot-principles/*" 2>/dev/null | head -1`
+> "⚠️ `.agents/principles-catalog/` is missing or out of date. From your dot-principles checkout, run `./install.sh vendor <git-root>` and then re-run /dot-scout."
 
-2. If found: run `<path-to-install.sh> vendor <git-root>` and report:
-   > "✓ Catalog vendored to .agents/principles-catalog/ - proceeding."
-
-3. If not found: report:
-   > "⚠️ `.agents/principles-catalog/` not found. Group lookups will use the hardcoded catalog below."
-   > "  To vendor: clone dot-principles and run `./install.sh vendor <git-root>`"
-   > Continue using the hardcoded group list in Phase 3 (custom groups won't be available).
-
-Record whether the catalog is available: **catalog-available: true/false**
+Do not search the file system for `install.sh`.
 
 ### 1.2 - Load Scout Extensions
 
-If **catalog-available: true**, read all `.context-scout.md` files from the catalog:
-
-1. Search for files matching `.agents/principles-catalog/principles/*/.context-scout.md` at the git root.
-2. For each file found, read its content and record the detection rules it defines.
-3. Record loaded extensions: `{ namespace → [detection rules] }` - these supplement Phase 2.
-
-If no `.context-scout.md` files are found, proceed with built-in detection only.
+Glob `.agents/principles-catalog/principles/*/.context-scout.md`. Only extra catalogs ship these. For each file found, read it and record the detection rules it defines: `{ namespace → [detection rules] }`. They supplement Phase 2. If there are none, use the built-in detection only.
 
 ## Phase 2 - Detect Profile
 
@@ -120,42 +107,37 @@ For projects with multiple subdirectories, detect profiles per directory:
 
 Record a profile map: `{ directory → [detected groups] }`
 
-## Phase 3 - Propose .principles Placements
 
-Based on the profile map from Phase 2, propose where to place `.principles` files and what to put in each.
+## Phase 3 - Propose Placements and Confirm
 
-### Placement strategy
+Based on the profile map from Phase 2, propose where to place `.principles` files and what to put in each. Check exclusion density (3.3) **before** showing anything, so the user confirms once.
+
+### 3.1 - Placement strategy
 
 1. **Git root `.principles`**: Activate groups that apply to the whole project
 2. **Subdirectory `.principles`**: Activate additional groups or exclude principles that don't apply to that subtree
 
-### Available groups (from `.agents/principles-catalog/groups/`)
-
-Reference these groups by their filename (without `.yaml`):
+List the available groups with `ls .agents/principles-catalog/groups/` and reference them by filename without `.yaml`. The common ones are:
 
 **Language groups:** `java`, `typescript`, `python`, `go`, `csharp`, `rust`
 **Framework groups:** `spring-boot`, `spring-data-jpa`, `react`, `angular`, `django`, `fastapi`
 **Cross-cutting code groups:** `microservices`, `security-focused`
 **Artifact-type groups:** `docs`, `infra`, `config`, `schema`, `pipeline`
 
-Also list any custom groups found in `.agents/principles-catalog/groups/` that aren't listed above. Groups suggested by extension detection rules (Phase 1.2) are included here automatically - their availability depends on what's installed in the catalog.
+Custom groups from extra catalogs or an org baseline appear in the same directory. Groups suggested by extension detection rules (Phase 1.2) are included automatically.
 
-### Proposal format
+If `.agents/principles-catalog/org.principles` exists, the organization has locked some principles (`:lock`). Never propose a `!ID` for a locked principle; if a directory truly needs an exception, propose `:waive ID until YYYY-MM-DD "reason"` instead and say why.
 
-For each proposed file, show:
-```
-[path]/.principles
-  @group1          ← reason
-  @group2          ← reason
-  CODE-OB-SERVICE-LEVEL-OBJECTIVES      ← specific principle for this directory
-  !CODE-TS-TEST-FIRST     ← exclusion and why
-```
+### 3.2 - How exclusions work (read before proposing any `!`)
 
-Ask for confirmation before writing: "I propose creating/updating N .principles files. Phase 4 will check exclusion density before writing. Proceed? (yes to continue, no to review proposals)"
+Files are applied from the outside in, root first. The **deepest file that mentions a principle decides**: `!ID` or `!@group` in an outer file removes it, and an `@group` or ID in a deeper file adds it back. Inside one file, exclusions win over additions whatever the line order. A principle locked by the organization can never be removed.
 
-Wait for user confirmation. If the user says no or requests changes, adjust proposals and ask again.
+Groups overlap: every language group includes `source-code`, and `kotlin` includes `java`. So `!@kotlin` also removes the shared principles that a Java directory needs. That is safe only when a **deeper** directory adds them back with its own group (`@java` in `bot-api/java/.principles`). Two rules follow:
 
-## Phase 4 - Exclusion Density Analysis
+- Never put `!@group` and a group that overlaps it in the **same** file: the exclusion wins and removes the shared principles.
+- Put an exclusion in the directory above the ones that add their own group, or keep it out and place the group in each directory that needs it.
+
+### 3.3 - Exclusion density analysis
 
 Before writing, check whether any parent-level proposals would generate unnecessary exclusions in child directories.
 
@@ -168,13 +150,13 @@ Only when the profile map from Phase 2 contains **two or more** directories that
 For each proposed parent `.principles` file (root or intermediate directory), evaluate every proposed entry - groups (`@group`) and bare principle IDs - against all proposed child directories detected in Phase 2:
 
 1. **Count applicable children**: child directories that inherit from this parent (would have their own `.principles` or would inherit the parent's entries).
-2. **Count excluding children**: children where the entry does not match the child's detected profile and would therefore need a `!@group` or `!ID` exclusion to suppress it.
+2. **Count excluding children**: children where the entry does not match the child's detected profile and would therefore need a `!@group` or `!ID` exclusion to suppress it. Remember the overlap rules in 3.2: an exclusion of a language group also removes `source-code` principles, so each such child needs a deeper directory that adds its own group back, or the entry should be demoted instead.
 3. Compute `exclusion_ratio = excluding_children / applicable_children`.
 4. If `exclusion_ratio > 0.5` (strict majority excluded):
    - **Demote the entry**: remove it from the parent proposal; add it directly to each *including* child's proposal (the minority that actually benefits).
    - Record the demotion for reporting: `⬇ @<group> demoted from <parent> → <child1>/, <child2>/ - excluded in N/M children`
 5. For each principle activated by a parent-level group that >50% of children would individually suppress with `!PRINCIPLE-ID`:
-   - **Consolidate**: add `!PRINCIPLE-ID` at the parent level instead (one exclusion line replaces N child-level exclusion lines). The minority of children that do need the principle will still receive it via the group.
+   - **Consolidate**: add `!PRINCIPLE-ID` at the parent level instead (one exclusion line replaces N child-level exclusion lines). The children that do need the principle must add it back in their own `.principles` file, as a bare ID or through a group of their own (the deeper file wins). Add those lines to the proposal. If more children would have to add it back than the exclusion saves, do not consolidate.
    - Record the consolidation: `↑ !PRINCIPLE-ID consolidated to <parent> - excluded in N/M children`
 
 Skip analysis for any parent with `applicable_children ≤ 1` (a majority cannot be computed from a single child).
@@ -194,9 +176,24 @@ Updated proposals incorporate these changes.
 
 If no changes were made, output: `Exclusion density: no demotions needed.`
 
-Re-present the full updated proposals (same format as Phase 3) and ask for confirmation again if any demotion or consolidation was applied.
+The proposals you show in 3.4 already incorporate these changes.
 
-## Phase 5 - Check Existing .principles Files
+### 3.4 - Proposal format and confirmation
+
+For each proposed file, show:
+```
+[path]/.principles
+  @group1          ← reason
+  @group2          ← reason
+  CODE-OB-SERVICE-LEVEL-OBJECTIVES      ← specific principle for this directory
+  !CODE-TS-TEST-FIRST     ← exclusion and why
+```
+
+Ask once: "I propose creating/updating N .principles files. Proceed? (yes to continue, no to review proposals)". Skip the question if `--yes` was given.
+
+Wait for user confirmation. If the user says no or requests changes, adjust proposals and ask again.
+
+## Phase 4 - Check Existing .principles Files
 
 Before writing, check for existing `.principles` files at the proposed paths.
 
@@ -209,7 +206,7 @@ For each existing file:
 
 Determine final action per file: `created` | `updated` | `unchanged`
 
-## Phase 6 - Write Files and Report
+## Phase 5 - Write Files and Report
 
 Write or update each file as determined in Phase 5.
 
@@ -251,195 +248,44 @@ Next steps:
   - Edit .principles files manually to add !exclusions or direct principle IDs
 ```
 
-## Phase 7 - Emit active.md
+### Verify exclusions
 
-Write the canonical active-principles source to the vendored catalog. This phase runs unconditionally whenever `catalog-available: true`; it does not depend on which review tools are installed.
-
-If **catalog-available: false**, report:
-> "⚠️ active.md skipped - catalog not available. Run `./install.sh vendor <git-root>` and re-run /dot-scout."
-> Skip this phase.
-
-Read `.agents/principles-catalog/index.tsv` to look up the summary for each active ID (from the `.principles` hierarchy resolved in Phases 3-6). Format each as `- ID: Summary`.
-
-Write (overwrite) `.agents/principles-catalog/active.md`:
-
-```markdown
-<!-- generated by dot-scout vVERSION - do not edit manually, re-run dot-scout to refresh -->
-# Active Principles
-
-- PRINCIPLE-ID: Summary text here
-- PRINCIPLE-ID: Summary text here
-```
-
-Rules:
-- Include every ID in the active set (post-exclusion), one per line
-- Order: alphabetical by ID within each namespace, namespaces in the order they appear in `.principles`
-- Any active ID not found in index.tsv: include with summary "-" and log a warning
-
-## Phase 8 - Emit AI Review Integration Files
-
-### 8.0 - Detect AI Tools
-
-Scan the git root for signals that indicate which AI coding/review tools are active.
-
-**Install config** - if `.agents/principles-catalog/install.cfg` exists, read it first. Each non-comment line is a target ID written by `install.sh`. The review-relevant targets are:
-- `copilot-review` → Copilot Code Review enabled
-- `claude-review`  → Claude Code Review enabled
-
-If `install.cfg` contains the target, that review tool is **enabled** regardless of other signals.
-If `install.cfg` exists but does **not** contain the target, that review tool is **disabled** - skip it even if signal files exist.
-If `install.cfg` does **not** exist, fall back to file-based detection below.
-
-**Copilot detection** (fallback when no install.cfg) - any match = Copilot active:
-- `.github/copilot-instructions.md` exists
-- `.github/copilot-setup-steps.yml` exists
-- Any `.github/instructions/*.instructions.md` file exists (previous /dot-scout run)
-
-**Claude detection** (fallback when no install.cfg) - any match = Claude active:
-- `CLAUDE.md` exists at git root
-- `.claude/` directory exists
-- `REVIEW.md` exists at git root (previous /dot-scout run)
-
-After detection, present findings and ask:
-
-> AI tool detection:
->   Copilot: ✓ / ✗ (signal found)
->   Claude:  ✓ / ✗ (signal found)
->
-> Generate review instruction files for detected tools? (yes / no / select)
-
-- **yes** → proceed with all detected tools
-- **no** → skip rest of Phase 8
-- **select** → let user pick which tools to generate for
-
-Record: **copilot-active: true/false**, **claude-active: true/false**
-
-### 8.1 - Resolve the Active Set
-
-If **catalog-available: false** (set in Phase 1), report:
-> "⚠️ Per-group files skipped - catalog not available. Run `./install.sh vendor <git-root>` and re-run /dot-scout."
-> Skip the rest of Phase 8.
-
-Read `.agents/principles-catalog/index.tsv`. Each line is `ID|LAYER|SUMMARY`.
-
-From the active principle set (resolved via `.principles` hierarchy), look up each active ID in the index to get its Layer and Summary.
-
-For each active `@group`, read `.agents/principles-catalog/groups/<name>.yaml` and note:
-- The group's `principles:` list (filtered to only IDs in the active set, after `!exclusions`)
-- The group's `globs:` list. If the group has `includes:`, recursively union any **explicitly declared** `globs:` from included groups (groups with no `globs:` field contribute nothing - do not default them to `**/*` here). Only after this union is complete, if the result is still empty, default to `["**/*"]`.
-
-Any active IDs not found in index.tsv: include with summary "-" and log a warning.
-
-### 8.2 - Clean Stale Files
-
-Scan for files that contain the marker `<!-- generated by dot-scout` (or the legacy `<!-- generated by /dot-scout` for files generated before v0.13.0):
-
-**`.github/instructions/`:**
-- If **copilot-active is false**: delete ALL scout-generated files in this directory
-- If **copilot-active is true**: delete only files whose group is not in the current active set
-- If file is `principles-core.instructions.md` and copilot-active is true: keep it (will be overwritten in 8.3)
-
-**`REVIEW.md` at git root:**
-- If **claude-active is false** and the file has the scout marker: delete it
-
-Files **without** a `<!-- generated by dot-scout` or `<!-- generated by /dot-scout` marker are user-created - never touch them.
-
-### 8.3 - Emit Copilot Instruction Files
-
-**Skip entirely if copilot-active is false.**
-
-Create directory `.github/instructions/` if it does not exist.
-
-**For each active `@group`:**
-
-Build the file content first, then enforce the **4,000 character limit** (Copilot Code Review truncates beyond this):
-
-```markdown
-<!-- generated by dot-scout vVERSION - do not edit manually, re-run dot-scout to refresh -->
----
-applyTo:
-  - "**/*.java"
----
-# Group Name Principles
-
-- PRINCIPLE-ID: Summary text here
-- PRINCIPLE-ID: Summary text here
-```
-
-**4k char enforcement:** After building the content for a group:
-- If content ≤ 4,000 chars → write as `.github/instructions/<group>.instructions.md`
-- If content > 4,000 chars → split into numbered files (`<group>-1.instructions.md`, `<group>-2.instructions.md`, …), each ≤ 4,000 chars. Split at principle-line boundaries (never mid-line). Each split file gets its own complete frontmatter header and `<!-- generated by dot-scout` marker.
-
-Rules:
-- VERSION from `.agents/principles-catalog/` or the repo's VERSION file
-- The `applyTo:` values come from the group's resolved `globs:` (union of own + explicitly declared includes' globs; defaults to `**/*` only if none found)
-- Only include principles that are in the active set (post-exclusion)
-- Keep summaries on one line: `- ID: Summary`
-- The `# Group Name Principles` heading uses the group's `name:` field from the YAML, title-cased
-
-**Core principles file:**
-
-Write `principles-core.instructions.md` (apply 4k splitting if needed) with `applyTo: "**/*"` containing:
-- All Layer 1 universal principles (from `.agents/principles-catalog/layers/artifact-types.yaml` → `universal:`)
-- All stack Layer 1 principles (from `.agents/principles-catalog/layers/<detected-stack>/layer-1-universal.md`)
-- Any bare principle IDs from `.principles` files that do not belong to any active `@group`
-
-### 8.4 - Emit REVIEW.md for Claude Code Review
-
-**Skip entirely if claude-active is false.**
-
-Generate a single `REVIEW.md` at the git root. Budget: **~10,000 characters / ~150 instructions max.**
-
-```markdown
-<!-- generated by dot-scout vVERSION - do not edit manually, re-run dot-scout to refresh -->
-# Code Review Rules
-
-## Critical - Always flag these
-
-- PRINCIPLE-ID: Summary text here
-
-## Important - Flag when violated
-
-- PRINCIPLE-ID: Summary text here
-
-## Style - Flag as nits
-
-- PRINCIPLE-ID: Summary text here
-```
-
-**Priority ordering** (fill from top; if over budget, truncate from the bottom of Style upward):
-
-1. **Critical section:** Security principles (OWASP-\*, CODE-SEC-\*), fail-fast and error handling (CODE-CS-FAIL-FAST, CODE-RL-\*)
-2. **Important section:** Domain principles (DDD-\*, EIP-\*), architecture (SOLID-\*, CLEAN-ARCH-\*, ARCH-\*), observability (CODE-OB-\*)
-3. **Style section:** Code quality (CODE-DX-\*, CODE-CS-\*), framework-specific (EFFECTIVE-JAVA-\*, spring-specific)
-
-### 8.5 - Report
-
-After writing, output:
+For every directory whose `.principles` file contains a `!`, and for the directories below it, run
 
 ```
-Active principles:
-  ✓ .agents/principles-catalog/active.md                          (N principles)
-
-AI tool integration:
-  Copilot detected: ✓ / ✗ (signal)
-  Claude detected:  ✓ / ✗ (signal)
-
-Files written:
-  ✓ .github/instructions/ddd.instructions.md               (13 principles, **/*.java, 1877 chars)
-  ✓ .github/instructions/microservices-1.instructions.md    (20 principles, **/*.java, 3998 chars)
-  ✓ .github/instructions/microservices-2.instructions.md    (16 principles, **/*.java, 3549 chars)
-  ✓ .github/instructions/principles-core.instructions.md    (29 principles, **/*,      3200 chars)
-  ✓ REVIEW.md                                               (87 principles, 9.2k chars)
-
-Cleaned:
-  ✗ deleted .github/instructions/old-group.instructions.md  (group removed)
-
-Tip: commit .agents/principles-catalog/ so CI and PR bots can use it without local install.
+bash .agents/principles-catalog/bin/resolve.sh --format explain <dir>
 ```
 
-### 8.6 - Write Scout Marker
+Check that each directory ends up with the principles of its own language group, and with none from groups it should not have. `Reinstated:` lines show where a deeper file added something back, which is expected. If a directory lost principles it needs, fix the placement (move the exclusion up one level, or move the group down) and write the files again before Phase 6.
 
-Append `scout` to `.agents/principles-catalog/install.cfg` (create the file if it does not exist). Use one target per line; do not add a duplicate if `scout` is already present.
+## Phase 6 - Emit Generated Files
 
-This marker is kept for compatibility with existing installations and generated files.
+Run one command. It resolves the active principles for every `.principles` file, writes everything the review tools read, and removes generated files that no longer apply:
+
+```
+bash .agents/principles-catalog/bin/emit.sh --stacks <stacks>
+```
+
+`<stacks>` is the comma-separated list of artifact stacks you detected in Phase 2 (`code`, `docs`, `config`, `infra`, `schema`, `pipeline`), for example `--stacks code,docs`. They are remembered in `install.cfg`, so a later refresh needs no flag.
+
+What it writes (deterministic - the same inputs give the same files):
+
+- `.agents/principles-catalog/active.md` - every active principle with its summary.
+- `.agents/instructions/review.md` - agent-neutral review instructions, plus a short managed block in `AGENTS.md` that points to it. Claude Code, Codex CLI, Copilot CLI and other agents that read `AGENTS.md` use it.
+- `.github/instructions/<group>.instructions.md` - Copilot Code Review, only if enabled (`copilot-review` in `install.cfg`).
+- `REVIEW.md` - Claude Code Review, only if enabled (`claude-review` in `install.cfg`).
+
+The tools come from `install.cfg` (written by the installer). Do not ask the user which tools to generate for. If neither review integration is enabled, say so in the report and mention that `./install.sh <git-root>` (interactive) enables them, or `emit.sh --tools copilot,claude` generates them once.
+
+Show the script's output as the report, then add:
+
+```
+Next steps:
+  - Review with /dot-audit <target>, or ask your agent to review; it reads .agents/instructions/review.md
+  - Edit .principles files by hand to add !exclusions or direct principle IDs, then run
+    bash .agents/principles-catalog/bin/emit.sh to refresh the generated files
+  - Commit .principles files, .agents/principles-catalog/, .agents/instructions/ and the generated review files
+```
+
+If `emit.sh` reports warnings (unknown groups, principles missing from `index.tsv`, expired waivers), repeat them to the user.
+
