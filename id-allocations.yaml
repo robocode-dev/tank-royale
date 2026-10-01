@@ -245,6 +245,11 @@ claims:
       state: reserved
       prefix: AN
       component: "1"
+    - id: AN-002
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "2"
     - id: ARCH-001
       kind: numeric
       state: reserved
@@ -1156,6 +1161,11 @@ high-water:
       state: reserved
       prefix: RDA
       component: "9"
+    - id: SCR-002
+      kind: numeric
+      state: reserved
+      prefix: SCR
+      component: "2"
     - id: TASKS-004
       kind: numeric
       state: reserved
