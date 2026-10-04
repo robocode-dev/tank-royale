@@ -73,7 +73,6 @@ class TurnProcessor(
         }
 
         collisionDetector.constrainBotPositions(botsMap, botsCopies)
-        checkAndHandleScans(turn, botsMap, botIntentsMap, botsCopies)
         val newBullets = updateBulletPositions(bullets)
         bullets.clear()
         bullets.addAll(newBullets)
@@ -95,6 +94,8 @@ class TurnProcessor(
 
         val defeatedParticipants = detectDefeatedParticipants(botsMap)
         registerDefeatedBotScores(defeatedParticipants)
+
+        checkAndHandleScans(turn, botsMap, botIntentsMap, botsCopies)
 
         val roundOutcome = computeRoundOutcome(round, botsMap, bullets)
 
@@ -218,13 +219,14 @@ class TurnProcessor(
         for (i in bots.indices) {
             val scanningBot = bots[i]
 
-            if (scanningBot.isDroid) continue // droids cannot use scanning
+            if (scanningBot.isDroid || scanningBot.isDead) continue
 
             val (startAngle, endAngle) = getScanAngles(scanningBot)
 
             for (j in bots.indices) {
                 if (i != j) {
                     val botBeingScanned = bots[j]
+                    if (botBeingScanned.isDead) continue
                     if (isBotScanned(scanningBot, botBeingScanned, startAngle, endAngle, botsMap, botIntentsMap, botsCopies)) {
                         handleScannedBot(turn, scanningBot, botBeingScanned)
                     }
