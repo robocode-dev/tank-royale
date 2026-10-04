@@ -1,3 +1,10 @@
+## [Unreleased]
+
+### 🐞 Bug Fixes
+
+- Server:
+    - Fixed a bullet hitting multiple bots or bullets in the same turn after it had already been destroyed, causing duplicate hit events, extra damage, and incorrect scores.
+
 ## [1.4.0] - 2026-10-01 - Batched team messages
 
 ### ✨ Features
