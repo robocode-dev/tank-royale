@@ -281,6 +281,7 @@ class CollisionDetector(
         val scoringRecords = mutableListOf<BulletHitScoringRecord>()
 
         for (outcome in results.bulletHitBullets) {
+            if (outcome.bullet1 !in bullets || outcome.bullet2 !in bullets) continue
             val event1 = BulletHitBulletEvent(turn.turnNumber, outcome.bullet1, outcome.bullet2)
             val event2 = BulletHitBulletEvent(turn.turnNumber, outcome.bullet2, outcome.bullet1)
             turn.addPrivateBotEvent(outcome.bullet1.botId, event1)
@@ -291,6 +292,7 @@ class CollisionDetector(
         }
 
         for (outcome in results.bulletHitBots) {
+            if (outcome.bullet !in bullets) continue
             val bot = botsMap[outcome.victimId] ?: continue
             val victimEnergyAfterHit = bot.energy - outcome.damage
             val isKilled = bot.isAlive && victimEnergyAfterHit < 0
