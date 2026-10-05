@@ -255,6 +255,56 @@ claims:
       state: reserved
       prefix: AN
       component: "3"
+    - id: AN-004
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "4"
+    - id: AN-005
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "5"
+    - id: AN-006
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "6"
+    - id: AN-007
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "7"
+    - id: AN-008
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "8"
+    - id: AN-009
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "9"
+    - id: AN-010
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "10"
+    - id: AN-011
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "11"
+    - id: AN-012
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "12"
+    - id: AN-013
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "13"
     - id: ARCH-001
       kind: numeric
       state: reserved
@@ -1106,11 +1156,11 @@ high-water:
       state: reserved
       prefix: ADR
       component: "48"
-    - id: AN-002
+    - id: AN-003
       kind: numeric
       state: reserved
       prefix: AN
-      component: "2"
+      component: "3"
     - id: ARCH-026
       kind: numeric
       state: reserved
