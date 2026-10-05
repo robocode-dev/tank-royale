@@ -7,4 +7,5 @@ An analysis document (AN-xxx) records what was investigated, what was found, and
 <!-- clue:index:start -->
 - [AN-001 — OpenSpec extraction report](AN-001-openspec-extraction.md) · `active`
 - [AN-002 — CombatTeam scoring and skipped-turn retest](AN-002-combatteam-retest.md) · `active`
+- [AN-003 — SittingDroidTeam's zero score is compatible with a draw, but death timing is unobserved](AN-003-sittingdroidteam-inactivity-score-draw.md) · `active` — Source review found a valid path to a zero-scoring draw but no per-bot death timeline proving it occurred.
 <!-- clue:index:end -->
