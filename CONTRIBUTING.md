@@ -103,7 +103,7 @@ Agent instructions for this repo live in [`AGENTS.md`](AGENTS.md) and the
 ADRs, and instruction files to load for each task type. See
 [DEVELOPMENT.md](DEVELOPMENT.md#agent-assisted-development) for the full
 setup and the list of slash-command skills (`/release`, `/update-deps`,
-`/dot-audit`, etc.).
+`/deploy-sample-bots`, etc.).
 
 ## Regarding pull requests
 
