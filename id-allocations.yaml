@@ -895,6 +895,11 @@ claims:
       state: reserved
       prefix: OQ
       component: "3"
+    - id: OQ-004
+      kind: numeric
+      state: reserved
+      prefix: OQ
+      component: "4"
     - id: P-001
       kind: numeric
       state: reserved
@@ -1306,11 +1311,11 @@ high-water:
       state: reserved
       prefix: P
       component: "6"
-    - id: PDR-015
+    - id: PDR-016
       kind: numeric
       state: reserved
       prefix: PDR
-      component: "15"
+      component: "16"
     - id: RBC-005
       kind: numeric
       state: reserved
