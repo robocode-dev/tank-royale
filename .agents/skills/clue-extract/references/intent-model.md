@@ -1,3 +1,8 @@
+---
+type: skill-reference
+title: Intent model
+---
+
 ## Intent model
 
 A corpus carries two threads, and they meet only at the goal.
@@ -38,4 +43,4 @@ Recommend for or against one, say why, and let the human decide. A use case is c
 
 Agent-drafted intent is `status: draft` with `provenance: inferred` and `reversal-cost: low|high`; low explicitly permits deferral, while high can block an active capability that directly depends on the artifact. Once a human verifies the meaning, remove `reversal-cost`; it is no longer used. Assumptions and open questions stay visible in the artifact. Promotion is a human act. Never present an inference as a fact, and never resolve a contradiction between sources by picking the convenient reading — record it and ask.
 
-**A full change's acceptance brief states the vision it proceeds under**, or states that the repository has none and that the change proceeds without one. When unresolved meaning would materially change what the system is for, stop and ask rather than deciding it inside an implementation.
+**A tracked change's acceptance brief states the vision it proceeds under**, or states that the repository has none and that the change proceeds without one. When unresolved meaning would materially change what the system is for, stop and ask rather than deciding it inside an implementation.

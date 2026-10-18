@@ -1,3 +1,8 @@
+---
+type: index
+title: Analysis
+---
+
 # Analysis
 
 Findings from spikes, investigations, and extractions — risks and unknowns retired *before* they are built on.

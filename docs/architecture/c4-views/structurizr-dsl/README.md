@@ -1,3 +1,8 @@
+---
+type: index
+title: structurizr-dsl/
+---
+
 # structurizr-dsl/
 
 Structurizr DSL source files for all C4 architecture diagrams. These are the authoritative sources — the SVG files in `../images/` are generated from these and must never be edited directly.

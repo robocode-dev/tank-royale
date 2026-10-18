@@ -1,3 +1,8 @@
+---
+type: index
+title: Quality
+---
+
 # Quality
 
 QS-xxx: quality scenarios — non-functional requirements written so they can be verified.

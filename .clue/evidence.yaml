@@ -2,6 +2,62 @@
   "version": 1,
   "producers": [
     {
+      "id": "tank-royale-gui-twinduel",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/producers.json",
+        ".clue/evidence/test_junit_producer.py",
+        "gui/build.gradle.kts",
+        "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt"
+      ],
+      "exclude": [],
+      "inputs": [
+        {
+          "path": ".clue/evidence/aggregate.py",
+          "sha256": "cf20a3f9d5a1072a7b2d3ddfc4bc9e25575b2cbd27441aba61e9d83d9ac4768c"
+        },
+        {
+          "path": ".clue/evidence/junit_scoring_producer.py",
+          "sha256": "aacc8ddbfee7aad5fbe662a981a1e6c40dc4f55756ac22fb8d4ea853bed2c21c"
+        },
+        {
+          "path": ".clue/evidence/producers.json",
+          "sha256": "3ca6d18f4e1af4d8d8ebfe3341a269046b3edd825d157e39a6c9489c5518fbd9"
+        },
+        {
+          "path": ".clue/evidence/test_junit_producer.py",
+          "sha256": "312a0337a2864a7cad96321fb4c7af25a324426845674c9d1da239ed0bdaf7be"
+        },
+        {
+          "path": "gui/build.gradle.kts",
+          "sha256": "c1dc73e3c3fdabaf19a31e18103ba0ab7eb3c0fbcf21dc279f2f352792106dde"
+        },
+        {
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "sha256": "857364790d703e1c25edc35e27e1565403d912a6bebfc95315e6095993b6f10a"
+        }
+      ],
+      "references": [
+        {
+          "id": "GTD-001",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD001_UnitNegative_nonCanonicalTwinDuelNameIsRejected",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "GTD-001",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD001_UnitPositive_twinDuelIsSelectableWithTheCommonPreset",
+          "type": "Unit",
+          "direction": "positive"
+        }
+      ]
+    },
+    {
       "id": "tank-royale-scoring",
       "framework": "JUnit",
       "language": "Kotlin",
@@ -20,11 +76,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "78c73ad8beca9842b766585039d24044139f5883f54b3806315af25599392e85"
+          "sha256": "aacc8ddbfee7aad5fbe662a981a1e6c40dc4f55756ac22fb8d4ea853bed2c21c"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "8f54df2dd9dca59b8d36cb24cc7dcc97b06182f5ff980eb88fcb6a2bd3bb69e5"
+          "sha256": "3ca6d18f4e1af4d8d8ebfe3341a269046b3edd825d157e39a6c9489c5518fbd9"
         },
         {
           "path": "server/build.gradle.kts",

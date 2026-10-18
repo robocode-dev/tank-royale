@@ -1,3 +1,8 @@
+---
+type: index
+title: Capabilities
+---
+
 # Capabilities
 
 CAP-xxx: what the system does, each with acceptance criteria (Gherkin, tagged ACs) and design notes kept next to them.

@@ -1,3 +1,8 @@
+---
+type: index
+title: Plans
+---
+
 # Plans
 
 P-xxx: the campaign layer — where goals become sequenced, verifiable work.

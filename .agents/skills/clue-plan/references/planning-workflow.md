@@ -1,4 +1,11 @@
+---
+type: skill-reference
+title: Planning workflow
+---
+
 ## Planning workflow
+
+Follow the acceptance mechanism selected under `clue-delta`'s review boundary. References below to a branch and PR use its local acceptance handoff for an adopter with accepted local policy; planning and human acceptance obligations remain the same.
 
 Use when creating a plan or changing what a plan promises.
 

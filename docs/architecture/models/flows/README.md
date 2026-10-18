@@ -1,3 +1,8 @@
+---
+type: index
+title: Business Flows
+---
+
 # Business Flows
 
 This directory contains documentation of key business processes and their interactions with domain entities.
