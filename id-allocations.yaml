@@ -1160,6 +1160,11 @@ claims:
       state: reserved
       prefix: TASKS
       component: "6"
+    - id: TASKS-007
+      kind: numeric
+      state: reserved
+      prefix: TASKS
+      component: "7"
     - id: TNP-001
       kind: numeric
       state: reserved
@@ -1241,11 +1246,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "20"
-    - id: CH-052
+    - id: CH-053
       kind: numeric
       state: reserved
       prefix: CH
-      component: "52"
+      component: "53"
     - id: G-003
       kind: numeric
       state: reserved
