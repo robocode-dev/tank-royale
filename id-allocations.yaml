@@ -1095,6 +1095,11 @@ claims:
       state: reserved
       prefix: RCL
       component: "11"
+    - id: RCL-012
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "12"
     - id: RDA-001
       kind: numeric
       state: reserved
@@ -1251,11 +1256,11 @@ claims:
       prefix: UD
       component: "8"
 high-water:
-    - id: ADR-048
+    - id: ADR-049
       kind: numeric
       state: reserved
       prefix: ADR
-      component: "48"
+      component: "49"
     - id: AN-014
       kind: numeric
       state: reserved
