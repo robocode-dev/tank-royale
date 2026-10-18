@@ -371,6 +371,30 @@ events:
     - {id: AN-011, kind: numeric, state: reserved, prefix: AN, component: "11"}
     - {id: AN-012, kind: numeric, state: reserved, prefix: AN, component: "12"}
     - {id: AN-013, kind: numeric, state: reserved, prefix: AN, component: "13"}
+    - {id: AN-014, kind: numeric, state: reserved, prefix: AN, component: "14"}
+    - {id: AN-014, kind: numeric, state: live, prefix: AN, component: "14"}
+    - {id: CH-052, kind: numeric, state: reserved, prefix: CH, component: "52"}
+    - {id: TASKS-006, kind: numeric, state: reserved, prefix: TASKS, component: "6"}
+    - {id: CH-052, kind: numeric, state: live, prefix: CH, component: "52"}
+    - {id: TASKS-006, kind: numeric, state: live, prefix: TASKS, component: "6"}
+    - {id: P-006, kind: numeric, state: reserved, prefix: P, component: "6"}
+    - {id: G-003, kind: numeric, state: reserved, prefix: G, component: "3"}
+    - {id: PDR-015, kind: numeric, state: reserved, prefix: PDR, component: "15"}
+    - {id: M-020, kind: numeric, state: reserved, prefix: M, component: "20"}
+    - {id: M-021, kind: numeric, state: reserved, prefix: M, component: "21"}
+    - {id: M-022, kind: numeric, state: reserved, prefix: M, component: "22"}
+    - {id: M-023, kind: numeric, state: reserved, prefix: M, component: "23"}
+    - {id: M-024, kind: numeric, state: reserved, prefix: M, component: "24"}
+    - {id: M-025, kind: numeric, state: reserved, prefix: M, component: "25"}
+    - {id: P-006, kind: numeric, state: live, prefix: P, component: "6"}
+    - {id: G-003, kind: numeric, state: live, prefix: G, component: "3"}
+    - {id: PDR-015, kind: numeric, state: live, prefix: PDR, component: "15"}
+    - {id: M-020, kind: numeric, state: live, prefix: M, component: "20"}
+    - {id: M-021, kind: numeric, state: live, prefix: M, component: "21"}
+    - {id: M-022, kind: numeric, state: live, prefix: M, component: "22"}
+    - {id: M-023, kind: numeric, state: live, prefix: M, component: "23"}
+    - {id: M-024, kind: numeric, state: live, prefix: M, component: "24"}
+    - {id: M-025, kind: numeric, state: live, prefix: M, component: "25"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

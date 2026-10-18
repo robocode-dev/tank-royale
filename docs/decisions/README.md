@@ -81,4 +81,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [PDR-013 — TypeScript console-output parity is a tracked plan, not a defect fix](PDR-013-typescript-console-output-plan.md) · `inferred` — P-005 tracked the TypeScript console-output gap through implementation and parity evidence rather than treating it as a defect fix.
 - [PDR-014 — Generated documentation stays outside the corpus](PDR-014-generated-documentation-outside-corpus.md) · `verified` — Repository-root `/docs` is the permanent Cliewen system-of-record.
 - [ADR-048 — Keep full team identity separate from the display name](ADR-048-team-identity-separate-from-display-name.md) · `verified` — Tank Royale limits a bot's display name to 30 characters, while classic team bots may address one another by a fully qualified robot name.
+- [PDR-015 — Prove public Rumble participation before its announcement](PDR-015-rumble-readiness-next-campaign.md) · `inferred` — Rumble spans several repositories, and working maintainer-operated battles do not establish that ordinary Robocoders can submit bots and contribute results.
 <!-- clue:index:end -->
