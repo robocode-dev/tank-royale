@@ -240,6 +240,11 @@ claims:
       state: reserved
       prefix: ADR
       component: "48"
+    - id: ADR-049
+      kind: numeric
+      state: reserved
+      prefix: ADR
+      component: "49"
     - id: AN-001
       kind: numeric
       state: reserved
@@ -1301,11 +1306,11 @@ high-water:
       state: reserved
       prefix: M
       component: "25"
-    - id: OQ-003
+    - id: OQ-004
       kind: numeric
       state: reserved
       prefix: OQ
-      component: "3"
+      component: "4"
     - id: P-006
       kind: numeric
       state: reserved
