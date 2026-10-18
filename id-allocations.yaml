@@ -705,6 +705,11 @@ claims:
       state: reserved
       prefix: G
       component: "2"
+    - id: G-003
+      kind: numeric
+      state: reserved
+      prefix: G
+      component: "3"
     - id: GTD-001
       kind: numeric
       state: reserved
@@ -1231,11 +1236,11 @@ high-water:
       state: reserved
       prefix: OQ
       component: "2"
-    - id: P-005
+    - id: P-006
       kind: numeric
       state: reserved
       prefix: P
-      component: "5"
+      component: "6"
     - id: PDR-014
       kind: numeric
       state: reserved
