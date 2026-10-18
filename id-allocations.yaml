@@ -870,6 +870,11 @@ claims:
       state: reserved
       prefix: P
       component: "5"
+    - id: P-006
+      kind: numeric
+      state: reserved
+      prefix: P
+      component: "6"
     - id: PDR-001
       kind: numeric
       state: reserved
@@ -1261,11 +1266,11 @@ high-water:
       state: reserved
       prefix: SCR
       component: "2"
-    - id: TASKS-005
+    - id: TASKS-006
       kind: numeric
       state: reserved
       prefix: TASKS
-      component: "5"
+      component: "6"
     - id: TNP-003
       kind: numeric
       state: reserved
