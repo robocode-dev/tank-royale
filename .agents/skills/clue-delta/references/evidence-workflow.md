@@ -1,0 +1,14 @@
+---
+type: skill-reference
+title: Evidence workflow
+---
+
+## Evidence workflow
+
+Gherkin states the acceptance behavior; the repository's actual test frameworks implement its executable proof. Before writing or migrating tests, inspect the installed versions, discovery configuration, test types and existing metadata. Use native tags, markers, categories or properties first, executable-bound custom annotations, attributes or decorators next, and a stable name or title only when neither is practical. Ordinary proximity comments are not evidence. An AC identity belongs directly to one executable, never its enclosing suite, class, module or assembly. Each AC-proving executable carries one canonical AC identity, one proof type and one direction; other tests need no artificial AC identity.
+
+Establish a repeatable repository-owned export command. Start from the examples in `.clue/evidence/README.md` and adapt the mechanism to the installed framework rather than requiring a centrally supported framework. Export from the tests' metadata or framework discovery; do not hand-maintain the generated references. Native and fallback metadata must agree. Diagnose unsupported or ambiguous AC metadata instead of guessing or silently discarding it. Parameterized instances belonging to one executable count once. A Gatling scenario needs a registered simulation and the assertions relevant to its criterion; its name alone does not establish that connection.
+
+Aggregate every declared producer into the version-one `.clue/evidence.yaml` snapshot. Give each producer a stable identity and its complete include/exclude scope, including the exporter and configuration that affect discovery. Each reference names its canonical ID, source path, source-qualified executable subject, proof type and direction. The aggregate records normalized content hashes for every matching input and replaces the manifest only after every producer succeeds; a failed producer leaves the previous complete export intact. Commit the generated manifest with the tests. Regenerate after changing, adding or deleting inputs, then run the tests and `clue validate`; coverage and parity consume that same validated snapshot.
+
+The judge reads repository state and never runs an exporter or test runner. Input hashes establish freshness within the declared scopes. Exporter tests and human review establish attribution and scope completeness; the judge does not claim to verify framework discovery, test results or behavioral meaning. Optional CI can regenerate and compare the manifest. Existing CI and human acceptance requirements still apply. Legacy criteria without a proof class retain one reference; Human proof, draft exemptions, retirement and direction requirements retain their meanings. `clue migrate` reports a missing export without fabricating evidence or rewriting tests.

@@ -1,3 +1,8 @@
+---
+type: index
+title: Constraints
+---
+
 # Constraints
 
 C-xxx: rules that bind every change — laws, licenses, non-negotiable product rules, and the **convention register**: every repo rule that would otherwise live only in prose.

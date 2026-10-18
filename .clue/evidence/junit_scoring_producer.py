@@ -1,4 +1,4 @@
-"""Export directly annotated scoring JUnit methods with stable JVM identities."""
+"""Export scoring and GUI TwinDuel JUnit methods with stable JVM identities."""
 
 import json
 from pathlib import Path
@@ -9,7 +9,7 @@ import sys
 CLASS_NAME = re.compile(r"\bclass\s+([A-Za-z_][A-Za-z0-9_]*)")
 KOTLIN_METHOD = re.compile(r"\bfun\s+(?P<name>`[^`]+`|[A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 CLASSIFIED_NAME = re.compile(
-    r"test(?P<prefix>SCR)(?P<number>[0-9]+[a-z]*)_"
+    r"test(?P<prefix>SCR|GTD)(?P<number>[0-9]+[a-z]*)_"
     r"(?P<type>Unit|Integration|E2E|Performance)"
     r"(?P<direction>Positive|Negative)_(?P<description>[A-Za-z0-9_$]+)"
 )
@@ -23,12 +23,15 @@ def collect(root, files):
         diagnostics.append({"path": path, "subject": subject, "message": message})
 
     for name in sorted(files):
-        if not name.endswith(".kt") or "Scoring" not in Path(name).name or "Test" not in Path(name).name:
+        if not name.endswith(".kt") or not (
+            ("Scoring" in Path(name).name and "Test" in Path(name).name)
+            or Path(name).name == "GameTypeDropdownTest.kt"
+        ):
             continue
         source = (root / name).read_text(encoding="utf-8")
         class_match = CLASS_NAME.search(source)
         if class_match is None:
-            report(name, "", "scoring test source has no directly named test class")
+            report(name, "", "JUnit test source has no directly named test class")
             continue
 
         pending_test = False
@@ -43,11 +46,11 @@ def collect(root, files):
             method_match = KOTLIN_METHOD.search(line)
             if method_match is not None:
                 method_name = method_match.group("name").strip("`")
-                if pending_test and method_name.startswith("testSCR"):
+                if pending_test and method_name.startswith(("testSCR", "testGTD")):
                     subject = f"{class_match.group(1)}.{method_name}"
                     classified = CLASSIFIED_NAME.fullmatch(method_name)
                     if classified is None:
-                        report(name, subject, "scoring JUnit method does not follow the classified JVM naming convention")
+                        report(name, subject, "JUnit method does not follow the classified JVM naming convention")
                     else:
                         references.append({
                             "id": f"{classified.group('prefix')}-{classified.group('number')}",

@@ -1,3 +1,8 @@
+---
+type: index
+title: Architectural health reports
+---
+
 # Architectural health reports
 
 Point-in-time audits of the codebase against the documented architecture, produced with the `dot-audit` skill from the template below. Reports are historical records — a new audit writes a new report rather than rewriting the old one.

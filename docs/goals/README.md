@@ -1,3 +1,8 @@
+---
+type: index
+title: Goals
+---
+
 # Goals
 
 G-xxx: who wants the system and why — the reason anything else in this corpus exists.

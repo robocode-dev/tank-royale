@@ -11,6 +11,19 @@
         "server/src/test/kotlin/score/*Scoring*Test.kt"
       ],
       "command": ["python", ".clue/evidence/junit_scoring_producer.py"]
+    },
+    {
+      "id": "tank-royale-gui-twinduel",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/test_junit_producer.py",
+        "gui/build.gradle.kts",
+        "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt"
+      ],
+      "command": ["python", ".clue/evidence/junit_scoring_producer.py"]
     }
   ]
 }

@@ -1,10 +1,15 @@
+---
+type: skill-reference
+title: Upgrade workflow
+---
+
 ## Upgrade workflow
 
 Use when a repository already uses Cliewen and the human wants to find out whether, or bring it up to, a newer release. This is a route into a reviewed repository change, never a background update or authority to merge.
 
-**An upgrade is simple work.** It moves the repository onto a release whose contract changes were made and accepted upstream before publication, so this repository's own accepted contract is unchanged and the upgrade needs no CH identity, workspace, plan declaration, digest, acceptance brief, or mandatory agentic review. Recommend `Recommended route: simple`, run the checks relevant to the surfaces the upgrade changed, and follow the repository's integration rules. How many files the migration rewrites, and whether corpus or skill paths are among them, never makes the route full.
+**An upgrade is direct work.** It moves the repository onto a release whose contract changes were made and accepted upstream before publication, so this repository's own accepted contract is unchanged and the upgrade needs no CH identity, workspace, plan declaration, digest, acceptance brief, or mandatory agentic review. Recommend `Recommended route: direct`, run the checks relevant to the surfaces the upgrade changed, and follow the repository's integration rules. How many files the migration rewrites, and whether corpus or skill paths are among them, never makes the route tracked.
 
-Escalate only on a semantic discovery: when applying the release requires this repository to decide something of its own — an obligation it must choose how to meet, a reconciliation that changes what its own criteria or its own wall promise, or a finding whose resolution is a judgment about this repository rather than a transcription of the release — recommend the full loop for that decision on its own terms. The mechanical move around it stays simple.
+Escalate only on a semantic discovery: when applying the release requires this repository to decide something of its own — an obligation it must choose how to meet, a reconciliation that changes what its own criteria or its own wall promise, or a finding whose resolution is a judgment about this repository rather than a transcription of the release — recommend the tracked route for that decision on its own terms. The mechanical move around it stays direct.
 
 1. Run `clue latest`. It determines whether a newer release is available and, when one is, prints the installation route for the machine it is running on. Do not reproduce an installation command here: one distributed skill cannot know the user's platform. If the release list cannot be reached, explain that Cliewen cannot tell whether a newer release exists; do not call the repository current on that basis, and continue to the next step.
 2. Regardless of whether `clue latest` could reach the release list, run `clue migrate` without `--apply` as a preview, even when `clue latest` says the installed release is the newest. `clue latest` checks published CLI availability; the migration preview checks whether this repository's managed carriers match the installed binary and needs no network access. Treat planned changes, findings, and notices as drift, except the explicitly non-blocking `MIG-009` competing-wall notice that no command may repair.

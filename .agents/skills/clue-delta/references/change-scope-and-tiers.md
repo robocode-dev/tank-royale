@@ -1,10 +1,15 @@
+---
+type: skill-reference
+title: Change routing
+---
+
 ## Change routing
 
-Before editing, inspect the smallest relevant context and tell the user `Recommended route: simple` or `Recommended route: full`, why, and what discovery would change that recommendation.
+Before editing, inspect the smallest relevant context and tell the user `Recommended route: direct` or `Recommended route: tracked`, why, and what discovery would change that recommendation. One question decides the route: does the work change the accepted contract? Direct is the default.
 
-- **Simple** leaves the accepted contract unchanged. It includes an observational analysis with a named consumer, a defect correction that restores an unchanged acceptance criterion, regression evidence for an unchanged criterion, an in-contract configuration adjustment, a refactor, maintenance, and editorial correction. It uses no CH identity, workspace, plan declaration, digest, acceptance brief, or mandatory agentic review; run the checks relevant to the changed surfaces.
-- **Full** changes the accepted contract: it adds, materially revises, or retires an acceptance criterion; introduces behavior outside accepted criteria; changes capability, policy, plan promise, decision, or methodology meaning; or makes or rejects a consequential decision from an analysis. Uncertainty makes full the honest recommendation. Use the whole loop with `/changes/CH-xxx-slug/`.
+- **Direct** leaves the accepted contract unchanged. It includes an observational analysis with a named consumer, a defect correction that restores an unchanged acceptance criterion, regression evidence for an unchanged criterion, an in-contract configuration adjustment, a refactor, maintenance, and editorial correction. It uses no CH identity, workspace, plan declaration, digest, acceptance brief, or mandatory agentic review; run the checks relevant to the changed surfaces.
+- **Tracked** changes the accepted contract: it adds, materially revises, or retires an acceptance criterion; introduces behavior outside accepted criteria; changes capability, policy, plan promise, decision, or methodology meaning; or makes or rejects a consequential decision from an analysis. Uncertainty makes tracked the honest recommendation. Use the whole loop with `/changes/CH-xxx-slug/`.
 
-Paths, file counts, and changed-line counts may warn but never decide meaning. Reassess when a discovery expands semantic scope and against the complete diff before integration. If simple work grows into full work, pause and recommend the full loop. If the user explicitly declines, proceed as simple without making code, tests, or durable documentation untruthful, and add all three trailers to the final authored commit: `Cliewen-Route: simple`, `Cliewen-Recommendation: full`, and `Cliewen-Override: user chose simple; <concise risk>`. This records one integration authorization in Git history, not a corpus decision.
+Paths, file counts, and changed-line counts may warn but never decide meaning. Reassess when a discovery expands semantic scope and against the complete diff before integration. If direct work grows into tracked work, pause and recommend the tracked route. If the user explicitly declines, proceed as direct without making code, tests, or durable documentation untruthful, and add all three trailers to the final authored commit: `Cliewen-Route: direct`, `Cliewen-Recommendation: tracked`, and `Cliewen-Override: user chose direct; <concise risk>`. This records one integration authorization in Git history, not a corpus decision.
 
 A route does not authorize a push; the [Review boundary](review-boundary.md) states when an agent may push to an integration branch. A human may integrate by any mechanism the repository permits, and repository-local conventions may be stricter. A release is not a Cliewen route: each adopter defines or omits its own release process, whose work is classified by accepted-contract impact.

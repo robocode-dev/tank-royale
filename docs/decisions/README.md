@@ -1,3 +1,8 @@
+---
+type: index
+title: Decisions
+---
+
 # Decisions
 
 Decision records use three subject types: ADR-xxx for software or corpus architecture, PDR-xxx for project, process, or methodology, and IDR-xxx for implementation choices. They answer: **"What future-shaping choice does this repository need to remember?"**

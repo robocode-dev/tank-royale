@@ -1,3 +1,8 @@
+---
+type: index
+title: Tank Royale Rumble - Umbrella Design Document
+---
+
 # Tank Royale Rumble - Umbrella Design Document
 
 > **Status: DRAFT** - design direction captured. The next step is to convert this design into an

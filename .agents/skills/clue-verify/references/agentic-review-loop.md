@@ -1,9 +1,14 @@
+---
+type: skill-reference
+title: Agentic review loop
+---
+
 ## Agentic review loop
 
 Run this loop automatically; never ask the human to clear context or initiate a separate review.
 
 1. Finish every intended edit and commit the complete candidate. Determine the current commit and its base on accepted `main`, then run the applicable local checks against that commit.
-2. If the coding-agent host supports context-isolated delegation, start a new read-only reviewer without the implementation conversation. Give it only the repository, branch, base, and declared intent: recover a full change's proposal from branch history. If isolated delegation is unavailable, perform an explicit adversarial pass in the current context and label it `in-context fallback`; never describe that fallback as independent review.
+2. If the coding-agent host supports context-isolated delegation, start a new read-only reviewer without the implementation conversation. Give it only the repository, branch, base, and declared intent: recover a tracked change's proposal from branch history. If isolated delegation is unavailable, perform an explicit adversarial pass in the current context and label it `in-context fallback`; never describe that fallback as independent review.
 3. Instruct the reviewer to inspect the complete base diff, durable corpus, tests, and constraints. It returns no edits, only findings about correctness, intent mismatch, regressions, security, missing evidence, or unjustified complexity.
    - Each finding includes severity, location, evidence, the operative requirement or declared intent that is violated, the concrete consequence, and a remediation. An ID never stands alone: say briefly what the cited evidence or requirement is about.
    - Apply authoritative decisions and the repository's explicit lifecycle rules before treating wording as contradictory. A human-controlled merge does not require duplicate human code review, and lifecycle-successor evidence satisfies a requirement when the repository declares that transition. Historical descriptions, optional activity, alternative readings, and lifecycle-correct state are not actionable defects by themselves. Exclude stylistic preference, optional improvement, and speculative scope expansion.

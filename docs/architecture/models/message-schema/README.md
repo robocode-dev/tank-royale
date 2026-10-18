@@ -1,3 +1,8 @@
+---
+type: index
+title: Message Schema
+---
+
 # Message Schema
 
 This directory documents the **WebSocket message contracts** used for network communication in Robocode Tank Royale.

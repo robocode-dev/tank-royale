@@ -1,3 +1,8 @@
+---
+type: index
+title: models/
+---
+
 # models/
 
 Domain models for Robocode Tank Royale — WebSocket message schemas and business process flows.
