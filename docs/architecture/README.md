@@ -1,3 +1,8 @@
+---
+type: index
+title: Architecture
+---
+
 # Architecture
 
 ARCH-xxx: how the system is structured — C4 views (What), domain models and flows (How), with the decision records in [decisions/](../decisions/README.md) carrying the Why.

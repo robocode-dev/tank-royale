@@ -1,3 +1,8 @@
+---
+type: index
+title: images/
+---
+
 # images/
 
 > **Generated directory** — Do not edit SVG files directly.

@@ -1,4 +1,11 @@
+---
+type: evidence-guide
+title: Repository-owned acceptance evidence
+---
+
 # Repository-owned acceptance evidence
+
+Run `python .clue/evidence/aggregate.py .clue/evidence/producers.json` after changing the declared scoring or GUI TwinDuel test inputs, then commit `.clue/evidence.yaml`. Run `python -m unittest discover -s .clue/evidence -p 'test_*.py'` to check executable attribution. The current producer recognizes the classified names on directly annotated JUnit methods in those declared suites; it is not a general Kotlin parser or an exporter for all repository tests. Other capabilities remain governed by their existing draft/evidence status.
 
 Gherkin describes behavior. Tests carry AC identity, proof type and direction in the framework's native metadata, custom executable-bound metadata, or a stable name/title. This folder holds examples, not a framework support registry. Establish and test the repository's export command before activating machine-proven criteria.
 

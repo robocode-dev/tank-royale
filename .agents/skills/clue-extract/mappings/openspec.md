@@ -1,3 +1,8 @@
+---
+type: skill-reference
+title: "clue-extract mapping: OpenSpec"
+---
+
 # clue-extract mapping: OpenSpec
 
 Source mapping for [clue-extract](../skill.md) — the target contract in `skill.md` governs; this file only says what maps where for an OpenSpec corpus.
@@ -20,8 +25,9 @@ Layout: `openspec/config.yaml`, synced truth in `openspec/specs/<capability>/spe
 | Coverage/quality gates in build config | `C-xxx` constraints (`enforcement: machine`) referencing the enforcing tool |
 | OpenSpec workflow skills (`openspec-*`) | deleted with the source corpus |
 | Hand-maintained per-folder index (`INDEX.md`, `index.md`, a `## Contents` table) | absorbed into that folder's README `clue:index` rows, then deleted — the description, purpose, or scope column becomes the row's sentence, while a column that only restates a `links:` edge (a design or related-decision pointer) is dropped rather than carried |
-| JUnit `@Tag("XX_NNN")` | keep on the executable together with its literal proof-type and direction tags — clue normalizes underscores to canonical hyphens at harvest for segmented or letter-suffixed IDs too. A method carrying several AC tags or a class-level AC tag is a rehearsal finding, never a positional deduplication or removal: after human review, split it into one-criterion methods, move a class tag only to the executable that proves it, or record the source location and named plan door with the explicit `@draft` disposition that applies when attributable test work is out of scope |
+| JUnit or other native test metadata | Preserve canonical IDs and executable attribution; establish the repository-owned export described by Evidence workflow. Inventory multi-AC and container metadata as semantic conflicts, then resolve them under human direction without losing assertions. |
 | Runner/type tags (`UNIT`, `INTEGRATION`, `E2E`, …) | kept untouched even when no pipeline filters on them yet — they are the runner's namespace, not the methodology's, and the only per-method type carrier where one file mixes test types |
+| `# AC:` / `// AC:` comments | Inventory the claimed behavior and assertions, then attach native or custom executable metadata, or a stable name/title fallback. Comments do not themselves earn proof; retain unresolved source evidence with an accountable disposition. |
 | `openspec/config.yaml`'s revision (or the source repository's pinned commit) plus its path | the rehearsal's source manifest `source-revision`/`source-location`; each scenario's `Test-type` line, direction, and test file location seed its manifest entry's `proof-class`, `direction`, and `evidence-location` — a scenario the rehearsal resolves as `@draft`, `Human`, or retired records `disposition`, readable `justification`, its particular `disposition-source-location`, and its own existing target milestone as `plan-door` instead |
 
 Preserve every existing local or external Markdown link and every referenced asset, including SVG diagrams. When a source link has a deterministic converted target, rewrite the target while preserving the link; when it does not, report the mapping gap and do not delete the source target. Diagram choice follows C-007: prefer embedded Mermaid, use embedded ASCII art when it is clearer, and retain SVG where neither is adequate.

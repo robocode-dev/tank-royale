@@ -1,3 +1,8 @@
+---
+type: skill-reference
+title: Analysis workflow
+---
+
 ## Analysis workflow
 
 Use when a change has unclear risks or unknowns — **before** planning or implementing. Spiral's core: retire the biggest risk first.

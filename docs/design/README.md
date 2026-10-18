@@ -1,3 +1,8 @@
+---
+type: index
+title: Design documents
+---
+
 # Design documents
 
 Detailed design specifications that complement the decision records in [../decisions/](../decisions/README.md): ADRs stay focused on the decision, context, and rationale; the specs, flow details, diagrams, and examples that would bloat an ADR live here and are linked from the ADR's "More Information".

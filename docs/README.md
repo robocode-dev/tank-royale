@@ -1,3 +1,8 @@
+---
+type: index
+title: The Tank Royale corpus
+---
+
 # The Tank Royale corpus
 
 This directory is the **system-of-record**: the permanent, durable truth about the platform for developers working on it (user-facing docs live in `web/`), run under [Cliewen](https://github.com/cliewen/cliewen) conventions since CH-001 (2026-07-18, see [AN-001](analysis/AN-001-openspec-extraction.md)). Changes are transient deltas on branches, digested into this corpus at merge — `git log docs/` is the audit trail.

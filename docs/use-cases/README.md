@@ -1,3 +1,8 @@
+---
+type: index
+title: Use cases
+---
+
 # Use cases
 
 UC-xxx: one actor's end-to-end path across capabilities. `type: use-case`, filename `UC-<number>-<slug>.md`.

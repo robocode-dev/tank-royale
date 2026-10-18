@@ -1,8 +1,15 @@
+---
+type: agent-hub
+title: Tank Royale agent instructions
+---
+
 # Tank Royale — AI Agent Instructions
 
 ## System of record
 
-**Start at [`docs/README.md`](docs/README.md)** — the corpus is the permanent truth about this system (Cliewen conventions since CH-001; see [AN-001](docs/analysis/AN-001-openspec-extraction.md)). Requirements live as Gherkin acceptance criteria under `docs/capabilities/*/criteria.md`. Before editing, recommend `simple` when the accepted contract remains unchanged or `full` when acceptance-criterion, capability, decision, policy, plan-promise, methodology, or uncovered-behavior meaning changes; paths and diff size never decide the route. Simple work uses no Cliewen workspace; chosen full work runs the change loop (`clue-delta` skill): branch → `/changes/CH-xxx-slug/` proposal → implement → digest → PR. Reassess when semantic scope grows, and if the user declines a full recommendation, record the route, recommendation, and risk in the final commit trailers. `clue validate` judges the corpus; markdown prose is never hard-wrapped (one line per paragraph). A full change never reaches `main` except through a human-merged PR; simple work may be committed and pushed to `main` directly only when the maintainer explicitly authorizes that push for that specific change, and such commits carry an `Authorized-Push:` trailer naming the authorization. Agents never merge their own PRs. See [C-002](docs/constraints/C-002-review-boundary.md).
+**Start at [`docs/README.md`](docs/README.md)** — the corpus is the permanent truth about this system (Cliewen conventions since CH-001; see [AN-001](docs/analysis/AN-001-openspec-extraction.md)). Requirements live as Gherkin acceptance criteria under `docs/capabilities/*/criteria.md`. Before editing, recommend `direct` when the accepted contract remains unchanged or `tracked` when acceptance-criterion, capability, decision, policy, plan-promise, methodology, or uncovered-behavior meaning changes; paths and diff size never decide the route. Direct work uses no Cliewen workspace; chosen tracked work runs the change loop (`clue-delta` skill): branch → `/changes/CH-xxx-slug/` proposal → implement → digest → PR. Reassess when semantic scope grows, and if the user declines a tracked recommendation, record the route, recommendation, and risk in the final commit trailers. `clue validate` judges the corpus; markdown prose is never hard-wrapped (one line per paragraph). A tracked change never reaches `main` except through a human-merged PR; direct work may be committed and pushed to `main` directly only when the maintainer explicitly authorizes that push for that specific change, and such commits carry an `Authorized-Push:` trailer naming the authorization. Agents never merge their own PRs. The [human integration boundary](docs/constraints/C-002-review-boundary.md) applies; `.clue/acceptance.yaml` explicitly selects PR acceptance.
+
+Write the meaning of referenced goals, decisions, criteria, and rules in the sentence itself; use descriptive links for optional detail and keep IDs secondary.
 
 Before your first tool call, run `clue latest --quiet`; if it reports that this repository is behind, ask whether to run the coordinated `clue-upgrade` workflow. Releases are repository-owned administrative work, not a Cliewen route. A release must provide clear end-user value; corrective releases for defects, security, compatibility, or urgent operational problems may ship without a new user-facing capability. Never release solely to unblock internal or downstream development; use local builds until a value-bearing or corrective release is warranted.
 
@@ -34,7 +41,7 @@ Reusable task instructions live in `.agents/skills/`. When the user runs a slash
 
 | Skill | Purpose |
 |---|---|
-| `clue-delta` | The change loop — use for every full change |
+| `clue-delta` | The change loop — use for every tracked change |
 | `clue-plan` | Create or revise a plan with verifiable milestones |
 | `clue-analysis` | Spikes and findings — every analysis ends in a `docs/analysis` document |
 | `clue-verify` | Pre-merge checklist, the human-readable twin of `clue validate` |

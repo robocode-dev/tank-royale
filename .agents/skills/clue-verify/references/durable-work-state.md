@@ -1,3 +1,8 @@
+---
+type: skill-reference
+title: Durable work state
+---
+
 ## Durable work state
 
 An agent's private memory is never where work lives. Anything needed to implement, continue, review, or hand off work belongs in a corpus artifact, the change workspace, or the pull request; private conversation does not survive a change of agent.

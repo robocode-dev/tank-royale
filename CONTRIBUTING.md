@@ -90,13 +90,9 @@ End users running Robocode only need Java 11 or newer, but developers building f
 
 ## Agent-assisted contributions
 
-Robocode Tank Royale keeps its system-of-record in the [`docs/`](docs/README.md)
-corpus under **[Cliewen](https://github.com/cliewen/cliewen)** conventions. If you
-contribute with AI coding agents (tested with Claude Code, Codex, GitHub Copilot,
-and OpenCode), any non-trivial change runs the change loop: a branch with a
-`/changes/CH-xxx-slug/` proposal, implementation, and a corpus digest — reviewed
-and merged by the maintainer via pull request. `clue validate` judges the corpus
-in CI. This keeps proposals reviewable and prevents large unsolicited diffs.
+Robocode Tank Royale keeps its system-of-record in the [`docs/`](docs/README.md) corpus under [Cliewen](https://cliewen.dev/) conventions. Use Cliewen 0.31.0, matching the managed skills and CI pin. Work that changes an accepted contract follows the tracked change loop: a branch with a `/changes/CH-xxx-slug/` proposal, implementation, a corpus digest, and a human-merged PR. Direct work preserves the accepted contract and follows the repository's per-change integration authorization rules. `.clue/acceptance.yaml` preserves PR acceptance when upgrading Cliewen; `clue validate` judges the corpus in CI.
+
+When upgrading, preview and apply `clue migrate` with the matching release binary. This repository's `.claude/skills` is a Git symlink to `../.agents/skills`; migration reports that it will not write through that boundary. Update the canonical `.agents/skills` files, verify the committed link target with `git ls-files -s .claude/skills` and `git show HEAD:.claude/skills`, and confirm both paths expose the same skill content when the checkout supports symlinks. Do not replace the mirror with a second independently maintained skill set. A checkout without symlink support must use the canonical `.agents/skills` path. The optional vision remains deliberately absent; it is not fabricated as part of an upgrade.
 
 Agent instructions for this repo live in [`AGENTS.md`](AGENTS.md) and the
 [`.agents/`](.agents/) directory — they tell the agent which conventions,

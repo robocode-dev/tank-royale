@@ -1,3 +1,8 @@
+---
+type: skill-reference
+title: Decision records
+---
+
 ## Decision records
 
 Only a future-shaping choice earns a decision record. Route it by subject to exactly one type: an ADR for software or corpus architecture, a PDR for how the project or its methodology works, or an IDR for implementation. Reversal cost does not route a record; routine facts, chronology, and implementation history are not decisions. A decision adopting a well-established practice cites it by name and records only the local why.

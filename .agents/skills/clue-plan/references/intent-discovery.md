@@ -1,3 +1,8 @@
+---
+type: skill-reference
+title: Intent discovery
+---
+
 ## Intent discovery
 
 Use when a repository has no usable vision. `clue` reports whether one exists and what its provenance is; it never interviews and never infers. Interpretation is yours, and accepting meaning is the human's.

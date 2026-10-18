@@ -1,3 +1,8 @@
+---
+type: index
+title: C4 Views — System Architecture Diagrams
+---
+
 # C4 Views — System Architecture Diagrams
 
 
