@@ -76,13 +76,23 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it removes only records whose accepted facts were published before their successful ingestion receipts
     And unacknowledged records remain retryable while records from an obsolete behavior-version epoch are quarantined with a clear diagnostic
 
-  @RCL-007 @draft
+  # Retired: it assumed an Issues-only credential and API issue creation, which an outside contributor cannot obtain
+  # (the label is dropped and no repository-scoped token can be made). Reminted as RCL-013.
+  @RCL-007 @retired
   Scenario: A registered client submits a bounded issue-ops batch without repository write access
     Test-type: Integration
     Given the ranked journal contains one or more compatible results and the contributor supplies an Issues-only repository credential
     When the client submits the pending results
     Then it creates labelled result issues containing between one and sixty results as required by the result-data contract and correlates each post-publication ingestion receipt to its journal records
     And it neither requests nor uses permission to modify repository contents, branches, releases, packages, Pages, facts, or projections
+
+  @RCL-013 @draft
+  Scenario: An outside contributor submits ranked batches through the web form without a credential
+    Test-type: Integration
+    Given the ranked journal contains compatible results and the contributor holds no repository credential
+    When the client prepares a submission
+    Then it writes each batch as plain text in a single fenced json block, split by serialized size as well as by the limit of sixty results, and prints the result form address with only a unique title prefilled
+    And it keeps each prepared batch retryable until the contributor's issue is found and its ingestion receipts are correlated to the journal records without a credential
 
   @RCL-008 @draft
   Scenario: The client runtime can execute every supported bot platform within its declared boundary

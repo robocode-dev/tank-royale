@@ -2,7 +2,7 @@
 id: ADR-043
 type: decision
 status: verified
-links: [P-003, M-008, CAP-016, CAP-015, ADR-044]
+links: [P-003, M-008, CAP-016, CAP-015, ADR-044, ADR-049]
 title: Rumble Client Trust Boundary
 author: agent
 accepted-by: Flemming N. Larsen (2026-08-16, Claude Code conversation)
@@ -18,7 +18,7 @@ Ranked battles execute reviewed but untrusted bot source on contributor-owned ma
 
 The client exposes mutually exclusive ranked and practice modes. Ranked mode executes only the synchronized catalog and engine snapshot, journals every completed battle before transport, and removes records only after ingestion acknowledgement. Practice mode may execute local sources but cannot write ranked journal state or invoke submission.
 
-The append-only local journal is the durability boundary and issue-ops is the only V1 submission transport. The client removes records only after durable ingestion acknowledgement as defined by [ADR-044](ADR-044-durable-rumble-result-acknowledgement.md). A client credential is limited to Issues access on the result-data repository and never grants repository-content, branch, release, package, Pages, fact, or projection write access. Fork-pull-request submission is introduced only if the result-data contract later supports it.
+The append-only local journal is the durability boundary and issue-ops is the only V1 submission transport. The client removes records only after durable ingestion acknowledgement as defined by [ADR-044](ADR-044-durable-rumble-result-acknowledgement.md). A client submits through the repository's result form and holds no submission credential; [ADR-049](ADR-049-rumble-browser-form-submission.md) replaced the earlier rule that required an Issues-only credential, because an outside contributor cannot obtain one. Where an account with push access chooses to submit through the API, its credential is limited to Issues access on the result-data repository and never grants repository-content, branch, release, package, Pages, fact, or projection write access. Fork-pull-request submission is introduced only if the result-data contract later supports it.
 
 Replay evidence remains local, bound to its result by battle ID and SHA-256 hash. The primary runtime is a rebuildable, egress-constrained container; bare-metal execution is an explicit fallback with a weaker isolation boundary.
 
@@ -29,6 +29,7 @@ Separating private experimentation from automatic ranked journaling removes sele
 ## Consequences
 
 - Ranked execution fails closed when synchronized identity, catalog, engine, or advice contracts are incompatible.
+- Outside contributors submit without any credential, so a leaked credential cannot affect the result-data repository.
 - Contributors can practice freely without generating ranked state.
 - Temporary forge or network failures retain unsent results locally.
 - Moderators may request replay evidence, but the Rumble cannot recover evidence a contributor loses.
