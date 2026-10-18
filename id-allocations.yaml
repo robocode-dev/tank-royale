@@ -305,6 +305,11 @@ claims:
       state: reserved
       prefix: AN
       component: "13"
+    - id: AN-014
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "14"
     - id: ARCH-001
       kind: numeric
       state: reserved
@@ -1156,11 +1161,11 @@ high-water:
       state: reserved
       prefix: ADR
       component: "48"
-    - id: AN-003
+    - id: AN-013
       kind: numeric
       state: reserved
       prefix: AN
-      component: "3"
+      component: "13"
     - id: ARCH-026
       kind: numeric
       state: reserved
