@@ -840,6 +840,36 @@ claims:
       state: reserved
       prefix: M
       component: "19"
+    - id: M-020
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "20"
+    - id: M-021
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "21"
+    - id: M-022
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "22"
+    - id: M-023
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "23"
+    - id: M-024
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "24"
+    - id: M-025
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "25"
     - id: OQ-001
       kind: numeric
       state: reserved
@@ -1246,11 +1276,11 @@ high-water:
       state: reserved
       prefix: P
       component: "6"
-    - id: PDR-014
+    - id: PDR-015
       kind: numeric
       state: reserved
       prefix: PDR
-      component: "14"
+      component: "15"
     - id: RBC-005
       kind: numeric
       state: reserved
