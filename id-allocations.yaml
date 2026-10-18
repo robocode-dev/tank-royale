@@ -1000,6 +1000,11 @@ claims:
       state: reserved
       prefix: PDR
       component: "15"
+    - id: PDR-016
+      kind: numeric
+      state: reserved
+      prefix: PDR
+      component: "16"
     - id: RBC-001
       kind: numeric
       state: reserved
@@ -1331,11 +1336,11 @@ high-water:
       state: reserved
       prefix: SCR
       component: "2"
-    - id: TASKS-007
+    - id: TASKS-008
       kind: numeric
       state: reserved
       prefix: TASKS
-      component: "7"
+      component: "8"
     - id: TNP-003
       kind: numeric
       state: reserved
