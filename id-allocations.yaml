@@ -940,6 +940,11 @@ claims:
       state: reserved
       prefix: OQ
       component: "5"
+    - id: OQ-006
+      kind: numeric
+      state: reserved
+      prefix: OQ
+      component: "6"
     - id: P-001
       kind: numeric
       state: reserved
@@ -1411,11 +1416,11 @@ high-water:
       state: reserved
       prefix: SCR
       component: "2"
-    - id: TASKS-009
+    - id: TASKS-010
       kind: numeric
       state: reserved
       prefix: TASKS
-      component: "9"
+      component: "10"
     - id: TNP-003
       kind: numeric
       state: reserved
