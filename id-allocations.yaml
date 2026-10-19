@@ -340,6 +340,11 @@ claims:
       state: reserved
       prefix: AN
       component: "18"
+    - id: AN-019
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "19"
     - id: ARCH-001
       kind: numeric
       state: reserved
@@ -1396,11 +1401,11 @@ high-water:
       state: reserved
       prefix: M
       component: "25"
-    - id: OQ-006
+    - id: OQ-007
       kind: numeric
       state: reserved
       prefix: OQ
-      component: "6"
+      component: "7"
     - id: P-006
       kind: numeric
       state: reserved
