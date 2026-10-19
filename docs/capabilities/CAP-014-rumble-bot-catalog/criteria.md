@@ -53,4 +53,13 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     And identical content is not rewritten or aggregated
     And, when no independent publication state changed, no commit or deployment occurs
     And catalog and result writers cannot overlap their publication sections
+
+  @RBC-006 @draft
+  Scenario: Official API runtime dependencies are distinguished from unrelated bot libraries
+    Test-type: Integration
+    Given a source-only bot declares an official Tank Royale Bot API and its API-declared runtime dependencies
+    When the submission validator checks its dependency declarations and committed lockfile where required
+    Then the official API and its required runtime peers are accepted
+    And an unrelated declared bot library is rejected with an actionable diagnostic
+    And generated dependency directories remain outside the submitted bot source tree
 ```
