@@ -1075,6 +1075,11 @@ claims:
       state: reserved
       prefix: RBC
       component: "5"
+    - id: RBC-006
+      kind: numeric
+      state: reserved
+      prefix: RBC
+      component: "6"
     - id: RCL-001
       kind: numeric
       state: reserved
@@ -1306,11 +1311,11 @@ claims:
       prefix: UD
       component: "8"
 high-water:
-    - id: ADR-049
+    - id: ADR-050
       kind: numeric
       state: reserved
       prefix: ADR
-      component: "49"
+      component: "50"
     - id: AN-017
       kind: numeric
       state: reserved
