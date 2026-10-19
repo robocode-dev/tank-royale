@@ -2,7 +2,7 @@
 id: ARCH-025
 type: architecture
 status: draft
-links: []
+links: [ADR-049, CAP-016]
 title: "Rumble Design: User Documentation and Onboarding"
 provenance: inferred
 reversal-cost: low
@@ -46,8 +46,9 @@ flowchart TD
         B1["Read client quickstart"] --> B2["Pull client container<br/>(or run install script)"]
         B2 --> B3["One-time onboarding PR<br/>(register forge account + client id)"]
         B3 --> B4["Configure rumble-client.json"]
-        B4 --> B5["Run ranked mode;<br/>results submit automatically"]
-        B5 --> B6["Back up evidence directory"]
+        B4 --> B5["Run a ranked battle<br/>and prepare pending batches"]
+        B5 --> B6["Paste complete batches<br/>through the result form"]
+        B6 --> B7["Collect receipts,<br/>check rankings and back up evidence"]
     end
 
     subgraph modJ["Moderator"]
@@ -73,8 +74,8 @@ flowchart TD
 | `CONTRIBUTING.md` | Bot authors | `rumble-bots` | Submission rules in full: booter convention, validation checks, SPDX field binding statement, DCO-style responsibility, review expectations |
 | `GOVERNANCE.md` | Everyone | `rumble-bots` | Moderator team and rotation, bans and appeals, name disputes, lost-account adjudication |
 | `web/docs/rumble/bot-author-guide.md` | Bot authors | Tank Royale web docs | Quickstart: first bot from template to merged PR; practice mode; 1v1, TwinDuel, and Melee entry rules; versioning rules; slots; license how-to |
-| `web/docs/rumble/client-guide.md` | Battle contributors | Tank Royale web docs | Quickstart: container pull or install script, onboarding PR, configuration, ranked vs. practice, evidence backups, upgrading on engine bumps |
-| `web/docs/rumble/onboarding.md` | Battle contributors | Tank Royale web docs | The one-time registration PR: what to add under `clients/`, what the token needs, what happens next |
+| `web/docs/rumble/client-guide.md` | Battle contributors | Tank Royale web docs | Quickstart: container pull or install script, onboarding PR, configuration, ranked vs. practice, plain-text batch preparation, credential-free form posting, receipt collection, rankings, evidence backups and engine upgrades |
+| `web/docs/rumble/onboarding.md` | Battle contributors | Tank Royale web docs | The one-time registration PR: what to add under `clients/`, which GitHub account posts the batch and what happens next; no submission token is required |
 | `web/docs/rumble/rankings.md` | Everyone | Tank Royale web docs | Exact APS, samples and pairings, active bot versions, behavior epochs, update cadence, publication freshness, and immutable cumulative month snapshots |
 | `docs/moderator-handbook.md` | Moderators | `rumble-data` | Review checklists, quarantine and ban procedures, spam handling, operations runbook (cron re-enablement, compaction, fork drill) |
 | Dashboard "Participate" page | Everyone | `rumble-data/site` | Static entry page linking every document above; the only doc that lives on the Pages site itself |
@@ -95,6 +96,6 @@ The two journeys that must stay short, measured in steps a newcomer performs:
 | Journey | Steps | Where it can go wrong |
 |---------|-------|----------------------|
 | First bot submitted | copy template, write bot, set license field, open PR | Validation failures must be self-explanatory; the guide shows the exact commands to run `validate_bot.py` locally first |
-| First battle contributed | pull container, onboarding PR, paste config, run | The onboarding PR is the one human-gated step (spam defense, aggregation document); its template must make review a 30-second approval |
+| First battle contributed | pull container, onboarding PR, configure, run, prepare and paste complete batches through the form, collect receipts and check rankings | Registration waits for moderator merge; every batch also needs contributor posting. Instructions must distinguish a prepared batch, a posted issue, accepted receipts and published scores. |
 
-Anything that grows these lists needs a corresponding cut elsewhere; the friction budget is a review criterion for future design changes.
+The accepted [browser-form submission decision](../../decisions/ADR-049-rumble-browser-form-submission.md) adds a manual posting step per batch in exchange for requiring no client submission credential or repository privileges. This is an explicit trade-off against the original automatic-submission journey, not an unattended workflow. Further growth needs a corresponding cut elsewhere; the friction budget remains a review criterion for future design changes. A future GitHub App requires its own evaluated authentication decision.

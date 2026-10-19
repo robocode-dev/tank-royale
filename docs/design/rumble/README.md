@@ -5,8 +5,7 @@ title: Tank Royale Rumble - Umbrella Design Document
 
 # Tank Royale Rumble - Umbrella Design Document
 
-> **Status: DRAFT** - design direction captured. The next step is to convert this design into an
-> active plan (P-xxx) with ordered changes (CH-xxx) before implementation starts.
+> **Status: DRAFT** - design direction, read alongside the accepted capability contracts and decisions. The original implementation plan is complete; the [announcement-readiness campaign](../../plans/P-006-rumble-announcement-readiness.md) tracks the remaining public-participation work.
 
 This is the coordinating umbrella document for the design of an automated, serverless, decentralized, community-driven tournament system for Robocode Tank Royale. It holds the overall idea, the design principles, and the map of the detailed design documents. Details live in the sub-documents; this document should stay short and stable.
 
@@ -27,7 +26,7 @@ These principles apply to every sub-document. A design that violates one of them
 |---|-----------|---------|
 | P1 | **Zero infrastructure cost** | No servers, no paid databases, no cloud functions. Only free-tier forge features (repos, CI, Pages, issues). |
 | P2 | **Forkability** | A fork of the repositories plus "enable CI, enable Pages" is a fully functioning rumble. Nothing canonical may live outside Git. |
-| P3 | **No secrets** | CI uses only the forge's built-in token. Nothing to rotate, nothing that expires with a person. Clients hold at most a token that can open issues. |
+| P3 | **No secrets** | CI uses only the forge's built-in token. The supported contributor client holds no submission credential; the contributor posts complete prepared batches through the browser form. Optional API posting by privileged accounts remains bounded by the [client trust decision](../../decisions/ADR-043-rumble-client-trust-boundary.md). |
 | P4 | **Single writer** | Only CI commits to the data repository. Clients and humans never do. Race conditions are eliminated by construction, not by locking. |
 | P5 | **Event sourcing** | Raw match results are immutable, append-only facts. Everything else (leaderboard, pairing stats, match advice) is a derived projection that anyone can recompute locally with one script. |
 | P6 | **Advice, not locks** | Matchmaking files tell clients what battles are *useful*, never reserve battles. Duplicate work produces extra samples, which are statistically welcome. |
@@ -54,7 +53,9 @@ flowchart TB
 
     client["Rumble client<br/>(wraps Battle Runner)"] -->|"pull"| botindex
     client -->|"pull"| proj
-    client -->|"submit results<br/>(issue-ops)"| inbox["Result inbox"]
+    client -->|"prepare complete batches<br/>and form links"| contributor["Battle contributor"]
+    contributor -->|"paste batches through<br/>result form"| inbox["Result inbox"]
+    inbox -->|"public ingestion receipts"| client
 
     inbox -->|"scheduled CI drains,<br/>validates, commits"| raw
     raw -->|"aggregate.py<br/>(pure function)"| proj
@@ -125,9 +126,9 @@ These directions keep the sub-documents consistent and should be reflected in th
 | **One active version per bot** (version bump supersedes the old one, RoboRumble style), plus a per-owner **bot slot** budget. | Submission doc |
 | **Owner (forge account) is distinct from authors (display names)**; ownership drives permissions, slots, bans, and self-report detection. | Submission doc |
 | **Banning** of owners/bots via an auditable list; enforced automatically in submission CI and result validation. | Submission + aggregation docs |
-| **Practice mode** in the client: free local battles against rumble bots, never submitted; ranked mode auto-submits everything. | Client doc |
+| **Practice mode** in the client: free local battles against rumble bots, never submitted; ranked mode journals every completed result and prepares complete batches for the contributor to post unchanged. | Client doc |
 | **Replays stay client-side** as read-only evidence, bound to results by `battleId` (UUID) + SHA-256. | Client doc |
-| **Batched submissions** from a local journal; clients never touch Git history (no commits, no amends). | Client doc |
+| **Batched submissions** from a local journal; the client prepares plain text and a short form link, the contributor posts each batch, and the client reads public receipts without a submission credential under the [browser-form decision](../../decisions/ADR-049-rumble-browser-form-submission.md). Clients never touch Git history (no commits, no amends). | Client doc |
 | **Runtimes ship in the client container** (JVM, .NET, Python, Node.js + pinned engine), tagged by engine version; install scripts as bare-metal fallback. | Client doc |
 | **Forge ToS reviewed**: this usage is a software project, not detached storage; design keeps traffic and repo size deliberately modest. | Aggregation doc |
 | **Bot names are bound to their owner** at first merge; only the owner's registered accounts may submit new versions. Owners may register multiple forge accounts; account changes require a PR from an already-registered account. | Submission doc |
@@ -178,5 +179,5 @@ References:
 | Owner | The forge account that submitted a bot; drives permissions, slots, bans. Distinct from the display `authors` in the bot config. |
 | Behavior version | Server-owned integer bumped only on game-observable changes (physics, scoring, turn processing, RNG, Bot API behavior). The compatibility contract between engine, clients, and results; independent of the lockstep release version. |
 | Epoch | The result partition for one `behaviorVersion`. Releases that keep the behavior version stay in the epoch; a bump opens a new one and the ranked table restarts sampling. |
-| Practice mode | Client mode for private tuning battles; results are never submitted. Ranked mode auto-submits everything. |
+| Practice mode | Client mode for private tuning battles; results are never submitted. Ranked mode journals every completed result and prepares complete batches for the contributor to post. |
 | Journal | The client's local append-only file of ranked results, submitted in batches. |

@@ -76,13 +76,22 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it removes only records whose accepted facts were published before their successful ingestion receipts
     And unacknowledged records remain retryable while records from an obsolete behavior-version epoch are quarantined with a clear diagnostic
 
-  @RCL-007 @draft
+  # Retired: the credential-free browser form replaces token-based API issue creation (RCL-013).
+  @RCL-007 @retired
   Scenario: A registered client submits a bounded issue-ops batch without repository write access
     Test-type: Integration
     Given the ranked journal contains one or more compatible results and the contributor supplies an Issues-only repository credential
     When the client submits the pending results
     Then it creates labelled result issues containing between one and sixty results as required by the result-data contract and correlates each post-publication ingestion receipt to its journal records
     And it neither requests nor uses permission to modify repository contents, branches, releases, packages, Pages, facts, or projections
+
+  @RCL-013 @draft
+  Scenario: An outside contributor submits ranked batches through the web form without a credential
+    Test-type: Integration
+    Given the ranked journal contains compatible results and the contributor holds no repository credential
+    When the client prepares a submission
+    Then it writes each batch as plain text in a single fenced json block, split by serialized size as well as by the limit of sixty results, and prints the result form address with only a unique title prefilled
+    And it keeps each prepared batch retryable until the contributor's issue is found and its ingestion receipts are correlated to the journal records without a credential
 
   @RCL-008 @draft
   Scenario: The client runtime can execute every supported bot platform within its declared boundary
@@ -92,13 +101,24 @@ Feature: rumble-client — Local ranked and practice battle client
     Then the client can boot each platform with the pinned runtime versions and run a battle through Battle Runner
     And the container restricts bot networking to the local server while client egress is limited to repository synchronization and result submission
 
-  @RCL-009 @draft
+  # Retired: RCL-014 permits the contributor to paste an unchanged batch into the result form.
+  @RCL-009 @retired
   Scenario: A ranked result reaches the immutable Rumble facts without manual handling
     Test-type: E2E
     Given a registered contributor starts a ranked session from a clean client installation
     When the client synchronizes, selects and completes a battle, journals its result, and submits it through issue-ops
     Then the result-data ingestion workflow accepts the record as an immutable raw fact and regenerates the affected projections
     And no person copies, edits, or grants repository-content write access to deliver the result
+
+  @RCL-014 @draft
+  Scenario: An outside contributor's form submission reaches published Rumble rankings
+    Test-type: E2E
+    Given a registered contributor with no organization membership or repository push access starts from a clean client installation
+    When the client synchronizes, selects and completes a ranked battle, journals its result, and prepares a plain-text batch
+    And the contributor opens the linked result form while signed in to the registered GitHub account and pastes the complete unchanged batch
+    Then ingestion publishes the accepted record as an immutable raw fact before issuing its successful receipt and regenerates the affected rankings
+    And the client finds the issue and correlates its successful receipt without a repository credential, removing only the acknowledged journal records
+    And the eligible result appears in the published rankings without maintainer labeling, repair, or repository-content write access for the contributor
 
   @RCL-012 @draft
   Scenario: Runtime refreshes are proposed only after cross-platform container evidence
