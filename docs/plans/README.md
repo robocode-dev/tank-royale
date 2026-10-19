@@ -17,5 +17,5 @@ Every change proposal names the plan item it serves, or explicitly declares itse
 - [P-003 — Tank Royale Rumble](P-003-rumble.md) · `completed`
 - [P-004 — Rumble hardening](P-004-rumble-hardening.md) · `completed` — Follow-up hardening for the Tank Royale Rumble launched by P-003, which closed as `completed` when its sixth milestone landed.
 - [P-005 — TypeScript bot console output reaches the GUI](P-005-typescript-bot-console-output.md) · `completed` — TypeScript console output reaches the GUI with cross-platform capture evidence.
-- [P-006 — Rumble announcement readiness](P-006-rumble-announcement-readiness.md) · `active` — This is the next campaign to start after its planning PR is merged.
+- [P-006 — Rumble announcement readiness](P-006-rumble-announcement-readiness.md) · `active` — Outside-contributor access and result publication are verified; bot-submission templates and the contributor walkthrough are next.
 <!-- clue:index:end -->
