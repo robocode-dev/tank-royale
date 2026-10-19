@@ -14,4 +14,5 @@ An analysis document (AN-xxx) records what was investigated, what was found, and
 - [AN-002 — CombatTeam scoring and skipped-turn retest](AN-002-combatteam-retest.md) · `active`
 - [AN-003 — SittingDroidTeam's zero score is compatible with a draw, but death timing is unobserved](AN-003-sittingdroidteam-inactivity-score-draw.md) · `active` — Source review found a valid path to a zero-scoring draw but no per-bot death timeline proving it occurred.
 - [AN-014 — Rumble public onboarding and announcement readiness](AN-014-rumble-announcement-readiness.md) · `active` — Cross-repository audit identifies outside-contributor intake blockers and missing bot submission instructions before announcement.
+- [AN-015 — Browser-submission implementation risks before outside-account verification](AN-015-rumble-browser-submission-review.md) · `active` — Does the prepared browser-form client implementation justify completing the outside-contributor result milestone?
 <!-- clue:index:end -->

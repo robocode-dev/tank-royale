@@ -7,7 +7,7 @@ title: Design documents
 
 Detailed design specifications that complement the decision records in [../decisions/](../decisions/README.md): ADRs stay focused on the decision, context, and rationale; the specs, flow details, diagrams, and examples that would bloat an ADR live here and are linked from the ADR's "More Information".
 
-The `rumble/` folder is the umbrella design for **Tank Royale Rumble**, a serverless community-driven tournament system — draft, not yet built; its open questions are held as a door in the plans (see [P-003](../plans/README.md) once opened, or the rumble records below).
+The [Rumble umbrella design](rumble/README.md) maps the serverless community tournament across the client, bot catalog, result-data repository and dashboard. Its design directions are read alongside the accepted capability contracts and decisions; the original implementation plan is complete, and the [announcement-readiness campaign](../plans/P-006-rumble-announcement-readiness.md) tracks public participation. The accepted [browser-form submission decision](../decisions/ADR-049-rumble-browser-form-submission.md) makes the contributor responsible for posting complete prepared batches while the client holds no submission credential. The [client flow](rumble/client-battles-and-results.md) and [ingestion flow](rumble/aggregation-and-dashboard.md) describe that handoff and publication-first receipts; replacement-path verification remains unfinished.
 
 Capability-local design (how one capability works) belongs in that capability's `design.md` under [../capabilities/](../capabilities/README.md); records here cover cross-cutting design.
 

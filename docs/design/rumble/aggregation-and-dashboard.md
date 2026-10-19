@@ -2,7 +2,7 @@
 id: ARCH-024
 type: architecture
 status: draft
-links: []
+links: [ADR-049, CAP-015, CAP-016]
 title: "Rumble Design: Result Aggregation and Dashboard"
 provenance: inferred
 reversal-cost: low
@@ -83,11 +83,11 @@ sequenceDiagram
 ```
 ````
 
-- The client creates it with one API call (`gh issue create --label result-submission --title ... --body-file batch.json` or the REST equivalent), authenticated as the user's forge account with a fine-grained token with Issues write permission limited to this repository. GitHub does not expose a narrower create-issue-only permission.
-- A GitHub issue body holds ~65k characters, roughly 40-60 result records per issue at our record size; the client splits larger journals across issues.
+- Under the accepted [browser-form submission decision](../../decisions/ADR-049-rumble-browser-form-submission.md), the client prepares a complete batch as plain text with the fences intact and supplies a short form link with only its unique title prefilled. The registered contributor signs in to GitHub, pastes the unchanged text into the result form and creates the issue. The form supplies the ingestion label; the client holds no submission credential. API issue creation is an optional convenience for accounts with push access, not the outside-contributor path.
+- The client splits larger journals by serialized body size as well as by the limit of sixty results, keeping each complete fenced envelope below the issue body limit. The result payload is not included in the form link.
 - The drain workflow lists open `result-submission` issues, parses each body, validates each result, commits and pushes accepted ones, and only then **closes every processed issue** with a comment listing per-result outcomes (accepted / rejected + reason). Each successful receipt is therefore published after its fact. Retrying an identical retained result returns the same successful outcome, so receipt-delivery failure is safe. The issue itself is transport, never storage, so losing issues (e.g. in a fork) loses nothing after accepted facts are published.
 
-The same pattern works on GitLab (issues + labels) and Forgejo/Gitea (same). A future fork-PR transport can carry the identical batch envelope as a file, but it is unavailable until the result-data capability implements and validates that path.
+The issue-inbox architecture can be adapted to GitLab and Forgejo/Gitea, but the verified outside-account form behavior is GitHub-specific; equivalent template labeling and receipt access on other forges need their own verification. A future fork-PR transport can carry the identical batch envelope as a file, but it is unavailable until the result-data capability implements and validates that path.
 
 ### Spam prevention
 
@@ -103,7 +103,7 @@ The inbox is a public issue tracker, so it will eventually receive junk. Layers:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Submitted: client posts payload
+    [*] --> Submitted: contributor posts prepared batch through form
     Submitted --> Rejected: validation fails<br/>(schema, engine, plausibility, duplicate)
     Submitted --> Accepted: validation passes,<br/>committed to results/raw/
     Accepted --> Quarantined: submitting client flagged<br/>(consensus outlier, governance)

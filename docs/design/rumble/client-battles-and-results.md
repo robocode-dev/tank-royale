@@ -2,7 +2,7 @@
 id: ARCH-023
 type: architecture
 status: draft
-links: []
+links: [CAP-016, ADR-049]
 title: "Rumble Design: Client Battles and Result Upload"
 provenance: inferred
 reversal-cost: low
@@ -16,6 +16,8 @@ reversal-cost: low
 ## Scope
 
 The rumble client: the program community members run on their own machines to fight battles and submit results. Covers battle selection (including own-bot priority), execution, the result record, submission transports, and the trust model as seen from the client side. Server-side validation and ranking live in the [aggregation document](./aggregation-and-dashboard.md).
+
+The accepted [browser-form submission decision](../../decisions/ADR-049-rumble-browser-form-submission.md) governs the contributor handoff: the client prepares complete batches without a submission credential, and the contributor posts them through the form. The [client capability design](../../capabilities/CAP-016-rumble-client/design.md) owns the detailed batch and receipt contract. This design direction does not establish that the replacement path has shipped or passed an outside-account journey.
 
 ## Client Architecture
 
@@ -47,17 +49,18 @@ The client has two strictly separated modes:
 | Purpose | Contribute to the rumble | Tune, tweak, and debug your own bot against rumble bots |
 | Opponents | Chosen by battle selection (below) | Chosen freely by the user |
 | Own bot version | Only the version published in `rumble-bots` (pinned commit, verified by `sourceHash`) | Any local bot directory, including unpublished dev versions |
-| Results | **Every** result auto-submitted, no filter | **Nothing** is ever submitted; output clearly labeled `PRACTICE - local only` |
+| Results | **Every** completed result journaled and prepared in complete batches for the contributor to post, with no result-selection filter | **Nothing** is ever submitted; output clearly labeled `PRACTICE - local only` |
 | Engine | Pinned version enforced | Pinned version recommended (so tuning matches ranked conditions), not enforced |
 
-Practice mode is a trust feature as much as a convenience: authors need a sanctioned way to run private battles while developing. Without it, the pressure to "test privately" would push people to tamper with ranked mode or submit selectively. With it, the rule stays simple and enforceable: ranked mode submits everything, practice mode submits nothing.
+Practice mode is a trust feature as much as a convenience: authors need a sanctioned way to run private battles while developing. Without it, the pressure to "test privately" would push people to tamper with ranked mode or submit selectively. Ranked mode journals every completed result and prepares complete batches; practice mode produces no ranked submission state. The contributor must post every prepared ranked batch unchanged.
 
 ## The Client Loop
 
 ```mermaid
 sequenceDiagram
+    actor U as Contributor
     participant C as Rumble client
-    participant DR as rumble-data (read-only)
+    participant DR as rumble-data
     participant BR as rumble-bots (read-only)
     participant Run as Battle Runner<br/>(embedded server + booter)
     participant Inbox as Result issue inbox
@@ -65,14 +68,20 @@ sequenceDiagram
     C->>DR: pull latest (matches_needed.json, engine pin)
     C->>BR: pull pinned commit (bots/index.json)
     C->>C: select battles<br/>(own bots first, then global priority)
-    loop battlesPerSession
+    loop Each requested ranked battle
         C->>C: prepare/cache bot sources by sourceHash
         C->>Run: run battle (pinned server version)
         Run-->>C: BattleResults + replay
         C->>C: append result record to local journal<br/>(auto, no human filter)<br/>store replay in evidence store
     end
-    C->>Inbox: submit journal batch<br/>(one or more envelopes, 1..60 results each)
-    Note over C,Inbox: client never holds code or Git-history write access
+    U->>C: request submission
+    C-->>U: plain-text batches and short form links<br/>(1..60 results each, also bounded by size)
+    U->>Inbox: post complete unchanged batches through form
+    Inbox->>DR: validate and publish accepted facts and projections
+    C->>Inbox: find posted issues and read public receipts
+    Inbox-->>C: per-result receipts after fact publication
+    C->>C: acknowledge only successful receipted records
+    Note over U,Inbox: contributor signs in to GitHub; client holds no submission credential
 ```
 
 In ranked mode, every finished battle is appended to a local **journal** automatically; the user never gets a convenient "keep this result?" decision point (this matters for the trust model below). The journal is then submitted in **batches**, not one payload per battle.
@@ -82,8 +91,8 @@ In ranked mode, every finished battle is appended to a local **journal** automat
 Clients do not commit to any shared Git repository, and they never amend or rewrite anything (the data repo's history is the audit trail; amending is reserved for nothing). The local flow is:
 
 1. Each battle appends one result record to the current journal file (plain JSON lines, local).
-2. At a batch boundary (session end, every N battles, or every M minutes, whichever comes first) the client divides pending records into issue envelopes of at most 60 results each.
-3. After accepted facts are published, successful per-result receipts let the journal remove only those records; on failure it stays queued and retries with backoff. Retrying an identical retained result returns the same successful outcome.
+2. When submission is requested, the client divides compatible pending records into complete issue envelopes of at most 60 results each, also bounded by serialized size. It persists the prepared batches and gives the contributor plain text and short form links; no result payload travels in the link.
+3. The contributor posts each unchanged batch through the result form. The client finds the resulting issues and reads their public receipts without a credential. After accepted facts are published, successful per-result receipts let the journal acknowledge only those records. An unposted batch, interruption, rejection, missing receipt or rate limit leaves outstanding records retryable. Retrying an identical retained result returns the same successful outcome.
 
 Batching cuts forge API calls and inbox noise by an order of magnitude and plays well with rate limits. The server side is unchanged: the ingestion workflow drains payloads (each containing one or many results), validates each result individually, and lands the whole drain as a single commit (see the aggregation document).
 
@@ -114,7 +123,7 @@ This needs to be split into two different effects:
 
 1. **Run-selection bias: harmless.** Choosing *which* pairings to run more often does not bias APS, because APS averages the per-pairing means, and every battle of a pairing is submitted. More samples of your own pairings only makes *your* score converge faster.
 2. **Selective reporting: the real risk.** An author could run battles locally and submit only the wins. Mitigations:
-   - The client auto-submits every result (no manual filter in the tool). This only raises the effort bar, it cannot stop a determined cheater, so:
+   - The client journals every completed ranked result and prepares complete batches with no result-selection filter. The contributor must post all batches unchanged. This manual handoff cannot stop selective reporting or a determined cheater, so:
    - The aggregation side marks pairings where every sample comes from clients owned by one of the participants as **self-reported-only**, and keeps them in the priority list until at least one independent client has contributed. Self-confirmed results count provisionally; the dashboard can show the marker.
    - Cross-client outlier detection (aggregation document) flags clients whose results deviate systematically from consensus on shared pairings.
 
@@ -175,11 +184,12 @@ Replays are the proof behind a result, and they stay **client-side** (uploading 
 
 ## Submission Transports (No Repository Write Access)
 
-The client must not hold a token that can write code, branches, releases, packages, Pages content, or result projections in any repo (P3, P4). V1 uses issue-ops; the portable fallback remains deferred until the receiving repository implements it:
+The supported outside-contributor path holds no submission credential. The contributor signs in through GitHub in the browser; those browser credentials do not pass to the client. The client must not hold a token that can write code, branches, releases, packages, Pages content, or result projections in any repo (P3, P4). V1 retains issue-ops as its inbox; changing the handoff does not change ingestion or publication-first receipts:
 
 | Transport | How | Trade-offs |
 |-----------|-----|-----------|
-| **Issue-ops (primary)** | Client opens an issue on `rumble-data` with the result JSON in the body, using a fine-grained token with Issues write permission limited to that repository. GitHub does not expose a narrower create-issue-only permission. A scheduled workflow drains all open result issues in one pass and commits them in a single batch. | Lowest friction; issues exist on GitHub, GitLab, and Forgejo/Gitea; the token cannot tamper with code or leaderboard. Issue bodies are transport, not state (fine to lose on fork). |
+| **Browser form to issue-ops (primary)** | Client prepares plain-text fenced JSON batches and short form links with unique titles. The signed-in contributor pastes each unchanged batch into the result form, whose template applies the required label. The client reads public receipts without a credential. | One manual posting step per batch; no contributor token, organization membership or push access. Anonymous receipt reads are subject to rate limits. The observed form path is GitHub-specific; other forges require verification. Issue bodies remain transport, not canonical fact state. |
+| **API issue creation (optional privileged convenience)** | An account with push access may create a labeled result issue through the API using an Issues-only credential under the trust-boundary decision. | Not the outside-contributor path and not a required client mode. Outside accounts cannot rely on the API to apply the ingestion label. |
 | **Fork-PR (deferred)** | A future client could push result files to its own fork and open a PR after `rumble-data` implements that contract. | Pure Git and forge-portable, but unavailable in V1. |
 
 Rejected: `repository_dispatch` (needs a repo-scoped token on every client, exactly the credential we forbid, and forge-proprietary); webhooks into serverless functions (infrastructure, secrets, lock-in, violates P1/P3).
@@ -223,5 +233,5 @@ A rumble client must be able to boot bots for **all four platforms**: Java (JVM)
 - **Battles per pairing per client cap: none, matching the classic rumble.** Saturation is handled by the priority mechanism alone. Once everything is saturated, extra battles are harmless by design because per-pairing averaging refines the mean without changing the pairing weight.
 - **`myBots` is purely a local scheduling hint.** No verification happens in the client. Ownership is verified where it matters: at bot upload time, where the bot name is bound to the owner account. The server-side self-report marker handles trust.
 - **Journal staleness is bounded by the engine pin.** Queued results produced on a `behaviorVersion` other than the currently pinned one are incompatible and are quarantined with a clear message. No separate staleness clock is needed.
-- **Submission happens at battle boundaries.** A result exists only when a battle has completed its game type's full round count; nothing is submitted mid-battle. The default is to submit after each completed battle, with batching used when submissions back up or rate limits require it.
+- **Only completed battles are submittable.** A result exists only when a battle has completed its game type's full round count; nothing is submitted mid-battle. Submission preparation and receipt collection are explicit client operations, with the contributor posting each prepared batch through the form. Automatic journaling does not promise automatic or unattended posting.
 - **Container network policy: egress allowlist.** The container may reach the forge for repo sync and result submission and nothing else. Bot processes get no network beyond the localhost WebSocket to the server.
