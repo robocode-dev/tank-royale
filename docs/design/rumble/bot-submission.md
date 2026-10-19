@@ -2,7 +2,7 @@
 id: ARCH-022
 type: architecture
 status: draft
-links: []
+links: [ADR-050, CAP-014]
 title: "Rumble Design: Bot Submission and Handling"
 provenance: inferred
 reversal-cost: low
@@ -77,11 +77,11 @@ flowchart TD
     C -->|fail| R
     C --> D{"Version check<br/>source changed ⇒ version bumped,<br/>existing versions immutable"}
     D -->|fail| R
-    D --> E{"Dependency allowlist<br/>bot API + stdlib only"}
+    D --> E{"Dependency allowlist<br/>official API, its runtime dependencies<br/>and standard library"}
     E -->|fail| R
     E --> F{"Forbidden-API scan<br/>process spawn, raw sockets,<br/>file writes outside temp, reflection escapes"}
     F -->|flagged| M["Flag for moderator attention<br/>(not auto-reject: false positives exist)"]
-    F --> G["Source-run smoke check<br/>(boot the bot exactly as the booter does,<br/>verify it joins a local server)"]
+    F --> G["Source-run smoke check<br/>(load the source entry point,<br/>require its ready marker and zero exit)"]
     G -->|fail| R
     G --> H["Green check → human review"]
     M --> H
@@ -93,7 +93,7 @@ flowchart TD
 
 ### Official Bot APIs required
 
-Ranked bots **must be built on the official Tank Royale Bot APIs** (Java, C#, Python, TypeScript). Custom frameworks or hand-rolled protocol implementations are not eligible for the ranked rumble. This is primarily a review-tractability rule: moderators reviewing 50-200 bots can rely on all game interaction going through one known, audited surface, so review focuses on the bot's logic rather than re-auditing protocol plumbing per bot. It also resolves the dependency allowlist per platform: the official bot API package plus the standard library, nothing else (for TypeScript: the official npm bot API package with a committed lockfile).
+Ranked bots **must be built on the official Tank Royale Bot APIs** (Java, C#, Python, TypeScript). Custom frameworks or hand-rolled protocol implementations are not eligible for the ranked rumble. This is primarily a review-tractability rule: moderators reviewing 50-200 bots can rely on all game interaction going through one known, audited surface, so review focuses on the bot's logic rather than re-auditing protocol plumbing per bot. The [official API runtime-dependency boundary](../../decisions/ADR-050-official-bot-api-runtime-dependencies.md) permits the official Bot API, its declared runtime dependencies and the standard library. TypeScript commits the npm lockfile and explicitly declares the official API's required `ws` runtime peer; unrelated bot libraries remain disallowed.
 
 ### Ranked formats in v1
 
@@ -105,7 +105,7 @@ Mini, micro, nano, and giga categories from classic RoboRumble/LiteRumble are no
 
 Bots run **directly from source** everywhere, using each runtime's own source-run mechanism, exactly as the sample bots and booter already do: `java <file>.java` (single-file source launch), `dotnet run`, `python`, and the recommended TypeScript source runner. No step in the rumble, client or CI, invokes a compiler explicitly; any compilation happens behind the scenes inside the runtime.
 
-Consequently, CI validation does not "build" either: the smoke check **boots the bot exactly the way the booter will** (same boot script, same source-run mechanism) against a throwaway local server and verifies it connects and completes a handshake within a timeout. What is validated is what will actually run on clients, and there is no separate build pipeline to maintain or drift.
+CI invokes the same checked-in source-run launcher the booter uses. Its implemented smoke protocol sets `RUMBLE_SMOKE=1` and requires a zero exit and `RUMBLE_SMOKE_READY <BotName>` within 20 seconds. Starters load their official API and take that branch before connecting to a server. This checks source startup and dependency loading; it does not prove a handshake or completed battle. Server-connected checks are separate verification, and the existing catalog governance discussion about a future server-connected gate is not satisfied merely by starter smoke tests.
 
 Forbidden-API scan, per platform (grep-level, deterministic; an advisory AI review can be layered on top but is never the gate):
 
