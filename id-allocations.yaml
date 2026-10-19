@@ -1255,6 +1255,11 @@ claims:
       state: reserved
       prefix: TASKS
       component: "9"
+    - id: TASKS-010
+      kind: numeric
+      state: reserved
+      prefix: TASKS
+      component: "10"
     - id: TNP-001
       kind: numeric
       state: reserved
@@ -1381,11 +1386,11 @@ high-water:
       state: reserved
       prefix: PDR
       component: "16"
-    - id: RBC-005
+    - id: RBC-006
       kind: numeric
       state: reserved
       prefix: RBC
-      component: "5"
+      component: "6"
     - id: RCL-014
       kind: numeric
       state: reserved
