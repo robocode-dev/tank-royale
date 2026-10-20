@@ -346,6 +346,10 @@ $Env:BOT_SECRETS = zDuQrkCLQU5VQgytofkNrQ
 Note that it is also possible to provide the server secret and URL programmatically with the Bot APIs with the `Bot`
 and `BaseBot` constructors.
 
+## Next: join Tank Royale Rumble
+
+When your bot is ready for broader competition, see how to [submit it](../../rumble/bot-author-guide), [run ranked battles](../../rumble/client-guide), or [view current rankings](https://robocode-dev.github.io/rumble-data/).
+
 
 [C#]: https://docs.microsoft.com/en-us/dotnet/csharp/ "C# documentation"
 

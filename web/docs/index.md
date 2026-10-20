@@ -19,6 +19,10 @@ If you are new to Robocode, you should start with:
 - read the [Getting Started](tutorial/getting-started), and then
 - continue to [My First Bot](tutorial/my-first-bot) to create your first bot.
 
+## 🏆 Tank Royale Rumble
+
+Explore the community-ranked competition: learn how to [submit a bot](rumble/bot-author-guide), [run ranked battles](rumble/client-guide), or [view current rankings](https://robocode-dev.github.io/rumble-data/).
+
 <div class="book-spotlight">
   <div class="book-spotlight__eyebrow">Advanced strategies</div>
   <h2 class="book-spotlight__title">📘 The Book of Robocode</h2>
