@@ -980,6 +980,11 @@ claims:
       state: reserved
       prefix: OQ
       component: "7"
+    - id: OQ-008
+      kind: numeric
+      state: reserved
+      prefix: OQ
+      component: "8"
     - id: P-001
       kind: numeric
       state: reserved
@@ -1461,11 +1466,11 @@ high-water:
       state: reserved
       prefix: SCR
       component: "2"
-    - id: TASKS-011
+    - id: TASKS-012
       kind: numeric
       state: reserved
       prefix: TASKS
-      component: "11"
+      component: "12"
     - id: TNP-003
       kind: numeric
       state: reserved
