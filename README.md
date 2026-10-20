@@ -70,6 +70,10 @@ Main page: [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royal
 | Watch battles in a dedicated viewer | [Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer) |
 | Run battles headlessly from code | [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/battle-runner) |
 
+### 🏆 Tank Royale Rumble
+
+Explore the community-ranked competition: learn how to [submit a bot](https://robocode.dev/rumble/bot-author-guide), [run ranked battles](https://robocode.dev/rumble/client-guide), or [view current rankings](https://robocode-dev.github.io/rumble-data/).
+
 ## 💻 Supported platforms
 
 Robocode runs on Java 11 or newer and supports Windows, macOS, and Linux out of the box.  
