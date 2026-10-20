@@ -1,8 +1,8 @@
 ---
-id: CH-058-open-questions
-type: open-questions
-status: resolved
-links: [CH-058-proposal]
+id: OQ-008
+type: questions
+status: active
+links: [CH-058]
 title: Bot moderation decisions
 ---
 

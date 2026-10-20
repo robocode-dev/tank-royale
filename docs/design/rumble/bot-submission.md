@@ -2,7 +2,7 @@
 id: ARCH-022
 type: architecture
 status: draft
-links: [ADR-050, CAP-014]
+links: [ADR-050, ADR-051, CAP-014]
 title: "Rumble Design: Bot Submission and Handling"
 provenance: inferred
 reversal-cost: low
@@ -45,29 +45,34 @@ sequenceDiagram
     actor Author as Bot author
     participant Fork as Author's fork
     participant PR as Pull request
-    participant CI as Validation CI
-    participant Mod as Moderator
+    participant CI as Unprivileged assessment
+    participant App as Moderator App
+    participant Mod as Flemming
     participant Main as rumble-bots main
     participant Index as bots/index.json
 
     Author->>Fork: push bots/java/Raven/ (source + config)
     Author->>PR: open PR
-    PR->>CI: triggers validation
-    CI->>CI: structure, source-only, size,<br/>dependency allowlist, forbidden-API scan,<br/>source-run smoke check
-    alt validation fails
-        CI-->>Author: red check + report comment
+    PR->>CI: trusted workflow checks exact head
+    CI->>CI: structure, source-only, dependencies,<br/>security screen, isolated full round
+    alt bot cannot run or validation fails
+        CI-->>Author: request changes with diagnosis
         Author->>PR: fix and push again
+    else uncertainty or non-bot change
+        CI-->>Mod: pending check and reason
+        Mod->>PR: review and decide
+    else clean single-bot submission
+        CI-->>App: bounded verdict and exact head
+        App->>PR: approve and set required check
+        App->>Main: merge exact head
     end
-    CI-->>Mod: green check
-    Mod->>Mod: human review (stricter for first-time authors)
-    Mod->>Main: merge
     Main->>CI: post-merge workflow
     CI->>Index: regenerate index.json<br/>(bot id, path, version, source-tree hash)
 ```
 
 ## Validation Pipeline
 
-All checks are one script (`validate_bot.py`) so contributors can run it locally before opening the PR, and so the pipeline is forge-portable (P7).
+Contributors run `validate_bot.py` locally for structure, dependencies and source-start smoke. GitHub additionally checks the exact PR diff and trusted starter launchers, screens source for restricted behavior, and runs a complete round in a credential-free container. The [automated-moderation decision](../../decisions/ADR-051-automated-rumble-bot-moderation.md) defines which result may merge without a person.
 
 ```mermaid
 flowchart TD
@@ -79,12 +84,11 @@ flowchart TD
     D -->|fail| R
     D --> E{"Dependency allowlist<br/>official API, its runtime dependencies<br/>and standard library"}
     E -->|fail| R
-    E --> F{"Forbidden-API scan<br/>process spawn, raw sockets,<br/>file writes outside temp, reflection escapes"}
-    F -->|flagged| M["Flag for moderator attention<br/>(not auto-reject: false positives exist)"]
-    F --> G["Source-run smoke check<br/>(load the source entry point,<br/>require its ready marker and zero exit)"]
+    E --> F{"Restricted-API and launcher screen<br/>process spawn, raw sockets,<br/>file writes, dynamic loading"}
+    F -->|flagged| M["Hold for Flemming<br/>with the specific reason"]
+    F --> G["Isolated one-round battle<br/>against trusted reference"]
     G -->|fail| R
-    G --> H["Green check → human review"]
-    M --> H
+    G --> H["Green required check →<br/>App merges exact PR head"]
 
     style R fill:#D9534F,color:#fff
     style M fill:#E67E22,color:#fff
@@ -105,7 +109,7 @@ Mini, micro, nano, and giga categories from classic RoboRumble/LiteRumble are no
 
 Bots run **directly from source** everywhere, using each runtime's own source-run mechanism, exactly as the sample bots and booter already do: `java <file>.java` (single-file source launch), `dotnet run`, `python`, and the recommended TypeScript source runner. No step in the rumble, client or CI, invokes a compiler explicitly; any compilation happens behind the scenes inside the runtime.
 
-CI invokes the same checked-in source-run launcher the booter uses. Its implemented smoke protocol sets `RUMBLE_SMOKE=1` and requires a zero exit and `RUMBLE_SMOKE_READY <BotName>` within 20 seconds. Starters load their official API and take that branch before connecting to a server. This checks source startup and dependency loading; it does not prove a handshake or completed battle. Server-connected checks are separate verification, and the existing catalog governance discussion about a future server-connected gate is not satisfied merely by starter smoke tests.
+The local validator invokes the same checked-in source-run launcher the booter uses. Its smoke protocol sets `RUMBLE_SMOKE=1` and requires a zero exit and `RUMBLE_SMOKE_READY <BotName>` within 20 seconds. This checks source startup and dependency loading, not a completed battle. GitHub moderation runs the actual launcher against a trusted reference through Battle Runner's embedded server and requires a one-round result containing the submitted bot's name and version before automatic approval.
 
 Forbidden-API scan, per platform (grep-level, deterministic; an advisory AI review can be layered on top but is never the gate):
 
@@ -193,9 +197,9 @@ Each owner has a configurable budget of active bot entries. The launch default i
 
 ## Governance
 
-- A `moderators` team (3+ people) owns merge rights via CODEOWNERS; one approval required.
-- First-time owners: strict review of the whole submission.
-- Established owners: after N clean submissions, a `trusted` label enables auto-merge on green CI for version bumps of their own bots. New bots always get human review.
+- Flemming is the present human moderator; at least three human moderators remains a future resilience goal.
+- A repository-scoped GitHub App merges only a clean, single-bot-directory PR after the required check and a complete battle, including first submissions.
+- Flemming handles uncertain source, TwinDuel team metadata, non-bot changes, disputes and infrastructure failures; bot execution failures request changes from the author.
 - Disputes, disqualification, and moderator rotation are described in `GOVERNANCE.md` inside the repo, so policy forks together with the code (P2, P8).
 
 ### Banning
@@ -234,7 +238,7 @@ With this pipeline `F4i1` and `FAil` both skeletonize to `fail` and collide at s
 
 ## Security Analysis (Honest Limits)
 
-Without central sandbox infrastructure, review cannot make untrusted code safe; it makes it **reviewable, reproducible, and contained**:
+Automated screening cannot prove arbitrary source safe; it makes a narrow subset **reviewable, reproducible, and contained**:
 
 - Source-only + dependency allowlist removes most supply-chain and exfiltration surface and keeps review tractable at 50-200 bots.
 - The source-tree hash in `index.json` guarantees that what clients run is exactly what was reviewed (clients run the sources from the pinned commit, so the hash covers precisely what executes).

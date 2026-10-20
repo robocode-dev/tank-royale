@@ -2,7 +2,7 @@
 id: CAP-014-design
 type: design
 status: draft
-links: [CAP-014, ARCH-022, P-003]
+links: [CAP-014, ARCH-022, P-003, ADR-051]
 title: Design notes for CAP-014 (rumble-bot-catalog)
 provenance: inferred
 reversal-cost: low
@@ -26,7 +26,7 @@ The bot repository's `templates/` directory sits outside the active `bots/` tree
 
 The [runtime-dependency decision](../../decisions/ADR-050-official-bot-api-runtime-dependencies.md) permits the API's declared runtime dependencies while preserving the exclusion of unrelated bot libraries. TypeScript's official API needs its declared `ws` peer. Its launcher restores the committed lockfile in an isolated temporary run directory and uses Node's native TypeScript support; Java caches its official JAR externally, C# restores through `dotnet run` with generated output outside the source tree, and Python uses the interpreter and API environment prepared by the author. C# disables the native app host so it can run through `dotnet` when the generated output resides on a `noexec` temporary filesystem.
 
-The validator checks TypeScript dependency manifests, lockfile consistency, the approved peer names and official registry resolutions, and rejects generated dependency directories in submissions. This is a deterministic review gate, not a security sandbox or a general dependency resolver. Future changes to the API's runtime dependency set require reviewing and updating that gate. Smoke checks load the entry point and API, emit the expected ready marker and exit; real server connection and battle completion are separate evidence. The new runtime-peer criterion remains draft in this corpus until its external executable evidence can be registered, consistently with the other catalog criteria.
+The validator checks TypeScript dependency manifests, lockfile consistency, the approved peer names and official registry resolutions, and rejects generated dependency directories in submissions. This is a deterministic review gate, not a security sandbox or a general dependency resolver. Future changes to the API's runtime dependency set require reviewing and updating that gate. Local smoke checks load the entry point and API, emit the expected ready marker and exit. GitHub's separate moderation path runs the submitted bot against a trusted reference through an embedded server for a complete round, inside a restricted container without credentials; only a clean, bot-only PR can be auto-merged by the moderator App. Uncertain source, team metadata and non-bot changes go to Flemming. The [moderation decision](../../decisions/ADR-051-automated-rumble-bot-moderation.md) owns the trust boundary. Criteria remain draft in this corpus until external executable evidence can be registered.
 
 ## External evidence
 
