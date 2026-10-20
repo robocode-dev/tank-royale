@@ -1305,6 +1305,11 @@ claims:
       state: reserved
       prefix: TASKS
       component: "11"
+    - id: TASKS-012
+      kind: numeric
+      state: reserved
+      prefix: TASKS
+      component: "12"
     - id: TNP-001
       kind: numeric
       state: reserved
@@ -1361,11 +1366,11 @@ claims:
       prefix: UD
       component: "8"
 high-water:
-    - id: ADR-050
+    - id: ADR-051
       kind: numeric
       state: reserved
       prefix: ADR
-      component: "50"
+      component: "51"
     - id: AN-020
       kind: numeric
       state: reserved
