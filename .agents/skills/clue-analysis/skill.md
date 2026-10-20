@@ -1,6 +1,6 @@
 ---
 cliewen-skill: true
-version: 0.31.0
+version: 0.32.0
 type: skill
 title: clue-analysis
 name: clue-analysis

@@ -7,7 +7,7 @@ title: Verification checklist
 
 Select the acceptance mechanism under [Review boundary](review-boundary.md). A selected local workflow uses the same checks and review loop below, records findings and repairs in committed history, and hands off a brief bound to the reviewed commit. Hosted-head checks, PR readiness and hosted conversations apply only to the PR mechanism; the local handoff replaces them without claiming equivalent enforcement.
 
-Run this verification and review workflow before marking a tracked Cliewen PR ready for review, and its hosted-head check immediately after. Pushing inside the loop needs no verification: every changed turn pushes under the [Review boundary](review-boundary.md). Direct work uses only checks relevant to its changed surfaces and does not invoke this skill. When the `clue` CLI exists, `clue validate` performs the mechanical half; until then, check by hand. Never fix a failure by weakening the check.
+Run this verification and review workflow before marking a tracked Cliewen PR ready for review, and its hosted-head check immediately after. Pushing inside the loop needs no verification: under pull-request acceptance, or where the maintainer has asked for publication, every changed turn pushes under the [Review boundary](review-boundary.md). Direct work uses only checks relevant to its changed surfaces and does not invoke this skill. When the `clue` CLI exists, `clue validate` performs the mechanical half; until then, check by hand. Never fix a failure by weakening the check.
 
 - [ ] The change uses the correct workspace under [Change routing](change-scope-and-tiers.md).
 - [ ] Every artifact touched has frontmatter `id`, `type`, `status`, `links`, and `title`, plus decision `author`/`accepted-by`, constraint `source`/`enforcement`, capability `goal`, and any other type-specific fields. Every other Markdown file touched under `/docs` or `/changes`, and every file Cliewen delivered, carries a document header with `type` and `title`; a folder README declares `type: index`. Only the pull-request template goes without one.
@@ -26,10 +26,10 @@ Run this verification and review workflow before marking a tracked Cliewen PR re
 - [ ] The tracked-change workspace is absent after digest; `main` never contains `/changes/`.
 - [ ] Every decision satisfies [Decision records](decision-records.md), including routing, timeless content, provenance, objections, and pending approval signatures.
 - [ ] The current commit received a pass with no blocking findings under the [Agentic review loop](agentic-review-loop.md); every blocking repair after an earlier clean pass triggered a new pass, and any advisory findings left open are named in the verification evidence.
-- [ ] The final handoff identifies the review mode (`context-isolated` or `in-context fallback`), reviewed commit, and number of review passes run.
+- [ ] The final handoff explains in plain words how the change was reviewed (by a separate reader, or by the author in the same conversation as a fallback) and how many times, and names the reviewed commit because the maintainer needs it to accept; the literal modes are `context-isolated` and `in-context fallback`.
 - [ ] Every review of an existing PR names its hosted head; actionable findings are unresolved hosted conversations where supported, or the enforcement gap is disclosed and the PR is reported not merge-ready.
 - [ ] Every intended edit, including each review fix, is committed and `git status --porcelain` is empty.
-- [ ] Every working turn on this change that changed anything ended by pushing the change branch, and the PR existed as a draft from first publication rather than appearing only at readiness.
+- [ ] Where the change is published, every working turn on this change that changed anything ended by pushing the change branch, and the PR existed as a draft from first publication rather than appearing only at readiness.
 - [ ] `git merge-base HEAD origin/main` equals `origin/main` after fetching; no other change workspace is visible on this branch.
 - [ ] When the PR is marked ready, the current branch is its head branch, its head SHA equals local `HEAD`, and the reported verification ran against that commit.
 - [ ] The branch and hosted PR satisfy the [Review boundary](review-boundary.md).
