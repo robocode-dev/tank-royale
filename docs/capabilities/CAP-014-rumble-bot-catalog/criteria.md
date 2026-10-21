@@ -86,5 +86,6 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     Given a clean moderation verdict and required status for the current pull request head
     When the trusted moderation App merges the bot-only pull request
     Then the post-merge publisher regenerates the catalog from trusted main without running bot source
+    And generated catalog files enter main only through a pull request whose exact contents match trusted regeneration and whose head the moderator App approves
     And a newer commit, failing or pending moderation status, or changes outside one bot directory cannot auto-merge
 ```

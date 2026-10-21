@@ -49,6 +49,7 @@ sequenceDiagram
     participant App as Moderator App
     participant Mod as Flemming
     participant Main as rumble-bots main
+    participant CatalogPR as Generated catalog PR
     participant Index as bots/index.json
 
     Author->>Fork: push bots/java/Raven/ (source + config)
@@ -67,7 +68,11 @@ sequenceDiagram
         App->>Main: merge exact head
     end
     Main->>CI: post-merge workflow
-    CI->>Index: regenerate index.json<br/>(bot id, path, version, source-tree hash)
+    CI->>CatalogPR: regenerate catalog and open PR
+    CatalogPR->>CI: verify exact files against trusted main
+    CI-->>App: verified catalog head
+    App->>CatalogPR: approve and merge exact head
+    CatalogPR->>Index: publish reviewed index.json<br/>(bot id, path, version, source-tree hash)
 ```
 
 ## Validation Pipeline
