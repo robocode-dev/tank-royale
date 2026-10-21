@@ -3,6 +3,7 @@
 ### 📚 Documentation
 
 - Added copy-and-rename Rumble bot starters for Java, C#, Python and TypeScript, a JSON-only TwinDuel team example, and instructions for smoke checks and executable scripts on Windows and Unix.
+- Documented automatic moderation and merge for clean Rumble bot submissions after a complete isolated battle, with failed or uncertain cases returned to the author or escalated to Flemming.
 
 ### 🐞 Bug Fixes
 

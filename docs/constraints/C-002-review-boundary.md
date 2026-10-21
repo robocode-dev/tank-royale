@@ -18,6 +18,8 @@ An authorized direct push carries an `Authorized-Push:` trailer naming the autho
 
 Agents never merge their own PRs.
 
+The separate `rumble-bots` submission policy permits a dedicated GitHub App to merge an external contributor's **bot-only** pull request after its exact commit passes restricted-source screening and a complete isolated battle. That operational exception is not an agent accepting its own tracked Cliewen change: changes to workflow, governance, documentation or other repository policy remain human-merged, and every tracked Cliewen change still follows the human acceptance boundary above. An uncertain or failing bot is not eligible for the exception.
+
 This replaces the pre-Cliewen prose gates ("never commit without explicit approval", the ADR Review Gate, the OpenSpec approval gate): for a tracked change the PR **is** the approval gate, and the corpus wall (`clue validate --forbid-changes` in CI) is the machine half of the review.
 
 **Promotion trigger:** branch protection on `main` with `validate` as a required status check, configured so the maintainer keeps the ability to push directly, then `enforcement: machine` for the wall half. Protection that requires a pull request with no bypass would make the direct-work exception unexercisable, so that configuration is not a promotion of this constraint but a change to it, and this constraint is revised first. The human merge and the per-change authorization stay human by design.

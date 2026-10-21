@@ -62,4 +62,30 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     Then the official API and its required runtime peers are accepted
     And an unrelated declared bot library is rejected with an actionable diagnostic
     And generated dependency directories remain outside the submitted bot source tree
+
+  @RBC-007 @draft
+  Scenario: Every incoming pull request receives a first moderation decision
+    Test-type: Integration
+    Given an incoming pull request from any GitHub contributor
+    When trusted moderation checks its exact head commit
+    Then a single-bot source submission is assessed without giving its code write credentials
+    And a team, mixed-file, or non-bot pull request is held for Flemming with the specific reason
+
+  @RBC-008 @draft
+  Scenario: A bot must safely complete a real battle before approval
+    Test-type: Integration
+    Given a bot-only pull request with permitted source, dependencies, and launchers
+    When its bot runs for one complete round against a trusted reference in an isolated container
+    Then successful source, security, and battle checks approve its exact commit
+    And an unstartable or failing bot requests changes with an actionable diagnostic
+    And a suspicious source pattern or unavailable test infrastructure is held for human judgment
+
+  @RBC-009 @draft
+  Scenario: Only clean bot submissions merge and publish automatically
+    Test-type: Integration
+    Given a clean moderation verdict and required status for the current pull request head
+    When the trusted moderation App merges the bot-only pull request
+    Then the post-merge publisher regenerates the catalog from trusted main without running bot source
+    And generated catalog files enter main only through a pull request whose exact contents match trusted regeneration and whose head the moderator App approves
+    And a newer commit, failing or pending moderation status, or changes outside one bot directory cannot auto-merge
 ```
