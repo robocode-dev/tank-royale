@@ -360,6 +360,11 @@ claims:
       state: reserved
       prefix: AN
       component: "21"
+    - id: AN-022
+      kind: numeric
+      state: reserved
+      prefix: AN
+      component: "22"
     - id: ARCH-001
       kind: numeric
       state: reserved
@@ -1381,11 +1386,11 @@ high-water:
       state: reserved
       prefix: ADR
       component: "51"
-    - id: AN-020
+    - id: AN-021
       kind: numeric
       state: reserved
       prefix: AN
-      component: "20"
+      component: "21"
     - id: ARCH-026
       kind: numeric
       state: reserved
