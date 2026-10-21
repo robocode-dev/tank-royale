@@ -47,6 +47,7 @@ sequenceDiagram
     participant PR as Pull request
     participant CI as Unprivileged assessment
     participant App as Moderator App
+    participant Publisher as Publisher App
     participant Mod as Flemming
     participant Main as rumble-bots main
     participant CatalogPR as Generated catalog PR
@@ -68,7 +69,8 @@ sequenceDiagram
         App->>Main: merge exact head
     end
     Main->>CI: post-merge workflow
-    CI->>CatalogPR: regenerate catalog and open PR
+    CI->>CatalogPR: regenerate catalog and push branch
+    Publisher->>CatalogPR: open PR
     CatalogPR->>CI: verify exact files against trusted main
     CI-->>App: verified catalog head
     App->>CatalogPR: approve and merge exact head
