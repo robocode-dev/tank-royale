@@ -12,7 +12,7 @@ Ranked bots must meet these rules:
 - Run directly from source through the normal Tank Royale booter scripts.
 - Depend only on the official Bot API, the runtime dependencies declared by that API, and the platform's standard library. TypeScript's official API requires its declared `ws` runtime peer; the starter includes it and a committed npm lockfile. Other bot libraries remain disallowed.
 - Include no compiled programs, archives, generated dependency directories, custom protocol clients, process launchers, or raw socket code.
-- Declare one of the permitted licenses: `MIT`, `Apache-2.0`, `BSD-3-Clause`, or `GPL-3.0-or-later`.
+- Declare one of the permitted licenses: [MIT](https://choosealicense.com/licenses/mit/), [Apache-2.0](https://choosealicense.com/licenses/apache-2.0/), [BSD-3-Clause](https://choosealicense.com/licenses/bsd-3-clause/), or [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html). [Choose a License](https://choosealicense.com/licenses/) gives plain-language summaries and compares common permissions and conditions; [SPDX](https://spdx.org/licenses/) lists the canonical identifiers and license texts.
 
 The complete rules live in the [`rumble-bots` contribution guide](https://github.com/robocode-dev/rumble-bots/blob/main/CONTRIBUTING.md).
 
