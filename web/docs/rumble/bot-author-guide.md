@@ -1,6 +1,6 @@
 # Submit a bot to the Rumble
 
-This guide takes a bot from a runnable starter or an existing Tank Royale strategy into the [Rumble](index.md) ranked catalog. You need a GitHub account, Git, Python 3.11 or newer for validation, and the runtimes used by the bots in your catalog checkout. On Windows, make Git for Windows' `sh` available on `PATH`; validation uses the Unix launcher even when started from PowerShell. CI explicitly installs Python, Java 25, .NET SDK 10 and Node.js 24.
+This guide takes a bot from a runnable starter or an existing Tank Royale strategy into the [Rumble](index.md) ranked catalog. You need a GitHub account, Git, Python 3.11 or newer for validation, and the runtimes used by the bots in your catalog checkout. On Windows, install [Git for Windows](https://gitforwindows.org/) and make its `sh` available on `PATH`; validation uses the Unix launcher even when started from PowerShell. CI explicitly installs Python, Java 25, .NET SDK 10 and Node.js 24.
 
 If you have not written a bot yet, start with the [Tank Royale tutorial](../tutorial/getting-started.md) and the list of [official Bot APIs](../api/apis.md). Test the bot against sample bots with the normal [GUI battle setup](../articles/gui-battle-setup.md) before submitting it. Local GUI battles are private practice; they never affect the Rumble rankings.
 
