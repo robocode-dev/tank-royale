@@ -13,4 +13,4 @@ title: Tank Royale Rumble moderator change tasks
 - [x] Update the public bot and moderator guides with the team name, a volunteer contact path and moderator selection criteria.
 - [x] Prepare the `rumble-bots` governance, team membership authorization, escalation notification and focused positive and negative checks for RBC-010.
 - [x] Verify the existing team's repository access and record the remaining organization and App permission steps needed before a second moderator can act.
-- [ ] Update the user-visible changelog, reconcile indexes and the announcement-readiness plan, then verify the complete local candidate.
+- [x] Update the user-visible changelog, reconcile indexes and the announcement-readiness plan, then verify the complete local candidate.
