@@ -1150,6 +1150,21 @@ claims:
       state: reserved
       prefix: RBC
       component: "7"
+    - id: RBC-008
+      kind: numeric
+      state: reserved
+      prefix: RBC
+      component: "8"
+    - id: RBC-009
+      kind: numeric
+      state: reserved
+      prefix: RBC
+      component: "9"
+    - id: RBC-010
+      kind: numeric
+      state: reserved
+      prefix: RBC
+      component: "10"
     - id: RCL-001
       kind: numeric
       state: reserved
@@ -1471,11 +1486,11 @@ high-water:
       state: reserved
       prefix: PDR
       component: "16"
-    - id: RBC-006
+    - id: RBC-007
       kind: numeric
       state: reserved
       prefix: RBC
-      component: "6"
+      component: "7"
     - id: RCL-014
       kind: numeric
       state: reserved
