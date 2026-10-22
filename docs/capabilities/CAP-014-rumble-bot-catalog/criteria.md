@@ -63,13 +63,24 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     And an unrelated declared bot library is rejected with an actionable diagnostic
     And generated dependency directories remain outside the submitted bot source tree
 
-  @RBC-007 @draft
+  @RBC-007 @retired
   Scenario: Every incoming pull request receives a first moderation decision
     Test-type: Integration
     Given an incoming pull request from any GitHub contributor
     When trusted moderation checks its exact head commit
     Then a single-bot source submission is assessed without giving its code write credentials
     And a team, mixed-file, or non-bot pull request is held for Flemming with the specific reason
+
+  @RBC-010 @draft
+  Scenario: Every incoming pull request receives a first decision and exceptions reach the moderator team
+    Test-type: Integration
+    Given an incoming pull request from any GitHub contributor
+    When trusted moderation checks its exact head commit
+    Then a single-bot source submission is assessed without giving its code write credentials
+    And a team, mixed-file, suspicious, or non-bot pull request stays pending with a reason for the Tank Royale Rumble moderators
+    And only an active member of the moderator team may clear a pending moderation status with a recorded reason for that commit
+    And a non-member, pending member, or failed membership check cannot clear the status
+    And a human-cleared status does not merge the pull request or bypass its required review
 
   @RBC-008 @draft
   Scenario: A bot must safely complete a real battle before approval

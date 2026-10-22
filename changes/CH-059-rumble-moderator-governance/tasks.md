@@ -8,9 +8,9 @@ title: Tank Royale Rumble moderator change tasks
 
 # Tasks
 
-- [ ] Replace the named reviewer in the bot catalog contract with team-authorized human review, retiring RBC-007 and adding its successor before implementation.
-- [ ] Update the moderation decision and bot catalog design to describe the team authority, required checks and App membership lookup.
-- [ ] Update the public bot and moderator guides with the team name, a volunteer contact path and moderator selection criteria.
-- [ ] Prepare the `rumble-bots` governance, team membership authorization, escalation notification and focused positive and negative checks for the successor to RBC-007.
-- [ ] Verify the existing team's repository access and record the remaining organization and App permission steps needed before a second moderator can act.
+- [x] Replace the named reviewer in the bot catalog contract with team-authorized human review, retiring RBC-007 and adding RBC-010 before implementation.
+- [x] Update the moderation decision and bot catalog design to describe the team authority, required checks and App membership lookup.
+- [x] Update the public bot and moderator guides with the team name, a volunteer contact path and moderator selection criteria.
+- [x] Prepare the `rumble-bots` governance, team membership authorization, escalation notification and focused positive and negative checks for RBC-010.
+- [x] Verify the existing team's repository access and record the remaining organization and App permission steps needed before a second moderator can act.
 - [ ] Update the user-visible changelog, reconcile indexes and the announcement-readiness plan, then verify the complete local candidate.

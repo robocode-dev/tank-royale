@@ -48,7 +48,7 @@ sequenceDiagram
     participant CI as Unprivileged assessment
     participant App as Moderator App
     participant Publisher as Publisher App
-    participant Mod as Flemming
+    participant Mod as Human moderators
     participant Main as rumble-bots main
     participant CatalogPR as Generated catalog PR
     participant Index as bots/index.json
@@ -92,7 +92,7 @@ flowchart TD
     D --> E{"Dependency allowlist<br/>official API, its runtime dependencies<br/>and standard library"}
     E -->|fail| R
     E --> F{"Restricted-API and launcher screen<br/>process spawn, raw sockets,<br/>file writes, dynamic loading"}
-    F -->|flagged| M["Hold for Flemming<br/>with the specific reason"]
+    F -->|flagged| M["Hold for human moderators<br/>with the specific reason"]
     F --> G["Isolated one-round battle<br/>against trusted reference"]
     G -->|fail| R
     G --> H["Green required check →<br/>App merges exact PR head"]
@@ -151,8 +151,8 @@ People switch or lose accounts (job accounts, forge migration), so an owner is a
   "schemaVersion": 1,
   "owners": [
     {
-      "ownerId": "flemming",
-      "accounts": ["flemming-n-larsen", "fnl-work"],
+      "ownerId": "robocoder-a",
+      "accounts": ["robocoder-a", "robocoder-a-alt"],
       "bots": ["Raven"],
       "activeSlots": 1
     }
@@ -191,7 +191,7 @@ Each owner has a configurable budget of active bot entries. The launch default i
       "platform": "JVM",
       "path": "bots/java/Raven",
       "sourceHash": "sha256:a1b2c3...",
-      "owner": "flemming",
+      "owner": "robocoder-a",
       "authors": ["Display Name"],
       "addedAt": "2026-05-01",
       "status": "active"
@@ -204,9 +204,9 @@ Each owner has a configurable budget of active bot entries. The launch default i
 
 ## Governance
 
-- Flemming is the present human moderator; at least three human moderators remains a future resilience goal.
+- The Tank Royale Rumble moderators own human review; recruiting at least three qualified members remains a future resilience goal.
 - A repository-scoped GitHub App merges only a clean, single-bot-directory PR after the required check and a complete battle, including first submissions.
-- Flemming handles uncertain source, TwinDuel team metadata, non-bot changes, disputes and infrastructure failures; bot execution failures request changes from the author.
+- The moderators handle uncertain source, TwinDuel team metadata, non-bot changes, disputes and infrastructure failures; bot execution failures request changes from the author. The moderator App verifies active team membership before accepting a human decision on a pending PR head.
 - Disputes, disqualification, and moderator rotation are described in `GOVERNANCE.md` inside the repo, so policy forks together with the code (P2, P8).
 
 ### Banning
