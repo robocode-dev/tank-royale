@@ -18,7 +18,7 @@ The complete rules live in the [`rumble-bots` contribution guide](https://github
 
 ## 1. Fork and clone the catalog
 
-A fork is your own GitHub copy of a repository. A pull request, usually shortened to PR, submits your changes for GitHub moderation. A clean bot-only submission can merge automatically; cases needing judgment go to Flemming.
+A fork is your own GitHub copy of a repository. A pull request, usually shortened to PR, submits your changes for GitHub moderation. A clean bot-only submission can merge automatically; cases needing judgment go to the Tank Royale Rumble moderators. See [how moderation works and how to volunteer](moderator-guide.md).
 
 Fork [`robocode-dev/rumble-bots`](https://github.com/robocode-dev/rumble-bots), then clone your fork and create a branch:
 
@@ -145,7 +145,7 @@ git commit -m "Add <BotName>"
 git push --set-upstream origin add-<bot-name>
 ```
 
-Use the repository's bot-submission checklist in the PR description. GitHub checks the exact PR commit, screens source and launchers, and runs your bot through one complete round against a reference bot in an isolated container. If all checks pass and the PR changes only one bot directory, the moderator App approves and merges it automatically. A bot that fails to run receives a changes-requested review with a diagnosis; push a fix to rerun the check. Security uncertainty, TwinDuel team metadata and changes outside one bot directory go to Flemming with the specific reason.
+Use the repository's bot-submission checklist in the PR description. GitHub checks the exact PR commit, screens source and launchers, and runs your bot through one complete round against a reference bot in an isolated container. If all checks pass and the PR changes only one bot directory, the moderator App approves and merges it automatically. A bot that fails to run receives a changes-requested review with a diagnosis; push a fix to rerun the check. Security uncertainty, TwinDuel team metadata and changes outside one bot directory go to the Tank Royale Rumble moderators with the specific reason.
 
 When the PR is merged, CI adds the bot to the generated catalog. `rumble-data` checks that catalog at 23 minutes past every UTC hour. A changed catalog is regenerated into the [dashboard](https://robocode-dev.github.io/rumble-data/), where the new active version starts at APS 0 and waits for its first eligible battles. [Ranking and version rules](rankings.md) explain exactly when results count.
 

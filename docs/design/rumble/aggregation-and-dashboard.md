@@ -68,7 +68,7 @@ sequenceDiagram
 
 "Issue-ops" means: the inbox is the forge's ordinary **issue tracker**, used as a mailbox. Nothing custom is deployed. On GitHub, a submission from the client looks like this:
 
-- **Issue title**: `[result] flemming-desktop-01 2026-07-02T14:03:22Z` (fixed prefix, client id, timestamp).
+- **Issue title**: `[result] sample-client-01 2026-07-02T14:03:22Z` (fixed prefix, client id, timestamp).
 - **Label**: `result-submission` (lets the drain workflow query exactly the issues it owns).
 - **Issue body**: one fenced JSON block containing a **batch envelope**, i.e. the client's journal batch:
 
@@ -76,7 +76,7 @@ sequenceDiagram
 ```json
 {
   "schemaVersion": 1,
-  "clientId": "flemming-desktop-01",
+  "clientId": "sample-client-01",
   "clientVersion": "0.3.0",
   "results": [ { ...result record 1... }, { ...result record 2... } ]
 }
@@ -192,7 +192,7 @@ These rules deliberately mirror the classic RoboRumble server behavior (verified
   "behaviorVersion": 7,
   "projectionId": "sha256-derived-id",
   "entries": [
-    { "bot": "Raven 2.2", "name": "Raven", "version": "2.2", "platform": "JVM", "owner": "flemming", "aps": 78.42, "battles": 412, "pairings": 148, "epoch": 7 }
+    { "bot": "Raven 2.2", "name": "Raven", "version": "2.2", "platform": "JVM", "owner": "robocoder-a", "aps": 78.42, "battles": 412, "pairings": 148, "epoch": 7 }
   ]
 }
 ```

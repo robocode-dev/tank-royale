@@ -1,14 +1,22 @@
 # Moderate the Rumble
 
-Rumble moderators protect a fair, reviewable competition. GitHub automatically assesses routine bot submissions; Flemming handles uncertain submissions, client registrations, disputes and automation health. There is no hidden admin panel: moderation happens through pull requests and the policy files in `rumble-bots` and `rumble-data`.
+The Tank Royale Rumble moderators protect a fair, reviewable competition. They are a team in the `robocode-dev` GitHub organization. GitHub automatically assesses routine bot submissions; human moderators handle uncertain submissions, client registrations, disputes and automation health. There is no hidden admin panel: moderation happens through pull requests and the policy files in `rumble-bots` and `rumble-data`.
 
 The repository policies remain authoritative. This guide explains the normal workflow and points to those policies when judgment is required.
+
+## Volunteer as a moderator
+
+Open a [moderator volunteer request](https://github.com/robocode-dev/rumble-bots/issues/new?template=moderator-volunteer.yml) in `rumble-bots`. The request is public. Describe your experience with Robocode or Tank Royale, the languages you can review, your experience reviewing GitHub pull requests, and the time you can offer. Do not post credentials or private information.
+
+Moderators must be able to read bot source and check logs, understand the Rumble's bot and result rules, and explain decisions with evidence. Familiarity with at least one official Bot API language is sufficient if you ask another reviewer for help with unfamiliar code. You must keep untrusted bot code away from privileged credentials, leave required checks and branch rules in place, and handle bans, exclusions and appeals through reviewed pull requests. Disclose conflicts of interest and let another moderator decide cases involving your own bots or account.
+
+Existing moderators review the request and may ask you to assess an example submission before access is granted. A team maintainer or organization owner adds accepted volunteers to the moderator team after the team has the repository permissions needed for the role. Team membership can be removed when a volunteer steps down or no longer follows these rules.
 
 ## Review a bot submission
 
 Bot submissions arrive as pull requests in [`rumble-bots`](https://github.com/robocode-dev/rumble-bots). A PR that changes exactly one bot directory, passes source and security screening, and completes a full round against a trusted reference is approved and merged by the moderator App. No human action is needed for that result.
 
-When the `bot-moderation` check stays pending, GitHub comments with the reason and calls for Flemming. Review that case as follows:
+When the `bot-moderation` check stays pending, GitHub comments with the reason and calls for the moderator team. Review that case as follows:
 
 1. Read the stated uncertainty and the assessment log. Never merge a submission with a failing check.
 2. Confirm that the pull request changes only the author's bot or team entry and does not edit generated catalog files.
@@ -18,7 +26,7 @@ When the `bot-moderation` check stays pending, GitHub comments with the reason a
 6. For an existing bot name, confirm that the submitting GitHub account owns it and that the version increased when source changed.
 7. For a TwinDuel team, confirm that it has two member slots backed by active individual bot versions and contains only its team JSON. Repeated member identities are valid within one twin team.
 
-If a pending case is acceptable, comment `/moderation approve <reason>` on the current PR commit. This records the human decision and turns the required check green; merge the PR manually. A new commit requires a new assessment. If the bot does not run, GitHub requests changes from its author; do not override that failure. Team metadata and non-bot changes always take the human path. The exact permissions and recovery steps live in [`rumble-bots/GOVERNANCE.md`](https://github.com/robocode-dev/rumble-bots/blob/main/GOVERNANCE.md).
+If a pending case is acceptable, comment `/moderation approve <reason>` on the current PR commit. This records the human decision and turns the required check green. An eligible moderator must then submit an approving GitHub PR review; changes to protected paths also need an approval from a code owner. Ask another moderator to decide and approve a PR you authored or one involving your own bot or account, since GitHub does not count an author's approval of their own PR. Merge manually only after the required status and reviews pass. A new commit requires a new assessment and review. If the bot does not run, GitHub requests changes from its author; do not override that failure. Team metadata and non-bot changes always take the human path. The exact permissions and recovery steps live in [`rumble-bots/GOVERNANCE.md`](https://github.com/robocode-dev/rumble-bots/blob/main/GOVERNANCE.md).
 
 ## Review a client registration
 
