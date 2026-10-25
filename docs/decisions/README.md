@@ -85,4 +85,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [ADR-049 — Outside contributors submit Rumble results through the web form](ADR-049-rumble-browser-form-submission.md) · `verified` — ADR-043 made issue-ops the only V1 transport and limited the client credential to Issues access on the result-data repository.
 - [ADR-050 — Source-only bots may use the official API's declared runtime dependencies](ADR-050-official-bot-api-runtime-dependencies.md) · `inferred` — Permit required API runtime peers while rejecting unrelated bot libraries.
 - [ADR-051 — Clean bot-only submissions may be merged by a confined GitHub moderator](ADR-051-automated-rumble-bot-moderation.md) · `inferred` — Limited human moderator capacity makes automatic handling of clean bot submissions necessary; exceptional cases go to the Tank Royale Rumble moderators.
+- [PDR-017 — Ranked Rumble derivatives must contribute to battle strategy](PDR-017-distinct-rumble-entries.md) · `inferred` — The public bot catalog supports learning and licensed reuse.
 <!-- clue:index:end -->

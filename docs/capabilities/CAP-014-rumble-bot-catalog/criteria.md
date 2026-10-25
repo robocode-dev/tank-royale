@@ -12,6 +12,16 @@ reversal-cost: low
 ```gherkin
 Feature: rumble-bot-catalog — Rumble bot catalog
 
+  @RBC-011
+  Scenario: Moderators distinguish strategic contributions from cosmetic near-duplicates
+    Test-type: Human
+    Given a submission is reported as a near-duplicate of an existing catalog bot
+    When an impartial moderator compares the relevant source and battle strategy and considers the author's explanation
+    Then the moderator may reject a near-duplicate whose differences are primarily cosmetic and make no substantial contribution to battle strategy
+    And licensed reuse with a substantial strategic contribution is eligible under this rule
+    And similar behavior alone is insufficient grounds for rejection
+    And the decision identifies the compared entry, evidence and reasoning and allows reconsideration by a moderator without a conflict of interest
+
   @RBC-001 @draft
   Scenario: A valid source-only submission becomes an active catalog entry
     Test-type: Integration
