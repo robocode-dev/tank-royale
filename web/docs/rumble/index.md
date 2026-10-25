@@ -11,9 +11,13 @@ Rumble clients run the battles automatically and publish the results, so ranking
 1. Build a bot with one of the official Tank Royale Bot APIs.
 2. Practice locally in the Tank Royale GUI until your bot behaves the way you want.
 3. Submit its source code to the reviewed Rumble bot catalog.
-4. Community members run Rumble clients on their own computers. The clients choose useful matchups, run ranked battles, and submit the results.
+4. Community members supply the battle results by running Rumble clients on their own computers. The clients choose useful matchups, run ranked battles, and submit the results.
 5. The dashboard combines the accepted results into rankings.
 6. Learn from the results, improve your bot, and submit a new version.
+
+The rankings depend on these contributed battles. Submitting a bot does not start battles on a central server: volunteers must run Rumble clients to produce new battle results. Tank Royale is a non-commercial project supported by voluntary Buy Me a Coffee contributions, with no budget to keep hosted battle servers running around the clock. It uses the same community computing model as RoboRumble and LiteRumble for classic Robocode: participants contribute computing time by running battles and sharing the results.
+
+To help your bot get more battle results, [run a Rumble client](client-guide.md) and contribute computing time to the shared rankings. Configure your entries in `myBots` so the client prioritizes their matchups when they appear in the matchmaking recommendations. Clients choose battles automatically: your bot can also be selected as an opponent for another contributor's bot or through general matchmaking. You can rely on other contributors to produce results for your bot, but there is no guarantee of how quickly those battles will be played.
 
 The cycle never really ends. A bot that dominates today may meet a smarter opponent tomorrow.
 
