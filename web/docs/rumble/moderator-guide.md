@@ -2,7 +2,7 @@
 
 The Tank Royale Rumble moderators protect a fair, reviewable competition. They are a team in the `robocode-dev` GitHub organization. GitHub automatically assesses routine bot submissions; human moderators handle uncertain submissions, client registrations, disputes and automation health. There is no hidden admin panel: moderation happens through pull requests and the policy files in `rumble-bots` and `rumble-data`.
 
-The repository policies remain authoritative. This guide explains the normal workflow and points to those policies when judgment is required.
+This guide states the participation rule for distinct ranked entries and explains the normal moderation workflow. The repository policies govern moderation commands, permissions and dispute procedures.
 
 ## Volunteer as a moderator
 
@@ -27,6 +27,16 @@ When the `bot-moderation` check stays pending, GitHub comments with the reason a
 7. For a TwinDuel team, confirm that it has two member slots backed by active individual bot versions and contains only its team JSON. Repeated member identities are valid within one twin team.
 
 If a pending case is acceptable, comment `/moderation approve <reason>` on the current PR commit. This records the human decision and turns the required check green. An eligible moderator must then submit an approving GitHub PR review; changes to protected paths also need an approval from a code owner. Ask another moderator to decide and approve a PR you authored or one involving your own bot or account, since GitHub does not count an author's approval of their own PR. Merge manually only after the required status and reviews pass. A new commit requires a new assessment and review. If the bot does not run, GitHub requests changes from its author; do not override that failure. Team metadata and non-bot changes always take the human path. The exact permissions and recovery steps live in [`rumble-bots/GOVERNANCE.md`](https://github.com/robocode-dev/rumble-bots/blob/main/GOVERNANCE.md).
+
+## Assess a reported near-duplicate
+
+Bots derived from existing catalog entries are welcome when they make a substantial independent contribution to battle strategy. You may reject a derivative that retains substantially the same strategy without such a contribution. This includes copies disguised by extensive rewriting, code reorganization or translation to another language; rejection is not limited to cosmetic changes. A new name, different colors, renamed variables, formatting changes or small parameter adjustments do not qualify when the underlying strategy remains substantially unchanged. License permission to reuse code does not guarantee eligibility for a separate entry.
+
+Compare the underlying implementation and strategic decisions, using source and battle behavior as evidence, and ask the author to explain their contribution. Look beyond textual similarity: changed syntax, structure or language can preserve the same targeting, movement and decision logic. Record evidence that the submission is derived from the compared bot and why its changes do or do not make a substantial strategic contribution. Shared helper code or a common codebase can be legitimate when the strategy has been substantially developed; a contribution need not improve the bot's score to qualify. Similar behavior alone is insufficient grounds for rejection: independently written bots can use the same strategy. Do not use a fixed similarity percentage or treat overlap as proof of bad intent. Repeated member identities within one TwinDuel team remain valid.
+
+Record the compared bot and version, the relevant source similarities, the claimed strategic changes and the reason for the decision in the submission PR or dispute. Let the author respond and request reconsideration by a moderator without a conflict of interest; defer cases involving your own bot or account to another moderator.
+
+This is a human eligibility rule. Passing automated checks does not settle whether a bot is a near-duplicate, and those checks do not automatically flag every such case. For a pending submission, use the existing moderation process and request changes or decline the entry with the recorded reason. If the bot has already been accepted automatically, handle the report through the repository's dispute procedure; any resulting disqualification uses a reviewed PR under [Handle disputes and abuse](#handle-disputes-and-abuse). A near-duplicate report alone is not grounds for an account ban.
 
 ## Review a client registration
 

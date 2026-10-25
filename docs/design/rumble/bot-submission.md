@@ -243,6 +243,12 @@ Goal: catch imitations like `F4i1` vs. `FAil` mechanically, so moderators see a 
 
 With this pipeline `F4i1` and `FAil` both skeletonize to `fail` and collide at step 4. The distance-1 threshold is deliberately conservative to keep false positives low at 50-200 bots; widening it is a one-line governance tweak if imitation attempts show up.
 
+### Distinct ranked entries
+
+The [distinct-entry participation decision](../../decisions/PDR-017-distinct-rumble-entries.md) permits moderators to reject a derivative of an existing catalog bot that retains substantially the same battle strategy without a substantial independent strategic contribution. This includes rewritten, reorganized or translated copies and small parameter adjustments that leave the strategy substantially unchanged; rejection is not limited to cosmetic differences. Licensed reuse with a substantial strategic contribution remains eligible under this rule, whether or not the bot's score improves. Similar behavior alone does not establish derivation, and repeated member identities inside one TwinDuel team remain valid.
+
+This rule is deliberately judged by humans when a case is raised during moderation or through a dispute; existing automatic screening is not a similarity detector or proof of distinctness. A moderator compares the underlying implementation and strategic decisions, using source and battle behavior as evidence, considers the author's explanation, and records the compared entry, evidence of derivation and reasoning about the strategic contribution. Textual differences alone do not establish an independent contribution. Authors may seek reconsideration by a moderator without a conflict of interest. An already accepted entry follows the existing reviewed disqualification process if the report is upheld. The [moderator guide](../../../web/docs/rumble/moderator-guide.md#assess-a-reported-near-duplicate) gives the working procedure.
+
 ## Security Analysis (Honest Limits)
 
 Automated screening cannot prove arbitrary source safe; it makes a narrow subset **reviewable, reproducible, and contained**:

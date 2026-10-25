@@ -12,6 +12,27 @@ reversal-cost: low
 ```gherkin
 Feature: rumble-bot-catalog — Rumble bot catalog
 
+  @RBC-011 @retired
+  Scenario: Moderators distinguish strategic contributions from cosmetic near-duplicates
+    Test-type: Human
+    Given a submission is reported as a near-duplicate of an existing catalog bot
+    When an impartial moderator compares the relevant source and battle strategy and considers the author's explanation
+    Then the moderator may reject a near-duplicate whose differences are primarily cosmetic and make no substantial contribution to battle strategy
+    And licensed reuse with a substantial strategic contribution is eligible under this rule
+    And similar behavior alone is insufficient grounds for rejection
+    And the decision identifies the compared entry, evidence and reasoning and allows reconsideration by a moderator without a conflict of interest
+
+  @RBC-012
+  Scenario: Rewritten derivatives need a substantial independent strategic contribution
+    Test-type: Human
+    Given a submission is reported as derived from an existing catalog bot
+    When an impartial moderator compares the underlying implementation and strategic decisions using source and battle behavior and considers the author's explanation
+    Then the moderator may reject a derivative that retains substantially the same strategy without a substantial independent strategic contribution even if its source is extensively rewritten, reorganized or translated
+    And cosmetic changes or small parameter adjustments do not qualify when the underlying strategy remains substantially unchanged
+    And licensed reuse with a substantial strategic contribution is eligible under this rule whether or not the bot's score improves
+    And similar behavior alone is insufficient evidence of derivation from the compared bot
+    And the decision records the compared entry, evidence of derivation and reasoning about the strategic contribution and allows reconsideration by a moderator without a conflict of interest
+
   @RBC-001 @draft
   Scenario: A valid source-only submission becomes an active catalog entry
     Test-type: Integration
