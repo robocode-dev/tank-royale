@@ -17,6 +17,8 @@ Rumble clients run the battles automatically and publish the results, so ranking
 
 The rankings depend on these contributed battles. Submitting a bot does not start battles on a central server: volunteers must run Rumble clients to produce new battle results. Tank Royale is a non-commercial project supported by voluntary Buy Me a Coffee contributions, with no budget to keep hosted battle servers running around the clock. It uses the same community computing model as RoboRumble and LiteRumble for classic Robocode: participants contribute computing time by running battles and sharing the results.
 
+To help get your bot ranked against other bots, [run a Rumble client](client-guide.md) and contribute the computing time needed to play ranked battles. Configure your entries in `myBots` so the client gives their matchups priority when more samples are needed. Your client contributes results to the shared rankings, and other contributors' clients can also play battles involving your bot.
+
 The cycle never really ends. A bot that dominates today may meet a smarter opponent tomorrow.
 
 ## Choose how you want to participate
