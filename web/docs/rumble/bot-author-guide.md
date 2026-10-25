@@ -1,6 +1,6 @@
 # Submit a bot to the Rumble
 
-This guide takes a bot from a runnable starter or an existing Tank Royale strategy into the [Rumble](index.md) ranked catalog. You need a GitHub account, Git, Python 3.11 or newer for validation, and the runtimes used by the bots in your catalog checkout. On Windows, make Git for Windows' `sh` available on `PATH`; validation uses the Unix launcher even when started from PowerShell. CI explicitly installs Python, Java 25, .NET SDK 10 and Node.js 24.
+This guide takes a bot from a runnable starter or an existing Tank Royale strategy into the [Rumble](index.md) ranked catalog. You need a GitHub account, Git, Python 3.11 or newer for validation, and the runtimes used by the bots in your catalog checkout. On Windows, install [Git for Windows](https://gitforwindows.org/) and make its `sh` available on `PATH`; validation uses the Unix launcher even when started from PowerShell. CI explicitly installs Python, Java 25, .NET SDK 10 and Node.js 24.
 
 If you have not written a bot yet, start with the [Tank Royale tutorial](../tutorial/getting-started.md) and the list of [official Bot APIs](../api/apis.md). Test the bot against sample bots with the normal [GUI battle setup](../articles/gui-battle-setup.md) before submitting it. Local GUI battles are private practice; they never affect the Rumble rankings.
 
@@ -12,7 +12,7 @@ Ranked bots must meet these rules:
 - Run directly from source through the normal Tank Royale booter scripts.
 - Depend only on the official Bot API, the runtime dependencies declared by that API, and the platform's standard library. TypeScript's official API requires its declared `ws` runtime peer; the starter includes it and a committed npm lockfile. Other bot libraries remain disallowed.
 - Include no compiled programs, archives, generated dependency directories, custom protocol clients, process launchers, or raw socket code.
-- Declare one of the permitted licenses: `MIT`, `Apache-2.0`, `BSD-3-Clause`, or `GPL-3.0-or-later`.
+- Declare one of the permitted licenses: [MIT](https://choosealicense.com/licenses/mit/), [Apache-2.0](https://choosealicense.com/licenses/apache-2.0/), [BSD-3-Clause](https://choosealicense.com/licenses/bsd-3-clause/), or [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html). [Choose a License](https://choosealicense.com/licenses/) gives plain-language summaries and compares common permissions and conditions; [SPDX](https://spdx.org/licenses/) lists the canonical identifiers and license texts.
 
 The complete rules live in the [`rumble-bots` contribution guide](https://github.com/robocode-dev/rumble-bots/blob/main/CONTRIBUTING.md).
 
