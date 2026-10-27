@@ -810,6 +810,11 @@ claims:
       state: reserved
       prefix: G
       component: "3"
+    - id: G-004
+      kind: numeric
+      state: reserved
+      prefix: G
+      component: "4"
     - id: GTD-001
       kind: numeric
       state: reserved
@@ -1506,11 +1511,11 @@ high-water:
       state: reserved
       prefix: OQ
       component: "9"
-    - id: P-006
+    - id: P-007
       kind: numeric
       state: reserved
       prefix: P
-      component: "6"
+      component: "7"
     - id: PDR-017
       kind: numeric
       state: reserved
