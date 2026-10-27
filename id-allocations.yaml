@@ -790,6 +790,11 @@ claims:
       state: reserved
       prefix: CH
       component: "60"
+    - id: CH-061
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "61"
     - id: G-001
       kind: numeric
       state: reserved
@@ -1506,11 +1511,11 @@ high-water:
       state: reserved
       prefix: PDR
       component: "17"
-    - id: RBC-011
+    - id: RBC-012
       kind: numeric
       state: reserved
       prefix: RBC
-      component: "11"
+      component: "12"
     - id: RCL-014
       kind: numeric
       state: reserved
