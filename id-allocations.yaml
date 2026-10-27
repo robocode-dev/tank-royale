@@ -805,6 +805,11 @@ claims:
       state: reserved
       prefix: CH
       component: "61"
+    - id: CH-062
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "62"
     - id: G-001
       kind: numeric
       state: reserved
@@ -1595,6 +1600,11 @@ high-water:
       kind: numeric
       state: reserved
       prefix: GTD
+      component: "1"
+    - id: HIST-001
+      kind: numeric
+      state: reserved
+      prefix: HIST
       component: "1"
     - id: IDR-005
       kind: numeric
