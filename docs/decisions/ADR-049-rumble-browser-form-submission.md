@@ -45,5 +45,5 @@ The form is the only path observed to work end to end for an outside account tod
 - [Cross-cutting design overview and submission flows](../design/README.md)
 - [ADR-043: Rumble client trust boundary](ADR-043-rumble-client-trust-boundary.md)
 - [ADR-044: Durable Rumble result acknowledgement](ADR-044-durable-rumble-result-acknowledgement.md)
-- [Rumble announcement readiness plan](https://github.com/robocode-dev/tank-royale/blob/1f4953f2f23cead50c6aaaf1acf49a4cb4c79aff/docs/plans/P-006-rumble-announcement-readiness.md)
+- [Rumble announcement readiness plan](../history/HIST-001-rumble-readiness.md)
 - [CAP-016: Rumble client](../capabilities/CAP-016-rumble-client/README.md)
