@@ -85,4 +85,20 @@ Feature: rumble-result-data — Rumble result data
     When a viewer selects Current or a completed month and a game type
     Then the dashboard loads the corresponding leaderboard and bot details
     And it shows the ranking update time and identifies an archived month as read-only
+
+  @RDA-010
+  Scenario: Only the test Rumble can be reset, and a reset forgets nothing outside accepted facts
+    Test-type: Unit
+    Given the test results repository holds accepted facts, derived projections and moderation records
+    When the test reset runs against it
+    Then accepted facts and derived projections are removed and the reset generation rises by one
+    And moderation records and everything else stay in place
+
+  @RDA-011
+  Scenario: The reset and fixture tools refuse the public Rumble and mixed environments
+    Test-type: Unit
+    Given a target that is a public Rumble repository, a lookalike or foreign repository, or a mix of public and test repositories
+    When the test reset or the environment check is asked to use it
+    Then it refuses before changing anything
+    And the public repositories, their history and their snapshots are untouched
 ```

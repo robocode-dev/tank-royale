@@ -10,7 +10,10 @@
         "server/build.gradle.kts",
         "server/src/test/kotlin/score/*Scoring*Test.kt"
       ],
-      "command": ["python", ".clue/evidence/junit_scoring_producer.py"]
+      "command": [
+        "python",
+        ".clue/evidence/junit_scoring_producer.py"
+      ]
     },
     {
       "id": "tank-royale-gui-twinduel",
@@ -23,7 +26,25 @@
         "gui/build.gradle.kts",
         "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt"
       ],
-      "command": ["python", ".clue/evidence/junit_scoring_producer.py"]
+      "command": [
+        "python",
+        ".clue/evidence/junit_scoring_producer.py"
+      ]
+    },
+    {
+      "id": "tank-royale-rumble-environments",
+      "framework": "unittest",
+      "language": "Python",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/python_unittest_producer.py",
+        "scripts/rumble/test_*.py",
+        "scripts/rumble/rumble_environments.py"
+      ],
+      "command": [
+        "python",
+        ".clue/evidence/python_unittest_producer.py"
+      ]
     }
   ]
 }
