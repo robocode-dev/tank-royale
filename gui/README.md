@@ -32,7 +32,7 @@ available version).
 
 The GUI is started by running the `dev.robocode.tankroyale.booter.BooterKt` as a Kotlin application on Java.
 
-When you run the GUI from [IntelliJ IDEA] (used for developing Robocode), you can use the Gradle
+When you run the GUI from your IDE (used for developing Robocode), you can use the Gradle
 task `copyJars` when setting up a Run/Debug Configuration. The `copyJars` tasks will make sure to build and copy the jar
 files for the [booter] and [server] into the classpath for the GUI so it is possible to boot up bots and
 start battles on a server running locally.
@@ -50,4 +50,3 @@ See the packaging guide in [./jpackage.md](./jpackage.md).
 
 [Kotlin]: https://kotlinlang.org/ "Kotlin programming language"
 
-[IntelliJ IDEA]: https://www.jetbrains.com/idea/ "IntelliJ IDEA"

@@ -17,7 +17,7 @@ The documentation of the Python API for Robocode Tank Royale is available on [th
 ### Create a source file
 
 Inside your bot directory (`../bots/MyFirstBot`) create a Python source file named `MyFirstBot.py`. You can edit that
-file using a text editor of your choice, or an [IDE] like e.g. [PyCharm] or [Visual Studio Code].
+file using a text editor of your choice, or an [IDE] of your choice.
 
 ### Initial code
 
@@ -325,10 +325,6 @@ When your bot is ready for broader competition, see how to [submit it](../../rum
 [Python]: https://www.python.org/doc/ "Python documentation"
 
 [IDE]: https://en.wikipedia.org/wiki/Integrated_development_environment "Integrated development environment"
-
-[PyCharm]: https://www.jetbrains.com/pycharm/ "PyCharm homepage"
-
-[Visual Studio Code]: https://code.visualstudio.com/ "Visual Studio Code homepage"
 
 [Bot]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.Bot "Bot class"
 

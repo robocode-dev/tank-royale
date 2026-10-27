@@ -19,8 +19,7 @@ The documentation of the Java (JVM) API for Robocode Tank Royale is available on
 ### Create a source file
 
 Inside your bot directory (`../bots/MyFirstBot`) you need to create a Java source file named `MyFirstBot.java`. You can
-edit that file using a text editor of your choice, or an [IDE] like e.g. [IntelliJ IDEA], [Eclipse], [NetBeans],
-or [Visual Studio Code].
+edit that file using a text editor of your choice, or an [IDE] of your choice.
 
 ### Initial code
 
@@ -329,14 +328,6 @@ inside the Robocode booter."
 [Scala]: https://www.scala-lang.org/ "Scala programming language"
 
 [Clojure]: https://clojure.org/ "Clojure programming language"
-
-[IntelliJ IDEA]: https://www.jetbrains.com/idea/ "IntelliJ IDEA"
-
-[Eclipse]: https://www.eclipse.org/downloads/packages/release/2021-12/r/eclipse-ide-java-developers "Eclipse IDE for Java Developers"
-
-[NetBeans]: https://netbeans.apache.org/ "Apache NetBeans"
-
-[Visual Studio Code]: https://code.visualstudio.com/ "Visual Studio Code homepage"
 
 [Bot]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/Bot.html "Bot class"
 
