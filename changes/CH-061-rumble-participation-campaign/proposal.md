@@ -1,8 +1,8 @@
 ---
 id: CH-061-proposal
 type: proposal
-status: open
-links: [G-003, P-006, C-002]
+status: draft
+links: [G-003, P-007, C-002]
 title: Replace the Rumble readiness campaign with simpler participation and isolated development testing
 ---
 

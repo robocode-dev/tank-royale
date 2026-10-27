@@ -2,7 +2,7 @@
 id: ADR-049
 type: decision
 status: verified
-links: [P-006, M-020, ADR-043, ADR-044, CAP-015, CAP-016]
+links: [P-007, M-020, ADR-043, ADR-044, CAP-015, CAP-016]
 title: Outside contributors submit Rumble results through the web form
 author: agent
 accepted-by: Flemming N. Larsen (2026-10-18, Claude Code conversation)
@@ -45,5 +45,5 @@ The form is the only path observed to work end to end for an outside account tod
 - [Cross-cutting design overview and submission flows](../design/README.md)
 - [ADR-043: Rumble client trust boundary](ADR-043-rumble-client-trust-boundary.md)
 - [ADR-044: Durable Rumble result acknowledgement](ADR-044-durable-rumble-result-acknowledgement.md)
-- [Rumble announcement readiness plan](../plans/P-006-rumble-announcement-readiness.md)
+- [Rumble announcement readiness plan](https://github.com/robocode-dev/tank-royale/blob/1f4953f2f23cead50c6aaaf1acf49a4cb4c79aff/docs/plans/P-006-rumble-announcement-readiness.md)
 - [CAP-016: Rumble client](../capabilities/CAP-016-rumble-client/README.md)

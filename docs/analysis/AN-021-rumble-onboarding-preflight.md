@@ -2,7 +2,7 @@
 id: AN-021
 type: analysis
 status: active
-links: [P-006, M-025, AN-017, AN-019, AN-020]
+links: [P-007, AN-017, AN-019, AN-020]
 title: Rumble public onboarding preflight
 ---
 
@@ -10,7 +10,7 @@ title: Rumble public onboarding preflight
 
 ## Consumer and conclusion
 
-This finding supports M-025 of [the Rumble announcement-readiness plan](../plans/P-006-rumble-announcement-readiness.md), which requires a non-maintainer to follow the published bot-author and battle-contributor journeys through a catalog entry, accepted result receipt and visible ranking. The published paths are now available: the [bot-author guide](https://robocode.dev/rumble/bot-author-guide.html) describes source submission, and the [battle-contributor guide](https://robocode.dev/rumble/client-guide.html) describes registration, ranked execution and token-free result-form submission. The current client release is [v0.3.0](https://github.com/robocode-dev/rumble-client/releases/tag/v0.3.0), built from commit `97530e05ec8d895b5067672e190f59053b9fb284`; the public `latest` image resolves to Linux/amd64 digest `sha256:32ab3259f0ce69f319174b54ba36f4d85949c1a30ea4e65a94010b9c931acf2d`.
+This finding supports M-025 of [the Rumble announcement-readiness plan](https://github.com/robocode-dev/tank-royale/blob/1f4953f2f23cead50c6aaaf1acf49a4cb4c79aff/docs/plans/P-006-rumble-announcement-readiness.md), which requires a non-maintainer to follow the published bot-author and battle-contributor journeys through a catalog entry, accepted result receipt and visible ranking. The published paths are now available: the [bot-author guide](https://robocode.dev/rumble/bot-author-guide.html) describes source submission, and the [battle-contributor guide](https://robocode.dev/rumble/client-guide.html) describes registration, ranked execution and token-free result-form submission. The current client release is [v0.3.0](https://github.com/robocode-dev/rumble-client/releases/tag/v0.3.0), built from commit `97530e05ec8d895b5067672e190f59053b9fb284`; the public `latest` image resolves to Linux/amd64 digest `sha256:32ab3259f0ce69f319174b54ba36f4d85949c1a30ea4e65a94010b9c931acf2d`.
 
 The final milestone remains unproven. The non-member test account `robocode-rumble-test` has an active `RumbleTestScout` 1.0.2 catalog entry, but the current public 1v1 projection records zero battles for that version. Existing evidence records an earlier accepted result for the same account, and the account has since submitted another bot version; neither record shows a fresh end-to-end run from a clean environment using the currently published client. No new result was posted during this preflight.
 

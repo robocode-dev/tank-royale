@@ -2,7 +2,7 @@
 id: AN-022
 type: analysis
 status: active
-links: [P-006, M-025, AN-020, AN-021]
+links: [P-007, AN-020, AN-021]
 title: Rumble v0.3.0 practice-mode container run
 ---
 
@@ -10,7 +10,7 @@ title: Rumble v0.3.0 practice-mode container run
 
 ## Consumer and conclusion
 
-This finding adds a local container observation for M-025 of [the Rumble announcement-readiness plan](../plans/P-006-rumble-announcement-readiness.md). The published v0.3.0 image synchronized the public catalog and completed one practice-mode battle from a fresh client checkout and empty state directory. The host was prepared: Docker was already installed, the daemon was started for this run, and the pinned image was already present locally. Practice mode omitted a client identity and did not submit a result, so this is not an outside-user onboarding run and does not meet M-025.
+This finding adds a local container observation for M-025 of [the Rumble announcement-readiness plan](https://github.com/robocode-dev/tank-royale/blob/1f4953f2f23cead50c6aaaf1acf49a4cb4c79aff/docs/plans/P-006-rumble-announcement-readiness.md). The published v0.3.0 image synchronized the public catalog and completed one practice-mode battle from a fresh client checkout and empty state directory. The host was prepared: Docker was already installed, the daemon was started for this run, and the pinned image was already present locally. Practice mode omitted a client identity and did not submit a result, so this is not an outside-user onboarding run and does not meet M-025.
 
 ## Evidence boundary
 
