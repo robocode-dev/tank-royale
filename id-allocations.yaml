@@ -1195,6 +1195,11 @@ claims:
       state: reserved
       prefix: PDR
       component: "17"
+    - id: PDR-018
+      kind: numeric
+      state: reserved
+      prefix: PDR
+      component: "18"
     - id: RBC-001
       kind: numeric
       state: reserved
@@ -1576,11 +1581,11 @@ high-water:
       state: reserved
       prefix: LOG
       component: "1"
-    - id: M-034
+    - id: M-035
       kind: numeric
       state: reserved
       prefix: M
-      component: "34"
+      component: "35"
     - id: OQ-009
       kind: numeric
       state: reserved
