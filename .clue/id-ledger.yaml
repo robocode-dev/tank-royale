@@ -533,6 +533,10 @@ events:
     - {id: P-006, kind: numeric, state: retired, prefix: P, component: "6"}
     - {id: M-025, kind: numeric, state: retired, prefix: M, component: "25"}
     - {id: PDR-015, kind: numeric, state: retired, prefix: PDR, component: "15"}
+    - {id: CH-061, kind: numeric, state: retired, prefix: CH, component: "61"}
+    - {id: CH-061-proposal, kind: opaque, state: retired}
+    - {id: CH-061-tasks, kind: opaque, state: retired}
+    - {id: CH-061-open-questions, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
