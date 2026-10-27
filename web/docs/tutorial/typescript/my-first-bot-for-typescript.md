@@ -18,7 +18,7 @@ The documentation of the TypeScript Bot API for Robocode Tank Royale is availabl
 ### Create a source file
 
 Inside your bot directory (`../bots/MyFirstBot`) create a TypeScript source file named `MyFirstBot.ts`. You can edit
-that file using a text editor of your choice, or an [IDE] like e.g. [Visual Studio Code] or [WebStorm].
+that file using a text editor of your choice, or an [IDE] of your choice.
 
 ### Initial code
 
@@ -331,10 +331,6 @@ When your bot is ready for broader competition, see how to [submit it](../../rum
 [Node.js]: https://nodejs.org/ "Node.js runtime"
 
 [IDE]: https://en.wikipedia.org/wiki/Integrated_development_environment "Integrated development environment"
-
-[Visual Studio Code]: https://code.visualstudio.com/ "Visual Studio Code homepage"
-
-[WebStorm]: https://www.jetbrains.com/webstorm/ "WebStorm IDE"
 
 [tsx]: https://tsx.is/ "tsx — TypeScript Execute"
 

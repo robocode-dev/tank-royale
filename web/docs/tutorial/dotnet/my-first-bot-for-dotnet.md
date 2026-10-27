@@ -19,7 +19,7 @@ The documentation of the .NET API for Robocode Tank Royale is available on [this
 ### Create a source file
 
 Inside your bot directory (`../bots/MyFirstBot`) you need to create a C# source file named `MyFirstBot.cs`. You can edit
-that file using a text editor of your choice, or an [IDE] like e.g. [Visual Studio Code] or [Visual Studio].
+that file using a text editor of your choice, or an [IDE] of your choice.
 
 ### Initial code
 
@@ -360,10 +360,6 @@ When your bot is ready for broader competition, see how to [submit it](../../rum
 [.NET]: https://dotnet.microsoft.com/en-us/ ".NET homepage"
 
 [IDE]: https://en.wikipedia.org/wiki/Integrated_development_environment "Integrated development environment"
-
-[Visual Studio Code]: https://code.visualstudio.com/ "Visual Studio Code homepage"
-
-[Visual Studio]: https://visualstudio.microsoft.com/ "Visual Studio homepage"
 
 [Bot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html "Bot class"
 
