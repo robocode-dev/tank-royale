@@ -810,6 +810,11 @@ claims:
       state: reserved
       prefix: CH
       component: "62"
+    - id: CH-063
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "63"
     - id: G-001
       kind: numeric
       state: reserved
@@ -1586,11 +1591,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "20"
-    - id: CH-061
+    - id: CH-062
       kind: numeric
       state: reserved
       prefix: CH
-      component: "61"
+      component: "62"
     - id: G-004
       kind: numeric
       state: reserved
