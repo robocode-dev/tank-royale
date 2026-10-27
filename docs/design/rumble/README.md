@@ -5,7 +5,7 @@ title: Tank Royale Rumble - Umbrella Design Document
 
 # Tank Royale Rumble - Umbrella Design Document
 
-> **Status: DRAFT** - design direction, read alongside the accepted capability contracts and decisions. The original implementation plan is complete; the [announcement-readiness campaign](../../plans/P-006-rumble-announcement-readiness.md) tracks the remaining public-participation work.
+> **Status: DRAFT** - design direction, read alongside the accepted capability contracts and decisions. The original implementation plan is complete; the [replacement participation campaign](../../plans/P-007-rumble-participation.md) retains earlier evidence and plans simpler public-Beta journeys with isolated development testing. The [target participation design](participation.md) separates planned interfaces from the operational browser-form path.
 
 This is the coordinating umbrella document for the design of an automated, serverless, decentralized, community-driven tournament system for Robocode Tank Royale. It holds the overall idea, the design principles, and the map of the detailed design documents. Details live in the sub-documents; this document should stay short and stable.
 

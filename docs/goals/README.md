@@ -12,4 +12,5 @@ A goal artifact answers three questions: who wants it, what they want, and why i
 <!-- clue:index:start -->
 - [G-001 — A programming game for learning and competition](G-001-programming-game-for-learning-and-competition.md) · `accepted`
 - [G-003 — Robocoders can join Rumble before its public announcement](G-003-rumble-public-participation.md) · `accepted` — **Who:** Bot authors and battle contributors in the Robocode community, including GitHub users outside the maintainer organization, and the maintainer preparing Rumble's announcement.
+- [G-004 — Robocoders participate in Rumble without administering its infrastructure](G-004-simple-rumble-participation.md) · `accepted` — **Who:** Bot developers entering the competition, volunteers contributing computer time, and the maintainer developing and testing Rumble.
 <!-- clue:index:end -->

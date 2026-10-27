@@ -18,4 +18,8 @@ Do not write one when a capability and its criteria already describe the behavio
 Each use case carries `## Actors`, `## Trigger`, `## Main flow`, and `## Outcome`, and adds preconditions, alternative and failure flows, and open questions when they carry meaning.
 
 <!-- clue:index:start -->
+- [UC-001 — Develop, test, submit and update a Rumble bot](UC-001-publish-a-rumble-bot.md) · `draft` — A bot author, the desktop application, GitHub, and catalog moderation.
+- [UC-002 — Contribute computing time with control over bot priorities](UC-002-contribute-ranked-battles.md) · `draft` — A contributor who may own no bot, the GUI or CLI session controller, isolated battle workers, and result ingestion.
+- [UC-003 — Withdraw an entry without erasing competition history](UC-003-withdraw-a-rumble-bot.md) · `draft` — The bot owner or a moderator, bot management, catalog publication, and ranking aggregation.
+- [UC-004 — Repeat and reset development Rumble tests without affecting public participants](UC-004-repeat-rumble-development-tests.md) · `draft` — The maintainer or developer, local test tooling, the development catalog/result workflows, and an outside test account.
 <!-- clue:index:end -->

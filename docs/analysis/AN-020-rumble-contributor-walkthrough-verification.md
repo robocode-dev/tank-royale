@@ -2,7 +2,7 @@
 id: AN-020
 type: analysis
 status: active
-links: [P-006, M-023, AN-017]
+links: [P-007, M-023, AN-017]
 title: Rumble contributor walkthrough and image verification
 ---
 
@@ -10,7 +10,7 @@ title: Rumble contributor walkthrough and image verification
 
 ## Consumer and conclusion
 
-This finding supports M-023 of [P-006](../plans/P-006-rumble-announcement-readiness.md), which requires a complete and exercised battle-contributor walkthrough. A replacement guide is prepared in `web/docs/rumble/client-guide.md`, and the current browser-form client candidate successfully ran the Windows Docker path through a real ranked battle and credential-free batch preparation. The public `latest` image is still v0.2.0 and uses the superseded token-based submission flow, so the guide is a draft until the client v0.3.0 image is published. The required accepted-receipt and published-ranking outcome is already evidenced by [AN-017](AN-017-rumble-outside-account-result-evidence.md); no new public result was posted during this verification.
+This finding supports M-023 of [P-006](../history/HIST-001-rumble-readiness.md), which requires a complete and exercised battle-contributor walkthrough. A replacement guide is prepared in `web/docs/rumble/client-guide.md`, and the current browser-form client candidate successfully ran the Windows Docker path through a real ranked battle and credential-free batch preparation. The public `latest` image is still v0.2.0 and uses the superseded token-based submission flow, so the guide is a draft until the client v0.3.0 image is published. The required accepted-receipt and published-ranking outcome is already evidenced by [AN-017](AN-017-rumble-outside-account-result-evidence.md); no new public result was posted during this verification.
 
 ## Evidence boundary
 

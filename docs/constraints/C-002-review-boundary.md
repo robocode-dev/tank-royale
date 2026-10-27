@@ -2,26 +2,24 @@
 id: C-002
 type: constraint
 status: active
-links: []
-title: Mutations of main are human-gated, by a merged PR or an authorized direct push for direct work
-source: core-principles agent instructions (pre-CH-001), Cliewen change loop, maintainer authorization (CH-027)
+links: [PDR-018]
+title: Tracked changes enter main only through exact-candidate local human acceptance
+source: Maintainer local-acceptance direction; Cliewen local acceptance workflow
 enforcement: human
 ---
 
-# C-002 — Mutations of main are human-gated, by a merged PR or an authorized direct push for direct work
+# Tracked changes enter main only through exact-candidate local human acceptance
 
-Every tracked Cliewen change rides a branch, becomes a pull request, and is merged by a human (the maintainer). No exception: a tracked change is never committed or pushed to `main` directly, by agents or anyone else, and an agent that finishes one ends at an open PR, not a merge.
+The accepted `.clue/acceptance.yaml` selects local acceptance on `main`. Every tracked change starts on a local branch from accepted `main`, records its proposal before implementation, digests its durable corpus changes, passes applicable checks, and receives a clean bounded agentic review of the committed candidate. The agent prepares a local acceptance brief binding the exact candidate, base, review, evidence and remaining uncertainty, and runs `clue accept` with `--check` before handoff.
 
-Direct work may be committed and pushed to `main` directly, but only when the maintainer explicitly authorizes that push for that specific change. The authorization is per change and never carries over: a prior authorization, a general permission, or the fact that similar work was authorized before does not authorize the next push. The direct route itself authorizes nothing; classifying work as simple is a statement about the accepted contract, never about integration. Without an explicit authorization for the change at hand, direct work also rides a branch and a pull request.
+Only the human decides acceptance. The maintainer may run the accepting command interactively or explicitly approve the exact candidate, base and complete brief through an identified venue. An agent may execute that specific human approval with the supported approval record bound to the brief hash, but must never infer approval for a changed candidate or fabricate acceptance. An instruction to implement a plan is not acceptance of an unseen final commit. An agent does not merge its own work into `main` outside this mechanism.
 
-An authorized direct push carries an `Authorized-Push:` trailer naming the authorization on each commit it lands. A human-enforced permission that leaves no evidence cannot be audited afterwards: without the trailer, an authorized push and an unauthorized one are indistinguishable in `main`'s history.
+No push or hosted PR is required by local acceptance. Publishing a branch, opening a PR, or pushing accepted `main` requires the maintainer's explicit instruction for that action. Coordinated identity reservations continue using the configured allocator independently of candidate publication. A hosted PR, if separately requested, is a publication/review surface; it does not silently replace the accepted local mechanism. Changes to the acceptance mechanism itself require human direction.
 
-Agents never merge their own PRs.
+Direct work remains outside the tracked acceptance loop. It may be committed or pushed directly to `main` only when the maintainer explicitly authorizes that integration or push for the specific change; direct classification alone grants neither. An authorized direct push carries an `Authorized-Push:` trailer identifying the authorization. Earlier authorizations do not carry over to another change.
 
-The separate `rumble-bots` submission policy permits a dedicated GitHub App to merge an external contributor's **bot-only** pull request after its exact commit passes restricted-source screening and a complete isolated battle. That operational exception is not an agent accepting its own tracked Cliewen change: changes to workflow, governance, documentation or other repository policy remain human-merged, and every tracked Cliewen change still follows the human acceptance boundary above. An uncertain or failing bot is not eligible for the exception.
+The separate `rumble-bots` bot-submission policy may permit a dedicated GitHub App to merge an external contributor's clean bot-only PR after exact-commit security and battle checks. That operational policy does not accept an agent's tracked product changes and is not changed by this repository's local acceptance choice. Each external repository retains its own accepted integration policy.
 
-This replaces the pre-Cliewen prose gates ("never commit without explicit approval", the ADR Review Gate, the OpenSpec approval gate): for a tracked change the PR **is** the approval gate, and the corpus wall (`clue validate --forbid-changes` in CI) is the machine half of the review.
+**Promotion trigger:** the repository may record stronger machine enforcement after the actual local acceptance checks and their limits are verified. Until then this constraint remains human-enforced. `clue validate --forbid-changes`, exact-commit checks, and a recorded brief support the decision but do not authenticate the human's intent. Local verification does not claim hosted branch protection or required-CI enforcement.
 
-**Promotion trigger:** branch protection on `main` with `validate` as a required status check, configured so the maintainer keeps the ability to push directly, then `enforcement: machine` for the wall half. Protection that requires a pull request with no bypass would make the direct-work exception unexercisable, so that configuration is not a promotion of this constraint but a change to it, and this constraint is revised first. The human merge and the per-change authorization stay human by design.
-
-**Residual:** Human review and merge remain deliberately human-enforced even when branch protection machine-enforces the validation wall. The per-change push authorization has no machine half at all: only the maintainer knows whether a given push was authorized, and the `Authorized-Push:` trailer records that claim rather than proving it.
+**Residual:** The human determines whether the reviewed outcome is wanted and whether an approval is genuine. Local checks and Git identity cannot make that decision; publication authority is separate from local acceptance.
