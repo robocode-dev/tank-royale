@@ -1020,6 +1020,11 @@ claims:
       state: reserved
       prefix: M
       component: "33"
+    - id: M-034
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "34"
     - id: OQ-001
       kind: numeric
       state: reserved
@@ -1566,11 +1571,11 @@ high-water:
       state: reserved
       prefix: LOG
       component: "1"
-    - id: M-032
+    - id: M-033
       kind: numeric
       state: reserved
       prefix: M
-      component: "32"
+      component: "33"
     - id: OQ-009
       kind: numeric
       state: reserved
