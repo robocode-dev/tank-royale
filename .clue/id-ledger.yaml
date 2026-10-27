@@ -485,6 +485,26 @@ events:
     - {id: RBC-012, kind: numeric, state: reserved, prefix: RBC, component: "12"}
     - {id: RBC-012, kind: numeric, state: live, prefix: RBC, component: "12"}
     - {id: RBC-011, kind: numeric, state: retired, prefix: RBC, component: "11"}
+    - {id: CH-061, kind: numeric, state: reserved, prefix: CH, component: "61"}
+    - {id: P-007, kind: numeric, state: reserved, prefix: P, component: "7"}
+    - {id: G-004, kind: numeric, state: reserved, prefix: G, component: "4"}
+    - {id: ADR-052, kind: numeric, state: reserved, prefix: ADR, component: "52"}
+    - {id: UC-001, kind: numeric, state: reserved, prefix: UC, component: "1"}
+    - {id: UC-002, kind: numeric, state: reserved, prefix: UC, component: "2"}
+    - {id: UC-003, kind: numeric, state: reserved, prefix: UC, component: "3"}
+    - {id: UC-004, kind: numeric, state: reserved, prefix: UC, component: "4"}
+    - {id: M-026, kind: numeric, state: reserved, prefix: M, component: "26"}
+    - {id: M-027, kind: numeric, state: reserved, prefix: M, component: "27"}
+    - {id: M-028, kind: numeric, state: reserved, prefix: M, component: "28"}
+    - {id: M-029, kind: numeric, state: reserved, prefix: M, component: "29"}
+    - {id: M-030, kind: numeric, state: reserved, prefix: M, component: "30"}
+    - {id: M-031, kind: numeric, state: reserved, prefix: M, component: "31"}
+    - {id: M-032, kind: numeric, state: reserved, prefix: M, component: "32"}
+    - {id: M-033, kind: numeric, state: reserved, prefix: M, component: "33"}
+    - {id: M-034, kind: numeric, state: reserved, prefix: M, component: "34"}
+    - {id: M-035, kind: numeric, state: reserved, prefix: M, component: "35"}
+    - {id: PDR-018, kind: numeric, state: reserved, prefix: PDR, component: "18"}
+    - {id: ARCH-027, kind: numeric, state: reserved, prefix: ARCH, component: "27"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
