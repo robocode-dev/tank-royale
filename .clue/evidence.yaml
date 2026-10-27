@@ -25,7 +25,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "3ca6d18f4e1af4d8d8ebfe3341a269046b3edd825d157e39a6c9489c5518fbd9"
+          "sha256": "a9fecc986b44cbcd3a1f07cc969befa637e1068acf93c9f44aab3919316e8d17"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -58,6 +58,96 @@
       ]
     },
     {
+      "id": "tank-royale-rumble-environments",
+      "framework": "unittest",
+      "language": "Python",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/producers.json",
+        ".clue/evidence/python_unittest_producer.py",
+        "scripts/rumble/rumble_environments.py",
+        "scripts/rumble/test_*.py"
+      ],
+      "exclude": [],
+      "inputs": [
+        {
+          "path": ".clue/evidence/aggregate.py",
+          "sha256": "cf20a3f9d5a1072a7b2d3ddfc4bc9e25575b2cbd27441aba61e9d83d9ac4768c"
+        },
+        {
+          "path": ".clue/evidence/producers.json",
+          "sha256": "a9fecc986b44cbcd3a1f07cc969befa637e1068acf93c9f44aab3919316e8d17"
+        },
+        {
+          "path": ".clue/evidence/python_unittest_producer.py",
+          "sha256": "e152a04cbb79f632eb142b6054231ef889bca7e0be9f3e971f6146fa2951fa06"
+        },
+        {
+          "path": "scripts/rumble/rumble_environments.py",
+          "sha256": "86782515ff5ad3585b4ed32c41d39ad28227811d849750c60cbba4b10b0ebeb4"
+        },
+        {
+          "path": "scripts/rumble/test_create_test_apps.py",
+          "sha256": "8b9ff499b016a1e6ce884bb192fcc8d9e9ee9dcdac38af3c06f1e21cf66db4d5"
+        },
+        {
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "sha256": "fb1264154c8ac04d806ecd22b1e67abeefe0f9a01e576b25fea43b8ee93e7c2d"
+        }
+      ],
+      "references": [
+        {
+          "id": "RDA-010",
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "subject": "ResetTargetsTestRepositoriesOnly.test_RDA_010_UnitPositive_reset_removes_facts_and_raises_the_generation",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RDA-010",
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "subject": "ResetTargetsTestRepositoriesOnly.test_RDA_010_UnitPositive_same_environment_repositories_are_accepted_together",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RDA-010",
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "subject": "ResetTargetsTestRepositoriesOnly.test_RDA_010_UnitPositive_test_repositories_are_resettable_in_any_url_form",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RDA-011",
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "subject": "ResetTargetsTestRepositoriesOnly.test_RDA_011_UnitNegative_cross_environment_repositories_are_refused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RDA-011",
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "subject": "ResetTargetsTestRepositoriesOnly.test_RDA_011_UnitNegative_lookalike_and_foreign_repositories_are_refused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RDA-011",
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "subject": "ResetTargetsTestRepositoriesOnly.test_RDA_011_UnitNegative_public_repositories_are_never_resettable",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RDA-011",
+          "path": "scripts/rumble/test_rumble_environments.py",
+          "subject": "ResetTargetsTestRepositoriesOnly.test_RDA_011_UnitNegative_reset_of_a_public_or_unknown_checkout_removes_nothing",
+          "type": "Unit",
+          "direction": "negative"
+        }
+      ]
+    },
+    {
       "id": "tank-royale-scoring",
       "framework": "JUnit",
       "language": "Kotlin",
@@ -80,7 +170,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "3ca6d18f4e1af4d8d8ebfe3341a269046b3edd825d157e39a6c9489c5518fbd9"
+          "sha256": "a9fecc986b44cbcd3a1f07cc969befa637e1068acf93c9f44aab3919316e8d17"
         },
         {
           "path": "server/build.gradle.kts",

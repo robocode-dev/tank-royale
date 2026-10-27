@@ -4,6 +4,8 @@ Writing a bot is one thing. Finding out how good it really is takes a lot of bat
 
 Tank Royale Rumble is the community-run ranked competition for Robocode Tank Royale. It follows the tradition of RoboRumble and LiteRumble from classic Robocode: submit your bot, let it fight across the shared ladder, study the results, and come back with a better version. If you are serious about Robocoding, this is where you put your code to the test.
 
+> **Public Beta.** The Rumble is open to everyone and its rankings are real, but it is still being finished. Some steps, such as posting battle results, are still manual, and the guides may have gaps. If something is confusing or broken, please [tell us in the Rumble issue tracker](https://github.com/robocode-dev/rumble-bots/issues/new). Your report helps us make the next step easier.
+
 Rumble clients run the battles automatically and publish the results, so rankings come from the same bot code fighting many different opponents.
 
 ## The Rumble loop
