@@ -2,7 +2,7 @@
 id: CH-062-tasks
 type: tasks
 status: open
-links: [CH-062-proposal]
+links: [CH-062]
 title: Verify the replacement campaign decisions
 ---
 

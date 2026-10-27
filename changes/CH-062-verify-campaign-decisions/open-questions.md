@@ -2,7 +2,7 @@
 id: CH-062-open-questions
 type: open-questions
 status: open
-links: [CH-062-proposal]
+links: [CH-062]
 title: Open questions for verifying the campaign decisions
 ---
 
