@@ -1425,6 +1425,11 @@ claims:
       state: reserved
       prefix: UC
       component: "2"
+    - id: UC-003
+      kind: numeric
+      state: reserved
+      prefix: UC
+      component: "3"
     - id: UD-001
       kind: numeric
       state: reserved
@@ -1571,11 +1576,11 @@ high-water:
       state: reserved
       prefix: TNP
       component: "3"
-    - id: UC-001
+    - id: UC-002
       kind: numeric
       state: reserved
       prefix: UC
-      component: "1"
+      component: "2"
     - id: UD-008
       kind: numeric
       state: reserved
