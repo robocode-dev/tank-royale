@@ -1035,6 +1035,16 @@ claims:
       state: reserved
       prefix: M
       component: "35"
+    - id: M-036
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "36"
+    - id: M-037
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "37"
     - id: OQ-001
       kind: numeric
       state: reserved
@@ -1606,11 +1616,11 @@ high-water:
       state: reserved
       prefix: P
       component: "7"
-    - id: PDR-018
+    - id: PDR-019
       kind: numeric
       state: reserved
       prefix: PDR
-      component: "18"
+      component: "19"
     - id: RBC-012
       kind: numeric
       state: reserved
