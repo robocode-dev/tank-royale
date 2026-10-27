@@ -1,11 +1,11 @@
 ---
 id: PDR-019
 type: decision
-status: inferred
+status: verified
 links: [G-004, P-007]
 title: Invite public Beta participation while replacing the difficult onboarding journey
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-10-27, Codex conversation)
 supersedes: [PDR-015]
 ---
 

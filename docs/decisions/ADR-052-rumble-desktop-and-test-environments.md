@@ -1,11 +1,11 @@
 ---
 id: ADR-052
 type: decision
-status: inferred
+status: verified
 links: [G-004, P-007, ARCH-027, CAP-014, CAP-015, CAP-016]
 title: Share desktop and headless Rumble logic while isolating development and untrusted execution
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-10-27, Codex conversation)
 ---
 
 # Share desktop and headless Rumble logic while isolating development and untrusted execution
