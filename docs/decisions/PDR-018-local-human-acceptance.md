@@ -1,11 +1,11 @@
 ---
 id: PDR-018
 type: decision
-status: inferred
+status: verified
 links: [C-002]
 title: Tracked changes use exact-candidate local human acceptance
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-10-27, Codex conversation)
 ---
 
 # Tracked changes use exact-candidate local human acceptance
