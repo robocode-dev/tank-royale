@@ -830,6 +830,11 @@ claims:
       state: reserved
       prefix: GTD
       component: "1"
+    - id: HIST-001
+      kind: numeric
+      state: reserved
+      prefix: HIST
+      component: "1"
     - id: IDR-001
       kind: numeric
       state: reserved
@@ -1601,11 +1606,11 @@ high-water:
       state: reserved
       prefix: LOG
       component: "1"
-    - id: M-035
+    - id: M-037
       kind: numeric
       state: reserved
       prefix: M
-      component: "35"
+      component: "37"
     - id: OQ-009
       kind: numeric
       state: reserved
