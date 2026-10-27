@@ -1205,6 +1205,11 @@ claims:
       state: reserved
       prefix: PDR
       component: "18"
+    - id: PDR-019
+      kind: numeric
+      state: reserved
+      prefix: PDR
+      component: "19"
     - id: RBC-001
       kind: numeric
       state: reserved
@@ -1546,11 +1551,11 @@ high-water:
       state: reserved
       prefix: AN
       component: "22"
-    - id: ARCH-026
+    - id: ARCH-027
       kind: numeric
       state: reserved
       prefix: ARCH
-      component: "26"
+      component: "27"
     - id: C-004
       kind: numeric
       state: reserved
