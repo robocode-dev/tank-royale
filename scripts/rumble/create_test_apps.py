@@ -50,7 +50,7 @@ APPS = {
         "secret_prefix": "RUMBLE_PUBLISHER",
     },
     "contributor": {
-        "name": "Tank Royale Rumble Contributor Test",
+        "name": "Tank Royale Rumble Contrib Test",
         "description": "Test environment only. Lets a participant sign in from their own computer to submit Rumble bots and battle results.",
         "permissions": {"issues": "write", "pull_requests": "write", "contents": "write", "metadata": "read"},
         "secret_prefix": None,
@@ -130,7 +130,10 @@ def main(keys):
                 created = convert(query["code"][0])
                 store(parts[1], created)
                 done.add(parts[1])
-                print(f"Created {created['slug']} and stored its credentials as secrets of {SECRET_REPOSITORY}.")
+                if APPS[parts[1]]["secret_prefix"] is None:
+                    print(f"Created {created['slug']}. Nothing was stored; it has no secrets.")
+                else:
+                    print(f"Created {created['slug']} and stored its credentials as secrets of {SECRET_REPOSITORY}.")
                 print(f"Install it on the test repositories: https://github.com/apps/{created['slug']}/installations/new")
                 if done == set(keys):
                     finished.set()
