@@ -69,7 +69,51 @@ The probe then ran again as the outside account, still signed in only through th
 | Open a `[result]` issue without any label | The workflow labeled it, processed it, replied and closed it. The reply was a rejection of the deliberately malformed probe batch ("unsupported submission schemaVersion"), which proves the receipt path works for an outside account. |
 | Fork `rumble-bots-test` | Still refused, because the App is not installed there. |
 
-Not yet proven for M-028: an accepted ranked batch with a receipt, renewal of the sign-in with the refresh token, bans and impersonation attempts, a missing or restricted permission, and the bot submission by fork and pull request.
+A third run, after the App was installed on `rumble-bots-test` as well:
+
+| Step | Result |
+|---|---|
+| Register again | Same client ID returned, so registration is stable. |
+| Result issue without any label | Labeled by the workflow but not processed in that run, and no receipt arrived within four minutes. The workflow listed issues with the label a second after adding it and the list did not yet show it. The scheduled sweep would have processed it later. The fix is to include the issue that triggered the run directly, whatever the list shows. |
+| Renew the sign-in with the refresh token, without any client secret | Works. No app secret needs to live in the desktop client for renewal. |
+| Fork `rumble-bots-test` through the API | Still refused with "Resource not accessible by integration", although the App is installed there with contents and pull request write. Creating a fork through the API therefore needs a right this App does not hold. |
+
+A fourth run, after the outside account forked `rumble-bots-test` in the web page and installed the App on that fork:
+
+| Step | Result |
+|---|---|
+| Installations visible to the sign-in | The account's own installation is now listed (selected repositories). |
+| Read the fork, create a branch, push a file | All work (HTTP 200 and 201). |
+| Open a pull request from the fork against `rumble-bots-test` | Works (pull request 7). The bot repository's own validation check started without any maintainer action. The probe pull request was closed afterwards. |
+| Result issue without any label | Same missed receipt as before; the receiver fix described above is prepared but not yet published. |
+
+Findings for the plan: a participant needs three browser actions once (sign in with a code, fork the bot repository on the web, install the App on the fork) and none of them needs the organization, a maintainer or a stored secret. The API cannot create the fork for the participant, so the Rumble client has to send the participant to the fork page. The user token lasts 8 hours and renews through the refresh token without a client secret, which removes the desktop-embedded secret the plan names as a stopping condition.
+
+A fifth run, with the receiver fix published, used a real registered client ID and three batches, all opened by the outside account through the device sign-in:
+
+| Batch | Receipt |
+|---|---|
+| A valid ranked 1v1 batch between two catalog bots | "accepted", issue closed by the workflow within the wait. |
+| A batch under a client ID registered to another account | Rejected: the client ID is not registered to the submitting account. The account comes from the issue author, so a payload cannot claim another owner. |
+| The same battle ID with different content | Rejected: duplicate battle ID already retained. |
+
+The fork, branch, file and pull request steps and the renewal without a secret worked again.
+
+A sixth run put the outside account on the data repository's ban list temporarily (two direct pushes to the test repository, the second one lifting the ban again):
+
+| Step | Receipt |
+|---|---|
+| Registration while banned | "Registration refused: account is banned". Nothing written. |
+| The valid batch while banned | Rejected record by record: "account is banned". |
+| Another account's client ID, and a repeated battle ID | Still rejected as before. |
+
+The data repository therefore refuses a banned account on both registration and result submission without a maintainer acting at that moment. The bot repository keeps its own ban list in `bots/banned.json`; its effect on a banned account's fork pull request was not exercised live, so that part of the ban rule is unproven here.
+
+Missing labels and restricted rights were already exercised by the earlier refusals: an outside account cannot apply labels, and calls to a repository where the App is not installed return "Resource not accessible by integration".
+
+A seventh run signed in, then the participant revoked the App's authorization in their GitHub settings. Within seconds GitHub answered the same token with "Bad credentials" (HTTP 401), and the revoked token could not open an issue either. The participant can therefore cut off the App without help from anyone.
+
+Not proven here: the bot repository's own ban list against a fork pull request, and the rollout of the registration workflow and label-free intake from the test result repository to the live one.
 
 ## Decision boundary
 

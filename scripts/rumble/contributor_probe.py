@@ -9,12 +9,15 @@ HTTP status and GitHub's message, so a refusal is evidence rather than a crash.
 Only the test environment is touched (robocode-dev/rumble-data-test and rumble-bots-test).
 """
 
+import base64
 import json
+import re
 import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 
 from rumble_environments import TEST
 
@@ -87,8 +90,26 @@ def report(step, outcome):
     return outcome
 
 
+def watch_for_revocation(token, minutes=6):
+    """Poll until GitHub stops accepting the token, which happens when the participant revokes the App."""
+    print("Revoke the App now at https://github.com/settings/connections/applications as this account.")
+    deadline = time.time() + minutes * 60
+    while time.time() < deadline:
+        status, answer = call("GET", "https://api.github.com/user", token)
+        if status != 200:
+            print(f"[{status}] the token stopped working after revocation: {answer.get('message')}")
+            status, _ = call("POST", f"https://api.github.com/repos/{DATA}/issues", token,
+                             {"title": "[register] after revocation", "body": "must be refused"})
+            print(f"[{status}] opening an issue with the revoked token")
+            return
+        time.sleep(10)
+    print("The token still worked at the end of the wait.")
+
+
 def main():
     token, grant = sign_in()
+    if "--revocation" in sys.argv:
+        return watch_for_revocation(token)
     print("token lifetime (seconds):", grant.get("expires_in", "none, does not expire"),
           "| refresh token:", "yes" if grant.get("refresh_token") else "no")
     status, user = report("who is signed in", call("GET", "https://api.github.com/user", token))
@@ -102,17 +123,101 @@ def main():
     status, registration = report("open a registration issue", call(
         "POST", f"https://api.github.com/repos/{DATA}/issues", token,
         {"title": "[register] sign-in experiment", "body": "Register this account."}))
+    client_id = None
     if status == 201:
-        print("  receipt:", wait_for_receipt(token, registration["number"]))
+        receipt = wait_for_receipt(token, registration["number"])
+        print("  receipt:", receipt)
+        found = re.search(r"client ID `([^`]+)`", receipt)
+        client_id = found.group(1) if found else None
+    if not client_id:
+        _, existing = call("GET", f"https://api.github.com/repos/{DATA}/contents/clients/{user['login']}.json", None)
+        if "content" in existing:
+            client_id = json.loads(base64.b64decode(existing["content"]))["clientIds"][0]
+            print("  registration was refused, using the account's existing client ID:", client_id)
+    if client_id:
+        submit_batches(token, client_id)
 
-    status, batch = report("open a result issue without any label", call(
-        "POST", f"https://api.github.com/repos/{DATA}/issues", token,
-        {"title": "[result] sign-in experiment",
-         "body": "```json\n{\"probe\": true}\n```"}))
+    submit_bot_change(token, user["login"])
+    refresh_without_secret(grant)
+
+
+def valid_record(client_id, battle_id, bots):
+    """Build one ranked 1v1 result record that matches the test engine pin and catalog."""
+    def entry(bot, rank, score, firsts, seconds):
+        return {"name": bot["name"], "version": bot["version"], "isTeam": False, "rank": rank, "totalScore": score,
+                "survival": 0, "lastSurvivorBonus": 0, "bulletDamage": 0, "bulletKillBonus": 0, "ramDamage": 0,
+                "ramKillBonus": 0, "firstPlaces": firsts, "secondPlaces": seconds, "thirdPlaces": 0}
+    return {"battleId": battle_id, "completedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "client": {"id": client_id, "version": "0.1.0"}, "engine": {"behaviorVersion": 1},
+            "gameType": "1v1", "rounds": 35, "arenaWidth": 800, "arenaHeight": 600,
+            "participants": [entry(bots[0], 1, 80, 35, 0), entry(bots[1], 2, 20, 0, 35)]}
+
+
+def submit_batches(token, client_id):
+    """Submit a valid batch, one under a client ID the account does not own, and a clashing battle ID."""
+    status, catalog = call("GET", f"https://api.github.com/repos/{DATA}/contents/catalog.json", None)
+    bots = [b for b in json.loads(base64.b64decode(catalog["content"]))["bots"]
+            if b.get("status") == "active" and not b.get("teamMembers")][:2]
+    battle_id = str(uuid.uuid4())
+    valid = valid_record(client_id, battle_id, bots)
+    stolen = valid_record("example-contributor-local", str(uuid.uuid4()), bots)
+    clash = valid_record(client_id, battle_id, bots)
+    clash["participants"][0]["totalScore"] = 81
+    for step, record, cid in (("a valid ranked batch", valid, client_id),
+                              ("a batch under a client ID owned by another account", stolen, "example-contributor-local"),
+                              ("the same battle ID with different content", clash, client_id)):
+        envelope = {"schemaVersion": 1, "clientId": cid, "clientVersion": "0.1.0", "results": [record]}
+        status, issue = report(f"submit {step}", call(
+            "POST", f"https://api.github.com/repos/{DATA}/issues", token,
+            {"title": "[result] sign-in experiment", "body": "```json\n" + json.dumps(envelope) + "\n```"}))
+        if status == 201:
+            print("  receipt:", wait_for_receipt(token, issue["number"], minutes=3))
+
+
+def submit_bot_change(token, login):
+    """Fork the bot repository, push a branch with one file and open a pull request."""
+    api = "https://api.github.com"
+    fork = f"{login}/{TEST.bots_repository}"
+    status, _ = call("GET", f"{api}/repos/{fork}", token)
+    if status == 200:
+        print(f"[200] use the fork the account made in the web page: {fork}")
+    else:
+        status, _ = report("fork the bot repository", call("POST", f"{api}/repos/{BOTS}/forks", token, {}))
+        if status not in (200, 202):
+            return
+    for _ in range(30):
+        time.sleep(4)
+        status, _ = call("GET", f"{api}/repos/{fork}", token)
+        if status == 200:
+            break
+    status, main = report("read the fork's main branch", call("GET", f"{api}/repos/{fork}/git/ref/heads/main", token))
+    if status != 200:
+        return
+    branch = f"probe-sign-in-{int(time.time())}"
+    status, _ = report("create a branch in the fork", call("POST", f"{api}/repos/{fork}/git/refs", token, {
+        "ref": f"refs/heads/{branch}", "sha": main["object"]["sha"]}))
+    if status != 201:
+        return
+    content = base64.b64encode(b"sign-in experiment, ignore\n").decode()
+    status, _ = report("push a file to the fork", call("PUT", f"{api}/repos/{fork}/contents/probe-sign-in.txt", token, {
+        "message": "Sign-in experiment", "content": content, "branch": branch}))
+    if status not in (200, 201):
+        return
+    status, pull = report("open a pull request against the bot repository", call("POST", f"{api}/repos/{BOTS}/pulls", token, {
+        "title": "Sign-in experiment, ignore", "head": f"{login}:{branch}", "base": "main",
+        "body": "Opened by the contributor probe to test fork and pull request rights."}))
     if status == 201:
-        print("  receipt:", wait_for_receipt(token, batch["number"]))
+        print("  pull request:", pull["html_url"])
 
-    report("fork the bot repository", call("POST", f"https://api.github.com/repos/{BOTS}/forks", token, {}))
+
+def refresh_without_secret(grant):
+    """Renewing a user token normally needs the App's client secret; check whether it works without one."""
+    if not grant.get("refresh_token"):
+        return
+    answer = call("POST", "https://github.com/login/oauth/access_token", None, {
+        "client_id": CLIENT_ID, "grant_type": "refresh_token", "refresh_token": grant["refresh_token"]}, form=True)
+    outcome = "renewed without a secret" if "access_token" in answer[1] else f"refused: {answer[1].get('error')}"
+    print("[%s] renew the sign-in with the refresh token and no client secret: %s" % (answer[0], outcome))
 
 
 if __name__ == "__main__":
