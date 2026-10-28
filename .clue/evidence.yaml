@@ -88,7 +88,7 @@
         },
         {
           "path": "scripts/rumble/test_create_test_apps.py",
-          "sha256": "8b9ff499b016a1e6ce884bb192fcc8d9e9ee9dcdac38af3c06f1e21cf66db4d5"
+          "sha256": "0252cfd6b8513b71201bfb73caa638f5a734c2ca503877ef4ba61f6cc74d75ff"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",

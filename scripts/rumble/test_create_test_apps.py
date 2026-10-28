@@ -6,7 +6,7 @@ import create_test_apps as apps
 
 class TestAppSetup(unittest.TestCase):
     def test_Sanity_test_apps_are_private_and_subscribe_to_nothing(self):
-        for key in apps.APPS:
+        for key in apps.DEFAULT_APPS:
             m = apps.manifest(key)
             self.assertFalse(m["public"])
             self.assertEqual([], m["default_events"])
@@ -19,9 +19,18 @@ class TestAppSetup(unittest.TestCase):
         self.assertEqual("write", apps.manifest("moderator")["default_permissions"]["contents"])
         self.assertEqual("robocode-dev/rumble-bots-test", apps.SECRET_REPOSITORY)
 
+    def test_Sanity_contributor_app_is_public_holds_no_secret_and_is_never_created_by_default(self):
+        m = apps.manifest("contributor")
+        self.assertTrue(m["public"])
+        self.assertIsNone(apps.APPS["contributor"]["secret_prefix"])
+        self.assertNotIn("contributor", apps.DEFAULT_APPS)
+        self.assertEqual("write", m["default_permissions"]["issues"])
+        self.assertNotIn("members", m["default_permissions"])
+
     def test_Sanity_page_carries_one_form_per_app_for_the_organization(self):
         text = apps.page("abc")
         self.assertEqual(2, text.count("<form "))
+        self.assertEqual(1, apps.page("abc", ("contributor",)).count("<form "))
         self.assertIn("organizations/robocode-dev/settings/apps/new?state=abc", text)
         self.assertIn(json.dumps(apps.manifest("moderator")["name"]).strip('"'), text)
 

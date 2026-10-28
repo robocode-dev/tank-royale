@@ -8,7 +8,12 @@ is ever shown, saved to disk or copied by hand. Installing each App on the test 
 is still done in the browser, because GitHub offers no way to automate it.
 
 Usage:
-    python scripts/rumble/create_test_apps.py
+    python scripts/rumble/create_test_apps.py [moderator] [publisher] [contributor]
+
+Without names it creates the moderator and publisher Apps. The contributor App is the one an
+outside participant signs in with on their own computer. It is public, so any account can
+install it, and it has no secrets stored anywhere. Its device sign-in must still be switched
+on by hand in the App's settings, because the settings file cannot do that.
 
 Requires `gh` signed in as an owner of the organization, and the test repositories to exist.
 """
@@ -26,6 +31,7 @@ import webbrowser
 from rumble_environments import OWNER, TEST
 
 PORT = 8765
+DEFAULT_APPS = ("moderator", "publisher")
 SECRET_REPOSITORY = f"{OWNER}/{TEST.bots_repository}"
 
 # Same permissions as the public Apps, which were read from the live Apps on 2026-10-27.
@@ -43,6 +49,13 @@ APPS = {
         "permissions": {"contents": "read", "metadata": "read", "pull_requests": "write"},
         "secret_prefix": "RUMBLE_PUBLISHER",
     },
+    "contributor": {
+        "name": "Tank Royale Rumble Contributor Test",
+        "description": "Test environment only. Lets a participant sign in from their own computer to submit Rumble bots and battle results.",
+        "permissions": {"issues": "write", "pull_requests": "write", "contents": "write", "metadata": "read"},
+        "secret_prefix": None,
+        "public": True,
+    },
 }
 
 
@@ -52,7 +65,7 @@ def manifest(key, port=PORT):
         "name": app["name"],
         "url": f"https://github.com/{SECRET_REPOSITORY}",
         "description": app["description"],
-        "public": False,
+        "public": app.get("public", False),
         "redirect_url": f"http://localhost:{port}/created/{key}",
         "hook_attributes": {"url": "https://example.invalid/unused", "active": False},
         "default_permissions": app["permissions"],
@@ -60,9 +73,9 @@ def manifest(key, port=PORT):
     }
 
 
-def page(state, port=PORT):
+def page(state, keys=None, port=PORT):
     forms = []
-    for key in APPS:
+    for key in keys or DEFAULT_APPS:
         action = f"https://github.com/organizations/{OWNER}/settings/apps/new?state={state}"
         data = html.escape(json.dumps(manifest(key, port)), quote=True)
         forms.append(
@@ -81,12 +94,14 @@ def convert(code):
 
 def store(key, created):
     prefix = APPS[key]["secret_prefix"]
+    if prefix is None:
+        return
     for name, value in ((f"{prefix}_APP_ID", str(created["id"])), (f"{prefix}_PRIVATE_KEY", created["pem"])):
         subprocess.run(["gh", "secret", "set", name, "--repo", SECRET_REPOSITORY],
                        input=value, text=True, check=True)
 
 
-def main():
+def main(keys):
     state = secrets.token_urlsafe(24)
     done = set()
     finished = threading.Event()
@@ -107,9 +122,9 @@ def main():
             url = urllib.parse.urlparse(self.path)
             query = urllib.parse.parse_qs(url.query)
             if url.path == "/":
-                return self.reply(200, page(state))
+                return self.reply(200, page(state, keys))
             parts = url.path.strip("/").split("/")
-            if len(parts) == 2 and parts[0] == "created" and parts[1] in APPS:
+            if len(parts) == 2 and parts[0] == "created" and parts[1] in keys:
                 if query.get("state") != [state] or "code" not in query:
                     return self.reply(400, "Unexpected request, nothing was stored.")
                 created = convert(query["code"][0])
@@ -117,7 +132,7 @@ def main():
                 done.add(parts[1])
                 print(f"Created {created['slug']} and stored its credentials as secrets of {SECRET_REPOSITORY}.")
                 print(f"Install it on the test repositories: https://github.com/apps/{created['slug']}/installations/new")
-                if done == set(APPS):
+                if done == set(keys):
                     finished.set()
                 return self.reply(200, f"{html.escape(created['slug'])} created. You can close this tab.")
             return self.reply(404, "Not found.")
@@ -132,4 +147,8 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    wanted = tuple(sys.argv[1:]) or DEFAULT_APPS
+    unknown = [k for k in wanted if k not in APPS]
+    if unknown:
+        sys.exit(f"Unknown App name(s): {unknown}. Choose from {list(APPS)}.")
+    sys.exit(main(wanted))
