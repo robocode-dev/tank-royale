@@ -2,7 +2,7 @@
 id: ARCH-027
 type: design
 status: draft
-links: [P-007, ADR-052, CAP-001, CAP-012, CAP-014, CAP-015, CAP-016]
+links: [P-007, ADR-052, AN-023, ARCH-028, CAP-001, CAP-012, CAP-014, CAP-015, CAP-016]
 title: Target Rumble participation flows and environment boundaries
 provenance: inferred
 reversal-cost: low
@@ -35,15 +35,50 @@ flowchart LR
 
 The host owns credentials and upload authorization. Workers receive a pinned job and constrained source/evidence locations, and return typed results, replay references, and diagnostics. They never receive GitHub credentials, the host home directory, or a container-engine socket. Host/worker commands and events are versioned and machine-readable; callers never parse human logs. Unknown versions fail with an actionable error. GUI events are dispatched without blocking Swing's event thread. The GUI manages a separate controller and stops its managed session on exit; independent background operation uses the CLI. Reuse the replay viewer for finished battles; live contribution-battle visualization is deferred.
 
+### Module dependencies
+
+An arrow means "depends on". The rules below are what keeps the credential boundary real and the shared library free of desktop code; a later change adds an automated check that fails the build when a rule is broken.
+
+```mermaid
+flowchart TD
+    GUI[gui] --> RUMBLE[lib:rumble]
+    GUI --> BOTPROJECT[lib:bot-project]
+    CLI[rumble executable, host mode] --> RUMBLE
+    CLI --> BOTPROJECT
+    RUMBLE --> BOTPROJECT
+    RUMBLE --> COMMON[lib:common]
+    BOTPROJECT --> COMMON
+    WORKER[rumble executable, worker mode] --> RUNNER[runner]
+    WORKER --> PROTOCOL[Host and worker messages in lib:common]
+    RUMBLE -. process boundary, versioned messages .-> WORKER
+    RUNNER --> CLIENT[lib:client]
+```
+
+- **The shared library has no desktop code.** `lib:rumble` never depends on Swing or on the `gui` module, so the GUI and the headless controller behave the same.
+- **Only the host holds credentials.** GitHub tokens, registration and upload authorization live in `lib:rumble` and the host side of the executable. The worker mode depends on the runner and the shared message types only; it cannot reach the GitHub code and is started with no token, no home directory and no container socket.
+- **The worker is reached only through versioned messages.** `lib:rumble` starts and talks to the worker across a process boundary with machine-readable commands and events. It does not depend on the runner, so replacing how battles run does not touch session logic.
+- **Project tooling knows no GitHub.** `lib:bot-project` inspects, stages and validates a project and returns a typed staged submission. `lib:rumble` takes that value and does the fork, branch, commit and pull request work. The staging code never needs a token.
+- **Nothing depends on the GUI.** Dependencies point from the GUI and the executable down to the libraries, never back.
+
 ## Environments and account boundary
 
-The existing `rumble-bots` and `rumble-data` repositories and `https://robocode-dev.github.io/rumble-data/` remain the public Beta. The test environment is the repositories `rumble-bots-test` and `rumble-data-test` under `robocode-dev`, created after checking that those names were free, with its dashboard at `https://robocode-dev.github.io/rumble-data-test/`. The test dashboard carries a visible Test badge, a banner and a Test page title so it cannot be mistaken for the live one. Its two GitHub Apps, `tank-royale-rumble-moderator-test` and `tank-royale-rumble-publisher-test`, have the same permissions as the public Apps, are installed only on `rumble-bots-test`, and keep their keys as Actions secrets there; `rumble-data-test` has no App because the result repository uses none. The test bot repository has its own main-branch moderation ruleset that requires the test moderator App's status check. Name conflicts are a maintainer decision, not permission to repurpose an existing repository. The development dashboard belongs to the test result repository. Share workflow sources or pinned reusable workflows; deployment inputs select the environment.
+The existing `rumble-bots` and `rumble-data` repositories and `https://robocode-dev.github.io/rumble-data/` remain the public Beta. The test environment is the repositories `rumble-bots-test` and `rumble-data-test` under `robocode-dev`, created after checking that those names were free, with its dashboard at `https://robocode-dev.github.io/rumble-data-test/`. The test dashboard carries a visible Test badge, a banner and a Test page title so it cannot be mistaken for the live one. Its two GitHub Apps, `tank-royale-rumble-moderator-test` and `tank-royale-rumble-publisher-test`, have the same permissions as the public Apps, are installed only on `rumble-bots-test`, and keep their keys as Actions secrets there; `rumble-data-test` has no App because the result repository uses none. A third public App, `tank-royale-rumble-contrib-test`, is the sign-in App for participants and keeps no secret; it is installed on `rumble-data-test` and on a participant's own fork of the bot repository. The test bot repository has its own main-branch moderation ruleset that requires the test moderator App's status check. Name conflicts are a maintainer decision, not permission to repurpose an existing repository. The development dashboard belongs to the test result repository. Share workflow sources or pinned reusable workflows; deployment inputs select the environment.
 
 Environment identity is carried through configuration, catalog/result discovery, registrations, caches, journals, submissions, and reset tooling. Public and test state have separate roots and authorization installations. The receiver verifies its own environment; client-side labels are insufficient. Ordinary installations default to public Beta. Advanced environment selection shows a persistent development warning; switching never retargets an existing pending queue. Legacy state is imported as public state after source/destination verification, with the original retained until successful migration.
 
 Test reset lives in Tank Royale as `scripts/rumble/rumble_environments.py`, so the later shared integration harness can call it. It knows exactly four repository names, two public and two test, and treats a repository as a test repository only on an exact match of owner and name, so a lookalike or foreign name is refused. A reset works on a local checkout of the test results repository, checks that its origin is that repository, removes accepted facts and derived projections, keeps moderation records, and raises a reset generation number that lets the receiver reject submissions made before the reset. Without `--apply` it only lists what would go. It does not decide anything about public data: it has no code path that reaches a public repository.
 
-GitHub identity is required for publishing and ranked contribution, not local bot creation or practice. Use device authorization and Windows credential storage; never request a password or hand-copied personal token. Keep contribution authorization separate from additional publishing permissions. Prove token renewal, revocation handling, outside-account issue intake without caller-applied labels, fork/PR permissions, and publication-first receipts in the test environment. Never ship an application secret in the desktop client. The experiment must record permissions actually exercised; a maintainer-token success does not count.
+GitHub identity is required for publishing and ranked contribution, not local bot creation or practice. Use device authorization and Windows credential storage; never request a password or hand-copied personal token. Keep contribution authorization separate from additional publishing permissions. Never ship an application secret in the desktop client.
+
+The [outside-account experiment](../../analysis/AN-023-outside-account-sign-in-experiment.md) proved this direction in the test environment with an ordinary account that is not a member of the organization, and recorded only rights the account itself held; a maintainer-token success never counted. What it showed:
+
+- **The sign-in App.** A third public App, `tank-royale-rumble-contrib-test`, is what a participant signs in with. It has no private key or secret anywhere, because signing in with a code needs only its public client ID. Its device sign-in setting must be switched on by hand in the App settings, since GitHub does not allow that through the App manifest. The moderator and publisher Apps are not for sign-in and refuse it.
+- **Tokens.** A user token lasts eight hours and comes with a refresh token. Renewal works without a client secret, so nothing secret has to live in the desktop client. Revoking the App in the participant's GitHub settings stops the token at once.
+- **Registration without a maintainer.** The participant opens an issue titled `[register]` in the result repository. A trusted workflow reads the account from the issue author, refuses banned or malformed names, creates the registration file and a client ID, or returns the existing one, and replies on the issue.
+- **Result intake without a label.** An outside account cannot apply the `result-submission` label. A `[result]` issue is therefore accepted by its title, the receiving workflow applies the label with its own token and always processes the issue that triggered it, and the reply on the issue is the durable receipt. Another account's client ID, a repeated battle ID and a banned account are each refused with a receipt.
+- **Bot submission.** The participant forks the bot repository on the web and installs the App on that fork, once; the desktop program cannot create the fork through the API. The App can then push a branch to the fork and open a pull request, and the bot repository's own validation starts without a maintainer. The fork stays in the author's account under their control, which is why submission uses a pull request and not an issue.
+
+Still unproven: the bot repository's own ban list against a fork pull request, and the move of the registration workflow and the label-free intake from the test result repository to the live one.
 
 Automatic registration derives account identity from the authenticated request, checks bans and duplicates, and assigns or retains a stable installation client ID. Trusted repository workflows make authoritative changes. A payload cannot choose another owner or grant itself authority. Preserve existing registrations. No hosted broker is authorized; an incompatible permission boundary requires a reviewed decision.
 
