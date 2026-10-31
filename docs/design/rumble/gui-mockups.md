@@ -218,6 +218,31 @@ Only bots that are active in the catalog are offered for a new download; a retir
 | A downloaded bot is no longer active | It stays, marked "no longer active" | [Remove] |
 | The catalog is unreachable or unsupported | "The Rumble catalog cannot be read." | [Try again] |
 
+## Bot info in New Battle
+
+The Bot Info panel in New Battle shows the selected bot's details from its configuration file. Today it shows name, version, authors, homepage, description, platform, programming language, game types and countries. It gains two rows, **License** and **Team members**, and it applies to every bot, downloaded or not, because the license matters to anyone who reads or copies another person's code.
+
+```text
+Bot Info
+┌──────────────────────────────────────────────────────────────────┐
+│ Name       Orbit                  Platform      Python           │
+│ Version    1.0.0                  Language      Python           │
+│ Authors    A. Author              Game types    1v1, melee       │
+│ Homepage   https://example.org    Countries     Denmark (dk)     │
+│ License    ● Free to copy: MIT    Team members  (none)           │
+│ Description  Orbits its target and fires at a steady rhythm.     │
+│ Folder     Rumble bots (downloaded)  C:\Users\me\rumble-bots\Orbit│
+└──────────────────────────────────────────────────────────────────┘
+License levels, always shown as an icon and words, never colour alone:
+  ● Free to copy        MIT, BSD, Apache-2.0, ISC, Unlicense, CC0: keep the copyright notice
+  ▲ Copy with conditions  GPL, LGPL, AGPL, MPL, CC-BY: your copy must be shared under the
+                          same terms, or credit the author
+  ■ Do not copy         No license declared, an unrecognised or proprietary license, or a
+                        no-derivatives or non-commercial license: all rights are reserved
+```
+
+The level is a reading aid for the license the bot itself declares; the panel cannot check that the declaration is true, and it is not legal advice. The tooltip says so and links to the license text. A bot with no `license` field shows "No license declared" at the do-not-copy level, because the law's default is that nobody may copy it. Bots accepted into the Rumble always carry an allowed license, so a downloaded bot is never at the do-not-copy level; a local bot can be. The Download bots screen uses the same levels beside each bot's license. A team's members are listed by name and version. The folder row tells the person whether a bot is their own or downloaded, which also separates two bots with the same name. The description stays cut to three lines in the panel, with a link that opens the full text.
+
 ## Contribute battles
 
 ```text
