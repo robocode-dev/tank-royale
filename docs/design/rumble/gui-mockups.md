@@ -2,7 +2,7 @@
 id: ARCH-028
 type: design
 status: draft
-links: [P-007, M-029, ARCH-027, AN-023, UC-001, UC-002, UC-003]
+links: [P-007, M-029, M-038, ARCH-027, AN-023, UC-001, UC-002, UC-003, UC-005]
 title: Rumble menu mockups and participant journeys
 provenance: inferred
 reversal-cost: low
@@ -20,6 +20,7 @@ Battle   Server   Config   Rumble   Help
                            │ Get started          │
                            │ Submit or update bot │
                            │ My bots              │
+                           │ Download bots        │
                            │ Contribute battles   │
                            │ Results and queue    │
                            │ Rankings             │
@@ -169,6 +170,53 @@ Checks, review, publication and visibility in the rankings are separate states, 
 ```
 
 The list reads from the Rumble and from the local projects, and shows each bot's state in the same four separate states as the Track step. Withdrawing a bot is a later milestone and is not on this screen yet.
+
+## Download bots
+
+This screen copies competitor bots from the Rumble into a folder of their own so the person can read them and practise against them. It needs no GitHub account, because the catalog is public. It is planned for a later milestone than the other screens.
+
+```text
+Choose bots                                  Result
+┌ Download bots ──────────────────────────┐  ┌ Download bots ───────────────────────────┐
+│ Which bots?   (o) All active bots       │  │ Downloaded 41 of 43                      │
+│               ( ) Selected bots         │  │  ✓ Orbit 1.0.0     MIT          new      │
+│ Platform:     [x] Java [x] .NET         │  │  ✓ Scout 1.0.3     MIT          updated  │
+│               [x] Python [x] TypeScript │  │  ✗ Fire 2.1.0      hash differs, skipped │
+│ Bot       Version  License   State      │  │  ! Retcon 0.2.0    kept, no longer active│
+│ [x] Orbit 1.0.0    MIT       new        │  │ [Show folder]   [Download again]         │
+│ [x] Scout 1.0.3    MIT       update     │  └──────────────────────────────────────────┘
+│ [ ] Retcon 0.2.0   MIT       retired    │
+│ Save to: C:\Users\me\rumble-bots        │
+│          [Change]                       │
+│ Bots you download are other people's    │
+│ code and run with your rights. Moderator│
+│ review does not make them safe.         │
+│ [Download]                              │
+└─────────────────────────────────────────┘
+```
+
+The default folder is `rumble-bots` beside the person's normal bots directory and can be changed. It is added to the bot directories automatically and labelled, and in New Battle its bots appear as a collapsed group after the person's own bots, so their own bots always come first:
+
+```text
+New Battle: bots
+┌─────────────────────────────────────────┐
+│ ▼ My bots                               │
+│     MyFirstBot   1.0                    │
+│     Walls        0.3                    │
+│ ▶ Rumble bots (downloaded, 41)          │
+└─────────────────────────────────────────┘
+```
+
+Only bots that are active in the catalog are offered for a new download; a retired bot appears in the list only if it was downloaded earlier. The state column says new, update, up to date, or retired. A retired or disqualified bot that was downloaded earlier stays in the folder and is marked, and is removed only when the person removes it. A downloaded bot never replaces one of the person's own bots, even when the names match. Ranked contribution never reads this folder and uses only the pinned catalog.
+
+| Situation | What the person sees | What they can do |
+|---|---|---|
+| Offline or interrupted | "Downloaded 12 of 43. The rest can be continued." | [Continue] |
+| A bot's hash does not match | The bot is skipped and listed as failed with its name and version | [Download again] |
+| The folder cannot be written | "This folder cannot be written. Nothing was downloaded." before anything is fetched | [Change] |
+| A downloaded bot has the same name as one of the person's own | "Kept in the download folder only. Your own bot is unchanged." | [Show folder] |
+| A downloaded bot is no longer active | It stays, marked "no longer active" | [Remove] |
+| The catalog is unreachable or unsupported | "The Rumble catalog cannot be read." | [Try again] |
 
 ## Contribute battles
 

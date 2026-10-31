@@ -22,4 +22,5 @@ Each use case carries `## Actors`, `## Trigger`, `## Main flow`, and `## Outcome
 - [UC-002 — Contribute computing time with control over bot priorities](UC-002-contribute-ranked-battles.md) · `draft` — A contributor who may own no bot, the GUI or CLI session controller, isolated battle workers, and result ingestion.
 - [UC-003 — Withdraw an entry without erasing competition history](UC-003-withdraw-a-rumble-bot.md) · `draft` — The bot owner or a moderator, bot management, catalog publication, and ranking aggregation.
 - [UC-004 — Repeat and reset development Rumble tests without affecting public participants](UC-004-repeat-rumble-development-tests.md) · `draft` — The maintainer or developer, local test tooling, the development catalog/result workflows, and an outside test account.
+- [UC-005 — Download competitor bots to study and practise against](UC-005-download-competitor-bots.md) · `draft` — A Robocoder, the desktop application, the published bot catalog, and the bots the Robocoder already keeps.
 <!-- clue:index:end -->

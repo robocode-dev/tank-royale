@@ -128,4 +128,29 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it updates the single runtime policy source and the derived user-facing runtime references
     And it opens a reviewable pull request only after the updater checks, image build, hardened checks, and Java, .NET, Python, and TypeScript one-round smoke battles pass
     And it does not automatically merge or publish the proposed refresh
+
+  @RCL-015 @draft
+  Scenario: Downloaded competitor bots are verified and kept apart
+    Test-type: Integration
+    Given the pinned catalog lists active bots with their content hashes and declared licenses
+    When a person downloads all or selected active bots into a chosen folder
+    Then each bot is placed in the folder only after its source matches the recorded hash, and its license is shown and kept with it
+    And a bot whose hash differs is skipped and reported while the others complete
+    And no bot outside the chosen folder is created, replaced or deleted, including a bot of the person's own with the same name
+
+  @RCL-016 @draft
+  Scenario: A downloaded bot that is no longer active is kept and marked
+    Test-type: Integration
+    Given a bot was downloaded earlier and the pinned catalog now lists it as retired, withdrawn or disqualified
+    When the person refreshes the download folder
+    Then the bot stays in the folder and is reported as no longer active
+    And it is removed only when the person asks, and a new download never offers it as an active bot
+
+  @RCL-017 @draft
+  Scenario: Ranked contribution never reads the download folder
+    Test-type: Integration
+    Given a download folder contains bots, including one whose name and version match a catalog entry with different source
+    When a ranked session selects and runs a battle
+    Then it runs only the sources fetched from the pinned catalog and verified against their hashes
+    And no file in the download folder is read, run or submitted as ranked evidence
 ```
