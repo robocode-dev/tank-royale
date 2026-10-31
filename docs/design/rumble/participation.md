@@ -16,7 +16,7 @@ This is the target design for the [replacement campaign](../../plans/P-007-rumbl
 
 | Component | Responsibility |
 |---|---|
-| New `lib:rumble` | Synchronization, scheduling, session state, GitHub integration, registration, durable queue, receipts, and typed status models; no Swing dependency |
+| New `lib:rumble` | Synchronization, scheduling, session state, GitHub integration, registration, durable queue, receipts, and typed status models; no Swing dependency. Today it holds the Rumble environments with their repositories and per-environment state folders, a pending queue bound to one environment, and an automated check of its dependency rules; the rest arrives in later changes |
 | New `rumble` executable | Headless session controller and isolated worker entry point, with the same behavior as the GUI-managed session |
 | New `lib:bot-project` | Starter generation, source inspection, submission staging, metadata validation, and validation orchestration |
 | Existing GUI | Wizards, bot management, contribution controls, and presentation |
@@ -37,7 +37,7 @@ The host owns credentials and upload authorization. Workers receive a pinned job
 
 ### Module dependencies
 
-An arrow means "depends on". The rules below are what keeps the credential boundary real and the shared library free of desktop code; a later change adds an automated check that fails the build when a rule is broken.
+An arrow means "depends on". The rules below are what keeps the credential boundary real and the shared library free of desktop code; the build already fails when `lib:rumble` depends on the desktop program or the battle runner or imports a Swing or AWT class, and the check for the credential rule arrives with the worker.
 
 ```mermaid
 flowchart TD
@@ -82,7 +82,7 @@ The existing `rumble-bots` and `rumble-data` repositories and `https://robocode-
 
 Environment identity is carried through configuration, catalog/result discovery, registrations, caches, journals, submissions, and reset tooling. Public and test state have separate roots and authorization installations. The receiver verifies its own environment; client-side labels are insufficient. Ordinary installations default to public Beta. Advanced environment selection shows a persistent development warning; switching never retargets an existing pending queue. Legacy state is imported as public state after source/destination verification, with the original retained until successful migration.
 
-Test reset lives in Tank Royale as `scripts/rumble/rumble_environments.py`, so the later shared integration harness can call it. It knows exactly four repository names, two public and two test, and treats a repository as a test repository only on an exact match of owner and name, so a lookalike or foreign name is refused. A reset works on a local checkout of the test results repository, checks that its origin is that repository, removes accepted facts and derived projections, keeps moderation records, and raises a reset generation number that lets the receiver reject submissions made before the reset. Without `--apply` it only lists what would go. It does not decide anything about public data: it has no code path that reaches a public repository.
+The environment names, repositories and dashboard addresses live in one data file in the shared library, `lib/rumble/src/main/resources/dev/robocode/tankroyale/rumble/environments.json`, which the library and the reset script both read. Test reset lives in Tank Royale as `scripts/rumble/rumble_environments.py`, so the later shared integration harness can call it. It knows exactly four repository names, read from that file, two public and two test, and treats a repository as a test repository only on an exact match of owner and name, so a lookalike or foreign name is refused. A reset works on a local checkout of the test results repository, checks that its origin is that repository, removes accepted facts and derived projections, keeps moderation records, and raises a reset generation number that lets the receiver reject submissions made before the reset. Without `--apply` it only lists what would go. It does not decide anything about public data: it has no code path that reaches a public repository.
 
 GitHub identity is required for publishing and ranked contribution, not local bot creation or practice. Use device authorization and Windows credential storage; never request a password or hand-copied personal token. Keep contribution authorization separate from additional publishing permissions. Never ship an application secret in the desktop client.
 

@@ -32,6 +32,22 @@
       ]
     },
     {
+      "id": "tank-royale-rumble-library",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/test_junit_producer.py",
+        "lib/rumble/build.gradle.kts",
+        "lib/rumble/src/test/kotlin/**/Rumble*Test.kt"
+      ],
+      "command": [
+        "python",
+        ".clue/evidence/junit_scoring_producer.py"
+      ]
+    },
+    {
       "id": "tank-royale-rumble-environments",
       "framework": "unittest",
       "language": "Python",

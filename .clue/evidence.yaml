@@ -21,15 +21,15 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "aacc8ddbfee7aad5fbe662a981a1e6c40dc4f55756ac22fb8d4ea853bed2c21c"
+          "sha256": "3290c876f5c17234b180708cd3a11889dde50ca64ddcbbe41940f2d2290cfc3b"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "a9fecc986b44cbcd3a1f07cc969befa637e1068acf93c9f44aab3919316e8d17"
+          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
-          "sha256": "312a0337a2864a7cad96321fb4c7af25a324426845674c9d1da239ed0bdaf7be"
+          "sha256": "2c1fba013bf4699e06bf4a341a66a487b5a8d377ff6ccb41055cd9df9cc3e3ae"
         },
         {
           "path": "gui/build.gradle.kts",
@@ -76,7 +76,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "a9fecc986b44cbcd3a1f07cc969befa637e1068acf93c9f44aab3919316e8d17"
+          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
         },
         {
           "path": ".clue/evidence/python_unittest_producer.py",
@@ -84,7 +84,7 @@
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
-          "sha256": "86782515ff5ad3585b4ed32c41d39ad28227811d849750c60cbba4b10b0ebeb4"
+          "sha256": "a7bac362e9fe3c6d77eccf865c894d01c96fbe66cd051048a8798f3e8bb1faa4"
         },
         {
           "path": "scripts/rumble/test_create_test_apps.py",
@@ -148,6 +148,108 @@
       ]
     },
     {
+      "id": "tank-royale-rumble-library",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/producers.json",
+        ".clue/evidence/test_junit_producer.py",
+        "lib/rumble/build.gradle.kts",
+        "lib/rumble/src/test/kotlin/**/Rumble*Test.kt"
+      ],
+      "exclude": [],
+      "inputs": [
+        {
+          "path": ".clue/evidence/aggregate.py",
+          "sha256": "cf20a3f9d5a1072a7b2d3ddfc4bc9e25575b2cbd27441aba61e9d83d9ac4768c"
+        },
+        {
+          "path": ".clue/evidence/junit_scoring_producer.py",
+          "sha256": "3290c876f5c17234b180708cd3a11889dde50ca64ddcbbe41940f2d2290cfc3b"
+        },
+        {
+          "path": ".clue/evidence/producers.json",
+          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
+        },
+        {
+          "path": ".clue/evidence/test_junit_producer.py",
+          "sha256": "2c1fba013bf4699e06bf4a341a66a487b5a8d377ff6ccb41055cd9df9cc3e3ae"
+        },
+        {
+          "path": "lib/rumble/build.gradle.kts",
+          "sha256": "e841c4e9e0a7c0e9d740b3e0cd87f8254ba1521af58e78496a9e2e0f76468bed"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
+          "sha256": "39ec27461a9534db6fb9dffb72ca4e35e16db224cd9b7b34f877dfba9c8ad89f"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
+          "sha256": "fdb8d7ee1ecad4657bc5ea2af4e21ea909f71852d1d1bf24027cb82bc2971a7c"
+        }
+      ],
+      "references": [
+        {
+          "id": "RCL-020",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
+          "subject": "RumbleDependencyRulesTest.testRCL020_UnitNegative_aDeliberateViolationIsReported",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-020",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
+          "subject": "RumbleDependencyRulesTest.testRCL020_UnitPositive_theLibrarySourcesImportNoDesktopOrRunnerCode",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-018",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
+          "subject": "RumbleEnvironmentTest.testRCL018_UnitNegative_aReferenceThatIsNotARepositoryIsRefused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-018",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
+          "subject": "RumbleEnvironmentTest.testRCL018_UnitNegative_lookalikeForeignAndUnknownRepositoriesBelongToNoEnvironment",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-018",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
+          "subject": "RumbleEnvironmentTest.testRCL018_UnitPositive_anInstallationThatNamesNoEnvironmentUsesThePublicBeta",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-018",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
+          "subject": "RumbleEnvironmentTest.testRCL018_UnitPositive_exactRepositoriesBelongToTheirEnvironmentInAnyCommonForm",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-019",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
+          "subject": "RumbleEnvironmentTest.testRCL019_UnitNegative_aQueueIsNeverHandedToAnotherEnvironment",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-019",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
+          "subject": "RumbleEnvironmentTest.testRCL019_UnitPositive_eachEnvironmentGetsItsOwnStateFolderAndItsOwnQueue",
+          "type": "Unit",
+          "direction": "positive"
+        }
+      ]
+    },
+    {
       "id": "tank-royale-scoring",
       "framework": "JUnit",
       "language": "Kotlin",
@@ -166,11 +268,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "aacc8ddbfee7aad5fbe662a981a1e6c40dc4f55756ac22fb8d4ea853bed2c21c"
+          "sha256": "3290c876f5c17234b180708cd3a11889dde50ca64ddcbbe41940f2d2290cfc3b"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "a9fecc986b44cbcd3a1f07cc969befa637e1068acf93c9f44aab3919316e8d17"
+          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
         },
         {
           "path": "server/build.gradle.kts",

@@ -5,6 +5,7 @@ rootProject.name = "Robocode Tank Royale"
 include("lib:common")
 include("lib:client")
 include("lib:intent-diagnostics")
+include("lib:rumble")
 
 // Booter
 include("booter")
