@@ -1090,6 +1090,11 @@ claims:
       state: reserved
       prefix: M
       component: "37"
+    - id: M-038
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "38"
     - id: OQ-001
       kind: numeric
       state: reserved
@@ -1711,11 +1716,11 @@ high-water:
       state: reserved
       prefix: TNP
       component: "3"
-    - id: UC-004
+    - id: UC-005
       kind: numeric
       state: reserved
       prefix: UC
-      component: "4"
+      component: "5"
     - id: UD-008
       kind: numeric
       state: reserved
