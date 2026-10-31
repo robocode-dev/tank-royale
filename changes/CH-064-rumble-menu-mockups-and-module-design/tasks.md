@@ -10,4 +10,5 @@ title: Draft the Rumble menu mockups, module dependencies and sign-in design
 - [x] Write the module dependency diagram and the rules it enforces, and check them against the existing modules and the credential boundary.
 - [x] Rewrite the participation design's sign-in section from the experiment's findings and list what is still unproven.
 - [x] Update the plan row for the milestone with what this slice delivered and what later slices must still deliver.
+- [x] Link the mockups from the design index, architecture overview, GUI components view, UC-001, UC-002 and the Rumble client design.
 - [x] Regenerate indexes and validate the corpus.

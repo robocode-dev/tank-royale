@@ -2,7 +2,7 @@
 id: UC-002
 type: use-case
 status: draft
-links: [G-004, CAP-001, CAP-012, CAP-015, CAP-016]
+links: [G-004, CAP-001, CAP-012, CAP-015, CAP-016, ARCH-028]
 title: Contribute computing time with control over bot priorities
 provenance: inferred
 reversal-cost: low
@@ -25,6 +25,8 @@ The contributor wants to donate computer time to public rankings or exercise the
 3. Start the session. The client synchronizes and runs eligible pinned battles, respecting chosen priorities and resource limits.
 4. Every completed ranked battle reaches a durable journal; enabled automatic submission sends complete batches and collects durable receipts.
 5. Inspect completion, queue, acceptance and publication separately, open rankings or a replay, and pause or stop when desired.
+
+The [Rumble menu mockups](../design/rumble/gui-mockups.md) show the Contribute battles and Results and queue screens as a planned design.
 
 ## Outcome
 

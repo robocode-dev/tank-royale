@@ -2,7 +2,7 @@
 id: UC-001
 type: use-case
 status: draft
-links: [G-004, CAP-001, CAP-012, CAP-014]
+links: [G-004, CAP-001, CAP-012, CAP-014, ARCH-028]
 title: Develop, test, submit and update a Rumble bot
 provenance: inferred
 reversal-cost: low
@@ -25,6 +25,8 @@ The author creates a bot or selects an existing project and wants to enter the c
 3. Validate a separate staged source tree, correct actionable errors, and review the exact submitted files and license declaration.
 4. Publish the submission through automated repository operations; follow checks, moderation and catalog publication in My bots.
 5. Inspect readable results when ranked battles arrive. Submit a new strategy version through the same flow without losing ownership or historical identity.
+
+The [Rumble menu mockups](../design/rumble/gui-mockups.md) show the screens for these steps, including the waiting and failure states, as a planned design.
 
 ## Outcome
 

@@ -2,7 +2,7 @@
 id: ARCH-006
 type: architecture
 status: draft
-links: [ADR-021]
+links: [ADR-021, ARCH-028]
 title: GUI Components View
 provenance: inferred
 reversal-cost: low
@@ -224,6 +224,12 @@ graph TD
 | **Facade** | Embedded Server | Simplifies local game instance management |
 | **Strategy** | Config Manager | Supports multiple game rule presets |
 | **Proxy** | Server Connection | Abstracts local vs. remote server |
+
+---
+
+## Planned: Rumble menu
+
+The GUI is planned to gain a **Rumble** menu between Config and Help, with screens for getting started, submitting a bot, listing the author's bots, contributing battles, results and queue, and the GitHub account. It is not part of the diagram above because it has not been built. The [Rumble menu mockups](../design/rumble/gui-mockups.md) draw the screens, and the [module dependency rules](../design/rumble/participation.md) require that the screens only call a shared Rumble library, that the GUI alone holds sign-in credentials, and that nothing else depends on the GUI. This view gains a component when the screens ship.
 
 ---
 

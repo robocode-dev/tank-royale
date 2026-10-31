@@ -2,7 +2,7 @@
 id: CH-064
 type: change
 status: open
-links: [P-007, M-029, ARCH-027, AN-023, ADR-052, UC-001, UC-002]
+links: [P-007, M-029, ARCH-027, ARCH-028, AN-023, ADR-052, UC-001, UC-002]
 title: Draft the Rumble menu mockups, module dependencies and sign-in design
 ---
 
@@ -19,6 +19,7 @@ The milestone's own exit criterion starts with maintainer-reviewed mockups and a
 - A new design document with text mockups of every Rumble menu entry (get started, submit or update a bot, my bots, contribute battles, results and queue, rankings, GitHub account, help) and the author and contributor journeys as step diagrams. Each screen says what the person sees, what they can press, and what happens when something fails.
 - A dependency diagram for the new shared library, the new headless controller, the bot-project library, the interface and the existing battle runner, with the rules that keep the battle worker free of GitHub credentials and the shared library free of any desktop interface code.
 - The participation design's sign-in section is rewritten from "intended direction" to what the experiment proved: the public contributor App, code sign-in, eight-hour tokens renewed without a secret, registration by an issue that a workflow in the result repository handles, label-free intake of results, the web-page fork and App installation on the fork, and revocation. It also records what is still unproven (the bot repository's own ban list against a fork, and the move of the registration workflow into the live result repository).
+- The mockups are linked from where a reader would look for them: the design index, the architecture overview, the GUI components view (as a planned menu, not yet a drawn component), the publish and contribute use cases, and the Rumble client capability design.
 - The plan row for this milestone records that this slice is done and what remains for later slices.
 
 ## Challenge
