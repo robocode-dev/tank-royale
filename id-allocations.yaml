@@ -515,6 +515,11 @@ claims:
       state: reserved
       prefix: ARCH
       component: "28"
+    - id: ARCH-029
+      kind: numeric
+      state: reserved
+      prefix: ARCH
+      component: "29"
     - id: C-001
       kind: numeric
       state: reserved
@@ -1616,11 +1621,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "20"
-    - id: CH-065
+    - id: CH-066
       kind: numeric
       state: reserved
       prefix: CH
-      component: "65"
+      component: "66"
     - id: G-004
       kind: numeric
       state: reserved
