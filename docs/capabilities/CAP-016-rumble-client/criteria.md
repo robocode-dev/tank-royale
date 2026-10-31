@@ -153,4 +153,28 @@ Feature: rumble-client — Local ranked and practice battle client
     When a ranked session selects and runs a battle
     Then it runs only the sources fetched from the pinned catalog and verified against their hashes
     And no file in the download folder is read, run or submitted as ranked evidence
+
+  @RCL-018
+  Scenario: A repository belongs to a Rumble environment only on an exact match
+    Test-type: Unit
+    Given the public Beta and the test environment each name their bot and result repositories under one owner
+    When a repository is given as a short name or a GitHub address in any common form, in any letter case
+    Then it is assigned to an environment only when its owner and name match that environment's repositories exactly
+    And a lookalike, foreign or unknown repository is refused, and an installation that names no environment uses the public Beta
+
+  @RCL-019
+  Scenario: State and pending queues of one environment are never given to another
+    Test-type: Unit
+    Given two environments and a base folder for Rumble state
+    When state folders are chosen and a pending queue is created for one environment
+    Then each environment gets its own folder, never inside the other's
+    And the queue can be read only by asking for the environment it was created for, and a request for another environment is refused
+
+  @RCL-020
+  Scenario: The shared Rumble library contains no desktop code
+    Test-type: Unit
+    Given the shared Rumble library's source and its runtime dependencies
+    When the build checks its dependency rules
+    Then the library depends on neither the desktop program nor the battle runner and imports no Swing or AWT class
+    And a deliberate violation of any of these makes the check fail
 ```
