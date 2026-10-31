@@ -179,7 +179,15 @@
         },
         {
           "path": "lib/rumble/build.gradle.kts",
-          "sha256": "e841c4e9e0a7c0e9d740b3e0cd87f8254ba1521af58e78496a9e2e0f76468bed"
+          "sha256": "21c7fa2caf922e03e8b827bc23c8d3e536efdf3c7d58705172d151e205c04508"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
+          "sha256": "ec5a1849fc021d57c44d7bbccb41048009d9084343b48563a4387cfe26cf0f47"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
+          "sha256": "131123374d7b713f72a19aeecf67eea1fa131ba5da376510e93894558ce20805"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
@@ -188,9 +196,62 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
           "sha256": "fdb8d7ee1ecad4657bc5ea2af4e21ea909f71852d1d1bf24027cb82bc2971a7c"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
+          "sha256": "4b2f21c96e1212187a97841e6caa98d09c5e4b3e957731c24a2205c536674bec"
         }
       ],
       "references": [
+        {
+          "id": "RCL-023",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
+          "subject": "RumbleBotFetchTest.testRCL023_IntegrationNegative_aBotWithAnotherHashOrMissingFilesIsReportedAndNothingOfItIsLeft",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-023",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
+          "subject": "RumbleBotFetchTest.testRCL023_IntegrationNegative_oneFailingBotDoesNotStopTheOthersAndAnExistingFolderIsNeverReplaced",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-023",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
+          "subject": "RumbleBotFetchTest.testRCL023_IntegrationPositive_matchingBotsArePlacedByteForByteAndNothingElseIsLeft",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-024",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
+          "subject": "RumbleBotFetchTest.testRCL024_IntegrationNegative_anArchiveOrCatalogPathThatEscapesIsRefusedAndNothingIsWrittenOutside",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-024",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
+          "subject": "RumbleBotFetchTest.testRCL024_IntegrationPositive_anOrdinaryArchiveIsFetchedAndUnrelatedFilesAreNotExtracted",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-021",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
+          "subject": "RumbleCatalogTest.testRCL021_UnitNegative_unsupportedVersionsAndMalformedDocumentsAreRefused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-021",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
+          "subject": "RumbleCatalogTest.testRCL021_UnitPositive_entriesAreReadAndOnlyActiveOnesAreCurrent",
+          "type": "Unit",
+          "direction": "positive"
+        },
         {
           "id": "RCL-020",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
@@ -244,6 +305,27 @@
           "id": "RCL-019",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
           "subject": "RumbleEnvironmentTest.testRCL019_UnitPositive_eachEnvironmentGetsItsOwnStateFolderAndItsOwnQueue",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-022",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
+          "subject": "RumbleTreeHashTest.testRCL022_UnitNegative_anyChangeToBytesNameOrPathChangesTheHash",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-022",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
+          "subject": "RumbleTreeHashTest.testRCL022_UnitPositive_cacheFoldersAreSkippedAndFilesOnDiskGiveTheSameHash",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-022",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
+          "subject": "RumbleTreeHashTest.testRCL022_UnitPositive_theHashEqualsTheBotRepositorysOwnAlgorithm",
           "type": "Unit",
           "direction": "positive"
         }

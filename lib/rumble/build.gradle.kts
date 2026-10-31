@@ -43,6 +43,8 @@ tasks {
     test {
         useJUnitPlatform()
         failFast = true
+        // Reads the public Rumble in one test that is skipped unless asked for: -Drumble.live=true
+        systemProperty("rumble.live", System.getProperty("rumble.live") ?: "false")
     }
 
     check {
