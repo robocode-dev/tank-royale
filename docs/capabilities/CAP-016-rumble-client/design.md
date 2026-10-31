@@ -2,7 +2,7 @@
 id: CAP-016-design
 type: design
 status: draft
-links: [CAP-016, CAP-001, CAP-014, CAP-015, ARCH-023, P-003, ADR-049]
+links: [CAP-016, CAP-001, CAP-014, CAP-015, ARCH-023, ARCH-028, P-003, ADR-049]
 title: Design notes for CAP-016 (rumble-client)
 provenance: inferred
 reversal-cost: low
@@ -10,7 +10,7 @@ reversal-cost: low
 
 # CAP-016 design
 
-The external [Rumble Client repository](https://github.com/robocode-dev/rumble-client) owns the executable client, while this corpus owns its durable capability and behavioral contract. The [client architecture and result flow](../../design/rumble/client-battles-and-results.md) describe the broader design direction. The accepted [browser-form submission decision](../../decisions/ADR-049-rumble-browser-form-submission.md) replaces the original token-based submission path; its replacement criteria remain draft pending external implementation and journey evidence.
+The external [Rumble Client repository](https://github.com/robocode-dev/rumble-client) owns the executable client, while this corpus owns its durable capability and behavioral contract. The [client architecture and result flow](../../design/rumble/client-battles-and-results.md) describe the broader design direction. The accepted [browser-form submission decision](../../decisions/ADR-049-rumble-browser-form-submission.md) replaces the original token-based submission path; its replacement criteria remain draft pending external implementation and journey evidence. The planned desktop screens that sit on top of this client are drafted in the [Rumble menu mockups](../../design/rumble/gui-mockups.md).
 
 ## Configuration and synchronized snapshot
 
