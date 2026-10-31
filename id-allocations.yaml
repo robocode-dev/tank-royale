@@ -1555,6 +1555,11 @@ claims:
       state: reserved
       prefix: UC
       component: "4"
+    - id: UC-005
+      kind: numeric
+      state: reserved
+      prefix: UC
+      component: "5"
     - id: UD-001
       kind: numeric
       state: reserved
@@ -1606,11 +1611,11 @@ high-water:
       state: reserved
       prefix: AN
       component: "23"
-    - id: ARCH-028
+    - id: ARCH-029
       kind: numeric
       state: reserved
       prefix: ARCH
-      component: "28"
+      component: "29"
     - id: C-004
       kind: numeric
       state: reserved
