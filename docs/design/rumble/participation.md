@@ -16,7 +16,7 @@ This is the target design for the [replacement campaign](../../plans/P-007-rumbl
 
 | Component | Responsibility |
 |---|---|
-| New `lib:rumble` | Synchronization, scheduling, session state, GitHub integration, registration, durable queue, receipts, and typed status models; no Swing dependency. Today it holds the Rumble environments with their repositories and per-environment state folders, a pending queue bound to one environment, and an automated check of its dependency rules; the rest arrives in later changes |
+| New `lib:rumble` | Synchronization, scheduling, session state, GitHub integration, registration, durable queue, receipts, and typed status models; no Swing dependency. Today it holds the Rumble environments with their repositories and per-environment state folders, a pending queue bound to one environment, an automated check of its dependency rules, and reading of the bot catalog with hash-verified fetching of bot sources (the caller supplies the catalog commit); the rest arrives in later changes |
 | New `rumble` executable | Headless session controller and isolated worker entry point, with the same behavior as the GUI-managed session |
 | New `lib:bot-project` | Starter generation, source inspection, submission staging, metadata validation, and validation orchestration |
 | Existing GUI | Wizards, bot management, contribution controls, and presentation |
