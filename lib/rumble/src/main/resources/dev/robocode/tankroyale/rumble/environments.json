@@ -1,0 +1,23 @@
+{
+  "owner": "robocode-dev",
+  "environments": [
+    {
+      "name": "public",
+      "displayName": "Public Beta",
+      "botsRepository": "rumble-bots",
+      "dataRepository": "rumble-data",
+      "dashboard": "https://robocode-dev.github.io/rumble-data/",
+      "resettable": false,
+      "development": false
+    },
+    {
+      "name": "test",
+      "displayName": "Development",
+      "botsRepository": "rumble-bots-test",
+      "dataRepository": "rumble-data-test",
+      "dashboard": "https://robocode-dev.github.io/rumble-data-test/",
+      "resettable": true,
+      "development": true
+    }
+  ]
+}

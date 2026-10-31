@@ -15,7 +15,12 @@ import re
 import subprocess
 import sys
 
-OWNER = "robocode-dev"
+# The environment names live in one data file that the shared Rumble library reads too.
+ENVIRONMENTS_FILE = (Path(__file__).resolve().parents[2] / "lib" / "rumble" / "src" / "main" / "resources"
+                     / "dev" / "robocode" / "tankroyale" / "rumble" / "environments.json")
+_DATA = json.loads(ENVIRONMENTS_FILE.read_text(encoding="utf-8"))
+
+OWNER = _DATA["owner"]
 
 # Folders of a results repository that hold accepted facts and the projections derived from them.
 RESET_FOLDERS = ("results", "leaderboard", "matchmaking")
@@ -38,8 +43,13 @@ class Environment:
         return (f"{OWNER}/{self.bots_repository}", f"{OWNER}/{self.data_repository}")
 
 
-PUBLIC = Environment("public", "rumble-bots", "rumble-data", resettable=False)
-TEST = Environment("test", "rumble-bots-test", "rumble-data-test", resettable=True)
+def _environment(name):
+    entry = next(e for e in _DATA["environments"] if e["name"] == name)
+    return Environment(entry["name"], entry["botsRepository"], entry["dataRepository"], entry["resettable"])
+
+
+PUBLIC = _environment("public")
+TEST = _environment("test")
 ENVIRONMENTS = (PUBLIC, TEST)
 
 _REMOTE = re.compile(

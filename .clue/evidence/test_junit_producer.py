@@ -40,6 +40,25 @@ class GameTypeDropdownTest {
 }''')
         self.assertEqual([], result["references"])
 
+    def test_Sanity_exports_shared_rumble_library_methods_by_path_and_name(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            name = "lib/rumble/src/test/kotlin/x/RumbleEnvironmentTest.kt"
+            (root / name).parent.mkdir(parents=True)
+            (root / name).write_text('''class RumbleEnvironmentTest {
+    @Test
+    @Tag("RCL-018")
+    fun testRCL018_UnitPositive_exactMatch() {}
+    @Test
+    fun testRCL018_UnitNegative_lookalike() {}
+}''', encoding="utf-8")
+            ignored = "lib/rumble/src/test/kotlin/x/OtherHelper.kt"
+            (root / ignored).write_text("class OtherHelper { @Test fun testRCL018_UnitPositive_x() {} }", encoding="utf-8")
+            result = collect(root, [name, ignored])
+        self.assertEqual([], result["diagnostics"])
+        self.assertEqual(["RCL-018", "RCL-018"], [r["id"] for r in result["references"]])
+        self.assertEqual(["positive", "negative"], [r["direction"] for r in result["references"]])
+
     def test_Sanity_reports_malformed_classification(self):
         result = self.export('''class GameTypeDropdownTest {
     @Test
