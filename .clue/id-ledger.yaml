@@ -612,6 +612,14 @@ events:
     - {id: CH-067, kind: numeric, state: live, prefix: CH, component: "67"}
     - {id: CH-067-tasks, kind: opaque, state: live}
     - {id: CH-067-open-questions, kind: opaque, state: live}
+    - {id: RCL-021, kind: numeric, state: reserved, prefix: RCL, component: "21"}
+    - {id: RCL-022, kind: numeric, state: reserved, prefix: RCL, component: "22"}
+    - {id: RCL-023, kind: numeric, state: reserved, prefix: RCL, component: "23"}
+    - {id: RCL-024, kind: numeric, state: reserved, prefix: RCL, component: "24"}
+    - {id: RCL-021, kind: numeric, state: live, prefix: RCL, component: "21"}
+    - {id: RCL-022, kind: numeric, state: live, prefix: RCL, component: "22"}
+    - {id: RCL-023, kind: numeric, state: live, prefix: RCL, component: "23"}
+    - {id: RCL-024, kind: numeric, state: live, prefix: RCL, component: "24"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

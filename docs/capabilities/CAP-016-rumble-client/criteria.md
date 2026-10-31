@@ -177,4 +177,38 @@ Feature: rumble-client — Local ranked and practice battle client
     When the build checks its dependency rules
     Then the library depends on neither the desktop program nor the battle runner and imports no Swing or AWT class
     And a deliberate violation of any of these makes the check fail
+
+  @RCL-021
+  Scenario: The bot catalog is read into typed entries and unsupported versions are refused
+    Test-type: Unit
+    Given a catalog document with a schema version, generation time, commit and bot entries
+    When the catalog is read
+    Then each entry exposes its name, version, platform, path, source hash, owner, authors, added date, status and team members
+    And fields it does not know are ignored, a missing team member list means none, and only active entries count as current
+    And an unsupported schema version, malformed document or entry without a required field is refused with an actionable message
+
+  @RCL-022
+  Scenario: The source tree hash agrees with the bot repository's rule
+    Test-type: Unit
+    Given a bot source tree of files with paths and bytes, including Windows line endings and a cache folder
+    When its hash is computed
+    Then it equals the hash the bot repository's own algorithm gives for the same tree, which sorts the slash-separated relative paths and hashes each path and its bytes, each followed by a zero byte, and skips cache folders
+    And changing any file's bytes, name or path changes the hash
+
+  @RCL-023
+  Scenario: A bot source is placed only when its hash matches the catalog
+    Test-type: Integration
+    Given a catalog commit whose archive holds several bots and a catalog entry for each
+    When the chosen bots are fetched into a target folder
+    Then each bot whose source tree hash matches its entry is placed in the folder, and the others complete independently
+    And a bot whose hash differs, or whose files are missing from the archive, is reported by name and version and nothing of it is left in the folder
+    And a bot folder that already exists in the target is never replaced
+
+  @RCL-024
+  Scenario: Fetching cannot write outside the target folder
+    Test-type: Integration
+    Given an archive or catalog entry whose paths are absolute or climb out of their folder
+    When the bots are fetched
+    Then nothing is written outside the target folder and the fetch is refused with an explanation
+    And an ordinary archive with the same bots is still fetched normally
 ```
