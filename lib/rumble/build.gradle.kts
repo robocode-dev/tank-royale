@@ -26,13 +26,11 @@ val forbiddenProjects = setOf(":gui", ":runner")
 
 val checkDependencyRules by tasks.registering {
     group = "verification"
-    description = "Fails when lib:rumble depends on a project it must not depend on."
-    val runtimeDependencies = configurations.runtimeClasspath.get().allDependencies
-    val compileDependencies = configurations.compileClasspath.get().allDependencies
+    description = "Fails when lib:rumble depends, directly or through another project, on a project it must not use."
     doLast {
-        val violations = (runtimeDependencies + compileDependencies)
-            .filterIsInstance<ProjectDependency>()
-            .map { it.path }
+        val violations = listOf(configurations.runtimeClasspath, configurations.compileClasspath)
+            .flatMap { it.get().incoming.resolutionResult.allComponents }
+            .mapNotNull { (it.id as? ProjectComponentIdentifier)?.projectPath }
             .filter { it in forbiddenProjects }
             .toSortedSet()
         check(violations.isEmpty()) {
