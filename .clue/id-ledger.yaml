@@ -641,6 +641,9 @@ events:
     - {id: RBC-017, kind: numeric, state: live, prefix: RBC, component: "17"}
     - {id: RBC-018, kind: numeric, state: live, prefix: RBC, component: "18"}
     - {id: RBC-019, kind: numeric, state: live, prefix: RBC, component: "19"}
+    - {id: CH-068, kind: numeric, state: retired, prefix: CH, component: "68"}
+    - {id: CH-068-tasks, kind: opaque, state: retired}
+    - {id: CH-068-open-questions, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
