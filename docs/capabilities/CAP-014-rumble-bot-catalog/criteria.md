@@ -120,4 +120,62 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     Then the post-merge publisher regenerates the catalog from trusted main without running bot source
     And generated catalog files enter main only through a pull request whose exact contents match trusted regeneration and whose head the moderator App approves
     And a newer commit, failing or pending moderation status, or changes outside one bot directory cannot auto-merge
+
+  @RBC-013
+  Scenario: An author's bot folder is recognised before submission
+    Test-type: Unit
+    Given a folder on the author's computer that holds a bot or team configuration file named after the folder
+    When the folder is inspected
+    Then the bot's name, version, authors, license, description, platform and team members are read from that file
+    And the language is taken from the declared platform, and a team folder is told apart from an individual bot
+    And a folder with no configuration file named after it, or with an unreadable one, is reported as not a bot project with the reason
+
+  @RBC-014
+  Scenario: The author gets the repository's metadata verdict before submitting
+    Test-type: Unit
+    Given a bot or team folder with its configuration file
+    When it is validated
+    Then it passes when name, version, authors and an allowed license are present, the folder is named as the bot, the platform matches the language and a team lists exactly two members and nothing else
+    And each missing, mismatched or disallowed value is reported with the file and the change that fixes it
+
+  @RBC-015
+  Scenario: Launchers and source are checked as the bot repository checks them
+    Test-type: Unit
+    Given an individual bot folder in one of the four official languages
+    When it is validated
+    Then it passes when both launcher scripts exist and a source file of the language refers to the official Bot API
+    And a missing launcher, missing source file or missing API reference is reported with the change that fixes it
+    And the Unix launcher's executable bit is not checked on the author's computer, and the report says it will be set when the submission is staged
+
+  @RBC-016
+  Scenario: Generated, binary and restricted content is reported
+    Test-type: Unit
+    Given a bot folder that holds generated dependency or build folders, binary or archive files, or source using a construct the repository sends to a moderator
+    When it is validated
+    Then each such folder, file and construct is reported by name with the change that removes it
+    And a folder without them passes, and cache folders are not reported
+
+  @RBC-017
+  Scenario: TypeScript dependencies are limited to the official API and its runtime peer
+    Test-type: Unit
+    Given a TypeScript bot folder with its package manifest and lockfile
+    When it is validated
+    Then it passes when only the official API and its declared runtime peer are declared and locked at registry versions with integrity, and the lockfile matches the manifest
+    And an unrelated, path, URL or alias dependency, a lockfile that disagrees with the manifest, or a missing runtime peer is reported with the change that fixes it
+
+  @RBC-018
+  Scenario: Every problem is reported at once with a stable code and a fix
+    Test-type: Unit
+    Given a bot folder with several different problems
+    When it is validated
+    Then the report lists every problem, each with a stable code, the file it concerns and a plain-word change that fixes it
+    And a folder with no problems has an empty list of problems
+
+  @RBC-019
+  Scenario: The bot project library contains no desktop or GitHub code
+    Test-type: Unit
+    Given the bot project library's source and its project dependencies
+    When the build checks its dependency rules
+    Then the library depends on neither the desktop program, the battle runner nor the shared Rumble library, and imports no Swing, AWT or network client class
+    And a deliberate violation makes the check fail
 ```

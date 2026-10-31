@@ -18,7 +18,7 @@ This is the target design for the [replacement campaign](../../plans/P-007-rumbl
 |---|---|
 | New `lib:rumble` | Synchronization, scheduling, session state, GitHub integration, registration, durable queue, receipts, and typed status models; no Swing dependency. Today it holds the Rumble environments with their repositories and per-environment state folders, a pending queue bound to one environment, an automated check of its dependency rules, and reading of the bot catalog with hash-verified fetching of bot sources (the caller supplies the catalog commit); the rest arrives in later changes |
 | New `rumble` executable | Headless session controller and isolated worker entry point, with the same behavior as the GUI-managed session |
-| New `lib:bot-project` | Starter generation, source inspection, submission staging, metadata validation, and validation orchestration |
+| New `lib:bot-project` | Starter generation, source inspection, submission staging, metadata validation, and validation orchestration. Today it inspects a bot or team folder and validates it against the bot repository's per-folder rules, listing every problem with a code and the change that fixes it; it only reads and changes nothing on disk. The rest arrives in later changes |
 | Existing GUI | Wizards, bot management, contribution controls, and presentation |
 | Existing runner, server, booter, recorder | Battle execution and existing lifecycle responsibilities |
 | Catalog and result repositories | Moderation, authoritative source catalog, registration, ingestion, and ranking projections |
@@ -37,7 +37,7 @@ The host owns credentials and upload authorization. Workers receive a pinned job
 
 ### Module dependencies
 
-An arrow means "depends on". The rules below are what keeps the credential boundary real and the shared library free of desktop code; the build already fails when `lib:rumble` depends on the desktop program or the battle runner or imports a Swing or AWT class, and the check for the credential rule arrives with the worker.
+An arrow means "depends on". The rules below are what keeps the credential boundary real and the shared library free of desktop code; the build already fails when `lib:rumble` depends on the desktop program or the battle runner or imports a Swing or AWT class, and when `lib:bot-project` depends on the desktop program, the runner or `lib:rumble`, or imports Swing, AWT or a network client, and the check for the credential rule arrives with the worker.
 
 ```mermaid
 flowchart TD

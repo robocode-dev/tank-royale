@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":lib:common"))
     implementation(libs.kotlinx.serialization.json)
 
+    testImplementation(project(":lib:bot-project"))
     testImplementation(platform(testLibs.junit.bom))
     testImplementation(testLibs.bundles.junit)
 }
