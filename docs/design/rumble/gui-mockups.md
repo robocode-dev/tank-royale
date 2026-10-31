@@ -220,7 +220,7 @@ Only bots that are active in the catalog are offered for a new download; a retir
 
 ## Bot info in New Battle
 
-The Bot Info panel in New Battle shows the selected bot's details from its configuration file. Today it shows name, version, authors, homepage, description, platform, programming language, game types and countries. It gains two rows, **License** and **Team members**, and it applies to every bot, downloaded or not, because the license matters to anyone who reads or copies another person's code.
+The Bot Info panel in New Battle shows the selected bot's details from its configuration file. Today it shows name, version, authors, homepage, description, platform, programming language, game types and countries. It gains two rows, **License** and **Team members**, and it applies to every bot in the person's bot directories, downloaded or not (a bot that joined from another computer has no configuration file here, so those rows show "not available"), because the license matters to anyone who reads or copies another person's code.
 
 ```text
 Bot Info
