@@ -2,6 +2,161 @@
   "version": 1,
   "producers": [
     {
+      "id": "tank-royale-bot-project-library",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/producers.json",
+        ".clue/evidence/test_junit_producer.py",
+        "lib/bot-project/build.gradle.kts",
+        "lib/bot-project/src/test/kotlin/**/BotProject*Test.kt"
+      ],
+      "exclude": [],
+      "inputs": [
+        {
+          "path": ".clue/evidence/aggregate.py",
+          "sha256": "cf20a3f9d5a1072a7b2d3ddfc4bc9e25575b2cbd27441aba61e9d83d9ac4768c"
+        },
+        {
+          "path": ".clue/evidence/junit_scoring_producer.py",
+          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
+        },
+        {
+          "path": ".clue/evidence/producers.json",
+          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
+        },
+        {
+          "path": ".clue/evidence/test_junit_producer.py",
+          "sha256": "30d1feb473a94383bc3f2f95f1211eece816a9010e8adcf580075e26c6f78d84"
+        },
+        {
+          "path": "lib/bot-project/build.gradle.kts",
+          "sha256": "cc834c52b0a7af451843abe60fd4175dd997c61cb202f8899a92b14d7bdbdb13"
+        },
+        {
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectDependencyRulesTest.kt",
+          "sha256": "7e530578dcd321b87f748ef552421333aca64f252162548318b82f419089ad5f"
+        },
+        {
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectInspectionTest.kt",
+          "sha256": "be31bf5257e48bead0ce74b5c85d4b8d6369855a21d78672ef13b3b09bde6f7c"
+        },
+        {
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "sha256": "ca28621b6d9d4058f648a28090131f2e4cbeac751ac9abd4c3d5f2aa444e9506"
+        }
+      ],
+      "references": [
+        {
+          "id": "RBC-019",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectDependencyRulesTest.kt",
+          "subject": "BotProjectDependencyRulesTest.testRBC019_UnitNegative_aDeliberateViolationIsReported",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-019",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectDependencyRulesTest.kt",
+          "subject": "BotProjectDependencyRulesTest.testRBC019_UnitPositive_theLibrarySourcesImportNoDesktopRunnerRumbleOrNetworkCode",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-013",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectInspectionTest.kt",
+          "subject": "BotProjectInspectionTest.testRBC013_UnitNegative_aFolderWithoutAReadableConfigurationFileIsNotABotProject",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-013",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectInspectionTest.kt",
+          "subject": "BotProjectInspectionTest.testRBC013_UnitPositive_aBotFolderIsReadAndItsLanguageComesFromTheDeclaredPlatform",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-013",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectInspectionTest.kt",
+          "subject": "BotProjectInspectionTest.testRBC013_UnitPositive_aTeamFolderIsToldApartFromAnIndividualBot",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-014",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC014_UnitNegative_eachMissingMismatchedOrDisallowedMetadataValueIsReported",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-014",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC014_UnitPositive_validBotsInEveryLanguageAndAValidTeamPass",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-015",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC015_UnitNegative_aMissingLauncherSourceOrApiReferenceIsReported",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-015",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC015_UnitPositive_launchersAndOfficialApiSourcePassWithoutAnExecutableBitCheck",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-016",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC016_UnitNegative_generatedFoldersBinariesAndRestrictedConstructsAreReported",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-016",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC016_UnitPositive_cacheFoldersAreNotReported",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-017",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC017_UnitNegative_unrelatedPathOrMismatchedDependenciesAndMissingPeersAreReported",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-017",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC017_UnitPositive_aTypescriptBotWithOnlyTheApiAndItsRuntimePeerPasses",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-018",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC018_UnitNegative_everyProblemIsReportedAtOnceWithCodeFileAndFix",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-018",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
+          "subject": "BotProjectValidationTest.testRBC018_UnitPositive_aFolderWithoutProblemsHasAnEmptyList",
+          "type": "Unit",
+          "direction": "positive"
+        }
+      ]
+    },
+    {
       "id": "tank-royale-gui-twinduel",
       "framework": "JUnit",
       "language": "Kotlin",
@@ -21,15 +176,15 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "3290c876f5c17234b180708cd3a11889dde50ca64ddcbbe41940f2d2290cfc3b"
+          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
+          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
-          "sha256": "2c1fba013bf4699e06bf4a341a66a487b5a8d377ff6ccb41055cd9df9cc3e3ae"
+          "sha256": "30d1feb473a94383bc3f2f95f1211eece816a9010e8adcf580075e26c6f78d84"
         },
         {
           "path": "gui/build.gradle.kts",
@@ -76,7 +231,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
+          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
         },
         {
           "path": ".clue/evidence/python_unittest_producer.py",
@@ -167,23 +322,27 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "3290c876f5c17234b180708cd3a11889dde50ca64ddcbbe41940f2d2290cfc3b"
+          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
+          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
-          "sha256": "2c1fba013bf4699e06bf4a341a66a487b5a8d377ff6ccb41055cd9df9cc3e3ae"
+          "sha256": "30d1feb473a94383bc3f2f95f1211eece816a9010e8adcf580075e26c6f78d84"
         },
         {
           "path": "lib/rumble/build.gradle.kts",
-          "sha256": "21c7fa2caf922e03e8b827bc23c8d3e536efdf3c7d58705172d151e205c04508"
+          "sha256": "c20fc9f04446fb739fa6e873c8ab78db83de5ae36e5fd4584d64f2224e3e2ca0"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
           "sha256": "ec5a1849fc021d57c44d7bbccb41048009d9084343b48563a4387cfe26cf0f47"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotProjectCrossCheckTest.kt",
+          "sha256": "18a85ac83fc9f39fc5cbe4c435eade52f98cb23dc5478657e8c65dbf9934e867"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
@@ -350,11 +509,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "3290c876f5c17234b180708cd3a11889dde50ca64ddcbbe41940f2d2290cfc3b"
+          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "d85f44aed7b3ce358dd87f6b79eef4d1fee5cec437bec5751c2664b185cdfc5e"
+          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
         },
         {
           "path": "server/build.gradle.kts",

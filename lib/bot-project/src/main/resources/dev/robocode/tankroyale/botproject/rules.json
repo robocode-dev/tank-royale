@@ -1,0 +1,15 @@
+{
+  "allowedLicenses": ["MIT", "Apache-2.0", "BSD-3-Clause", "GPL-3.0-or-later"],
+  "platforms": {
+    "java": { "extension": ".java", "platform": "JVM", "apiToken": "dev.robocode.tankroyale.botapi" },
+    "csharp": { "extension": ".cs", "platform": "C#", "apiToken": "Robocode.TankRoyale.BotApi" },
+    "python": { "extension": ".py", "platform": "Python", "apiToken": "robocode_tank_royale" },
+    "typescript": { "extension": ".ts", "platform": "TypeScript", "apiToken": "@robocode.dev/tank-royale-bot-api" }
+  },
+  "launcherSuffixes": [".sh", ".cmd"],
+  "forbiddenDirectories": ["node_modules", ".venv", "bin", "obj"],
+  "forbiddenSuffixes": [".dll", ".exe", ".jar", ".so", ".dylib", ".pyc", ".class", ".zip", ".tar", ".gz"],
+  "forbiddenTokens": ["processbuilder", "runtime.exec", "subprocess", "os.system", "child_process", "system.diagnostics.process", "socket", "ctypes", "dllimport", "eval("],
+  "typescriptApi": "@robocode.dev/tank-royale-bot-api",
+  "typescriptRuntimePeers": ["ws"]
+}

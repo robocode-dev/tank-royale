@@ -1,4 +1,4 @@
-"""Export scoring, GUI TwinDuel and shared Rumble library JUnit methods with stable JVM identities."""
+"""Export scoring, GUI TwinDuel, shared Rumble library and bot project library JUnit methods with stable JVM identities."""
 
 import json
 from pathlib import Path
@@ -9,7 +9,7 @@ import sys
 CLASS_NAME = re.compile(r"\bclass\s+([A-Za-z_][A-Za-z0-9_]*)")
 KOTLIN_METHOD = re.compile(r"\bfun\s+(?P<name>`[^`]+`|[A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 CLASSIFIED_NAME = re.compile(
-    r"test(?P<prefix>SCR|GTD|RCL)(?P<number>[0-9]+[a-z]*)_"
+    r"test(?P<prefix>SCR|GTD|RCL|RBC)(?P<number>[0-9]+[a-z]*)_"
     r"(?P<type>Unit|Integration|E2E|Performance)"
     r"(?P<direction>Positive|Negative)_(?P<description>[A-Za-z0-9_$]+)"
 )
@@ -27,6 +27,8 @@ def collect(root, files):
             ("Scoring" in Path(name).name and "Test" in Path(name).name)
             or Path(name).name == "GameTypeDropdownTest.kt"
             or (name.startswith("lib/rumble/src/test/") and Path(name).name.startswith("Rumble")
+                and Path(name).name.endswith("Test.kt"))
+            or (name.startswith("lib/bot-project/src/test/") and Path(name).name.startswith("BotProject")
                 and Path(name).name.endswith("Test.kt"))
         ):
             continue
@@ -48,7 +50,7 @@ def collect(root, files):
             method_match = KOTLIN_METHOD.search(line)
             if method_match is not None:
                 method_name = method_match.group("name").strip("`")
-                if pending_test and method_name.startswith(("testSCR", "testGTD", "testRCL")):
+                if pending_test and method_name.startswith(("testSCR", "testGTD", "testRCL", "testRBC")):
                     subject = f"{class_match.group(1)}.{method_name}"
                     classified = CLASSIFIED_NAME.fullmatch(method_name)
                     if classified is None:

@@ -48,6 +48,22 @@
       ]
     },
     {
+      "id": "tank-royale-bot-project-library",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/test_junit_producer.py",
+        "lib/bot-project/build.gradle.kts",
+        "lib/bot-project/src/test/kotlin/**/BotProject*Test.kt"
+      ],
+      "command": [
+        "python",
+        ".clue/evidence/junit_scoring_producer.py"
+      ]
+    },
+    {
       "id": "tank-royale-rumble-environments",
       "framework": "unittest",
       "language": "Python",

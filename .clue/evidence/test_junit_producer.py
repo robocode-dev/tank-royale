@@ -59,6 +59,24 @@ class GameTypeDropdownTest {
         self.assertEqual(["RCL-018", "RCL-018"], [r["id"] for r in result["references"]])
         self.assertEqual(["positive", "negative"], [r["direction"] for r in result["references"]])
 
+    def test_Sanity_exports_bot_project_library_methods_by_path_and_name(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            name = "lib/bot-project/src/test/kotlin/x/BotProjectValidationTest.kt"
+            (root / name).parent.mkdir(parents=True)
+            (root / name).write_text('''class BotProjectValidationTest {
+    @Test
+    fun testRBC014_UnitPositive_validBotsPass() {}
+    @Test
+    fun testRBC014_UnitNegative_badLicense() {}
+}''', encoding="utf-8")
+            helper = "lib/bot-project/src/test/kotlin/x/Fixtures.kt"
+            (root / helper).write_text("object Fixtures { @Test fun testRBC014_UnitPositive_x() {} }", encoding="utf-8")
+            result = collect(root, [name, helper])
+        self.assertEqual([], result["diagnostics"])
+        self.assertEqual(["RBC-014", "RBC-014"], [r["id"] for r in result["references"]])
+        self.assertEqual(["positive", "negative"], [r["direction"] for r in result["references"]])
+
     def test_Sanity_reports_malformed_classification(self):
         result = self.export('''class GameTypeDropdownTest {
     @Test

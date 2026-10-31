@@ -6,6 +6,7 @@ include("lib:common")
 include("lib:client")
 include("lib:intent-diagnostics")
 include("lib:rumble")
+include("lib:bot-project")
 
 // Booter
 include("booter")
