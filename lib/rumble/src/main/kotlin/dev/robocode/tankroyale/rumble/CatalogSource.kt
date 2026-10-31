@@ -32,6 +32,7 @@ class GitHubCatalogSource(
 
     override fun archive(commit: String): InputStream {
         val response = client.send(request(archiveUrl(commit)), HttpResponse.BodyHandlers.ofInputStream())
+        if (response.statusCode() != 200) response.body().close()
         return checked(response.statusCode(), "bot archive") { response.body() }
     }
 
