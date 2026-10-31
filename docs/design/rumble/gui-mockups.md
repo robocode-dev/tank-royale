@@ -2,7 +2,7 @@
 id: ARCH-028
 type: design
 status: draft
-links: [P-007, M-029, ARCH-027, AN-023, UC-001, UC-002, UC-003]
+links: [P-007, M-029, M-038, ARCH-027, AN-023, UC-001, UC-002, UC-003, UC-005]
 title: Rumble menu mockups and participant journeys
 provenance: inferred
 reversal-cost: low
@@ -20,6 +20,7 @@ Battle   Server   Config   Rumble   Help
                            │ Get started          │
                            │ Submit or update bot │
                            │ My bots              │
+                           │ Download bots        │
                            │ Contribute battles   │
                            │ Results and queue    │
                            │ Rankings             │
@@ -169,6 +170,78 @@ Checks, review, publication and visibility in the rankings are separate states, 
 ```
 
 The list reads from the Rumble and from the local projects, and shows each bot's state in the same four separate states as the Track step. Withdrawing a bot is a later milestone and is not on this screen yet.
+
+## Download bots
+
+This screen copies competitor bots from the Rumble into a folder of their own so the person can read them and practise against them. It needs no GitHub account, because the catalog is public. It is planned for a later milestone than the other screens.
+
+```text
+Choose bots                                  Result
+┌ Download bots ──────────────────────────┐  ┌ Download bots ───────────────────────────┐
+│ Which bots?   (o) All active bots       │  │ Downloaded 41 of 43                      │
+│               ( ) Selected bots         │  │  ✓ Orbit 1.0.0     MIT          new      │
+│ Platform:     [x] Java [x] .NET         │  │  ✓ Scout 1.0.3     MIT          updated  │
+│               [x] Python [x] TypeScript │  │  ✗ Fire 2.1.0      hash differs, skipped │
+│ Bot       Version  License   State      │  │  ! Retcon 0.2.0    kept, no longer active│
+│ [x] Orbit 1.0.0    MIT       new        │  │ [Show folder]   [Download again]         │
+│ [x] Scout 1.0.3    MIT       update     │  └──────────────────────────────────────────┘
+│ [ ] Retcon 0.2.0   MIT       retired    │
+│ Save to: C:\Users\me\rumble-bots        │
+│          [Change]                       │
+│ Bots you download are other people's    │
+│ code and run with your rights. Moderator│
+│ review does not make them safe.         │
+│ [Download]                              │
+└─────────────────────────────────────────┘
+```
+
+The default folder is `rumble-bots` beside the person's normal bots directory and can be changed. It is added to the bot directories automatically and labelled, and in New Battle its bots appear as a collapsed group after the person's own bots, so their own bots always come first:
+
+```text
+New Battle: bots
+┌─────────────────────────────────────────┐
+│ ▼ My bots                               │
+│     MyFirstBot   1.0                    │
+│     Walls        0.3                    │
+│ ▶ Rumble bots (downloaded, 41)          │
+└─────────────────────────────────────────┘
+```
+
+Only bots that are active in the catalog are offered for a new download; a retired bot appears in the list only if it was downloaded earlier. The state column says new, update, up to date, or retired. A retired or disqualified bot that was downloaded earlier stays in the folder and is marked, and is removed only when the person removes it. A downloaded bot never replaces one of the person's own bots, even when the names match. Ranked contribution never reads this folder and uses only the pinned catalog.
+
+| Situation | What the person sees | What they can do |
+|---|---|---|
+| Offline or interrupted | "Downloaded 12 of 43. The rest can be continued." | [Continue] |
+| A bot's hash does not match | The bot is skipped and listed as failed with its name and version | [Download again] |
+| The folder cannot be written | "This folder cannot be written. Nothing was downloaded." before anything is fetched | [Change] |
+| A downloaded bot has the same name as one of the person's own | "Kept in the download folder only. Your own bot is unchanged." | [Show folder] |
+| A downloaded bot is no longer active | It stays, marked "no longer active" | [Remove] |
+| The catalog is unreachable or unsupported | "The Rumble catalog cannot be read." | [Try again] |
+
+## Bot info in New Battle
+
+The Bot Info panel in New Battle shows the selected bot's details from its configuration file. Today it shows name, version, authors, homepage, description, platform, programming language, game types and countries. It gains two rows, **License** and **Team members**, and it applies to every bot in the person's bot directories, downloaded or not (a bot that joined from another computer has no configuration file here, so those rows show "not available"), because the license matters to anyone who reads or copies another person's code.
+
+```text
+Bot Info
+┌──────────────────────────────────────────────────────────────────┐
+│ Name       Orbit                  Platform      Python           │
+│ Version    1.0.0                  Language      Python           │
+│ Authors    A. Author              Game types    1v1, melee       │
+│ Homepage   https://example.org    Countries     Denmark (dk)     │
+│ License    ● Free to copy: MIT    Team members  (none)           │
+│ Description  Orbits its target and fires at a steady rhythm.     │
+│ Folder     Rumble bots (downloaded)  C:\Users\me\rumble-bots\Orbit│
+└──────────────────────────────────────────────────────────────────┘
+License levels, always shown as an icon and words, never colour alone:
+  ● Free to copy        MIT, BSD, Apache-2.0, ISC, Unlicense, CC0: keep the copyright notice
+  ▲ Copy with conditions  GPL, LGPL, AGPL, MPL, CC-BY: your copy must be shared under the
+                          same terms, or credit the author
+  ■ Do not copy         No license declared, an unrecognised or proprietary license, or a
+                        no-derivatives or non-commercial license: all rights are reserved
+```
+
+The level is a reading aid for the license the bot itself declares; the panel cannot check that the declaration is true, and it is not legal advice. The tooltip says so and links to the license text. A bot with no `license` field shows "No license declared" at the do-not-copy level, because the law's default is that nobody may copy it. Bots accepted into the Rumble always carry an allowed license, so a downloaded bot is never at the do-not-copy level; a local bot can be. The Download bots screen uses the same levels beside each bot's license. A team's members are listed by name and version. The folder row tells the person whether a bot is their own or downloaded, which also separates two bots with the same name. The description stays cut to three lines in the panel, with a link that opens the full text.
 
 ## Contribute battles
 

@@ -2,7 +2,7 @@
 id: ARCH-027
 type: design
 status: draft
-links: [P-007, ADR-052, AN-023, ARCH-028, CAP-001, CAP-012, CAP-014, CAP-015, CAP-016]
+links: [P-007, ADR-052, AN-023, ARCH-028, UC-005, CAP-001, CAP-012, CAP-014, CAP-015, CAP-016]
 title: Target Rumble participation flows and environment boundaries
 provenance: inferred
 reversal-cost: low
@@ -59,6 +59,22 @@ flowchart TD
 - **The worker is reached only through versioned messages.** `lib:rumble` starts and talks to the worker across a process boundary with machine-readable commands and events. It does not depend on the runner, so replacing how battles run does not touch session logic.
 - **Project tooling knows no GitHub.** `lib:bot-project` inspects, stages and validates a project and returns a typed staged submission. `lib:rumble` takes that value and does the fork, branch, commit and pull request work. The staging code never needs a token.
 - **Nothing depends on the GUI.** Dependencies point from the GUI and the executable down to the libraries, never back.
+
+## Downloading competitor bots
+
+A Robocoder can download selected or all active competitor bots into a folder of their own; the [Download bots screen](gui-mockups.md) and the matching [use case](../../use-cases/UC-005-download-competitor-bots.md) show the journey. The rules:
+
+- **Optional and public.** Downloading needs no GitHub sign-in, because the catalog and the bot sources are public. Nothing is downloaded unless the person asks.
+- **Verified and pinned.** Only bots that are active in the pinned catalog commit are offered for a new download. Each bot's source is checked against the content hash the catalog records before it is placed in the folder, and a bot that fails is skipped and reported. The same catalog fetch and verification that ranked contribution uses is reused, so there is one implementation of it in `lib:rumble`.
+- **Licensed and visible.** Every bot is published under a declared license that permits copying. The screen shows each bot's license before the download and keeps it with the bot's files.
+- **A license level for every bot.** The Bot Info panel in New Battle and the download screen show the declared license with one of three levels, always as an icon and words: free to copy, copy with conditions (copyleft or credit required), or do not copy (no license declared, an unrecognised or proprietary license, or a no-derivatives or non-commercial license). The level is a reading aid for what the bot declares and is not legal advice. The GUI already receives the license and team members in its own boot entry, so the panel reads them by the bot's directory; no change to the game protocol is needed.
+- **A separate folder.** The default is a `rumble-bots` folder beside the normal bots directory, and the person may choose another. The GUI adds it to the bot directories with a label, and shows its bots in New Battle as a collapsed group after the person's own bots. The folder is never one of the person's own bot directories unless they choose it explicitly.
+- **Never overwrites.** A downloaded bot never replaces one of the person's own bots, even when the names match. Updates replace only earlier downloads of the same bot.
+- **Withdrawn bots are marked, not erased.** A bot the Rumble later retires, withdraws or disqualifies stays in the folder, marked as no longer active, until the person removes it.
+- **Ranked contribution does not use the folder.** Ranked battles use only the pinned catalog and its verified sources. Downloaded bots are for reading and for practice battles.
+- **Untrusted code.** A downloaded bot is another person's code. In a practice battle in the GUI it runs with the user's own rights, like any bot in the normal directory. Moderator review and the container used for ranked battles do not extend to that case, so the screen says so and the design does not call downloaded bots safe.
+
+Module ownership follows the dependency rules above: catalog fetch, hash verification and the download operation belong to `lib:rumble` and return typed results with no Swing code, and the GUI owns the folder choice, the label and the New Battle grouping. The bot-directory setting today records only a path and whether it is enabled, so a label for the downloaded folder needs an extended setting. The change that builds it must read the existing setting without losing entries.
 
 ## Environments and account boundary
 
