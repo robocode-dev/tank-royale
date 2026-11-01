@@ -1,6 +1,6 @@
 {
   "suite": "color-values",
-  "description": "Validates Color construction, hex conversion, and named constants",
+  "description": "Validates Color construction, hex conversion, named constants, the colour text forms every API reads, and the colour text written into team messages",
   "tests": [
     {
       "id": "TR-API-GFX-001-color-rgb",
@@ -33,6 +33,190 @@
       "method": "getColorConstant",
       "args": ["WHITE"],
       "expected": { "r": 255, "g": 255, "b": 255, "a": 255 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgb-short",
+      "description": "#RGB is read with each digit doubled and is opaque",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#F00"],
+      "expected": { "r": 255, "g": 0, "b": 0, "a": 255 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgb-short-lowercase",
+      "description": "#rgb is read like #RGB in small letters",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#f00"],
+      "expected": { "r": 255, "g": 0, "b": 0, "a": 255 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgba-short",
+      "description": "#RGBA is read with each digit doubled",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#F008"],
+      "expected": { "r": 255, "g": 0, "b": 0, "a": 136 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgb-long",
+      "description": "#RRGGBB is read and is opaque",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#0099CC"],
+      "expected": { "r": 0, "g": 153, "b": 204, "a": 255 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgb-long-lowercase",
+      "description": "#rrggbb is read like #RRGGBB in small letters",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#0099cc"],
+      "expected": { "r": 0, "g": 153, "b": 204, "a": 255 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgba-long",
+      "description": "#RRGGBBAA is read with its transparency",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#0099CC80"],
+      "expected": { "r": 0, "g": 153, "b": 204, "a": 128 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgba-long-lowercase",
+      "description": "#rrggbbaa is read like #RRGGBBAA in small letters",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#ff000080"],
+      "expected": { "r": 255, "g": 0, "b": 0, "a": 128 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-surrounding-spaces",
+      "description": "Spaces around the colour text are ignored",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": [" #FF0000 "],
+      "expected": { "r": 255, "g": 0, "b": 0, "a": 255 }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-no-hash",
+      "description": "Colour text without the leading # is refused",
+      "type": "negative",
+      "method": "parseColorText",
+      "args": ["FF0000"],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-five-digits",
+      "description": "Five hex digits are refused",
+      "type": "negative",
+      "method": "parseColorText",
+      "args": ["#FF000"],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-seven-digits",
+      "description": "Seven hex digits are refused",
+      "type": "negative",
+      "method": "parseColorText",
+      "args": ["#FF00000"],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-not-hex",
+      "description": "Characters that are not hexadecimal digits are refused",
+      "type": "negative",
+      "method": "parseColorText",
+      "args": ["#GG0000"],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-only-hash",
+      "description": "A lone # is refused",
+      "type": "negative",
+      "method": "parseColorText",
+      "args": ["#"],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-empty",
+      "description": "Empty text is refused",
+      "type": "negative",
+      "method": "parseColorText",
+      "args": [""],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-UTL-002-color-team-message-opaque",
+      "description": "An opaque colour is written as #RRGGBB in a team message",
+      "type": "positive",
+      "method": "teamMessageColorText",
+      "args": [{"r": 255, "g": 0, "b": 0}],
+      "expected": { "returns": "#FF0000" }
+    },
+    {
+      "id": "TR-API-UTL-002-color-team-message-opaque-mixed",
+      "description": "An opaque colour keeps all its digits in a team message",
+      "type": "positive",
+      "method": "teamMessageColorText",
+      "args": [{"r": 0, "g": 128, "b": 255}],
+      "expected": { "returns": "#0080FF" }
+    },
+    {
+      "id": "TR-API-UTL-002-color-team-message-transparent",
+      "description": "A transparent colour is written as #RRGGBBAA in a team message",
+      "type": "positive",
+      "method": "teamMessageColorText",
+      "args": [{"r": 0, "g": 0, "b": 255, "a": 128}],
+      "expected": { "returns": "#0000FF80" }
+    },
+    {
+      "id": "TR-API-UTL-002-color-team-message-fully-transparent",
+      "description": "A fully transparent colour keeps its zero transparency in a team message",
+      "type": "positive",
+      "method": "teamMessageColorText",
+      "args": [{"r": 0, "g": 0, "b": 0, "a": 0}],
+      "expected": { "returns": "#00000000" }
+    },
+    {
+      "id": "TR-API-UTL-001-color-text-rgba-short-lowercase",
+      "description": "#rgba is read like #RGBA in small letters",
+      "type": "positive",
+      "method": "parseColorText",
+      "args": ["#f008"],
+      "expected": { "r": 255, "g": 0, "b": 0, "a": 136 }
+    },
+    {
+      "id": "TR-API-UTL-002-color-round-trip-short",
+      "description": "Reading #RGB and writing it back gives the long opaque form",
+      "type": "positive",
+      "method": "colorTextRoundTrip",
+      "args": ["#f00"],
+      "expected": { "returns": "#FF0000" }
+    },
+    {
+      "id": "TR-API-UTL-002-color-round-trip-short-alpha",
+      "description": "Reading #rgba and writing it back keeps the transparency in the long form",
+      "type": "positive",
+      "method": "colorTextRoundTrip",
+      "args": ["#f008"],
+      "expected": { "returns": "#FF000088" }
+    },
+    {
+      "id": "TR-API-UTL-002-color-round-trip-long-alpha",
+      "description": "Reading #rrggbbaa and writing it back keeps the transparency",
+      "type": "positive",
+      "method": "colorTextRoundTrip",
+      "args": ["#0099cc80"],
+      "expected": { "returns": "#0099CC80" }
+    },
+    {
+      "id": "TR-API-UTL-002-color-round-trip-opaque-alpha",
+      "description": "Reading #RRGGBBFF and writing it back gives the opaque six-digit form",
+      "type": "positive",
+      "method": "colorTextRoundTrip",
+      "args": ["#ff0000ff"],
+      "expected": { "returns": "#FF0000" }
     }
   ]
 }

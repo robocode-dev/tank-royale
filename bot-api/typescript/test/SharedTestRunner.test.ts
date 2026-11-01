@@ -6,6 +6,8 @@ import { IntentValidator } from '../src/internal/intentValidator.js';
 import { BotInfo } from '../src/BotInfo.js';
 import { InitialPosition } from '../src/InitialPosition.js';
 import { Color } from '../src/graphics/Color.js';
+import { ColorUtil } from '../src/util/ColorUtil.js';
+import { toJson } from '../src/json/JsonUtil.js';
 import { Constants } from '../src/Constants.js';
 import { TickEvent } from '../src/events/TickEvent.js';
 import { BotState } from '../src/BotState.js';
@@ -144,6 +146,9 @@ describe('Unit: Shared Cross-Platform Tests', () => {
               case 'fromRgb': lastActionValue = Color.fromRgb(args[0], args[1], args[2]); break;
               case 'fromRgba': lastActionValue = Color.fromRgba(args[0], args[1], args[2], args[3]); break;
               case 'colorToHex': lastActionValue = IntentValidator.colorToHex(args[0]); break;
+              case 'parseColorText': lastActionValue = ColorUtil.fromHexColor(args[0]); break;
+              case 'teamMessageColorText': lastActionValue = JSON.parse(toJson({ color: args[0] })).color; break;
+              case 'colorTextRoundTrip': lastActionValue = JSON.parse(toJson({ color: ColorUtil.fromHexColor(args[0]) })).color; break;
               case 'getColorConstant': lastActionValue = (Color as any)[args[0].toUpperCase()]; break;
               case 'getConstant':
                 lastActionValue = (Constants as any)[args[0]] ?? (DefaultEventPriority as any)[args[0]] ?? (GameType as any)[args[0]];

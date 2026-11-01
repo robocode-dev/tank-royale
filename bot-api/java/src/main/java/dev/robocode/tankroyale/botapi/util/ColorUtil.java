@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 
 public class ColorUtil {
 
-    private static final Pattern NUMERIC_RGB = Pattern.compile("^#[0-9a-fA-F]{3,6}$");
+    private static final Pattern NUMERIC_RGB = Pattern.compile("^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$");
 
-    private static final Pattern HEX_DIGITS = Pattern.compile("^(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$");
+    private static final Pattern HEX_DIGITS = Pattern.compile("^(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$");
 
 
     // Hide constructor to prevent instantiation
@@ -31,12 +31,13 @@ public class ColorUtil {
     }
 
     /**
-     * Creates a color from a hex color (#RGBA or #RRGGBBAA). Currently, only numeric RGB values are supported.
-     * This method works the same was as {@link #fromHex} except that is required as hash sign before the hex value.
-     * An example of a numeric RGB value is "#09C" or "#0099CC", which both represent the same color.
+     * Creates a color from a hex color, which is a hex string with a leading hash sign. The same four forms are
+     * accepted as by {@link #fromHex}: "#RGB", "#RGBA", "#RRGGBB" and "#RRGGBBAA", in capital or small letters.
+     * An example is "#09C" or "#0099CC", which both represent the same, fully opaque color.
      *
-     * @param str is a string containing either three or six hexadecimal RGB values like "#09C" or "#0099CC".
+     * @param str is a string like "#09C", "#09C8", "#0099CC" or "#0099CC88". Surrounding spaces are ignored.
      * @return the created Color; {@code null} if the input parameter is {@code null}.
+     * @throws IllegalArgumentException if the string is not one of the four forms.
      * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
      */
@@ -46,37 +47,45 @@ public class ColorUtil {
         if (NUMERIC_RGB.matcher(str).matches()) {
             return fromHex(str.substring(1));
         }
-        throw new IllegalArgumentException("You must supply the string in numeric RGB format #[0-9a-fA-F], e.g. \"#09C\" or \"#0099CC\"");
+        throw new IllegalArgumentException("You must supply the string in the format #RGB, #RGBA, #RRGGBB or #RRGGBBAA, e.g. \"#09C\" or \"#0099CC\"");
     }
 
     /**
-     * Creates a color from a hex triplet. A hex triplet is either three or six hexadecimal digits that represent an
-     * RGB Color.<br>
-     * An example of a hex triplet is "09C" or "0099CC", which both represent the same color.
+     * Creates a color from a hex string without a leading hash sign. Four forms are accepted, in capital or small
+     * letters: three digits (RGB), four digits (RGBA), six digits (RRGGBB) and eight digits (RRGGBBAA). In the short
+     * forms each digit is doubled, so "09C" and "0099CC" represent the same color. Without alpha digits the color
+     * is fully opaque.
      *
-     * @param hexTriplet is a string containing either three or six hexadecimal numbers like "09C" or "0099CC".
+     * @param hexTriplet is a string containing 3, 4, 6 or 8 hexadecimal digits like "09C" or "0099CC88".
      * @return the created Color.
+     * @throws IllegalArgumentException if the string is not one of the four forms.
      * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
      */
     public static Color fromHex(String hexTriplet) {
         hexTriplet = hexTriplet.trim();
         if (!HEX_DIGITS.matcher(hexTriplet).matches()) {
-            throw new IllegalArgumentException("You must supply 3 or 6 hex digits [0-9a-fA-F], e.g. \"09C\" or \"0099CC\"");
+            throw new IllegalArgumentException("You must supply 3, 4, 6 or 8 hex digits [0-9a-fA-F], e.g. \"09C\" or \"0099CC\"");
         }
 
-        boolean isThreeDigits = hexTriplet.length() == 3;
-        int componentLength = isThreeDigits ? 1 : 2;
+        int length = hexTriplet.length();
+        boolean isShort = length == 3 || length == 4;
+        boolean hasAlpha = length == 4 || length == 8;
+        int componentLength = isShort ? 1 : 2;
 
-        int r = Integer.valueOf(hexTriplet.substring(0, componentLength), 16);
-        int g = Integer.valueOf(hexTriplet.substring(componentLength, componentLength * 2), 16);
-        int b = Integer.valueOf(hexTriplet.substring(componentLength * 2, componentLength * 3), 16);
+        int r = Integer.parseInt(hexTriplet.substring(0, componentLength), 16);
+        int g = Integer.parseInt(hexTriplet.substring(componentLength, componentLength * 2), 16);
+        int b = Integer.parseInt(hexTriplet.substring(componentLength * 2, componentLength * 3), 16);
+        int a = hasAlpha ? Integer.parseInt(hexTriplet.substring(componentLength * 3, componentLength * 4), 16) : 255;
 
-        if (isThreeDigits) {
+        if (isShort) {
             r = r << 4 | r;
             g = g << 4 | g;
             b = b << 4 | b;
+            if (hasAlpha) {
+                a = a << 4 | a;
+            }
         }
-        return Color.fromRgb(r, g, b);
+        return Color.fromRgba(r, g, b, a);
     }
 }

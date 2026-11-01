@@ -67,8 +67,8 @@ final class GsonFactory {
                 out.nullValue();
                 return;
             }
-            String hexColor = String.format("#%02x%02x%02x", color.getR(), color.getG(), color.getB());
-            out.value(hexColor);
+            // "#RRGGBB" when fully opaque, otherwise "#RRGGBBAA", so transparency survives in team messages
+            out.value(color.toHexColor());
         }
 
         @Override
