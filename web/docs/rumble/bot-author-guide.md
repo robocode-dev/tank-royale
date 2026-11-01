@@ -17,6 +17,12 @@ Ranked bots must meet these rules:
 
 The [`rumble-bots` contribution guide](https://github.com/robocode-dev/rumble-bots/blob/main/CONTRIBUTING.md) describes submission format, licensing and automated checks.
 
+### Why your source code is public
+
+Rumble bots run on community members' computers. Readable source code lets moderators inspect submissions for potentially harmful behavior before those bots are distributed. Source review helps reduce the risk, but it cannot guarantee that a bot is safe; isolation during execution remains important.
+
+The catalog is public so community clients can obtain the reviewed source and participants can learn from each other's implementations. This means competitors can read your strategy and may reuse your code under its license. Consider whether you are comfortable publishing your implementation before submitting a bot.
+
 ## 1. Fork and clone the catalog
 
 A fork is your own GitHub copy of a repository. A pull request, usually shortened to PR, submits your changes for GitHub moderation. A clean bot-only submission can merge automatically; cases needing judgment go to the Tank Royale Rumble moderators. See [how moderation works and how to volunteer](moderator-guide.md).
