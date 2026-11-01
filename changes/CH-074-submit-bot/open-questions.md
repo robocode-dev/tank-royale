@@ -1,15 +1,19 @@
 ---
 id: CH-074-open-questions
 type: open-questions
-status: open
+status: resolved
 links: [CH-074]
 title: The pull request text and the branch rules
 ---
 
 ## What should the pull request text say?
 
-The bot repository has a pull request template, a checklist of statements the author makes, including that they ran the repository's validator with the smoke check and that they can publish the source under the declared license. The program cannot truthfully tick the smoke check, because it has not run it on the author's computer. The recommendation is a fixed text that states the facts of the submission and what the program checked, and states the author's certification of the license (which the wizard asked for), without imitating the checklist. A moderator then sees what was and was not done. The alternative is to fill the repository's checklist with the boxes the program can honestly tick and leave the rest empty, which keeps the repository's own form but looks half finished.
+The bot repository has a pull request template, a checklist of statements the author makes, including that they ran the repository's validator with the smoke check. The program cannot truthfully tick that. Reading the repository's moderation showed that it does not read the pull request text at all, only the author and the changed files, so the text is for people.
+
+Resolved by the maintainer on 2026-11-01, approving the recommendation: a fixed text with the facts of the submission, what the program checked and what it did not, and the author's certification of the license. It does not list the files left out, because those names come from the author's private folder and the pull request is public. Name and version are limited to safe characters and written as code.
 
 ## What should happen when the branch name is already used?
 
-The branch name is fixed from the bot and version so an interrupted submission can be resumed. The recommendation is to reuse the branch when it holds exactly the staged files, return the open pull request if there is one, and otherwise use a numbered branch (`submit/MyBot-1.0.3-2`), never overwriting or deleting anything. The alternative is to refuse and ask the person to remove the old branch on GitHub, which is simpler but leaves a half-done submission stuck.
+The first recommendation was a numbered branch whenever the content differed. Reading the moderation showed that to be wrong in the common case: moderation runs again when an open pull request gets a new commit, and the repository's contributing guide asks authors to push a fix for exactly that reason, so a numbered branch would put a second pull request beside the first.
+
+Resolved by the maintainer on 2026-11-01, approving the corrected recommendation: one open pull request per bot per account. An open pull request with the same files is returned; with other files it gets one new commit and an updated title and text. With no open pull request, a branch holding exactly the staged files is an interrupted attempt and is used; otherwise a numbered branch keeps a closed or merged pull request as history. Nothing is forced, overwritten or deleted.

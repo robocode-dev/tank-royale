@@ -732,6 +732,12 @@ events:
     - {id: CH-074, kind: numeric, state: live, prefix: CH, component: "74"}
     - {id: CH-074-tasks, kind: opaque, state: live}
     - {id: CH-074-open-questions, kind: opaque, state: live}
+    - {id: RBC-025, kind: numeric, state: reserved, prefix: RBC, component: "25"}
+    - {id: RBC-026, kind: numeric, state: reserved, prefix: RBC, component: "26"}
+    - {id: RBC-027, kind: numeric, state: reserved, prefix: RBC, component: "27"}
+    - {id: RBC-028, kind: numeric, state: reserved, prefix: RBC, component: "28"}
+    - {id: RBC-029, kind: numeric, state: reserved, prefix: RBC, component: "29"}
+    - {id: RBC-030, kind: numeric, state: reserved, prefix: RBC, component: "30"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
