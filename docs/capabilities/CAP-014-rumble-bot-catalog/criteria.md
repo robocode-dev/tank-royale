@@ -219,4 +219,57 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     Given the active bots of the public Rumble fetched and verified against the catalog
     When each fetched bot is staged
     Then the staged copy passes the checks and its hash equals the hash recorded in the catalog
+
+  @RBC-025
+  Scenario: The program tells whether the account has its own copy of the bot repository that it can send to
+    Test-type: Unit
+    Given a signed-in account and an environment
+    When the account is checked for readiness to send a bot
+    Then the answer is ready only when the account has a copy of that environment's bot repository that really is a copy of the Rumble's repository and the Rumble sign-in App is installed on it
+    And otherwise the answer says which of these is missing: no copy yet with the address of the page that makes one, the App not installed on the copy with the address of the page that installs it, or a repository of the same name that is not a copy of the Rumble's
+    And the check only reads and changes nothing on GitHub
+
+  @RBC-026
+  Scenario: A staged bot is committed exactly as staged, with the launcher executable and the old folder replaced
+    Test-type: Unit
+    Given a staged submission and an account that is ready
+    When the bot is sent
+    Then one commit on a new branch built from the Rumble repository's current head holds the staged files under `bots/<language>/<Name>/`, the Unix launcher with mode `100755` and every other file with mode `100644`
+    And when the bot's folder already exists upstream, files that are no longer in the staged copy are removed from the folder, and nothing outside the folder is changed
+    And before a pull request is opened the identifier GitHub gives each committed file is compared with the one computed locally from the staged file, and any difference stops the sending with no pull request opened
+
+  @RBC-027
+  Scenario: The pull request states the facts of the submission without exposing the author's private file names
+    Test-type: Unit
+    Given a staged submission that left out files and converted line endings in some
+    When the bot is sent
+    Then the pull request is opened from the account's branch to the Rumble repository with the title `Add <Name> <version>`, or `Update <Name> to <version>` when the bot's folder already exists upstream
+    And the text gives the name and version in code format, the folder, the license, the number of files, the content hash, the number of converted files and the executable launcher, what the program checked and what it did not, and that the author confirmed the right to publish the source
+    And no name of a file that was left out of the copy appears in the title, the text or the branch name
+    And a name or version with any character other than letters, digits, dots, hyphens and underscores is refused before anything is sent
+
+  @RBC-028
+  Scenario: Nothing is sent without the author's confirmation of the license
+    Test-type: Unit
+    Given a staged submission and an account that is ready
+    When the bot is sent without the confirmation that the author agrees to publish the source under its declared license
+    Then the sending is refused with a plain reason and no request that changes anything on GitHub is made
+
+  @RBC-029
+  Scenario: Each bot has at most one open pull request per account, and an interrupted sending never duplicates it
+    Test-type: Unit
+    Given an account that may already have a branch or an open pull request for the bot
+    When the same bot is sent again
+    Then an open pull request for the bot whose branch holds exactly the staged files is returned unchanged
+    And an open pull request whose branch holds other files gets one new commit on that branch and an updated title and text, and no second pull request is opened
+    And with no open pull request the branch is `submit/<Name>-<version>`, an existing branch holding exactly the staged files is used for the pull request, and a name already used by a closed or merged pull request is followed by a number so that earlier pull request stays as history
+    And no branch is ever forced, overwritten or deleted
+
+  @RBC-030
+  Scenario: A sending that cannot finish says why in plain words and leaks no token
+    Test-type: Unit
+    Given an account that is ready
+    When GitHub does not accept the sign-in, cannot be reached, limits the requests, refuses the branch or answers unexpectedly
+    Then the result says which of these happened in plain words, tells the person to sign in again when the sign-in was not accepted, and no pull request is reported as opened
+    And the token appears in no address, result text, request body or console output
 ```

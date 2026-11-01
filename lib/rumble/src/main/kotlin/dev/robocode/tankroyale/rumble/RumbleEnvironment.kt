@@ -28,6 +28,11 @@ data class RumbleEnvironment(
      * environment has no sign-in App yet. It is not a secret: signing in with a code needs no client secret.
      */
     val signInClientId: String? = null,
+    /**
+     * The name in the address of that App's page on GitHub (`github.com/apps/<name>`), which is where a person
+     * installs it on their copy of the bot repository. Null when the environment has no sign-in App yet.
+     */
+    val signInAppSlug: String? = null,
 ) {
     /** The folder for this environment's cache, queue, receipts and registrations below [base]. */
     fun stateRoot(base: Path): Path = base.resolve("environments").resolve(name)

@@ -419,6 +419,10 @@
           "sha256": "dac7dd006130275366c00092b3f51ce62916bbb6d1762f61ee939b35a6ad0908"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "sha256": "64164cebf783dd62c37cc9924498e3d5d538be1e2cd48fee7810e59cbcd64954"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
           "sha256": "131123374d7b713f72a19aeecf67eea1fa131ba5da376510e93894558ce20805"
         },
@@ -432,7 +436,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGitHubApiTest.kt",
-          "sha256": "3d5f2528532e57bc67257cdb7ff408977156f73eff39943d6043518183b877d1"
+          "sha256": "2e2f1dc9705406435ca3fa46a3d05323031b5c67959f7ba306779a4668d9b44f"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationLiveTest.kt",
@@ -460,7 +464,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
-          "sha256": "51bb9d9a6f07b4c8b1836f6c8280695e233994f6ca98badb5c68714667a3b65b"
+          "sha256": "e64628ba28f80a2cec3765cf8e692cdfca24c7ae499ca7ee2f5d1fad66c15f03"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
@@ -508,6 +512,118 @@
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotProjectCrossCheckTest.kt",
           "subject": "RumbleBotProjectCrossCheckTest.testRBC024_IntegrationPositive_everyActivePublicBotStagesToTheHashTheCatalogRecorded",
           "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-025",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC025_UnitNegative_theAnswerSaysWhichStepIsMissingAndSendingDoesNothingUntilItIsDone",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-025",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC025_UnitPositive_anAccountWithACopyAndTheAppInstalledIsReadyWithoutChangingAnything",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-026",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC026_UnitNegative_aFileGitHubStoresDifferentlyStopsTheSendingBeforeAnyBranchOrPullRequestExists",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-026",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC026_UnitPositive_anUpdateRemovesTheFilesTheAuthorRemovedAndTouchesNothingElse",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-026",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC026_UnitPositive_oneCommitFromTheRumblesHeadHoldsTheStagedFilesWithTheLauncherExecutableAndTheOldFolderReplaced",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-027",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC027_UnitNegative_aLicenseTextCannotBreakOutOfItsCodeSpan",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-027",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC027_UnitNegative_aNameOrVersionOutsideTheSafeCharactersIsRefusedBeforeAnythingIsSent",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-027",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC027_UnitPositive_theTextStatesTheFactsAndNeverNamesFilesThatWereLeftOut",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-028",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC028_UnitNegative_withoutTheAuthorsConfirmationNothingIsSent",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC029_UnitNegative_anotherBotWhoseNameStartsWithThisOnesIsNotMistakenForItAndNothingIsForced",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC029_UnitPositive_aBranchLeftByAnInterruptedSendingIsUsedWithoutANewCommit",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC029_UnitPositive_aNameUsedByAClosedPullRequestIsFollowedByANumberAndTheOldBranchStays",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC029_UnitPositive_otherFilesGetOneNewCommitOnTheSameBranchAndNoSecondPullRequest",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC029_UnitPositive_sendingTheSameFilesAgainReturnsTheOpenPullRequestUnchanged",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-030",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC030_UnitNegative_theTokenAppearsInNoAddressBodyResultOrConsoleOutput",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-030",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRBC030_UnitPositive_everyFailureSaysWhatHappenedInPlainWordsAndNoPullRequestIsReported",
+          "type": "Unit",
           "direction": "positive"
         },
         {

@@ -9,7 +9,8 @@
       "dashboard": "https://robocode-dev.github.io/rumble-data/",
       "resettable": false,
       "development": false,
-      "signInClientId": null
+      "signInClientId": null,
+      "signInAppSlug": null
     },
     {
       "name": "test",
@@ -19,7 +20,8 @@
       "dashboard": "https://robocode-dev.github.io/rumble-data-test/",
       "resettable": true,
       "development": true,
-      "signInClientId": "Iv23likgKJHOPyEQABJs"
+      "signInClientId": "Iv23likgKJHOPyEQABJs",
+      "signInAppSlug": "tank-royale-rumble-contrib-test"
     }
   ]
 }
