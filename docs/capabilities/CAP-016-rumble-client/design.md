@@ -44,6 +44,10 @@ Accounts with repository push access may optionally submit through the API using
 
 Fork-pull-request submission remains a portability option only after the result-data capability publishes and validates that transport. `rumble-data` explicitly does not support it in V1, so M-008 does not claim it as an available fallback.
 
+### Planned replacement: signed-in participation from the desktop program
+
+The browser-form hand-off above is the supported client today and stays so until its replacement is accepted. The replacement is described in the [participation design](../../design/rumble/participation.md): the desktop program and a headless controller sign the contributor in to GitHub with a short code and renew that sign-in without a client secret, register the account automatically, and send results and bot submissions as the signed-in account, as the [outside-account experiment](../../analysis/AN-023-outside-account-sign-in-experiment.md) showed to work. The sign-in is saved between runs in one protected file in the Tank Royale user folder, the same on every operating system, as the [experiment on saving the sign-in](../../analysis/AN-024-saving-the-github-sign-in-in-one-java-only-file.md) tested. The sign-in, renewal and saved-sign-in parts already exist in the shared Rumble library; registration, upload and the screens do not. Only the host side holds the sign-in; battle workers never receive it.
+
 ## Runtime boundary
 
 The primary distribution is a rebuildable container containing the pinned Tank Royale engine, Battle Runner, and the Java, .NET, Python, and Node.js runtimes required by the catalog. The image follows an LTS-first runtime policy; the external Rumble client repository owns the exact pins and its scheduled refresh workflow opens a reviewable pull request only after the image, hardened checks, and all four language smoke battles pass. Client network egress is limited to repository synchronization and issue submission; bot processes receive only the local server connection. Documented bare-metal setup remains available with an explicit warning that it does not provide the container boundary.
