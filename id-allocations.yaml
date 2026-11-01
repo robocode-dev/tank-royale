@@ -1290,6 +1290,11 @@ claims:
       state: reserved
       prefix: PRO
       component: "1"
+    - id: PRO-002
+      kind: numeric
+      state: reserved
+      prefix: PRO
+      component: "2"
     - id: RBC-001
       kind: numeric
       state: reserved
@@ -1786,6 +1791,11 @@ high-water:
       state: reserved
       prefix: PDR
       component: "19"
+    - id: PRO-001
+      kind: numeric
+      state: reserved
+      prefix: PRO
+      component: "1"
     - id: RBC-019
       kind: numeric
       state: reserved
