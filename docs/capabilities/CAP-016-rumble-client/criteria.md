@@ -303,4 +303,45 @@ Feature: rumble-client — Local ranked and practice battle client
     Then each renewal takes a lock on the saved file, reads the current refresh token from the file, and saves the new refresh token before using the new sign-in
     And no renewal uses a refresh token that another program has already replaced, so both stay signed in
     And a refusal by GitHub removes the saved sign-in and asks the person to sign in again
+
+  @RCL-036
+  Scenario: An account that is already registered gets its client ID without opening an issue
+    Test-type: Unit
+    Given a signed-in account whose registration file exists in the environment's result repository, or whose registration is already saved on this computer
+    When the library registers the account
+    Then it returns the client ID from the file and marks the account as already registered
+    And it opens no issue, and a saved registration is used without any further request after the account is identified
+
+  @RCL-037
+  Scenario: A new account is registered through one registration issue and the result repository's file
+    Test-type: Unit
+    Given a signed-in account with no registration file and no open registration issue
+    When the library registers the account
+    Then it opens one issue titled `[register]` with the account name as the signed-in account, then checks every five seconds for up to two minutes until the registration file exists
+    And it returns the client ID from the file, saves the registration, and never opens a second issue while an earlier registration issue from the same account is still open
+
+  @RCL-038
+  Scenario: Registration ends in a typed answer for every other outcome
+    Test-type: Unit
+    Given a signed-in account that cannot be registered at once
+    When the library registers the account
+    Then a registration refused by the workflow is returned as refused with the workflow's reason in one short line
+    And a wait that ends without a registration is returned as not finished with the address of the issue, and a later attempt continues from the registration file or the open issue
+    And GitHub not accepting the token is returned as sign in again, and every other problem, including being offline or the App not being installed, is returned as failed with a reason in plain words
+
+  @RCL-039
+  Scenario: The saved registration is kept per environment and only used for the same account
+    Test-type: Unit
+    Given a registration saved for an environment and an account
+    When the saved registration is read back
+    Then it holds the account, the client ID, the environment and when it was saved, in a plain file that is not secret
+    And it is ignored when it belongs to another account or another environment or is damaged, and it is removed when the person signs out
+
+  @RCL-040
+  Scenario: The sign-in token goes only to GitHub's API address and never into text or an address
+    Test-type: Unit
+    Given a signed-in token and every request the registration makes
+    When the requests are built and every result and failure is turned into text
+    Then the token is sent only in the authorization header of requests to GitHub's API address
+    And it appears in no address, no result, no message and no console output
 ```

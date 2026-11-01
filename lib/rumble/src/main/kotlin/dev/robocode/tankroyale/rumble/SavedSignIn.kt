@@ -17,7 +17,12 @@ sealed interface SavedRenewal {
  * from the file, and saves the new one before the new sign-in is used, so programs that share the file never use a
  * refresh token that another program has replaced.
  */
-class SavedSignIn(private val store: SignInStore, private val signIn: GitHubSignIn) {
+class SavedSignIn(
+    private val store: SignInStore,
+    private val signIn: GitHubSignIn,
+    /** When given, signing out removes the saved registration too. */
+    private val registration: RegistrationStore? = null,
+) {
 
     /** Remembers a fresh sign-in so later runs can renew it. A sign-in without a refresh token is not saved. */
     fun remember(tokens: GitHubTokens): SaveResult = store.locked {
@@ -36,8 +41,11 @@ class SavedSignIn(private val store: SignInStore, private val signIn: GitHubSign
         }
     }
 
-    /** Signs out: removes the saved sign-in. */
-    fun forget() = store.locked { store.forget() }
+    /** Signs out: removes the saved sign-in and, when one is kept, the saved registration. */
+    fun forget() = store.locked {
+        store.forget()
+        registration?.forget()
+    }
 
     private fun renewWith(saved: LoadResult.Found): SavedRenewal =
         when (val result = signIn.refresh(GitHubTokens("", saved.refreshToken, null, saved.refreshTokenExpiresAt))) {
