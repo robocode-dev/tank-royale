@@ -860,6 +860,11 @@ claims:
       state: reserved
       prefix: CH
       component: "69"
+    - id: CH-070
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "70"
     - id: G-001
       kind: numeric
       state: reserved
@@ -1796,11 +1801,11 @@ high-water:
       state: reserved
       prefix: PDR
       component: "19"
-    - id: PRO-002
+    - id: PRO-003
       kind: numeric
       state: reserved
       prefix: PRO
-      component: "2"
+      component: "3"
     - id: RBC-019
       kind: numeric
       state: reserved
