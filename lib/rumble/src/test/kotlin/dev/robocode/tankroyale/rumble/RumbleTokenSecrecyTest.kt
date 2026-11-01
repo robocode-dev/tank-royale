@@ -54,10 +54,10 @@ class RumbleTokenSecrecyTest {
     }
 
     @Test
-    @Tag("RCL-027")
+    @Tag("RCL-030")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCL027_UnitPositive_noTokenAppearsInAnyTextMessageOrConsoleOutput() {
+    fun testRCL030_UnitPositive_noTokenAppearsInAnyTextMessageOrConsoleOutput() {
         val outBuffer = ByteArrayOutputStream()
         val errBuffer = ByteArrayOutputStream()
         val originalOut = System.out
@@ -81,10 +81,10 @@ class RumbleTokenSecrecyTest {
     }
 
     @Test
-    @Tag("RCL-027")
+    @Tag("RCL-030")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCL027_UnitNegative_theSignInSourcesUseNoFilesConsoleOrLogging() {
+    fun testRCL030_UnitNegative_theSignInSourcesUseNoFilesConsoleOrLogging() {
         val files = listOf("GitHubSignIn.kt", "GitHubTokens.kt", "GitHubAuthTransport.kt")
         val forbidden = listOf("java.nio.file", "java.io.File", "FileWriter", "FileOutputStream", "println", "System.out", "System.err", "Logger")
         val sourceRoot = Path.of("src", "main", "kotlin", "dev", "robocode", "tankroyale", "rumble")

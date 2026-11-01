@@ -366,7 +366,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
-          "sha256": "7568c41e063f38ef5bff5b4e14165df23ff0802fbd2d2c8ee33193168d48c5d3"
+          "sha256": "50b5306d63c9e475850519a8e5e05024e32ff0f07845a4737cc4acbb48bd1d6f"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
@@ -550,16 +550,16 @@
           "direction": "positive"
         },
         {
-          "id": "RCL-027",
+          "id": "RCL-030",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
-          "subject": "RumbleTokenSecrecyTest.testRCL027_UnitNegative_theSignInSourcesUseNoFilesConsoleOrLogging",
+          "subject": "RumbleTokenSecrecyTest.testRCL030_UnitNegative_theSignInSourcesUseNoFilesConsoleOrLogging",
           "type": "Unit",
           "direction": "negative"
         },
         {
-          "id": "RCL-027",
+          "id": "RCL-030",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
-          "subject": "RumbleTokenSecrecyTest.testRCL027_UnitPositive_noTokenAppearsInAnyTextMessageOrConsoleOutput",
+          "subject": "RumbleTokenSecrecyTest.testRCL030_UnitPositive_noTokenAppearsInAnyTextMessageOrConsoleOutput",
           "type": "Unit",
           "direction": "positive"
         },

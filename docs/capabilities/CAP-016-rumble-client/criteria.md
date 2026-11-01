@@ -229,7 +229,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it sends no client secret and receives a new sign-in with a new lifetime
     And a refusal because access was revoked or the refresh token expired is reported as a refused renewal that asks the person to sign in again, and a network failure is reported as a failure that can be retried
 
-  @RCL-027
+  # Retired: RCL-030 keeps the rule that no token appears in text, messages or logs, and RCL-031 replaces the rule that nothing is written to disk with a rule that only the sign-in store writes a token, in a protected file.
+  @RCL-027 @retired
   Scenario: A sign-in token never appears in text, messages or logs
     Test-type: Unit
     Given a sign-in with recognisable access, refresh and device code values
@@ -253,4 +254,53 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it checks no more often than the interval GitHub named, including after a request to slow down
     And it stops with the expired answer when the code's lifetime has passed and with a cancelled answer as soon as the caller cancels
     And it returns as soon as GitHub reports the person signed in or denied access
+
+  @RCL-030
+  Scenario: A sign-in token never appears in text, messages or logs
+    Test-type: Unit
+    Given a sign-in with recognisable access, refresh and device code values
+    When the sign-in objects are turned into text and when every error and failure path is run
+    Then none of those values appears in any text, message, log line or console output the library produces
+    And the sign-in code that talks to GitHub uses no files, console or logging
+
+  @RCL-031
+  Scenario: The saved sign-in holds only the refresh token and is written only by the sign-in store
+    Test-type: Unit
+    Given a signed-in person and a folder for the environment's saved state
+    When the sign-in is saved and then loaded by a new store object on the same folder
+    Then the loaded value is the refresh token and when it stops working, and the access token was never saved
+    And the file holds no readable token text, and no other part of the library writes a token to disk
+    And when saving is switched off nothing is written and nothing is loaded
+
+  @RCL-032
+  Scenario: The saved file is only for its owner, and the library checks that before and after writing
+    Test-type: Unit
+    Given a folder on a file system
+    When the sign-in is saved
+    Then the file is created so that only its owner may use it, the rights are read back before any token is written and again after the file is moved into place, and the file is written by a temporary file and a single move
+    And when the rights cannot be made owner-only the sign-in is not saved, nothing readable is left behind, and the reason is given in plain words
+
+  @RCL-033
+  Scenario: A saved sign-in that cannot be trusted is refused and the person signs in again
+    Test-type: Unit
+    Given a saved sign-in file
+    When it is damaged by one byte, cut short, empty, opened by another user name or home folder, moved to another environment, or has rights that let others use it
+    Then loading gives an unusable result with a reason in plain words, no token, and no crash
+    And a missing file is reported as missing, which is not a problem
+
+  @RCL-034
+  Scenario: Signing out removes the saved sign-in
+    Test-type: Unit
+    Given a saved sign-in
+    When the person signs out
+    Then the file and any temporary file are removed and loading afterwards reports it as missing
+
+  @RCL-035
+  Scenario: Programs that share a saved sign-in renew it one at a time and never use an outdated refresh token
+    Test-type: Unit
+    Given two programs on the same computer that share one saved sign-in, where GitHub accepts each refresh token only once
+    When both renew, one after the other and at the same time
+    Then each renewal takes a lock on the saved file, reads the current refresh token from the file, and saves the new refresh token before using the new sign-in
+    And no renewal uses a refresh token that another program has already replaced, so both stay signed in
+    And a refusal by GitHub removes the saved sign-in and asks the person to sign in again
 ```
