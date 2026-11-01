@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.rumble
+package dev.robocode.tankroyale.botproject
 
 import java.nio.file.Files
 import java.nio.file.Path

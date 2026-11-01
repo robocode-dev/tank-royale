@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.rumble
 
+import dev.robocode.tankroyale.botproject.TreeHash
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Tag
