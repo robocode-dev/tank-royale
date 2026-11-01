@@ -17,6 +17,9 @@ interface GitHubApi {
 
     /** Sends [json] to [path] as the signed-in account. */
     fun postJson(path: String, token: String, json: String): ApiResponse
+
+    /** Changes the resource at [path] with the fields in [json], as the signed-in account. */
+    fun patchJson(path: String, token: String, json: String): ApiResponse
 }
 
 /**
@@ -30,6 +33,8 @@ class HttpGitHubApi(
     override fun get(path: String, token: String?): ApiResponse = send(request("GET", path, token, null))
 
     override fun postJson(path: String, token: String, json: String): ApiResponse = send(request("POST", path, token, json))
+
+    override fun patchJson(path: String, token: String, json: String): ApiResponse = send(request("PATCH", path, token, json))
 
     internal fun request(method: String, path: String, token: String?, json: String?): HttpRequest {
         require(path.startsWith("/")) { "An API path starts with a slash" }

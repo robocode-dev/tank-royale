@@ -23,13 +23,16 @@ class RumbleGitHubApiTest {
         val get = api.request("GET", "/repos/robocode-dev/rumble-data-test/contents/clients/alice.json", SECRET_TOKEN, null)
         val post = api.request("POST", "/repos/robocode-dev/rumble-data-test/issues", SECRET_TOKEN, """{"title":"[register] alice"}""")
 
-        listOf(get, post).forEach { request ->
+        val patch = api.request("PATCH", "/repos/robocode-dev/rumble-bots-test/pulls/3", SECRET_TOKEN, """{"title":"Update Scout to 1.0.4"}""")
+
+        listOf(get, post, patch).forEach { request ->
             assertEquals("api.github.com", request.uri().host)
             assertEquals("https", request.uri().scheme)
             assertFalse(request.uri().toString().contains(SECRET_TOKEN))
             assertEquals("Bearer $SECRET_TOKEN", request.headers().firstValue("Authorization").get())
             assertEquals(1, request.headers().map().filterKeys { it.equals("Authorization", true) }.size)
         }
+        assertEquals("PATCH", patch.method())
         assertEquals("POST", post.method())
         assertEquals("application/json", post.headers().firstValue("Content-Type").get())
         assertFalse(api.request("GET", "/user", null, null).headers().firstValue("Authorization").isPresent)

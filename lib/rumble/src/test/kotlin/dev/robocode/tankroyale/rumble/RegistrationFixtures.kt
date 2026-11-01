@@ -52,6 +52,8 @@ class FakeRumbleGitHub(
         return ApiResponse(201, """{"number":$createdNumber,"html_url":"https://github.com/$owner/$dataRepository/issues/$createdNumber"}""")
     }
 
+    override fun patchJson(path: String, token: String, json: String): ApiResponse = ApiResponse(404, "{}")
+
     private fun contents(): ApiResponse {
         contentsStatus?.let { return ApiResponse(it, "{}") }
         contentsBody?.let { return ApiResponse(200, it) }

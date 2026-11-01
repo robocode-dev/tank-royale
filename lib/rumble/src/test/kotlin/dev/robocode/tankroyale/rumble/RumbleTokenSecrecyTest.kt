@@ -93,5 +93,10 @@ class RumbleTokenSecrecyTest {
             val text = Files.readString(sourceRoot.resolve(name))
             forbidden.forEach { word -> assertFalse(text.contains(word), "$name uses $word") }
         }
+
+        // Sending a bot must read the staged files, so it may use files, but it never prints or logs anything.
+        val printing = listOf("println", "System.out", "System.err", "Logger", "printStackTrace")
+        val sending = Files.readString(sourceRoot.resolve("BotSubmission.kt"))
+        printing.forEach { word -> assertFalse(sending.contains(word), "BotSubmission.kt uses $word") }
     }
 }
