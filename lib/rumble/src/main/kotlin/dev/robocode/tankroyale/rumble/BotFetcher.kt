@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.rumble
 
+import dev.robocode.tankroyale.botproject.TreeHash
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Comparator

@@ -44,6 +44,10 @@
           "sha256": "be31bf5257e48bead0ce74b5c85d4b8d6369855a21d78672ef13b3b09bde6f7c"
         },
         {
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "sha256": "42834e8e154fb04ccf82d0fa3d57a599af266bb5edb89397da408593d73397f3"
+        },
+        {
           "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
           "sha256": "ca28621b6d9d4058f648a28090131f2e4cbeac751ac9abd4c3d5f2aa444e9506"
         }
@@ -81,6 +85,69 @@
           "id": "RBC-013",
           "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectInspectionTest.kt",
           "subject": "BotProjectInspectionTest.testRBC013_UnitPositive_aTeamFolderIsToldApartFromAnIndividualBot",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-020",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC020_UnitNegative_sourceLookingFilesInBuildFoldersAndSymbolicLinksAreNotTaken",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-020",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC020_UnitPositive_onlyConfigurationLaunchersSourceAndDeclarationFilesAreCopiedAndTheRestIsListedByFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-021",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC021_UnitNegative_unsafeStagingFoldersAreRefusedBeforeAnythingIsWritten",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-021",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC021_UnitPositive_aFolderMadeByEarlierStagingIsEmptiedAndReused",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-021",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC021_UnitPositive_theCopyIsLaidOutLikeTheBotRepositoryAndTheProjectIsUntouched",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-022",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC022_UnitNegative_filesWithUnixLineEndingsAreNotReportedAsChangedAndOtherCharactersAreKept",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-022",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC022_UnitPositive_windowsLineEndingsBecomeUnixOnlyInTheCopyAndTheLauncherIsExecutable",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-023",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC023_UnitNegative_aProjectWhoseCopyFailsTheChecksGivesProblemsAndNoUsableCopy",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-023",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC023_UnitPositive_theDescriptionIsCompleteAndStagingTwiceGivesTheSameFilesAndHash",
           "type": "Unit",
           "direction": "positive"
         },
@@ -334,15 +401,15 @@
         },
         {
           "path": "lib/rumble/build.gradle.kts",
-          "sha256": "c20fc9f04446fb739fa6e873c8ab78db83de5ae36e5fd4584d64f2224e3e2ca0"
+          "sha256": "76895a6fe74d1d64c4b2f9a3c1443fcc81220decf0548e946e21a7bbc5f0ff49"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
-          "sha256": "ec5a1849fc021d57c44d7bbccb41048009d9084343b48563a4387cfe26cf0f47"
+          "sha256": "bb008e9c37d3f5908f79edbb7ff453b97f2c38b2ce0503ec2a86ece7637588e6"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotProjectCrossCheckTest.kt",
-          "sha256": "18a85ac83fc9f39fc5cbe4c435eade52f98cb23dc5478657e8c65dbf9934e867"
+          "sha256": "dac7dd006130275366c00092b3f51ce62916bbb6d1762f61ee939b35a6ad0908"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
@@ -390,7 +457,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
-          "sha256": "4b2f21c96e1212187a97841e6caa98d09c5e4b3e957731c24a2205c536674bec"
+          "sha256": "8ed41559e06022962b7e3308cdf85a76331149d9712f1f4f09803e3d8163aaee"
         }
       ],
       "references": [
@@ -426,6 +493,13 @@
           "id": "RCL-024",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
           "subject": "RumbleBotFetchTest.testRCL024_IntegrationPositive_anOrdinaryArchiveIsFetchedAndUnrelatedFilesAreNotExtracted",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-024",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotProjectCrossCheckTest.kt",
+          "subject": "RumbleBotProjectCrossCheckTest.testRBC024_IntegrationPositive_everyActivePublicBotStagesToTheHashTheCatalogRecorded",
           "type": "Integration",
           "direction": "positive"
         },
