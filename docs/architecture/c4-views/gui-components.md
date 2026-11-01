@@ -229,7 +229,7 @@ graph TD
 
 ## Planned: Rumble menu
 
-The GUI is planned to gain a **Rumble** menu between Config and Help, with screens for getting started, submitting a bot, listing the author's bots, contributing battles, results and queue, and the GitHub account. It is not part of the diagram above because it has not been built. The [Rumble menu mockups](../design/rumble/gui-mockups.md) draw the screens, and the [module dependency rules](../design/rumble/participation.md) require that the screens only call a shared Rumble library, that the GUI alone holds sign-in credentials, and that nothing else depends on the GUI. This view gains a component when the screens ship.
+The GUI is planned to gain a **Rumble** menu between Config and Help, with screens for getting started, submitting a bot, listing the author's bots, contributing battles, results and queue, and the GitHub account. It is not part of the diagram above because it has not been built. The [Rumble menu mockups](../../design/rumble/gui-mockups.md) draw the screens, and the [module dependency rules](../../design/rumble/participation.md) require that the screens only call a shared Rumble library, that the GUI alone holds sign-in credentials, and that nothing else depends on the GUI. This view gains a component when the screens ship.
 
 ---
 
