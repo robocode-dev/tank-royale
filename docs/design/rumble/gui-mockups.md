@@ -73,20 +73,28 @@ Signed in
 │ Signed in as robocode-rumble-test.                                  │
 │ Registered with client ID robocode-rumble-test-1dcccf64.            │
 │ Authorization renews by itself.                                     │
+│ [x] Keep me signed in on this computer                              │
+│     Saved in a file that only you can open, in your Tank Royale     │
+│     folder. Signing out removes it.                                 │
 │ [Sign out]   [How to revoke access]                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+The saved sign-in is one file per Rumble environment and is shared by the programs on the same computer, so the desktop program and a separate headless session stay signed in together. Only the means to renew the sign-in is saved, never the sign-in itself, and the file is useless if copied to another computer or account. It does not protect against a program running as the same user, and the screen's help text says so. Turning the option off removes the saved file and asks again next time.
+
 ```mermaid
 stateDiagram-v2
-    [*] --> SignedOut
+    [*] --> Starting
+    Starting --> SignedIn: Saved sign-in renewed
+    Starting --> SignedOut: No saved sign-in, or it cannot be used
+    Starting --> SignedOut: GitHub refuses the saved sign-in
     SignedOut --> WaitingForCode: Sign in
     WaitingForCode --> SignedIn: Code accepted
     WaitingForCode --> SignedOut: Cancel or code expired
     WaitingForCode --> SignedOut: Access denied in browser
     SignedIn --> SignedIn: Renew in the background
     SignedIn --> AccessRevoked: GitHub rejects the token
-    SignedIn --> SignedOut: Sign out
+    SignedIn --> SignedOut: Sign out (removes the saved sign-in)
     AccessRevoked --> WaitingForCode: Sign in again
 ```
 
@@ -96,6 +104,9 @@ stateDiagram-v2
 | They press Cancel or deny access in the browser | "Sign-in was cancelled." | [Sign in with GitHub] |
 | GitHub is unreachable | "GitHub cannot be reached. Try again when you are online." | [Try again] |
 | Authorization was revoked | "GitHub access was revoked. Your queued results are kept." | [Sign in again] |
+| The saved sign-in cannot be used (another user or computer, a changed file, or a file others can read) | "The saved sign-in could not be used. Sign in again." The reason is shown in plain words. | [Sign in with GitHub] |
+| This computer cannot keep the saved sign-in private to the person | "This computer cannot keep your sign-in private, so it was not saved. You will sign in again next time." Nothing is written. | [OK] |
+| Two Tank Royale programs renew at the same time | Nothing; they take turns and both stay signed in. | None |
 
 The first sign-in also registers the account with the Rumble automatically and shows the client ID it received. Registering again returns the same client ID.
 
