@@ -674,6 +674,10 @@ events:
     - {id: AN-024, kind: numeric, state: reserved, prefix: AN, component: "24"}
     - {id: AN-025, kind: numeric, state: reserved, prefix: AN, component: "25"}
     - {id: AN-024, kind: numeric, state: live, prefix: AN, component: "24"}
+    - {id: CH-071, kind: numeric, state: reserved, prefix: CH, component: "71"}
+    - {id: CH-071, kind: numeric, state: live, prefix: CH, component: "71"}
+    - {id: CH-071-tasks, kind: opaque, state: live}
+    - {id: CH-071-open-questions, kind: opaque, state: live}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
