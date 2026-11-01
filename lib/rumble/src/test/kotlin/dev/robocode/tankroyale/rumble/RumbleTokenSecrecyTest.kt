@@ -85,7 +85,7 @@ class RumbleTokenSecrecyTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCL030_UnitNegative_theSignInSourcesUseNoFilesConsoleOrLogging() {
-        val files = listOf("GitHubSignIn.kt", "GitHubTokens.kt", "GitHubAuthTransport.kt")
+        val files = listOf("GitHubSignIn.kt", "GitHubTokens.kt", "GitHubAuthTransport.kt", "GitHubApi.kt", "Registration.kt")
         val forbidden = listOf("java.nio.file", "java.io.File", "FileWriter", "FileOutputStream", "println", "System.out", "System.err", "Logger")
         val sourceRoot = Path.of("src", "main", "kotlin", "dev", "robocode", "tankroyale", "rumble")
 
