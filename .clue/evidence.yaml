@@ -357,6 +357,18 @@
           "sha256": "fdb8d7ee1ecad4657bc5ea2af4e21ea909f71852d1d1bf24027cb82bc2971a7c"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInLiveTest.kt",
+          "sha256": "1377aaa585bccb2d5b1a49f3375b8dca1e34f0290ff8a88eba6bd295b7fa9725"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "sha256": "b2de5de9bcc57e0c1bf925dda99eb971442f380d1c38fbc195fc1ee371588617"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
+          "sha256": "7568c41e063f38ef5bff5b4e14165df23ff0802fbd2d2c8ee33193168d48c5d3"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
           "sha256": "4b2f21c96e1212187a97841e6caa98d09c5e4b3e957731c24a2205c536674bec"
         }
@@ -464,6 +476,90 @@
           "id": "RCL-019",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
           "subject": "RumbleEnvironmentTest.testRCL019_UnitPositive_eachEnvironmentGetsItsOwnStateFolderAndItsOwnQueue",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-025",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL025_UnitNegative_expiredDeniedAndFailedAnswersAreTypedAndExplainedInPlainWords",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-025",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL025_UnitNegative_noCodeIsGivenWhenGitHubRefusesOrCannotBeReached",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-025",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL025_UnitPositive_aCodeIsGivenAndEachCheckGivesOneTypedAnswer",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-026",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL026_UnitNegative_aRevokedOrMissingRefreshTokenAsksForANewSignInAndANetworkFailureCanBeRetried",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-026",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL026_UnitPositive_aSignInIsRenewedWithItsRefreshTokenAndNoSecret",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-028",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL028_UnitNegative_anEnvironmentWithoutASignInAppRefusesBeforeContactingGitHub",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-028",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL028_UnitPositive_anEnvironmentWithASignInAppUsesItsPublicIdentifierAndNoSecret",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL029_UnitNegative_theLoopStopsWhenTheCodeExpiresOrTheCallerCancels",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL029_UnitPositive_theLoopReturnsAsSoonAsAccessIsDenied",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-029",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
+          "subject": "RumbleSignInTest.testRCL029_UnitPositive_theLoopWaitsTheIntervalSlowsDownWhenAskedAndReturnsWhenSignedIn",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-027",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
+          "subject": "RumbleTokenSecrecyTest.testRCL027_UnitNegative_theSignInSourcesUseNoFilesConsoleOrLogging",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-027",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
+          "subject": "RumbleTokenSecrecyTest.testRCL027_UnitPositive_noTokenAppearsInAnyTextMessageOrConsoleOutput",
           "type": "Unit",
           "direction": "positive"
         },

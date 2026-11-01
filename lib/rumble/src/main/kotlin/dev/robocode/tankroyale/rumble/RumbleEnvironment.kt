@@ -23,6 +23,11 @@ data class RumbleEnvironment(
     val resettable: Boolean,
     /** True when screens must show the permanent development warning. */
     val development: Boolean,
+    /**
+     * The public identifier of the GitHub App a participant signs in with in this environment, or null when the
+     * environment has no sign-in App yet. It is not a secret: signing in with a code needs no client secret.
+     */
+    val signInClientId: String? = null,
 ) {
     /** The folder for this environment's cache, queue, receipts and registrations below [base]. */
     fun stateRoot(base: Path): Path = base.resolve("environments").resolve(name)

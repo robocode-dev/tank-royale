@@ -8,7 +8,8 @@
       "dataRepository": "rumble-data",
       "dashboard": "https://robocode-dev.github.io/rumble-data/",
       "resettable": false,
-      "development": false
+      "development": false,
+      "signInClientId": null
     },
     {
       "name": "test",
@@ -17,7 +18,8 @@
       "dataRepository": "rumble-data-test",
       "dashboard": "https://robocode-dev.github.io/rumble-data-test/",
       "resettable": true,
-      "development": true
+      "development": true,
+      "signInClientId": "Iv23likgKJHOPyEQABJs"
     }
   ]
 }
