@@ -199,6 +199,20 @@ class RumbleSignInStoreTest {
         assertEquals(LoadResult.Missing, store(base).load())
     }
 
+    @Test
+    @Tag("RCL-034")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL034_UnitNegative_signingOutOfOneEnvironmentLeavesTheOthersSavedSignInAlone(@TempDir base: Path) {
+        store(base).save(refreshToken, expires)
+        store(base, env = RumbleEnvironments.PUBLIC).save("ghr_PUBLIC_ONE", null)
+
+        store(base).forget()
+
+        assertEquals(LoadResult.Missing, store(base).load())
+        assertEquals("ghr_PUBLIC_ONE", (store(base, env = RumbleEnvironments.PUBLIC).load() as LoadResult.Found).refreshToken)
+    }
+
     /** Uses the real Tank Royale user folder of whoever runs it, then removes what it made. Run with -Drumble.live=true. */
     @Test
     @Tag("Sanity")

@@ -366,7 +366,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInStoreTest.kt",
-          "sha256": "a395be292094e1e6fcab9bb8e981acb85855fd72c00056ed99548b26f2f83e0e"
+          "sha256": "84b116556aa58af13c41f005a662273a9ecd8886d543dc2bc609085e20524dfe"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
@@ -577,6 +577,13 @@
           "subject": "RumbleSignInStoreTest.testRCL033_UnitPositive_aMissingFileIsMissingNotAProblem",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-034",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInStoreTest.kt",
+          "subject": "RumbleSignInStoreTest.testRCL034_UnitNegative_signingOutOfOneEnvironmentLeavesTheOthersSavedSignInAlone",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-034",
