@@ -121,8 +121,8 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
-| TR-API-UTL-001 | ColorUtil hex round-trip and string parsing | 1 | ✅ | ✅ | ✅ | ✅ |
-| TR-API-UTL-002 | JSON converter serialization/deserialization | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-UTL-001 | ColorUtil hex round-trip and string parsing, including the four colour text forms in both letter cases | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-UTL-002 | JSON converter serialization/deserialization, including colour text in team messages | 1 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-UTL-003 | Country code validation and local detection | 1 | ✅ | ✅ | ✅ | ✅ |
 
 ## GFX — Graphics

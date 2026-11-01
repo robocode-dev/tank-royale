@@ -2,6 +2,9 @@ $id: color.schema.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: |
   Represents a color using hexadecimal format for web colors. Note that colors must have a leading number sign (#).
+  The server protocol carries colors as RGB text with three or six digits, such as "#09C" or "#0099CC".
+  The Bot APIs read the four forms "#RGB", "#RGBA", "#RRGGBB" and "#RRGGBBAA" in capital or small letters, and
+  write a color in a team message as "#RRGGBB" when it is fully opaque and as "#RRGGBBAA" otherwise.
   See https://en.wikipedia.org/wiki/Web_colors
 type: string
 pattern: /^#[0-9A-F]{3,6}$/ig

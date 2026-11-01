@@ -14,6 +14,8 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 import dev.robocode.tankroyale.schema.BotIntent;
 import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.events.BotEvent;
+import dev.robocode.tankroyale.botapi.internal.json.TeamMessageJson;
+import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.botapi.util.MathUtil;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Tag;
@@ -187,6 +189,15 @@ public class SharedTestRunner {
                     break;
                 case "colorToHex":
                     lastActionValue[0] = IntentValidator.colorToHex((Color) args[0]);
+                    break;
+                case "parseColorText":
+                    lastActionValue[0] = ColorUtil.fromHexColor((String) args[0]);
+                    break;
+                case "teamMessageColorText":
+                    lastActionValue[0] = TeamMessageJson.colorText((Color) args[0]);
+                    break;
+                case "colorTextRoundTrip":
+                    lastActionValue[0] = TeamMessageJson.colorText(ColorUtil.fromHexColor((String) args[0]));
                     break;
                 case "getColorConstant":
                     lastActionValue[0] = getStaticField(Color.class, (String) args[0]);

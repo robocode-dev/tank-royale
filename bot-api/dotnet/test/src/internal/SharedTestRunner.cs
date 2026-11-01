@@ -133,6 +133,9 @@ public class SharedTestRunner
                 case "fromRgb": lastActionValue = Color.FromRgb(Convert.ToUInt32(args[0]), Convert.ToUInt32(args[1]), Convert.ToUInt32(args[2])); break;
                 case "fromRgba": lastActionValue = Color.FromRgba(Convert.ToUInt32(args[0]), Convert.ToUInt32(args[1]), Convert.ToUInt32(args[2]), Convert.ToUInt32(args[3])); break;
                 case "colorToHex": lastActionValue = IntentValidator.ColorToHex((Color)args[0]); break;
+                case "parseColorText": lastActionValue = ColorUtil.FromHexColor((string)args[0]); break;
+                case "teamMessageColorText": lastActionValue = TeamMessageColorText((Color)args[0]); break;
+                case "colorTextRoundTrip": lastActionValue = TeamMessageColorText(ColorUtil.FromHexColor((string)args[0])!.Value); break;
                 case "getColorConstant": lastActionValue = GetStaticField(typeof(Color), (string)args[0]); break;
                 case "getConstant":
                     lastActionValue = GetStaticField(typeof(Constants), (string)args[0])
@@ -187,6 +190,13 @@ public class SharedTestRunner
                 else Assert.That(actual, Is.EqualTo(expectedVal));
             }
         }
+    }
+
+    /// <summary>The text a colour becomes when it is a field of a team message payload.</summary>
+    private static string TeamMessageColorText(Color color)
+    {
+        var json = Robocode.TankRoyale.BotApi.Internal.Json.JsonConverter.ToJson(new { Color = color });
+        return (string)Newtonsoft.Json.Linq.JObject.Parse(json)["Color"];
     }
 
     private object ParseArg(object arg)

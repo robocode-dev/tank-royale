@@ -39,6 +39,14 @@ export class Color {
     return `#${r}${g}${b}${a}`;
   }
 
+  /**
+   * Makes JSON.stringify write the color as hex colour text ("#RRGGBB" when opaque, otherwise "#RRGGBBAA"), so a
+   * color in a team message reads the same in every Bot API.
+   */
+  toJSON(): string {
+    return this.toHexColor();
+  }
+
   equals(other: unknown): boolean {
     if (this === other) return true;
     if (!(other instanceof Color)) return false;

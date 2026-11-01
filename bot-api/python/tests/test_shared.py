@@ -11,6 +11,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 
 from robocode_tank_royale.bot_api.internal.base_bot_internals import BaseBotInternals
 from robocode_tank_royale.bot_api.internal.intent_validator import IntentValidator
+from robocode_tank_royale.bot_api.internal.json_util import MessageEncoder
+from robocode_tank_royale.bot_api.util.color_util import ColorUtil
 from robocode_tank_royale.bot_api.internal.event_queue import EventQueue
 from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
 from robocode_tank_royale.bot_api.base_bot import BaseBot as BaseBotClass
@@ -162,6 +164,12 @@ def test_shared(suite_name, test_case):
             last_action_value[0] = Color.from_rgba(args[0], args[1], args[2], args[3])
         elif method == "colorToHex":
             last_action_value[0] = IntentValidator.color_to_schema(args[0])
+        elif method == "parseColorText":
+            last_action_value[0] = ColorUtil.from_string(args[0])
+        elif method == "teamMessageColorText":
+            last_action_value[0] = json.loads(json.dumps({"color": args[0]}, cls=MessageEncoder))["color"]
+        elif method == "colorTextRoundTrip":
+            last_action_value[0] = json.loads(json.dumps({"color": ColorUtil.from_string(args[0])}, cls=MessageEncoder))["color"]
         elif method == "getColorConstant":
             last_action_value[0] = getattr(Color, args[0].upper())
         elif method == "getConstant":

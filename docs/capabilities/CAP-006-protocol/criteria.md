@@ -148,4 +148,33 @@ Feature: protocol — WebSocket protocol
     Given `game-started-event-for-bot` has been received
     When a bot calls `getBotName(botId)` for an unknown id or an opponent id omitted from the map
     Then Java, .NET, Python, and TypeScript APIs SHALL return null or the language-equivalent `None`
+
+  # Requirement: Colour Text
+  # Colour text is the same in every Bot API, so a colour sent from one API reads the same in another.
+
+  @PRO-013
+  Scenario: Bot APIs read the four colour text forms in either letter case
+    Test-type: Unit
+    Given colour text that starts with `#` and has 3, 4, 6 or 8 hexadecimal digits, written with capital or small letters and optionally surrounded by spaces
+    When a Bot API reads it as a colour
+    Then `#RGB` and `#RRGGBB` SHALL give a fully opaque colour and `#RGBA` and `#RRGGBBAA` SHALL give the stated transparency
+    And each digit of a short form SHALL be doubled, so `#09C` and `#0099CC` give the same colour
+    And Java, .NET, Python, and TypeScript APIs SHALL give the same colour for the same text
+    And text without the leading `#`, with another number of digits, or with a character that is not a hexadecimal digit SHALL be refused
+
+  @PRO-014
+  Scenario: A colour in a team message is written as colour text that every Bot API reads back
+    Test-type: Unit
+    Given a team message payload that holds a colour
+    When any Bot API writes the payload
+    Then the colour SHALL be written as the text `#RRGGBB` when it is fully opaque and as `#RRGGBBAA` otherwise, in capital letters
+    And reading that text in any Bot API SHALL give the same colour back
+    And a colour read from any of the four forms and written again SHALL give the same text in every Bot API
+
+  @PRO-015
+  Scenario: Colours set by a bot are sent to the server as RGB text
+    Test-type: Unit
+    Given a bot sets a colour for its body, turret, radar, bullets, scan arc, tracks or gun
+    When the Bot API puts the colour in the bot intent
+    Then the intent SHALL hold the text `#RRGGBB` with two hexadecimal digits per component and no transparency
 ```

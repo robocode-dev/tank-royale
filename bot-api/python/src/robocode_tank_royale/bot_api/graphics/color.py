@@ -6,9 +6,9 @@ from typing import Optional
 
 from robocode_tank_royale.schema import Color as ColorSchema
 
-# Regex patterns matching Java's ColorUtil
-_NUMERIC_RGB = re.compile(r"^#[0-9a-fA-F]{3,8}$")
-_HEX_DIGITS = re.compile(r"^(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
+# Regex patterns matching Java's ColorUtil: 3 (RGB), 4 (RGBA), 6 (RRGGBB) or 8 (RRGGBBAA) hex digits
+_NUMERIC_RGB = re.compile(r"^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
+_HEX_DIGITS = re.compile(r"^(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 
 
 @dataclass(frozen=True)
@@ -109,55 +109,52 @@ class Color:
         if _NUMERIC_RGB.match(hex_color):
             return cls.from_hex(hex_color[1:])
         raise ValueError(
-            'You must supply the string in numeric RGB format #[0-9a-fA-F], e.g. "#09C" or "#0099CC"'
+            'You must supply the string in the format #RGB, #RGBA, #RRGGBB or #RRGGBBAA, e.g. "#09C" or "#0099CC"'
         )
 
     @classmethod
     def from_hex(cls, hex_triplet: str) -> Color:
-        """Creates a color from a hex triplet (RGB, RRGGBB, or RRGGBBAA without hash).
+        """Creates a color from a hex string without a leading hash sign.
 
-        A hex triplet is either three, six, or eight hexadecimal digits that represent
-        an RGB or RGBA color. An example of a hex triplet is "09C" or "0099CC", which
-        both represent the same color.
+        Four forms are accepted, in capital or small letters: three digits (RGB), four
+        digits (RGBA), six digits (RRGGBB) and eight digits (RRGGBBAA). In the short forms
+        each digit is doubled, so "09C" and "0099CC" represent the same color. Without
+        alpha digits the color is fully opaque.
 
         Args:
-            hex_triplet: A string containing hex digits like "09C", "0099CC", or "0099CCFF".
+            hex_triplet: A string containing 3, 4, 6 or 8 hex digits like "09C" or "0099CC88".
 
         Returns:
             A new Color.
 
         Raises:
-            ValueError: If the string is not valid hex digits (3, 6, or 8 characters).
+            ValueError: If the string is not one of the four forms.
         """
         hex_triplet = hex_triplet.strip()
         if not _HEX_DIGITS.match(hex_triplet):
             raise ValueError(
-                'You must supply 3, 6, or 8 hex digits [0-9a-fA-F], e.g. "09C", "0099CC", or "0099CCFF"'
+                'You must supply 3, 4, 6 or 8 hex digits [0-9a-fA-F], e.g. "09C" or "0099CC"'
             )
 
         length = len(hex_triplet)
-        if length == 3:
-            # Short form: RGB -> expand to RRGGBB
-            r = int(hex_triplet[0], 16)
-            g = int(hex_triplet[1], 16)
-            b = int(hex_triplet[2], 16)
+        is_short = length in (3, 4)
+        has_alpha = length in (4, 8)
+        size = 1 if is_short else 2
+
+        r = int(hex_triplet[0:size], 16)
+        g = int(hex_triplet[size:size * 2], 16)
+        b = int(hex_triplet[size * 2:size * 3], 16)
+        a = int(hex_triplet[size * 3:size * 4], 16) if has_alpha else 255
+
+        if is_short:
+            # Short form: each digit is doubled
             r = (r << 4) | r
             g = (g << 4) | g
             b = (b << 4) | b
-            return cls.from_rgb(r, g, b)
-        elif length == 6:
-            # Standard form: RRGGBB
-            r = int(hex_triplet[0:2], 16)
-            g = int(hex_triplet[2:4], 16)
-            b = int(hex_triplet[4:6], 16)
-            return cls.from_rgb(r, g, b)
-        else:
-            # Extended form: RRGGBBAA
-            r = int(hex_triplet[0:2], 16)
-            g = int(hex_triplet[2:4], 16)
-            b = int(hex_triplet[4:6], 16)
-            a = int(hex_triplet[6:8], 16)
-            return cls.from_rgba(r, g, b, a)
+            if has_alpha:
+                a = (a << 4) | a
+
+        return cls.from_rgba(r, g, b, a)
 
     # --- Channel properties ---
     @property
