@@ -6,9 +6,11 @@ links: [CH-073]
 title: Build folders, launcher line endings and where the content hash lives
 ---
 
-## Should build, editor and Git folders be left out of the copy, or reported as problems?
+## Which files go into the copy?
 
-The bot repository refuses folders such as `bin`, `obj`, `node_modules` and `.venv`. An author who has built their bot locally will have them. The recommendation is to leave them out of the staged copy and list them as not included with the reason, since they are normal products of working on a bot and the author should not have to delete them from their own project; the same applies to Git, editor and cache folders. The alternative is to report each as a problem and ask the author to remove it, which is stricter but sends authors to clean a project that is theirs.
+The first proposal listed folders to leave out. The maintainer pointed out that it is simpler and safer to take only what a bot is made of: its configuration file, launcher scripts and source files. Looking at the 16 published bots and the starter templates confirmed it: they hold the configuration file, the two launchers, the source files and, for the starters, the dependency declaration file of the language (`.csproj`, `requirements.txt`, or `package.json` with `package-lock.json`), and nothing else.
+
+Resolved by the maintainer on 2026-11-01: take only the configuration file, the launchers and the source files, plus the declaration files and an optional license file that the language needs. Everything else is listed as not included.
 
 ## Should the launcher script's line endings be changed in the copy?
 
