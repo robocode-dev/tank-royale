@@ -211,4 +211,46 @@ Feature: rumble-client — Local ranked and practice battle client
     When the bots are fetched
     Then nothing is written outside the target folder and the fetch is refused with an explanation
     And an ordinary archive with the same bots is still fetched normally
+
+  @RCL-025
+  Scenario: Signing in with a code gives a typed answer at every step
+    Test-type: Unit
+    Given an environment that has a sign-in App
+    When the library asks GitHub for a sign-in code and then checks for approval
+    Then it gives the caller the code to show, the address to open and the time the code lasts
+    And each check gives exactly one of: still waiting, check more slowly, signed in, code expired, access denied, or failed with a reason in plain words
+    And a request for a slower pace raises the waiting time before the next check
+
+  @RCL-026
+  Scenario: A sign-in is renewed with its refresh token and no secret
+    Test-type: Unit
+    Given a sign-in that holds a refresh token
+    When the library renews it
+    Then it sends no client secret and receives a new sign-in with a new lifetime
+    And a refusal because access was revoked or the refresh token expired is reported as a refused renewal that asks the person to sign in again, and a network failure is reported as a failure that can be retried
+
+  @RCL-027
+  Scenario: A sign-in token never appears in text, messages or logs
+    Test-type: Unit
+    Given a sign-in with recognisable access, refresh and device code values
+    When the sign-in objects are turned into text and when every error and failure path is run
+    Then none of those values appears in any text, message, log line or console output the library produces
+    And the library writes no token to disk
+
+  @RCL-028
+  Scenario: An environment without a sign-in App refuses to sign in
+    Test-type: Unit
+    Given an environment whose sign-in App is not set
+    When the library is asked to start a sign-in
+    Then it refuses before contacting GitHub with a message that says signing in is not available there yet
+    And an environment with a sign-in App uses that App's public identifier and no secret
+
+  @RCL-029
+  Scenario: Waiting for approval respects the interval, the expiry and cancellation
+    Test-type: Unit
+    Given a sign-in code and a caller-supplied clock, waiting function and cancel signal
+    When the library waits for approval
+    Then it checks no more often than the interval GitHub named, including after a request to slow down
+    And it stops with the expired answer when the code's lifetime has passed and with a cancelled answer as soon as the caller cancels
+    And it returns as soon as GitHub reports the person signed in or denied access
 ```
