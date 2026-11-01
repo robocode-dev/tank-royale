@@ -45,7 +45,7 @@
         },
         {
           "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
-          "sha256": "42834e8e154fb04ccf82d0fa3d57a599af266bb5edb89397da408593d73397f3"
+          "sha256": "d3f463441b40517fe3d802f5a61c205d6627e9ff35ed762bb8689b670dca5d8a"
         },
         {
           "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectValidationTest.kt",
@@ -101,6 +101,13 @@
           "subject": "BotProjectStagingTest.testRBC020_UnitPositive_onlyConfigurationLaunchersSourceAndDeclarationFilesAreCopiedAndTheRestIsListedByFolder",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RBC-021",
+          "path": "lib/bot-project/src/test/kotlin/dev/robocode/tankroyale/botproject/BotProjectStagingTest.kt",
+          "subject": "BotProjectStagingTest.testRBC021_UnitNegative_aSymbolicLinkCannotHideTheProjectFolderAsTheStagingFolder",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RBC-021",

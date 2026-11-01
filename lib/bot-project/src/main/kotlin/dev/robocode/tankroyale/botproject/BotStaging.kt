@@ -91,7 +91,7 @@ object BotStaging {
         }
 
         val source = project.toRealPath()
-        val target = stagingFolder.toAbsolutePath().normalize()
+        val target = realPath(stagingFolder.toAbsolutePath().normalize())
         folderProblem(source, target)?.let { return StagingResult.Refused(it) }
 
         try {
@@ -123,6 +123,17 @@ object BotStaging {
         } catch (e: IOException) {
             return StagingResult.Refused("The bot could not be copied to the staging folder: ${e.javaClass.simpleName}.")
         }
+    }
+
+    /** The path with every symbolic link in its existing part resolved, so a link cannot hide the project folder. */
+    private fun realPath(path: Path): Path {
+        var existing: Path = path
+        val rest = ArrayDeque<Path>()
+        while (!Files.exists(existing)) {
+            rest.addFirst(existing.fileName ?: return path)
+            existing = existing.parent ?: return path
+        }
+        return rest.fold(existing.toRealPath()) { acc, part -> acc.resolve(part) }
     }
 
     private fun folderProblem(source: Path, target: Path): String? = when {

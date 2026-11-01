@@ -152,6 +152,26 @@ class BotProjectStagingTest {
     @Test
     @Tag("RBC-021")
     @Tag("Unit")
+    @Tag("Negative")
+    fun testRBC021_UnitNegative_aSymbolicLinkCannotHideTheProjectFolderAsTheStagingFolder(@TempDir parent: Path) {
+        val project = Fixtures.bot(parent.resolve("work"), "java")
+        val before = TreeHash.ofDirectory(project)
+        val link = parent.resolve("link-to-project")
+        try {
+            Files.createSymbolicLink(link, project)
+        } catch (e: Exception) {
+            assumeTrue(false, "This system does not allow the test to create a symbolic link")
+        }
+
+        val result = BotStaging.stage(project, link.resolve("stage"))
+
+        assertInstanceOf(StagingResult.Refused::class.java, result)
+        assertEquals(before, TreeHash.ofDirectory(project))
+    }
+
+    @Test
+    @Tag("RBC-021")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRBC021_UnitPositive_aFolderMadeByEarlierStagingIsEmptiedAndReused(@TempDir parent: Path) {
         val project = Fixtures.bot(parent.resolve("work"), "java")
