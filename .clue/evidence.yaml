@@ -366,7 +366,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
-          "sha256": "dfec2879b6531110769c7c6482a1a07c058546be8442c58bfe6543ac502d736d"
+          "sha256": "fc0ff01576c7340fe397325b0c71a17bd41e942e742eacc9c473c826508f818d"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
@@ -573,6 +573,13 @@
           "id": "RCL-039",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
           "subject": "RumbleRegistrationTest.testRCL039_UnitNegative_aRegistrationForAnotherAccountEnvironmentOrADamagedFileIsIgnoredAndSigningOutRemovesIt",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-039",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
+          "subject": "RumbleRegistrationTest.testRCL039_UnitNegative_signingOutRemovesTheSavedSignInAndTheSavedRegistration",
           "type": "Unit",
           "direction": "negative"
         },

@@ -232,4 +232,21 @@ class RumbleRegistrationTest {
         assertFalse(java.nio.file.Files.exists(file))
         assertEquals(null, store.load("alice"))
     }
+
+    @Test
+    @Tag("RCL-039")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL039_UnitNegative_signingOutRemovesTheSavedSignInAndTheSavedRegistration(@TempDir base: Path) {
+        val registrationStore = RegistrationStore(env, base)
+        val signInStore = SignInStore(env, base, SignInIdentity("alice", "/home/alice", "Linux"))
+        val saved = SavedSignIn(signInStore, GitHubSignIn(env, FakeTransport(), MutableClock(START)), registrationStore)
+        signInStore.save("ghr_X", null)
+        registrationStore.save(RegistrationRecord("alice", "alice-1", "test", START))
+
+        saved.forget()
+
+        assertEquals(LoadResult.Missing, signInStore.load())
+        assertEquals(null, registrationStore.load("alice"))
+    }
 }
