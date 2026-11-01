@@ -880,6 +880,11 @@ claims:
       state: reserved
       prefix: CH
       component: "71"
+    - id: CH-072
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "72"
     - id: G-001
       kind: numeric
       state: reserved
@@ -1881,11 +1886,11 @@ high-water:
       state: reserved
       prefix: RBC
       component: "19"
-    - id: RCL-034
+    - id: RCL-035
       kind: numeric
       state: reserved
       prefix: RCL
-      component: "34"
+      component: "35"
     - id: RDA-009
       kind: numeric
       state: reserved
