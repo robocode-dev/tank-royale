@@ -178,4 +178,45 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     When the build checks its dependency rules
     Then the library depends on neither the desktop program, the battle runner nor the shared Rumble library, and imports no Swing, AWT or network client class
     And a deliberate violation makes the check fail
+
+  @RBC-020
+  Scenario: A staged copy holds only the files a bot is made of
+    Test-type: Unit
+    Given a bot project folder that also holds build output, dependency, version-control, editor and cache folders, symbolic links and unrelated files
+    When the project is staged
+    Then the copy holds the bot's configuration file, its two launcher scripts, the source files of its language, the dependency declaration files of its language and an optional license file, and nothing else
+    And everything left out is listed as not included, grouped by folder with a file count and a reason, and a symbolic link is never followed
+    And source-looking files inside build, dependency, version-control, editor and cache folders are not taken
+
+  @RBC-021
+  Scenario: The staged copy is laid out like the bot repository and the original project is never changed
+    Test-type: Unit
+    Given a valid bot or team project folder and a staging folder outside it
+    When the project is staged
+    Then the copy is at `bots/<language>/<Name>/` below the staging folder, a team holds only its configuration file, and the project folder is byte for byte as it was before
+    And a staging folder inside the project, a project inside the staging folder, and a folder that is not empty and was not made by staging are refused before anything is written
+
+  @RBC-022
+  Scenario: Fixes are made only in the copy and are listed
+    Test-type: Unit
+    Given a project whose files have Windows line endings
+    When the project is staged
+    Then every included file has Unix line endings in the copy, nothing else in a file is changed, and the files whose bytes changed are listed
+    And the Unix launcher script is recorded as executable in the description, and the original files keep their line endings
+
+  @RBC-023
+  Scenario: A staged submission is a copy that passes the checks, described exactly
+    Test-type: Unit
+    Given a project that passes the checks once the left-out files are removed
+    When the project is staged
+    Then the result describes the name, version, language, license, authors, staging folder, every file with its size and whether it is executable, the files not included, the fixes made and the content hash of the copy
+    And staging the same project twice gives the same files and the same hash, and the hash equals the one the bot repository's own rule gives for that folder
+    And a project whose copy fails the checks gives the problems in plain words and no usable copy
+
+  @RBC-024
+  Scenario: Every active published bot stages to the hash the bot repository recorded for it
+    Test-type: Integration
+    Given the active bots of the public Rumble fetched and verified against the catalog
+    When each fetched bot is staged
+    Then the staged copy passes the checks and its hash equals the hash recorded in the catalog
 ```
