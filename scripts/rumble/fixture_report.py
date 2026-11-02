@@ -35,12 +35,14 @@ CASES = [
     ("catalog-download-and-staging", "Catalog, download and staging"),
     ("bot-submission-and-progress", "Bot submission and progress"),
     ("battle-worker", "Battle worker and its host"),
+    ("credential-boundary", "Credential boundary between host and worker"),
 ]
 RESULTS_CASE = ("test-results", "Test results")
 
 # Which case a JVM test class belongs to, first match wins. A class that matches none is reported as a problem, so a new
 # test cannot vanish from the report by being forgotten here.
 CLASS_CASES = [
+    (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),
     (re.compile(r"^(RumbleSignIn\w*|RumbleSavedSignInTest|RumbleRegistration\w*|RumbleGitHubApiTest|RumbleTokenSecrecyTest)$"), "sign-in-and-registration"),
     (re.compile(r"^(RumbleCatalogTest|RumbleBotFetchTest|RumbleTreeHashTest|RumbleBotProjectCrossCheckTest|BotProject\w*)$"), "catalog-download-and-staging"),

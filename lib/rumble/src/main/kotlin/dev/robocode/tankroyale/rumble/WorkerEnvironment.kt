@@ -32,8 +32,8 @@ object WorkerCommands {
 /**
  * Builds the environment of the worker, and so of everything the worker starts, from an allowlist. A variable is passed
  * only if it is named here and exists in the host's environment; nothing is passed because it looks harmless, and
- * nothing is removed because it looks harmful. The home and temporary folder variables point at the worker's own empty
- * folders.
+ * nothing is removed because it looks harmful. The home and temporary folder variables, and the Java tool options that
+ * set the home and temporary folders of every Java process, point at the worker's own empty folders.
  *
  * This keeps tokens, the participant's home folder and a container engine's address out of the worker's environment.
  * It does not stop a process running as the same operating system user from opening a file by its full path.
@@ -59,6 +59,10 @@ object WorkerEnvironment {
         environment["TMPDIR"] = temp
         environment["TMP"] = temp
         environment["TEMP"] = temp
+        // Java on Windows finds the user's real home folder from the operating system and ignores the variables above.
+        // This variable is read by every Java process at start, so the worker, the server, the booter and every Java bot
+        // use the worker's own empty folders, whatever command started the worker.
+        environment["JAVA_TOOL_OPTIONS"] = "-Duser.home=\"$home\" -Djava.io.tmpdir=\"$temp\""
         return environment
     }
 }

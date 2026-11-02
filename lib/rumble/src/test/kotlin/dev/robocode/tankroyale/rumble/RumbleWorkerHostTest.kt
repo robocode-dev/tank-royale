@@ -64,7 +64,7 @@ class RumbleWorkerHostTest {
         assertEquals("da_DK.UTF-8", built["LANG"])
         listOf("HOME", "USERPROFILE").forEach { assertEquals(folders.home.toString(), built[it]) }
         listOf("TMP", "TEMP", "TMPDIR").forEach { assertEquals(folders.temp.toString(), built[it]) }
-        assertTrue(built.keys.all { it in WorkerEnvironment.ALLOWED || it in setOf("HOME", "USERPROFILE", "TMP", "TEMP", "TMPDIR") }, built.keys.toString())
+        assertTrue(built.keys.all { it in WorkerEnvironment.ALLOWED || it in setOf("HOME", "USERPROFILE", "TMP", "TEMP", "TMPDIR", "JAVA_TOOL_OPTIONS") }, built.keys.toString())
     }
 
     @Test
@@ -80,7 +80,7 @@ class RumbleWorkerHostTest {
 
         val built = WorkerEnvironment.build(host, folders)
 
-        assertEquals(setOf("HOME", "USERPROFILE", "TMP", "TEMP", "TMPDIR"), built.keys)
+        assertEquals(setOf("HOME", "USERPROFILE", "TMP", "TEMP", "TMPDIR", "JAVA_TOOL_OPTIONS"), built.keys)
         assertFalse(built.values.any { it == "x" })
     }
 

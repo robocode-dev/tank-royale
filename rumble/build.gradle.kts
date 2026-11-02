@@ -55,6 +55,8 @@ tasks {
             excludeTags("integration")
         }
         failFast = true
+        // The exact classpath the worker's process loads, without the test classes or the host library.
+        systemProperty("rumble.worker.classpath", sourceSets["main"].runtimeClasspath.asPath)
     }
 
     val integrationTest by registering(Test::class) {

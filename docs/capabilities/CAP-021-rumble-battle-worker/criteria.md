@@ -127,4 +127,55 @@ Feature: rumble-battle-worker — Rumble battle worker
     Given the real worker started by the host with two sample bots and the pin of the server in use
     When the host runs a one-round job
     Then the outcome is the ranked result of both bots and no process of the worker is left running afterwards
+
+  @RBW-016
+  Scenario: Every Java process in the worker's tree uses the worker's empty home and temporary folders
+    Test-type: Unit
+    Given a worker started with a command that carries no Java home or temporary folder setting
+    When the worker and a Java process it starts report the home and temporary folders they see
+    Then both report the worker's own empty folders and not the host's, because the host passes the settings through the environment variable every Java process reads
+
+  @RBW-017
+  Scenario: A worker cannot find the saved sign-in by the ordinary ways
+    Test-type: Unit
+    Given a real saved sign-in, holding a fake token, in a stand-in for the host's data folder
+    When a worker started by the host looks for it through the home folder, the user data folder, the saved-sign-in store's own default location and its environment
+    Then every one of them lands inside the worker's own empty folders, and loading through the store reports that nothing is saved
+    And the fake token is in nothing the worker reports
+
+  @RBW-018
+  Scenario: A copy of the saved sign-in cannot be opened from another home folder
+    Test-type: Unit
+    Given a saved sign-in made for one user name and home folder
+    When it is opened by a store that has the worker's different home folder
+    Then it is reported as unusable and its token is not returned
+
+  @RBW-019
+  Scenario: The worker is handed nothing secret
+    Test-type: Unit
+    Given a fake token and other secrets in the host's own environment
+    When a worker is started by the host
+    Then its command line as the process itself reports it holds no environment value and no token, and what it reads from standard input is exactly the job and nothing else
+
+  @RBW-020
+  Scenario: The worker's runtime classpath holds no host, bot project or GitHub code
+    Test-type: Unit
+    Given the exact classpath the worker's process loads
+    When its folders and archives are scanned for the host library, the bot project library, the desktop program and GitHub client code
+    Then none of them is found, and a classpath with one of them added is reported with the entry that holds it
+    And this guards against mistakes and says so, because it cannot catch a copy made to hide
+
+  @RBW-021
+  Scenario: No message can carry a credential
+    Test-type: Unit
+    Given the job, the bot entry, every worker event and the data they hold
+    When their field names are read
+    Then none is named like a token, secret, password, credential, key or authorization
+
+  @RBW-022
+  Scenario: The documentation says which ordinary ways are closed and what remains open
+    Test-type: Human
+    Given the participation design
+    When a maintainer reads the worker boundary
+    Then it lists the ordinary ways that are closed (the environment, the home and temporary folders of every Java process, the user data folder, the command line and standard input) and says in the same place that a bot can still read a file by its full path, that the saved sign-in is only bound to its user name and home folder, and that only a container or a separate account closes the rest
 ```
