@@ -64,6 +64,24 @@
       ]
     },
     {
+      "id": "tank-royale-rumble-battle-worker",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/test_junit_producer.py",
+        "lib/rumble-protocol/build.gradle.kts",
+        "lib/rumble-protocol/src/test/kotlin/**/RumbleProtocol*Test.kt",
+        "rumble/build.gradle.kts",
+        "rumble/src/test/kotlin/**/Worker*Test.kt"
+      ],
+      "command": [
+        "python",
+        ".clue/evidence/junit_scoring_producer.py"
+      ]
+    },
+    {
       "id": "tank-royale-rumble-environments",
       "framework": "unittest",
       "language": "Python",

@@ -17,7 +17,8 @@ This is the target design for the [replacement campaign](../../plans/P-007-rumbl
 | Component | Responsibility |
 |---|---|
 | New `lib:rumble` | Synchronization, scheduling, session state, GitHub integration, registration, durable queue, receipts, and typed status models; no Swing dependency. Today it holds the Rumble environments with their repositories and per-environment state folders, a pending queue bound to one environment, an automated check of its dependency rules, reading of the bot catalog with hash-verified fetching of bot sources (the caller supplies the catalog commit), GitHub sign-in with a code plus renewal of the sign-in, saving the sign-in between runs in one protected file shared safely between programs, registering the signed-in account through a registration issue with the client ID kept in a plain per-environment file, sending a staged bot as a pull request from the account's own copy of the bot repository, an advisory pre-check of a staged bot against the Rumble's owner list, ban list and catalog, and a read-only reader of where a bot's pull request stands; the rest arrives in later changes |
-| New `rumble` executable | Headless session controller and isolated worker entry point, with the same behavior as the GUI-managed session |
+| New `lib:rumble-protocol` | The versioned host and worker messages: a job, the worker's events, the stable error and exit codes and a one-message-per-line codec that refuses an unknown schema version whole. Plain data with no other Rumble or runner code, so the host library and the worker can both read it. Unpublished |
+| New `rumble` executable | Headless session controller and isolated worker entry point, with the same behavior as the GUI-managed session. Today only the worker mode exists: it reads one job from standard input, requires the job's engine pin from the battle runner, runs the battle and writes events to standard output; the controller and the host side that starts the worker arrive in later changes |
 | New `lib:bot-project` | Starter generation, source inspection, submission staging, metadata validation, and validation orchestration. Today it inspects a bot or team folder and validates it against the bot repository's per-folder rules, listing every problem with a code and the change that fixes it; it can also stage a project as a separate copy laid out like the bot repository, with only the files a bot is made of, Unix line endings and the launcher recorded as executable, checked again and described with its content hash; the content hash is computed here. The rest arrives in later changes |
 | Existing GUI | Wizards, bot management, contribution controls, and presentation |
 | Existing runner, server, booter, recorder | Battle execution and existing lifecycle responsibilities |
@@ -49,14 +50,15 @@ flowchart TD
     RUMBLE --> COMMON[lib:common]
     BOTPROJECT --> COMMON
     WORKER[rumble executable, worker mode] --> RUNNER[runner]
-    WORKER --> PROTOCOL[Host and worker messages in lib:common]
+    WORKER --> PROTOCOL[lib:rumble-protocol]
+    RUMBLE --> PROTOCOL
     RUMBLE -. process boundary, versioned messages .-> WORKER
     RUNNER --> CLIENT[lib:client]
 ```
 
 - **The shared library has no desktop code.** `lib:rumble` never depends on Swing or on the `gui` module, so the GUI and the headless controller behave the same.
-- **Only the host holds credentials.** GitHub tokens, registration and upload authorization live in `lib:rumble` and the host side of the executable. The worker mode depends on the runner and the shared message types only; it cannot reach the GitHub code and is started with no token, no home directory and no container socket.
-- **The worker is reached only through versioned messages.** `lib:rumble` starts and talks to the worker across a process boundary with machine-readable commands and events. It does not depend on the runner, so replacing how battles run does not touch session logic.
+- **Only the host holds credentials.** GitHub tokens, registration and upload authorization live in `lib:rumble` and the host side of the executable. The worker mode depends on the runner and `lib:rumble-protocol` only, and the build fails if it depends on anything else of the Rumble code or names a token, the home folder or a container socket; it cannot reach the GitHub code and is started with no token, no home directory and no container socket.
+- **The worker is reached only through versioned messages.** `lib:rumble` starts and talks to the worker across a process boundary with machine-readable commands and events. It does not depend on the runner, so replacing how battles run does not touch session logic. The messages live in their own small unpublished module, `lib:rumble-protocol`, and not in `lib:common`, which is published to Bot API users; they carry an integer `schemaVersion` like the other Rumble documents and are not JSON schemas in the `schema` folder, which describe the battle protocol with bots. The engine pin is the server's behavior version, checked by the battle runner, and is separate from the message schema version.
 - **Project tooling knows no GitHub.** `lib:bot-project` inspects, stages and validates a project and returns a typed staged submission. `lib:rumble` takes that value and does the fork, branch, commit and pull request work. The staging code never needs a token.
 - **Nothing depends on the GUI.** Dependencies point from the GUI and the executable down to the libraries, never back.
 

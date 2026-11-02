@@ -21,11 +21,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
+          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
+          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -250,11 +250,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
+          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
+          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -287,6 +287,157 @@
       ]
     },
     {
+      "id": "tank-royale-rumble-battle-worker",
+      "framework": "JUnit",
+      "language": "Kotlin",
+      "include": [
+        ".clue/evidence/aggregate.py",
+        ".clue/evidence/junit_scoring_producer.py",
+        ".clue/evidence/producers.json",
+        ".clue/evidence/test_junit_producer.py",
+        "lib/rumble-protocol/build.gradle.kts",
+        "lib/rumble-protocol/src/test/kotlin/**/RumbleProtocol*Test.kt",
+        "rumble/build.gradle.kts",
+        "rumble/src/test/kotlin/**/Worker*Test.kt"
+      ],
+      "exclude": [],
+      "inputs": [
+        {
+          "path": ".clue/evidence/aggregate.py",
+          "sha256": "cf20a3f9d5a1072a7b2d3ddfc4bc9e25575b2cbd27441aba61e9d83d9ac4768c"
+        },
+        {
+          "path": ".clue/evidence/junit_scoring_producer.py",
+          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
+        },
+        {
+          "path": ".clue/evidence/producers.json",
+          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
+        },
+        {
+          "path": ".clue/evidence/test_junit_producer.py",
+          "sha256": "30d1feb473a94383bc3f2f95f1211eece816a9010e8adcf580075e26c6f78d84"
+        },
+        {
+          "path": "lib/rumble-protocol/build.gradle.kts",
+          "sha256": "0586c0286deacc77814e7e74300aa0ec34a4878c313d1ed3daff75ba143b5888"
+        },
+        {
+          "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolMessagesTest.kt",
+          "sha256": "aca5ac2fdc1cd21d6c877bfd5c119e3a83a92ad6ad9f6baab70748e265b5a12a"
+        },
+        {
+          "path": "rumble/build.gradle.kts",
+          "sha256": "5f5bd0b8daee871fa8ecb84eb3b9427418536e13a22b5884223bfe1f885cd6ea"
+        },
+        {
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerDependencyRulesTest.kt",
+          "sha256": "11a9d2cbb808a8b61e5fe4ff0fd9287f546b758d9eddec4f736418c855d4e55c"
+        },
+        {
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerIntegrationTest.kt",
+          "sha256": "4813a99c87c5eeef4b780c985a3eaaa13e0561a56dcb2359e34adbbad3d69523"
+        },
+        {
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "sha256": "8d20ee430942bde4efaa67f02a96d8b005b1a75a4e25bdd6c3568f44ed6812d2"
+        }
+      ],
+      "references": [
+        {
+          "id": "RBW-001",
+          "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolMessagesTest.kt",
+          "subject": "RumbleProtocolMessagesTest.testRBW001_UnitNegative_textWithLineBreaksNeverBreaksTheOneLineRule",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-001",
+          "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolMessagesTest.kt",
+          "subject": "RumbleProtocolMessagesTest.testRBW001_UnitPositive_aJobAndEveryEventRoundTripAsOneVersionedLine",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-002",
+          "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolMessagesTest.kt",
+          "subject": "RumbleProtocolMessagesTest.testRBW002_UnitNegative_unknownVersionsAndInvalidLinesAreRefusedWholeInPlainWords",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-006",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerDependencyRulesTest.kt",
+          "subject": "WorkerDependencyRulesTest.testRBW006_UnitNegative_theWorkerSourceNamesNoCredentialHomeFolderEnvironmentOrContainerSocket",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-006",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerDependencyRulesTest.kt",
+          "subject": "WorkerDependencyRulesTest.testRBW006_UnitPositive_theWorkerImportsOnlyItsOwnPackageTheMessagesTheRunnerAndTheJdk",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-005",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerIntegrationTest.kt",
+          "subject": "WorkerIntegrationTest.testRBW005_IntegrationNegative_aWrongEnginePinIsRefusedByTheRealRunnerBeforeAnyBotFights",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-007",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerIntegrationTest.kt",
+          "subject": "WorkerIntegrationTest.testRBW007_IntegrationPositive_aRealBattleGivesARankedResultForEveryBot",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-003",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW003_UnitPositive_theWorkerReportsStartedResultAndFinishedInOrderAndNothingElse",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-004",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW004_UnitNegative_aBattleThatFailsEndsWithAStableCodeAndNoFinishedEvent",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-004",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW004_UnitNegative_aJobThatCannotBeReadIsRefusedWithoutCallingTheEngine",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-005",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW005_UnitNegative_aPinMismatchIsRefusedAndAnOrdinaryFailureIsNot",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-005",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW005_UnitPositive_everyGameTypeTheRumbleRunsHasASetupAndAnUnknownOneIsRefused",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-005",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW005_UnitPositive_theRunnerIsAskedToRequireExactlyTheJobsBehaviorVersion",
+          "type": "Unit",
+          "direction": "positive"
+        }
+      ]
+    },
+    {
       "id": "tank-royale-rumble-environments",
       "framework": "unittest",
       "language": "Python",
@@ -305,7 +456,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
+          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
         },
         {
           "path": ".clue/evidence/python_unittest_producer.py",
@@ -396,11 +547,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
+          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
+          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -1110,11 +1261,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fb8aa725eaebe407b76e53765f412a9fe0ac9bdbcd49c439c4b93e714ef0124a"
+          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "ffe1f25d62f75b1248d3ec7ba06a9ec279f92628fd93599536697cb86539ccfe"
+          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
         },
         {
           "path": "server/build.gradle.kts",
