@@ -1980,6 +1980,11 @@ claims:
       state: reserved
       prefix: RLI
       component: "3"
+    - id: RLI-004
+      kind: numeric
+      state: reserved
+      prefix: RLI
+      component: "4"
     - id: RPR-001
       kind: numeric
       state: reserved
@@ -2246,11 +2251,11 @@ high-water:
       state: reserved
       prefix: RFX
       component: "9"
-    - id: RLI-002
+    - id: RLI-003
       kind: numeric
       state: reserved
       prefix: RLI
-      component: "2"
+      component: "3"
     - id: RPR-001
       kind: numeric
       state: reserved
