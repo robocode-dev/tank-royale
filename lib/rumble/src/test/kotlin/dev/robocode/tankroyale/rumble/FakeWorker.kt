@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.rumble.protocol.BotOutcome
 import dev.robocode.tankroyale.rumble.protocol.ErrorCode
 import dev.robocode.tankroyale.rumble.protocol.MessageCodec
 import dev.robocode.tankroyale.rumble.protocol.WorkerEvent
+import dev.robocode.tankroyale.common.util.UserDataDirectory
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -20,6 +21,18 @@ fun main(args: Array<String>) {
     fun environmentReportText(): String {
         val own = System.getenv().entries.sortedBy { it.key }.joinToString("") { "${it.key}=${it.value}" }
         return "$ownuser.home=${System.getProperty("user.home")}cwd=${File(".").canonicalPath}"
+    }
+    if (mode == "selfreport") {
+        // Reports its own command line and everything on standard input, before it understands any of it.
+        // The operating system may refuse to show a process its own command line, so the JVM's account of it is used:
+        // its flags, its class path, and its main class with the arguments.
+        val commandLine = (java.lang.management.ManagementFactory.getRuntimeMXBean().inputArguments +
+            System.getProperty("java.class.path") + System.getProperty("sun.java.command")).joinToString(" ")
+        val stdin = String(System.`in`.readBytes(), Charsets.UTF_8)
+        val message = "commandLine=$commandLinestdin=$stdin"
+        println(MessageCodec.write(WorkerEvent.Failed(jobId = "self", code = ErrorCode.BATTLE_FAILED, message = message)))
+        System.out.flush()
+        return
     }
     if (mode == "envreport") {
         print(environmentReportText())
@@ -64,11 +77,28 @@ fun main(args: Array<String>) {
             finishNormally()
         }
         "env" -> emit(WorkerEvent.Failed(jobId = id, code = ErrorCode.BATTLE_FAILED, message = environmentReportText()))
+        "discover" -> {
+            // Looks for the saved sign-in the ways a program normally finds its own files.
+            val loaded = SignInStore.inUserFolder(RumbleEnvironments.TEST).load()
+            val report = listOf(
+                "user.home=${System.getProperty("user.home")}",
+                "tmpdir=${System.getProperty("java.io.tmpdir")}",
+                "dataDir=${UserDataDirectory.get().absolutePath}",
+                "env.HOME=${System.getenv("HOME")}",
+                "env.USERPROFILE=${System.getenv("USERPROFILE")}",
+                "env.LOCALAPPDATA=${System.getenv("LOCALAPPDATA")}",
+                "env.APPDATA=${System.getenv("APPDATA")}",
+                "env.XDG_CONFIG_HOME=${System.getenv("XDG_CONFIG_HOME")}",
+                "load=${loaded::class.simpleName}",
+            )
+            emit(WorkerEvent.Failed(jobId = id, code = ErrorCode.BATTLE_FAILED, message = report.joinToString("")))
+        }
         "envchild" -> {
             val java = File(System.getProperty("java.home"), "bin/java").absolutePath
             val child = ProcessBuilder(java, "-cp", System.getProperty("java.class.path"), "dev.robocode.tankroyale.rumble.FakeWorkerKt", "envreport")
                 .redirectErrorStream(true).start()
-            val text = child.inputStream.bufferedReader().readText()
+            // Java prints one "Picked up JAVA_TOOL_OPTIONS" line on standard error, which is the expected side effect.
+            val text = child.inputStream.bufferedReader().readLines().filter { !it.startsWith("Picked up") }.joinToString(" ")
             child.waitFor()
             emit(WorkerEvent.Failed(jobId = id, code = ErrorCode.BATTLE_FAILED, message = text.trim()))
         }

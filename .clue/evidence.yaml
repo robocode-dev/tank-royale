@@ -323,12 +323,20 @@
           "sha256": "0586c0286deacc77814e7e74300aa0ec34a4878c313d1ed3daff75ba143b5888"
         },
         {
+          "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolCredentialFieldsTest.kt",
+          "sha256": "158fc3f7a52e2a16cb43a8dce6e05e425efe9de4a33006b93e54e52ad1092154"
+        },
+        {
           "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolMessagesTest.kt",
           "sha256": "aca5ac2fdc1cd21d6c877bfd5c119e3a83a92ad6ad9f6baab70748e265b5a12a"
         },
         {
           "path": "rumble/build.gradle.kts",
-          "sha256": "c72cc9791c76284695567514fc02e9dafe77fdf52e1ad477a7e56df6518602fb"
+          "sha256": "a496f0755c487237078935d04515beb23baace74932476a1f72138321a946b63"
+        },
+        {
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerClasspathTest.kt",
+          "sha256": "a63102012fab546f5735e34633f2bdb16d13cca4cb86f59d684d137577482cb2"
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerDependencyRulesTest.kt",
@@ -349,6 +357,20 @@
       ],
       "references": [
         {
+          "id": "RBW-021",
+          "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolCredentialFieldsTest.kt",
+          "subject": "RumbleProtocolCredentialFieldsTest.testRBW021_UnitNegative_aFieldNamedLikeACredentialIsFoundAndAnOrdinaryHashIsNot",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-021",
+          "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolCredentialFieldsTest.kt",
+          "subject": "RumbleProtocolCredentialFieldsTest.testRBW021_UnitPositive_noFieldOfAnyMessageIsNamedLikeACredential",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
           "id": "RBW-001",
           "path": "lib/rumble-protocol/src/test/kotlin/dev/robocode/tankroyale/rumble/protocol/RumbleProtocolMessagesTest.kt",
           "subject": "RumbleProtocolMessagesTest.testRBW001_UnitNegative_textWithLineBreaksNeverBreaksTheOneLineRule",
@@ -368,6 +390,20 @@
           "subject": "RumbleProtocolMessagesTest.testRBW002_UnitNegative_unknownVersionsAndInvalidLinesAreRefusedWholeInPlainWords",
           "type": "Unit",
           "direction": "negative"
+        },
+        {
+          "id": "RBW-020",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerClasspathTest.kt",
+          "subject": "WorkerClasspathTest.testRBW020_UnitNegative_aClasspathWithForbiddenCodeInAFolderOrAJarIsReportedWithItsEntry",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-020",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerClasspathTest.kt",
+          "subject": "WorkerClasspathTest.testRBW020_UnitPositive_theWorkersRuntimeClasspathHoldsNoHostBotProjectDesktopOrGitHubCode",
+          "type": "Unit",
+          "direction": "positive"
         },
         {
           "id": "RBW-006",
@@ -476,7 +512,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "98a85ec15214fa0d851af82f0a34801317470d9ee61fdbdd18f4e26aa0ccbf76"
+          "sha256": "5564a444ee4fa5d6714f0d38e0fc22d40f760c46465b02ffef77133187bc789a"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -488,7 +524,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "db86c605836cc43bf2b8a7283220152c5aceab92970310a2122f6be23d76fc1e"
+          "sha256": "2e5664626e8ef1befd9bafa76d02d230c2c445048051efb9e3a25c0a9f858689"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -696,6 +732,10 @@
           "sha256": "131123374d7b713f72a19aeecf67eea1fa131ba5da376510e93894558ce20805"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
+          "sha256": "8d23d7728a1e979aa1b4a6064949a7642c1dba04f4c175390d61de87fb6b5cbc"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
           "sha256": "39ec27461a9534db6fb9dffb72ca4e35e16db224cd9b7b34f877dfba9c8ad89f"
         },
@@ -749,7 +789,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
-          "sha256": "5ea2f2011e7207fe9ec1a4fac92c6c8b8854842f7954d0ed4d93d7d24c7fcc97"
+          "sha256": "47ff1fc6fb08ad2c7b9e4f2b806c32c2aba3c7c01b1e29a00abcc10ad89273dc"
         }
       ],
       "references": [
@@ -918,6 +958,41 @@
           "id": "RCL-021",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
           "subject": "RumbleCatalogTest.testRCL021_UnitPositive_entriesAreReadAndOnlyActiveOnesAreCurrent",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-016",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
+          "subject": "RumbleCredentialBoundaryTest.testRBW016_UnitNegative_theWorkerItselfSeesItsOwnFoldersEvenWithoutTheJavaSettingsOnItsCommand",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-016",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
+          "subject": "RumbleCredentialBoundaryTest.testRBW016_UnitPositive_aWorkerAndAJavaProcessItStartsSeeTheWorkersOwnEmptyFolders",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-017",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
+          "subject": "RumbleCredentialBoundaryTest.testRBW017_UnitPositive_everyOrdinaryWayOfFindingTheSavedSignInLandsInTheWorkersOwnFolders",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-018",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
+          "subject": "RumbleCredentialBoundaryTest.testRBW018_UnitNegative_aCopyOfTheSavedSignInCannotBeOpenedFromAnotherHomeFolder",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-019",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
+          "subject": "RumbleCredentialBoundaryTest.testRBW019_UnitPositive_theWorkersCommandLineHoldsNoSecretAndItsStandardInputIsExactlyTheJob",
           "type": "Unit",
           "direction": "positive"
         },

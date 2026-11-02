@@ -49,13 +49,20 @@ def fake_repo(root):
 
 
 ALL_CLASSES = {
-    "lib/rumble-protocol": [("dev.robocode.tankroyale.rumble.protocol.RumbleProtocolMessagesTest", "testOne")],
-    "rumble": [("dev.robocode.tankroyale.rumble.worker.WorkerTest", "testTwo")],
+    "lib/rumble-protocol": [
+        ("dev.robocode.tankroyale.rumble.protocol.RumbleProtocolMessagesTest", "testOne"),
+        ("dev.robocode.tankroyale.rumble.protocol.RumbleProtocolCredentialFieldsTest", "testEight"),
+    ],
+    "rumble": [
+        ("dev.robocode.tankroyale.rumble.worker.WorkerTest", "testTwo"),
+        ("dev.robocode.tankroyale.rumble.worker.WorkerClasspathTest", "testNine"),
+    ],
     "lib/rumble": [
         ("dev.robocode.tankroyale.rumble.RumbleEnvironmentTest", "testThree"),
         ("dev.robocode.tankroyale.rumble.RumbleSignInTest", "testFour"),
         ("dev.robocode.tankroyale.rumble.RumbleCatalogTest", "testFive"),
         ("dev.robocode.tankroyale.rumble.RumbleBotSubmissionTest", "testSix"),
+        ("dev.robocode.tankroyale.rumble.RumbleCredentialBoundaryTest", "testTen"),
     ],
     "lib/bot-project": [("dev.robocode.tankroyale.botproject.BotProjectStagingTest", "testSeven")],
 }
@@ -85,9 +92,10 @@ class GroupingIntoCases(unittest.TestCase):
 
             self.assertEqual([], problems)
             self.assertEqual(["environments-and-reset-boundaries", "sign-in-and-registration", "catalog-download-and-staging",
-                              "bot-submission-and-progress", "battle-worker"], [c["name"] for c in result["cases"]])
+                              "bot-submission-and-progress", "battle-worker", "credential-boundary"], [c["name"] for c in result["cases"]])
             by_name = {c["name"]: c for c in result["cases"]}
             self.assertEqual(4, by_name["battle-worker"]["passed"])
+            self.assertEqual(6, by_name["credential-boundary"]["passed"])
             self.assertEqual(1, by_name["sign-in-and-registration"]["skipped"])
             self.assertEqual(1, by_name["sign-in-and-registration"]["passed"])
 

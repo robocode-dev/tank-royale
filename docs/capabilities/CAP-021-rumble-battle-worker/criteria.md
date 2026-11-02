@@ -155,7 +155,7 @@ Feature: rumble-battle-worker — Rumble battle worker
     Test-type: Unit
     Given a fake token and other secrets in the host's own environment
     When a worker is started by the host
-    Then its command line as the operating system reports it holds no environment value and no token, and what it reads from standard input is exactly the job and nothing else
+    Then its command line as the process itself reports it holds no environment value and no token, and what it reads from standard input is exactly the job and nothing else
 
   @RBW-020
   Scenario: The worker's runtime classpath holds no host, bot project or GitHub code
