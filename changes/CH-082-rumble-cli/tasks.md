@@ -6,9 +6,10 @@ links: [CH-082]
 title: A runnable rumble command line program with a machine-readable first set of commands
 ---
 
-- [ ] Settle the open question with the maintainer: one program with two modes or two programs.
+- [x] Settle the open question with the maintainer: one program with two modes or two programs (two).
+- [ ] Settle the open question with the maintainer: whether and when the command line is published to Maven Central and attached to a release.
 - [ ] Reserve identities and create the new capability with acceptance criteria for the output contract, the exit codes, the state folder option, the four first commands, redaction and the runnable jars, before any code, each with its test type.
-- [ ] Make the worker a runnable jar with dependencies and entry point, built like the runner's, and prove it with a real battle started through the host with the library's usual command.
+- [ ] Make the worker a runnable jar with dependencies and entry point, built like the runner's, embed it as a resource in the command line program off its classpath, and prove it by extracting it and running a real battle through the host with the library's usual command.
 - [ ] Create the command line module with the command line library and the fat jar task, and the output contract, exit codes and state folder option.
 - [ ] Implement `version`, `environments`, `status` and `import-legacy` with tests that call them in process, and tests that run the real jar as a real process and read the JSON.
 - [ ] Add the command line case to the fixture check generator and its tests, and rerun the command.
