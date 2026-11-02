@@ -1695,6 +1695,11 @@ claims:
       state: reserved
       prefix: RCI
       component: "1"
+    - id: RCI-002
+      kind: numeric
+      state: reserved
+      prefix: RCI
+      component: "2"
     - id: RCL-001
       kind: numeric
       state: reserved
@@ -2221,11 +2226,11 @@ high-water:
       state: reserved
       prefix: C
       component: "4"
-    - id: CAP-023
+    - id: CAP-024
       kind: numeric
       state: reserved
       prefix: CAP
-      component: "23"
+      component: "24"
     - id: CH-082
       kind: numeric
       state: reserved
