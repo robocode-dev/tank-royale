@@ -752,6 +752,27 @@ events:
     - {id: CH-075, kind: numeric, state: live, prefix: CH, component: "75"}
     - {id: CH-075-tasks, kind: opaque, state: live}
     - {id: CH-075-open-questions, kind: opaque, state: live}
+    - {id: RBC-031, kind: numeric, state: reserved, prefix: RBC, component: "31"}
+    - {id: RBC-032, kind: numeric, state: reserved, prefix: RBC, component: "32"}
+    - {id: RBC-033, kind: numeric, state: reserved, prefix: RBC, component: "33"}
+    - {id: RBC-034, kind: numeric, state: reserved, prefix: RBC, component: "34"}
+    - {id: RBC-035, kind: numeric, state: reserved, prefix: RBC, component: "35"}
+    - {id: RBC-036, kind: numeric, state: reserved, prefix: RBC, component: "36"}
+    - {id: RBC-037, kind: numeric, state: reserved, prefix: RBC, component: "37"}
+    - {id: RBC-031, kind: numeric, state: reserved, prefix: RBC, component: "31"}
+    - {id: RBC-032, kind: numeric, state: reserved, prefix: RBC, component: "32"}
+    - {id: RBC-033, kind: numeric, state: reserved, prefix: RBC, component: "33"}
+    - {id: RBC-034, kind: numeric, state: reserved, prefix: RBC, component: "34"}
+    - {id: RBC-035, kind: numeric, state: reserved, prefix: RBC, component: "35"}
+    - {id: RBC-036, kind: numeric, state: reserved, prefix: RBC, component: "36"}
+    - {id: RBC-037, kind: numeric, state: reserved, prefix: RBC, component: "37"}
+    - {id: RBC-031, kind: numeric, state: live, prefix: RBC, component: "31"}
+    - {id: RBC-032, kind: numeric, state: live, prefix: RBC, component: "32"}
+    - {id: RBC-033, kind: numeric, state: live, prefix: RBC, component: "33"}
+    - {id: RBC-034, kind: numeric, state: live, prefix: RBC, component: "34"}
+    - {id: RBC-035, kind: numeric, state: live, prefix: RBC, component: "35"}
+    - {id: RBC-036, kind: numeric, state: live, prefix: RBC, component: "36"}
+    - {id: RBC-037, kind: numeric, state: live, prefix: RBC, component: "37"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

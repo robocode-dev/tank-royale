@@ -272,4 +272,58 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     When GitHub does not accept the sign-in, cannot be reached, limits the requests, refuses the branch or answers unexpectedly
     Then the result says which of these happened in plain words, tells the person to sign in again when the sign-in was not accepted, and no pull request is reported as opened
     And the token appears in no address, result text, request body or console output
+
+  @RBC-031
+  Scenario: The Rumble's owner and ban lists are read beside its catalog at a given commit
+    Test-type: Unit
+    Given a commit of a Rumble's bot repository with its owner list and ban list
+    When the rules are read
+    Then each owner's account names and bot names, the banned accounts and the disqualified bot names are available
+    And a missing or malformed list, or a schema version the program does not know, is reported in plain words and no partial rules are returned
+
+  @RBC-032
+  Scenario: The pre-check names what the Rumble would refuse, with the change that fixes it
+    Test-type: Unit
+    Given a staged bot, the sending account, the catalog and the rules
+    When the bot is checked before sending
+    Then a banned account, a disqualified bot, a bot that belongs to another owner, the same version already published with different source and the identical version already active are each reported as a problem in plain words with the change that fixes it
+    And a bot with a new name, and a new version of a bot that the account's owner already holds, have no problem
+
+  @RBC-033
+  Scenario: A lower version than the active one is a warning, never a problem
+    Test-type: Unit
+    Given a staged bot whose version is lower than the active version of the same bot
+    When the bot is checked before sending
+    Then the report holds a warning that the Rumble accepts it but the older version would replace the newer, and no problem
+    And versions that are not plain dotted numbers are not compared and give no warning
+
+  @RBC-034
+  Scenario: The pre-check only advises and the sending never depends on it
+    Test-type: Unit
+    Given the sending code
+    When it sends a bot that the pre-check would report a problem for
+    Then the sending behaves exactly as it does without the pre-check, and the source of the sending code refers to neither the pre-check nor the rules
+
+  @RBC-035
+  Scenario: An open pull request is reported in one plain state, read-only
+    Test-type: Unit
+    Given an open pull request for a bot and the statuses and reviews the moderation workflow wrote for it
+    When its progress is read
+    Then the state is waiting for the checks when no moderation status exists, being checked while the status is pending, sent back with the moderator's reason when the status failed or changes were requested, waiting for a human moderator when that is the pending reason, and accepted when moderation passed
+    And no request that changes anything on GitHub is made and the token appears in no address, result text or console output
+
+  @RBC-036
+  Scenario: A finished pull request is reported as merged, in the catalog or closed, and unknown wording is not guessed
+    Test-type: Unit
+    Given a pull request that is merged or closed, and a catalog
+    When its progress is read
+    Then a merged pull request is reported as merged while the catalog lacks its version and as in the catalog with the published version once the catalog holds it, and a closed pull request that was not merged is reported as closed
+    And a pending status with wording the program does not know is reported as being checked with a note that the wording was not understood
+
+  @RBC-037
+  Scenario: Every active public bot passes the pre-check as its owner and is refused as another account
+    Test-type: Integration
+    Given the active bots of the public Rumble with its owner and ban lists
+    When each bot is checked as its own owner and as an unrelated account
+    Then as its owner it has no problem other than the identical version already being active, and as the unrelated account it is reported as belonging to another owner
 ```
