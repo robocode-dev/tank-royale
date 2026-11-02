@@ -6,7 +6,7 @@ links: [CH-078]
 title: Start the battle worker from the host with a scrubbed environment and limits
 ---
 
-- [ ] Settle the open question with the maintainer: how the host finds the command that starts the worker.
+- [x] Settle the open question with the maintainer: how the host finds the command that starts the worker.
 - [ ] Reserve identities and add acceptance criteria to the battle worker capability for the clean environment, the limits, stopping the whole process tree, the typed outcomes and the honest statement of what the boundary does not cover, before any code, each with its test type.
 - [ ] Implement the clean environment from an allowlist with its own empty working and temporary folders, with tests that put a fake token and home folder in the test's own environment and prove a real child process cannot read them.
 - [ ] Implement the worker host with the job on standard input, events from standard output, the output and line ceilings and the bounded discarding of standard error, with tests using a small fake worker process for every outcome.
