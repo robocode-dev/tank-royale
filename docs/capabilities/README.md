@@ -30,4 +30,5 @@ Each capability folder holds `README.md` (what and why), `criteria.md` (acceptan
 - [CAP-019 — Battle scoring](CAP-019-battle-scoring/README.md) · `active`
 - [CAP-021-rumble-battle-worker/](CAP-021-rumble-battle-worker/README.md)
 - [CAP-022-rumble-fixture-check/](CAP-022-rumble-fixture-check/README.md)
+- [CAP-023-rumble-legacy-client-import/](CAP-023-rumble-legacy-client-import/README.md)
 <!-- clue:index:end -->
