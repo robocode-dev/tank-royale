@@ -930,6 +930,11 @@ claims:
       state: reserved
       prefix: CH
       component: "79"
+    - id: CH-080
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "80"
     - id: G-001
       kind: numeric
       state: reserved
@@ -2181,11 +2186,11 @@ high-water:
       state: reserved
       prefix: RDA
       component: "9"
-    - id: RFX-008
+    - id: RFX-009
       kind: numeric
       state: reserved
       prefix: RFX
-      component: "8"
+      component: "9"
     - id: RPR-001
       kind: numeric
       state: reserved
