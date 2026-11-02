@@ -87,6 +87,7 @@ Rationale for the split: the bots repo has human-speed, review-gated history; th
 | [Result Aggregation and Dashboard](./aggregation-and-dashboard.md) | Ingestion of submitted results, validation and quarantine, ranking math, projection files, static dashboard, operations | Draft |
 | [User Documentation and Onboarding](./user-documentation.md) | The document set for bot authors, battle contributors, and moderators; onboarding journeys; friction budget | Draft |
 | [Rumble Menu Mockups and Participant Journeys](./gui-mockups.md) | Text mockups of every Rumble menu screen, sign-in, submit-a-bot and contribute-battles journeys, with waiting and failure states | Draft |
+| [Participation Architecture: Modules, Credentials and Worker](./participation.md) | The shared libraries, the headless controller and the isolated battle worker, the module dependency rules and the credential boundary, with the [battle worker capability](../../capabilities/CAP-021-rumble-battle-worker/design.md) for the message and exit-code contract | Draft |
 
 ## Change Proposal Roadmap
 

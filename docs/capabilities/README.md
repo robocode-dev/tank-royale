@@ -28,4 +28,5 @@ Each capability folder holds `README.md` (what and why), `criteria.md` (acceptan
 - [CAP-016 — Rumble client](CAP-016-rumble-client/README.md) · `draft`
 - [CAP-017 — GUI TwinDuel](CAP-017-gui-twinduel/README.md) · `active`
 - [CAP-019 — Battle scoring](CAP-019-battle-scoring/README.md) · `active`
+- [CAP-021-rumble-battle-worker/](CAP-021-rumble-battle-worker/README.md)
 <!-- clue:index:end -->

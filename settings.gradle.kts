@@ -7,6 +7,10 @@ include("lib:client")
 include("lib:intent-diagnostics")
 include("lib:rumble")
 include("lib:bot-project")
+include("lib:rumble-protocol")
+
+// Rumble battle worker
+include("rumble")
 
 // Booter
 include("booter")
