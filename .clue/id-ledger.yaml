@@ -801,6 +801,37 @@ events:
     - {id: CH-077, kind: numeric, state: retired, prefix: CH, component: "77"}
     - {id: CH-077-tasks, kind: opaque, state: retired}
     - {id: CH-077-open-questions, kind: opaque, state: retired}
+    - {id: CH-078, kind: numeric, state: reserved, prefix: CH, component: "78"}
+    - {id: CH-078, kind: numeric, state: live, prefix: CH, component: "78"}
+    - {id: CH-078-tasks, kind: opaque, state: live}
+    - {id: CH-078-open-questions, kind: opaque, state: live}
+    - {id: RBW-008, kind: numeric, state: reserved, prefix: RBW, component: "8"}
+    - {id: RBW-009, kind: numeric, state: reserved, prefix: RBW, component: "9"}
+    - {id: RBW-010, kind: numeric, state: reserved, prefix: RBW, component: "10"}
+    - {id: RBW-011, kind: numeric, state: reserved, prefix: RBW, component: "11"}
+    - {id: RBW-012, kind: numeric, state: reserved, prefix: RBW, component: "12"}
+    - {id: RBW-013, kind: numeric, state: reserved, prefix: RBW, component: "13"}
+    - {id: RBW-014, kind: numeric, state: reserved, prefix: RBW, component: "14"}
+    - {id: RBW-015, kind: numeric, state: reserved, prefix: RBW, component: "15"}
+    - {id: RBW-008, kind: numeric, state: reserved, prefix: RBW, component: "8"}
+    - {id: RBW-009, kind: numeric, state: reserved, prefix: RBW, component: "9"}
+    - {id: RBW-010, kind: numeric, state: reserved, prefix: RBW, component: "10"}
+    - {id: RBW-011, kind: numeric, state: reserved, prefix: RBW, component: "11"}
+    - {id: RBW-012, kind: numeric, state: reserved, prefix: RBW, component: "12"}
+    - {id: RBW-013, kind: numeric, state: reserved, prefix: RBW, component: "13"}
+    - {id: RBW-014, kind: numeric, state: reserved, prefix: RBW, component: "14"}
+    - {id: RBW-015, kind: numeric, state: reserved, prefix: RBW, component: "15"}
+    - {id: RBW-008, kind: numeric, state: live, prefix: RBW, component: "8"}
+    - {id: RBW-009, kind: numeric, state: live, prefix: RBW, component: "9"}
+    - {id: RBW-010, kind: numeric, state: live, prefix: RBW, component: "10"}
+    - {id: RBW-011, kind: numeric, state: live, prefix: RBW, component: "11"}
+    - {id: RBW-012, kind: numeric, state: live, prefix: RBW, component: "12"}
+    - {id: RBW-013, kind: numeric, state: live, prefix: RBW, component: "13"}
+    - {id: RBW-014, kind: numeric, state: live, prefix: RBW, component: "14"}
+    - {id: RBW-015, kind: numeric, state: live, prefix: RBW, component: "15"}
+    - {id: CH-078, kind: numeric, state: retired, prefix: CH, component: "78"}
+    - {id: CH-078-tasks, kind: opaque, state: retired}
+    - {id: CH-078-open-questions, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
