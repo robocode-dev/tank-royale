@@ -21,7 +21,7 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
+          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
         },
         {
           "path": ".clue/evidence/producers.json",
@@ -250,7 +250,7 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
+          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
         },
         {
           "path": ".clue/evidence/producers.json",
@@ -308,7 +308,7 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
+          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
         },
         {
           "path": ".clue/evidence/producers.json",
@@ -512,7 +512,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "5564a444ee4fa5d6714f0d38e0fc22d40f760c46465b02ffef77133187bc789a"
+          "sha256": "a84349243dd3917cc46cd99882b3d15ef8bb1c83bf80d7730628f6fc02948fcd"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -524,7 +524,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "2e5664626e8ef1befd9bafa76d02d230c2c445048051efb9e3a25c0a9f858689"
+          "sha256": "12b7d262c1098bb654483483dcfa51d586b82f117d256b386c8068a1fef12a72"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -701,7 +701,7 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
+          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
         },
         {
           "path": ".clue/evidence/producers.json",
@@ -748,6 +748,10 @@
           "sha256": "2e2f1dc9705406435ca3fa46a3d05323031b5c67959f7ba306779a4668d9b44f"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "sha256": "6cd2c697190f4f7b0130b7d30c6d043546fbac16588928249fbd46b5da34ff9e"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationLiveTest.kt",
           "sha256": "eb62433054d7c0c1edf2c2113780bbf2201d2e42f92b8219e035f2c8a4e99d0c"
         },
@@ -781,7 +785,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
-          "sha256": "c52888c7188df98c8b95fb1dfe409b9d667af401bd1e9477e6f3b446bc0b7a1d"
+          "sha256": "9ef7254d325d0eccd3e1bbdcd858db67fa475aeaf51aff5472913caed39bfe3c"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
@@ -1063,6 +1067,139 @@
           "id": "RCL-040",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGitHubApiTest.kt",
           "subject": "RumbleGitHubApiTest.testRCL040_UnitPositive_theTokenGoesOnlyInTheAuthorizationHeaderOfRequestsToGitHubsApi",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-001",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI001_UnitNegative_anUnknownVersionABrokenFileAMissingFieldAndAMissingFolderAreRefusedBeforeAnythingIsCopied",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-001",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI001_UnitPositive_theConfigurationIsReadAndARelativeWorkFolderIsTakenFromTheConfigurationsFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-002",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI002_UnitNegative_aMixAnUnknownAddressAndSwappedAddressesAreRefusedWithTheProblemNamed",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-002",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI002_UnitPositive_twoPublicAddressesGiveThePublicEnvironmentAndTwoTestAddressesTheTestEnvironmentInAnyForm",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-003",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI003_UnitNegative_aFolderWithNothingToCopyGivesNothingToImport",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-003",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI003_UnitPositive_thePreviewListsWhatWouldBeCopiedAndWhatWouldNotAndWritesNothing",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-004",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI004_UnitNegative_aCopyThatDoesNotMatchTheSourceIsRemovedAndNeverGivenAFinalName",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-004",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI004_UnitPositive_everyFileIsCopiedByteForByteBelowTheEnvironmentsImportedStateFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-005",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI005_UnitNegative_aStateFolderInsideTheOldFolderIsRefused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-005",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI005_UnitPositive_theOldFolderAndConfigurationAreUnchangedAfterEveryKindOfRun",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-006",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI006_UnitNegative_anEarlierRecordIsNotLeftStandingWhileALaterImportIsIncomplete",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-006",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI006_UnitPositive_theRecordHoldsEveryFileItsHashTheTimeTheVersionAndTheEnvironment",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-007",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI007_UnitNegative_aFileThatChangedInTheOldFolderIsCopiedAgainAndTheOldCopyIsReplaced",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-007",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI007_UnitPositive_aSecondRunCompletesAnInterruptedImportAndRepeatsNothing",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-008",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI008_UnitNegative_aFileThatGrowsWhileItIsReadIsReportedAndCopiedByTheNextRun",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-009",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI009_UnitNegative_nothingIsEverSavedInTheOtherEnvironmentsStateFolder",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-009",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI009_UnitPositive_thePreferencesAreSavedInTheRightEnvironmentAndCanBeReadBack",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RLI-010",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI010_UnitNegative_noResultOrMessageShowsTheContentOfACopiedFile",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RLI-010",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
+          "subject": "RumbleLegacyImportTest.testRLI010_UnitPositive_everyEndingIsATypedResultWithAPlainMessage",
           "type": "Unit",
           "direction": "positive"
         },
@@ -1542,7 +1679,7 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "369290348b9dda713e0d056192d41f6fca58180723243dce3a0cc931092c4359"
+          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
         },
         {
           "path": ".clue/evidence/producers.json",
