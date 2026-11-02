@@ -1965,6 +1965,11 @@ claims:
       state: reserved
       prefix: RFX
       component: "9"
+    - id: RLI-001
+      kind: numeric
+      state: reserved
+      prefix: RLI
+      component: "1"
     - id: RPR-001
       kind: numeric
       state: reserved
@@ -2151,11 +2156,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "22"
-    - id: CH-080
+    - id: CH-081
       kind: numeric
       state: reserved
       prefix: CH
-      component: "80"
+      component: "81"
     - id: G-004
       kind: numeric
       state: reserved
