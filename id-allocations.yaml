@@ -2015,6 +2015,11 @@ claims:
       state: reserved
       prefix: RLI
       component: "10"
+    - id: RLI-011
+      kind: numeric
+      state: reserved
+      prefix: RLI
+      component: "11"
     - id: RPR-001
       kind: numeric
       state: reserved
@@ -2281,11 +2286,11 @@ high-water:
       state: reserved
       prefix: RFX
       component: "9"
-    - id: RLI-009
+    - id: RLI-010
       kind: numeric
       state: reserved
       prefix: RLI
-      component: "9"
+      component: "10"
     - id: RPR-001
       kind: numeric
       state: reserved
