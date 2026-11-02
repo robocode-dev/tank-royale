@@ -780,6 +780,24 @@ events:
     - {id: CH-077, kind: numeric, state: live, prefix: CH, component: "77"}
     - {id: CH-077-tasks, kind: opaque, state: live}
     - {id: CH-077-open-questions, kind: opaque, state: live}
+    - {id: RBW-001, kind: numeric, state: reserved, prefix: RBW, component: "1"}
+    - {id: RBW-002, kind: numeric, state: reserved, prefix: RBW, component: "2"}
+    - {id: RBW-003, kind: numeric, state: reserved, prefix: RBW, component: "3"}
+    - {id: RBW-004, kind: numeric, state: reserved, prefix: RBW, component: "4"}
+    - {id: RBW-005, kind: numeric, state: reserved, prefix: RBW, component: "5"}
+    - {id: RBW-006, kind: numeric, state: reserved, prefix: RBW, component: "6"}
+    - {id: RBW-007, kind: numeric, state: reserved, prefix: RBW, component: "7"}
+    - {id: CAP-021, kind: numeric, state: reserved, prefix: CAP, component: "21"}
+    - {id: RBW-001, kind: numeric, state: live, prefix: RBW, component: "1"}
+    - {id: RBW-002, kind: numeric, state: live, prefix: RBW, component: "2"}
+    - {id: RBW-003, kind: numeric, state: live, prefix: RBW, component: "3"}
+    - {id: RBW-004, kind: numeric, state: live, prefix: RBW, component: "4"}
+    - {id: RBW-005, kind: numeric, state: live, prefix: RBW, component: "5"}
+    - {id: RBW-006, kind: numeric, state: live, prefix: RBW, component: "6"}
+    - {id: RBW-007, kind: numeric, state: live, prefix: RBW, component: "7"}
+    - {id: CAP-021, kind: numeric, state: live, prefix: CAP, component: "21"}
+    - {id: CAP-021-criteria, kind: opaque, state: live}
+    - {id: CAP-021-design, kind: opaque, state: live}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
