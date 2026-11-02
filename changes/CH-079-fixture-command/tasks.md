@@ -6,7 +6,7 @@ links: [CH-079]
 title: One command that runs the Rumble fixture checks and writes a redacted report
 ---
 
-- [ ] Settle the open question with the maintainer: what the command is called and where it is documented.
+- [x] Settle the open question with the maintainer: what the command is called and where it is documented.
 - [ ] Create the new capability and write its acceptance criteria for the cases, the result, the report, the redaction, the fail-closed self-check, the empty-case failure and the live-check guard, before any code, each with its test type.
 - [ ] Write the report generator in Python with unit tests for reading results, grouping into cases, the result file, the report, and every redaction rule including a secret of an unknown shape.
 - [ ] Add the Gradle command that runs the offline checks of all Rumble modules and the Python checks with every failure collected, then runs the generator, and refuses when the live switch is on.
