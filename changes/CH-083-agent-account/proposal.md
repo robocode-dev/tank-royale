@@ -2,7 +2,7 @@
 id: CH-083
 type: change
 status: open
-links: [P-007, M-029, ARCH-027, CAP-024, CAP-013]
+links: [P-007, M-029, ARCH-027, CAP-024]
 title: An AI agent works with the participant's own GitHub account
 ---
 

@@ -92,10 +92,23 @@ Feature: rumble-command-line — Rumble command line
     Then the worker jar holds no host, bot project, desktop or GitHub code, the command line carries it as a resource and not as classes on its own classpath and the carried copy is byte for byte the built worker jar
     And the carried worker, extracted into the state folder by the command line, runs a real battle through the host with the library's usual command and gives a ranked result
 
-  @RCI-012
+  # RCI-012 retired (CH-083): its condition, that no sign-in command may be added before it is
+  # decided whose GitHub account an agent uses, is met, and the claim about the two programs, the
+  # contract and publication is carried over. Reminted as RCI-013.
+  @RCI-012 @retired
   Scenario: The documentation describes two programs, the contract and the condition on sign-in commands
     Test-type: Human
     Given the participation design
     When a maintainer reads about the command line
     Then it says that the controller and the worker are two programs and why, gives the output contract and exit codes, says nothing is published in this change and who decides when, and says that no command that signs in or changes GitHub may be added before it is decided whether an agent works with its own account or a participant's
+
+  @RCI-013
+  Scenario: The documentation describes two programs, the contract, and the decision on an agent's account with the rules for the sign-in commands
+    Test-type: Human
+    Given the participation design
+    When a maintainer reads about the command line
+    Then it says that the controller and the worker are two programs and why, gives the output contract and exit codes, and says nothing is published yet and who decides when
+    And it says that an agent works with the participant's own GitHub account and why, and that an agent with an account of its own is not supported and would need its own rules
+    And it says that the person approves the sign-in at GitHub and an agent never approves it or creates or registers an account, that a command without a usable sign-in ends with exit code 3 and says so in its JSON answer without asking anything, and that no answer shows a token
+    And it says plainly that an agent running as the participant's operating system user can read the saved sign-in, as a bot could, and that the battle worker is what keeps bots away from it
 ```
