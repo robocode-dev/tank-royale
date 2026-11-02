@@ -463,8 +463,16 @@
           "sha256": "b2de5de9bcc57e0c1bf925dda99eb971442f380d1c38fbc195fc1ee371588617"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "sha256": "4651bff254e174af593c5a1081454bf1c27ebe5175465b2120c668755c176645"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
+          "sha256": "76b91ea5e1b7e7b5451edb290eedad91ae406e7b2085d9399df26383732d2531"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
-          "sha256": "e64628ba28f80a2cec3765cf8e692cdfca24c7ae499ca7ee2f5d1fad66c15f03"
+          "sha256": "463fb5eda46f114b701d027c76f61cd0d8ccfdf3c040af1316bff4caaa2a62f0"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
@@ -959,6 +967,90 @@
           "id": "RCL-029",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInTest.kt",
           "subject": "RumbleSignInTest.testRCL029_UnitPositive_theLoopWaitsTheIntervalSlowsDownWhenAskedAndReturnsWhenSignedIn",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-031",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC031_UnitNegative_aMissingOrMalformedListOrUnknownVersionIsReportedInPlainWords",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-031",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC031_UnitPositive_ownersBannedAccountsAndDisqualifiedBotsAreRead",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-032",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC032_UnitNegative_aNewNameAndAnOwnersNewVersionHaveNoProblem",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-032",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC032_UnitPositive_eachRefusalTheRumbleWouldMakeIsAProblemWithAPlainFix",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-033",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC033_UnitNegative_higherEqualAndNonNumericVersionsGiveNoWarning",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-033",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC033_UnitPositive_aLowerVersionIsAWarningAndNeverAProblem",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-034",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC034_UnitNegative_theSendingCodeNeverUsesThePrecheckOrTheRules",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-037",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionPrecheckTest.kt",
+          "subject": "RumbleSubmissionPrecheckTest.testRBC037_IntegrationPositive_everyActivePublicBotPassesAsItsOwnerAndIsRefusedAsAnotherAccount",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-035",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
+          "subject": "RumbleSubmissionProgressTest.testRBC035_UnitNegative_readingChangesNothingAndTheTokenAppearsNowhereButTheAuthorizationValue",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-035",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
+          "subject": "RumbleSubmissionProgressTest.testRBC035_UnitPositive_anOpenPullRequestIsReportedInOnePlainState",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBC-036",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
+          "subject": "RumbleSubmissionProgressTest.testRBC036_UnitNegative_statusWordingTheProgramDoesNotKnowIsNotGuessed",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBC-036",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
+          "subject": "RumbleSubmissionProgressTest.testRBC036_UnitPositive_aMergedPullRequestWaitsForTheCatalogAndThenIsInIt",
           "type": "Unit",
           "direction": "positive"
         },

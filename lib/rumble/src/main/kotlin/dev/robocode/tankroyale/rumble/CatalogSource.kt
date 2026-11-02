@@ -14,6 +14,9 @@ interface CatalogSource {
 
     /** The zip archive of the whole bot repository at [commit]. The caller closes the stream. */
     fun archive(commit: String): InputStream
+
+    /** The text of the file at [path] in the bot repository at [commit], or null when the file does not exist there. */
+    fun fileText(commit: String, path: String): String? = throw CatalogUnreadable("This source cannot read repository files.")
 }
 
 /** Reads the public bot repository of an environment from GitHub. No credential is needed or sent. */
@@ -36,6 +39,20 @@ class GitHubCatalogSource(
         return checked(response.statusCode(), "bot archive") { response.body() }
     }
 
+    override fun fileText(commit: String, path: String): String? {
+        val response = client.send(request(fileUrl(commit, path)), HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() == 404) return null
+        return checked(response.statusCode(), path) { response.body() }
+    }
+
+    internal fun fileUrl(commit: String, path: String): URI {
+        if (!pathPattern.matches(path)) throw CatalogUnreadable("'$path' is not a repository file path.")
+        return URI.create(
+            "https://raw.githubusercontent.com/${RumbleEnvironments.owner}/${environment.botsRepository}/" +
+                "${requireCommit(commit)}/$path"
+        )
+    }
+
     internal fun catalogUrl(commit: String): URI = URI.create(
         "https://raw.githubusercontent.com/${RumbleEnvironments.owner}/${environment.botsRepository}/" +
             "${requireCommit(commit)}/bots/index.json"
@@ -55,6 +72,7 @@ class GitHubCatalogSource(
 
     companion object {
         private val commitPattern = Regex("[0-9a-f]{7,40}")
+        private val pathPattern = Regex("[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*")
 
         /** A commit is hexadecimal only, so it can never change which address is fetched. */
         fun requireCommit(commit: String): String {
