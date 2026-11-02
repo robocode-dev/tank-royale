@@ -856,6 +856,9 @@ events:
     - {id: RFX-008, kind: numeric, state: live, prefix: RFX, component: "8"}
     - {id: CAP-022, kind: numeric, state: live, prefix: CAP, component: "22"}
     - {id: CAP-022-criteria, kind: opaque, state: live}
+    - {id: CH-079, kind: numeric, state: retired, prefix: CH, component: "79"}
+    - {id: CH-079-tasks, kind: opaque, state: retired}
+    - {id: CH-079-open-questions, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
