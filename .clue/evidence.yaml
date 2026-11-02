@@ -328,11 +328,15 @@
         },
         {
           "path": "rumble/build.gradle.kts",
-          "sha256": "5f5bd0b8daee871fa8ecb84eb3b9427418536e13a22b5884223bfe1f885cd6ea"
+          "sha256": "c72cc9791c76284695567514fc02e9dafe77fdf52e1ad477a7e56df6518602fb"
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerDependencyRulesTest.kt",
           "sha256": "11a9d2cbb808a8b61e5fe4ff0fd9287f546b758d9eddec4f736418c855d4e55c"
+        },
+        {
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerHostIntegrationTest.kt",
+          "sha256": "3226bbc8c1f91cdad5006e58693b64a051b715bb71cf3383ac697fcabba0a6a0"
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerIntegrationTest.kt",
@@ -377,6 +381,13 @@
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerDependencyRulesTest.kt",
           "subject": "WorkerDependencyRulesTest.testRBW006_UnitPositive_theWorkerImportsOnlyItsOwnPackageTheMessagesTheRunnerAndTheJdk",
           "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-015",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerHostIntegrationTest.kt",
+          "subject": "WorkerHostIntegrationTest.testRBW015_IntegrationPositive_aRealBattleThroughTheHostGivesARankedResultInACleanEnvironment",
+          "type": "Integration",
           "direction": "positive"
         },
         {
@@ -559,7 +570,7 @@
         },
         {
           "path": "lib/rumble/build.gradle.kts",
-          "sha256": "76895a6fe74d1d64c4b2f9a3c1443fcc81220decf0548e946e21a7bbc5f0ff49"
+          "sha256": "dfff45122260e29cfc2885e8d08d391ae9c74b6f6254ca53ad32fc85050022a4"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
@@ -623,11 +634,15 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
-          "sha256": "463fb5eda46f114b701d027c76f61cd0d8ccfdf3c040af1316bff4caaa2a62f0"
+          "sha256": "c52888c7188df98c8b95fb1dfe409b9d667af401bd1e9477e6f3b446bc0b7a1d"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
           "sha256": "8ed41559e06022962b7e3308cdf85a76331149d9712f1f4f09803e3d8163aaee"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "sha256": "5ea2f2011e7207fe9ec1a4fac92c6c8b8854842f7954d0ed4d93d7d24c7fcc97"
         }
       ],
       "references": [
@@ -1237,6 +1252,90 @@
           "id": "RCL-022",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTreeHashTest.kt",
           "subject": "RumbleTreeHashTest.testRCL022_UnitPositive_theHashEqualsTheBotRepositorysOwnAlgorithm",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-008",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW008_UnitNegative_noVariableOutsideTheAllowlistIsPassedWhateverItIsCalled",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-008",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW008_UnitPositive_onlyAllowlistedVariablesArePassedAndTheFoldersAreTheWorkersOwn",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-009",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW009_UnitNegative_aProcessTheWorkerStartsSeesTheSameCleanEnvironment",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-009",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW009_UnitPositive_aRealWorkerProcessSeesNoSecretAndHasItsOwnFolders",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-010",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW010_UnitNegative_anIncompleteInconsistentUnreadableOrUnstartableWorkerIsNeverACompletedBattle",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-010",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW010_UnitPositive_aFinishedRefusedOrFailedWorkerGivesItsOwnOutcome",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-011",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW011_UnitNegative_tooMuchOutputOrTooLongALineStopsTheWorkerWithoutAResult",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-011",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW011_UnitPositive_aWorkerThatFillsItsDiagnosticOutputStillFinishes",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-012",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW012_UnitNegative_theTimeLimitStopsTheWorkerAndEverythingItStarted",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-012",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW012_UnitPositive_aWorkerThatFinishesInTimeIsNotStoppedButWhatItLeftBehindIs",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RBW-013",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW013_UnitNegative_anyOtherCommandIsUsedUnchanged",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-013",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRBW013_UnitPositive_theUsualCommandHasTheHeapLimitTheFolderSettingsAndTheWorkerArgument",
           "type": "Unit",
           "direction": "positive"
         }

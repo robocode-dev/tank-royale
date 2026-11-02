@@ -1,6 +1,8 @@
 description = "Robocode Tank Royale Rumble executable (battle worker)"
 
-group = "dev.robocode.tankroyale"
+// A group of its own: this project and lib:rumble are both called "rumble", and Gradle would take two projects with the
+// same group and name for one module and substitute one for the other.
+group = "dev.robocode.tankroyale.executable"
 
 base {
     archivesName = "robocode-tankroyale-rumble-worker"
@@ -20,6 +22,8 @@ dependencies {
     implementation(project(":lib:rumble-protocol"))
 
     testImplementation(project(":lib:common"))
+    // Only the live host check uses the host library, to start this worker as a real process. It is not on the worker's own classpath.
+    testImplementation(project(":lib:rumble"))
     testImplementation(platform(testLibs.junit.bom))
     testImplementation(testLibs.bundles.junit)
 }
@@ -68,6 +72,8 @@ tasks {
         dependsOn(":runner:jar", ":sample-bots:java:build")
 
         systemProperty("sampleBots.java.dir", project(":sample-bots:java").layout.buildDirectory.dir("archive").get().asFile.absolutePath)
+        // The worker's own classpath, without the test classes or the host library.
+        systemProperty("rumble.worker.classpath", sourceSets["main"].runtimeClasspath.asPath)
     }
 
     check {

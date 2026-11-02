@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":lib:bot-project"))
+    implementation(project(":lib:rumble-protocol"))
     testImplementation(platform(testLibs.junit.bom))
     testImplementation(testLibs.bundles.junit)
 }

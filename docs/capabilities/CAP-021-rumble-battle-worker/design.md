@@ -23,3 +23,11 @@ The behavior version is an integer owned by the server and reported in its hands
 ## The boundary
 
 The worker's dependencies are the runner and the message module. A build check and a source scan keep it that way. A separate process only helps if the host starts it without credentials in its environment, with no home folder and no container socket; that is the host's half and arrives with the host.
+
+## The host
+
+The host is in the shared Rumble library and starts the worker from a command the caller gives it, a program and arguments in the same form the runner and the desktop program give the process builder; a helper builds the usual command from the shared Java helper with a heap limit and the worker's own home and temporary folder settings. Packaging of the worker is not decided here. The host gives the worker new empty working, temporary and home folders, removes them afterwards, builds the environment from an allowlist, writes the job on one line, reads event lines under an output ceiling and a line ceiling, discards the diagnostic output, and returns one typed outcome: completed, refused, failed, timed out, over a limit, ended without a complete set of events, unreadable output or unable to start. A line that is not a message ends the run, because a worker that prints something unreadable cannot be trusted further. When the total time passes, the host stops the worker and every process it started, and after a normal end it stops whatever the worker left behind.
+
+## What the clean environment does not protect against
+
+The environment keeps tokens, the participant's home folder and a container engine's address out of the worker and its bots. A bot running as the participant's own operating system user can still read files by their full path, including the saved sign-in file, and use a container engine socket whose path it knows. Only a container or a separate operating system account would stop that. This is the same residual risk the bare-metal fallback in the client design already accepts, and a passing test of the clean environment is not a promise of more.
