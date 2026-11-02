@@ -660,6 +660,11 @@ claims:
       state: reserved
       prefix: CAP
       component: "22"
+    - id: CAP-023
+      kind: numeric
+      state: reserved
+      prefix: CAP
+      component: "23"
     - id: CH-001
       kind: numeric
       state: reserved
@@ -2286,11 +2291,11 @@ high-water:
       state: reserved
       prefix: RFX
       component: "9"
-    - id: RLI-010
+    - id: RLI-011
       kind: numeric
       state: reserved
       prefix: RLI
-      component: "10"
+      component: "11"
     - id: RPR-001
       kind: numeric
       state: reserved
