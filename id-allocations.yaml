@@ -1900,6 +1900,11 @@ claims:
       state: reserved
       prefix: RFX
       component: "5"
+    - id: RFX-006
+      kind: numeric
+      state: reserved
+      prefix: RFX
+      component: "6"
     - id: RPR-001
       kind: numeric
       state: reserved
@@ -2161,11 +2166,11 @@ high-water:
       state: reserved
       prefix: RDA
       component: "9"
-    - id: RFX-004
+    - id: RFX-005
       kind: numeric
       state: reserved
       prefix: RFX
-      component: "4"
+      component: "5"
     - id: RPR-001
       kind: numeric
       state: reserved
