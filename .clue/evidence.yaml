@@ -21,11 +21,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
+          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
+          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -250,11 +250,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
+          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
+          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -297,6 +297,8 @@
         ".clue/evidence/test_junit_producer.py",
         "lib/rumble-protocol/build.gradle.kts",
         "lib/rumble-protocol/src/test/kotlin/**/RumbleProtocol*Test.kt",
+        "rumble-cli/build.gradle.kts",
+        "rumble-cli/src/test/kotlin/**/RumbleCli*Test.kt",
         "rumble/build.gradle.kts",
         "rumble/src/test/kotlin/**/Worker*Test.kt"
       ],
@@ -308,11 +310,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
+          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
+          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -331,8 +333,20 @@
           "sha256": "aca5ac2fdc1cd21d6c877bfd5c119e3a83a92ad6ad9f6baab70748e265b5a12a"
         },
         {
+          "path": "rumble-cli/build.gradle.kts",
+          "sha256": "f9323779a1e2826b8bdc993084210198045d718bd6f8dcd37aa7a014804339c7"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "sha256": "c4c544ff9d5cdc317633c5f38c38bef97a9b485ca0947eb02570de57c19691d3"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "sha256": "6e592a909dff1c7a1ec03afec4ce23821c7ad63f81645b12e45ac9bf4893624e"
+        },
+        {
           "path": "rumble/build.gradle.kts",
-          "sha256": "a496f0755c487237078935d04515beb23baace74932476a1f72138321a946b63"
+          "sha256": "50791c6969c02c05428d6bd0b42b3b1c2b985d7acf3cf6767605f2c1aeee4192"
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerClasspathTest.kt",
@@ -390,6 +404,146 @@
           "subject": "RumbleProtocolMessagesTest.testRBW002_UnitNegative_unknownVersionsAndInvalidLinesAreRefusedWholeInPlainWords",
           "type": "Unit",
           "direction": "negative"
+        },
+        {
+          "id": "RCI-003",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI003_IntegrationPositive_noCommandWaitsForInputWhenStandardInputIsClosed",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-010",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI010_IntegrationNegative_anUnknownCommandGivesExitCodeTwo",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-010",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI010_IntegrationPositive_theJarRunsWithNothingElseOnTheClasspathAndAnswersInJson",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-011",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI011_IntegrationNegative_theCommandLineCarriesTheWorkerAsOneResourceAndNoneOfItsClasses",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-011",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI011_IntegrationPositive_theCarriedWorkerIsExtractedAndRunsARealBattleThroughTheHost",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-011",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI011_IntegrationPositive_theWorkerJarIsRunnableAndHoldsNoControllerCode",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-001",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI001_UnitNegative_aFailureStillAnswersInOneDocumentAndWritesNothingElseToStandardOutput",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-001",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI001_UnitPositive_everyCommandAnswersInTextOrInOneJsonDocumentWithAVersion",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-002",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI002_UnitNegative_theCodeForNeedingASignInIsReservedAndNoCommandUsesIt",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-002",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI002_UnitPositive_success_failure_and_bad_input_have_their_own_exit_codes",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-004",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI004_UnitNegative_theCommandsThatOnlyReadWriteNothingAndCreateNoFolder",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-004",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI004_UnitPositive_theStateFolderOptionOverridesTheDefaultAndTheDefaultIsUsedWithoutIt",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-005",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI005_UnitPositive_versionGivesTheProgramTheEngineJavaAndTheCarriedWorker",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-006",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI006_UnitPositive_everyKnownEnvironmentIsListedWithItsRepositoriesAndWhetherStateExists",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-007",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI007_UnitNegative_aSignInThatCannotBeUsedIsSaidSoWithTheReasonAndAnUnknownEnvironmentIsRefused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-007",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI007_UnitPositive_statusSaysWhatIsSavedAndNeverShowsTheToken",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-008",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI008_UnitNegative_aMixedConfigurationIsRefusedWithCodeTwoAndNothingIsWritten",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-008",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI008_UnitPositive_importLegacyPreviewsByDefaultAndCopiesOnlyWithTheCopyOption",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-009",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI009_UnitNegative_theRedactionRemovesHomeUserAndAbsolutePathsFromAnyText",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-009",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
+          "subject": "RumbleCliTest.testRCI009_UnitPositive_noAnswerHoldsTheTokenTheHomeFolderTheUserNameOrAnAbsolutePathOfThisComputer",
+          "type": "Unit",
+          "direction": "positive"
         },
         {
           "id": "RBW-020",
@@ -504,7 +658,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
+          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
         },
         {
           "path": ".clue/evidence/python_unittest_producer.py",
@@ -512,7 +666,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "a84349243dd3917cc46cd99882b3d15ef8bb1c83bf80d7730628f6fc02948fcd"
+          "sha256": "829a8f1b9bf9373066937ae668ba42503e57b1b12bfeaaf1c43e05e2a2c05d84"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -524,7 +678,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "12b7d262c1098bb654483483dcfa51d586b82f117d256b386c8068a1fef12a72"
+          "sha256": "f9830c95435722056d41d96d2cd5f1e41ef2de31e5532cabc63c80536f90e421"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -701,11 +855,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
+          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
+          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -1679,11 +1833,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "fd50935a9ce8f6efcca4d6e745aeace92bab52c90308b111e6b9a29e070c7bda"
+          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
+          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
         },
         {
           "path": "server/build.gradle.kts",

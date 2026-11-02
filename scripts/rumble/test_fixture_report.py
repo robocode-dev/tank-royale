@@ -53,6 +53,7 @@ ALL_CLASSES = {
         ("dev.robocode.tankroyale.rumble.protocol.RumbleProtocolMessagesTest", "testOne"),
         ("dev.robocode.tankroyale.rumble.protocol.RumbleProtocolCredentialFieldsTest", "testEight"),
     ],
+    "rumble-cli": [("dev.robocode.tankroyale.rumble.cli.RumbleCliTest", "testTwelve")],
     "rumble": [
         ("dev.robocode.tankroyale.rumble.worker.WorkerTest", "testTwo"),
         ("dev.robocode.tankroyale.rumble.worker.WorkerClasspathTest", "testNine"),
@@ -93,7 +94,7 @@ class GroupingIntoCases(unittest.TestCase):
 
             self.assertEqual([], problems)
             self.assertEqual(["environments-and-reset-boundaries", "sign-in-and-registration", "catalog-download-and-staging",
-                              "bot-submission-and-progress", "battle-worker", "credential-boundary", "legacy-client-import"], [c["name"] for c in result["cases"]])
+                              "bot-submission-and-progress", "battle-worker", "credential-boundary", "legacy-client-import", "command-line"], [c["name"] for c in result["cases"]])
             by_name = {c["name"]: c for c in result["cases"]}
             self.assertEqual(4, by_name["battle-worker"]["passed"])
             self.assertEqual(6, by_name["credential-boundary"]["passed"])

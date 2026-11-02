@@ -54,6 +54,29 @@ class RegistrationStore(private val environment: RumbleEnvironment, baseFolder: 
             false
         }
 
+    /** The saved registration in this environment, whichever account it is for, or null if none or damaged. */
+    fun loadAny(): RegistrationRecord? = readStored()?.let {
+        try {
+            RegistrationRecord(it.account, it.clientId, it.environment, Instant.parse(it.savedAt))
+        } catch (e: java.time.format.DateTimeParseException) {
+            null
+        }
+    }
+
+    private fun readStored(): Stored? {
+        if (!Files.exists(file)) return null
+        return try {
+            val stored = Json.decodeFromString(Stored.serializer(), String(Files.readAllBytes(file), StandardCharsets.UTF_8))
+            if (stored.schemaVersion != 1 || stored.environment != environment.name) null else stored
+        } catch (e: IOException) {
+            null
+        } catch (e: SerializationException) {
+            null
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
+
     /** The saved registration of [account] in this environment, or null if none, damaged, or for another account. */
     fun load(account: String): RegistrationRecord? {
         if (!Files.exists(file)) return null

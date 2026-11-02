@@ -26,7 +26,7 @@ SCHEMA_VERSION = 1
 EXIT_PASSED, EXIT_FAILED, EXIT_LIVE_SWITCH, EXIT_SECRET_SURVIVED = 0, 1, 2, 3
 
 # The modules whose offline tests make up the fixture check.
-MODULES = ["lib/rumble-protocol", "rumble", "lib/rumble", "lib/bot-project"]
+MODULES = ["lib/rumble-protocol", "rumble", "rumble-cli", "lib/rumble", "lib/bot-project"]
 
 # Cases in the order they are reported: (name, title).
 CASES = [
@@ -37,12 +37,14 @@ CASES = [
     ("battle-worker", "Battle worker and its host"),
     ("credential-boundary", "Credential boundary between host and worker"),
     ("legacy-client-import", "Import of the old client's state"),
+    ("command-line", "Command line"),
 ]
 RESULTS_CASE = ("test-results", "Test results")
 
 # Which case a JVM test class belongs to, first match wins. A class that matches none is reported as a problem, so a new
 # test cannot vanish from the report by being forgotten here.
 CLASS_CASES = [
+    (re.compile(r"^RumbleCli\w*Test$"), "command-line"),
     (re.compile(r"^RumbleLegacyImportTest$"), "legacy-client-import"),
     (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),

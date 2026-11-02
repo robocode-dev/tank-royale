@@ -719,7 +719,7 @@ pluginManager.withPlugin("com.github.ben-manes.versions") {
 // --- Rumble fixture check ---
 // One command, `./gradlew rumbleFixtureCheck`, runs the offline Rumble checks and writes build/rumble-fixture/result.json
 // and report.md with secrets removed. It never runs a live check and never touches a public resource.
-val rumbleFixtureModules = listOf(":lib:rumble-protocol", ":rumble", ":lib:rumble", ":lib:bot-project")
+val rumbleFixtureModules = listOf(":lib:rumble-protocol", ":rumble", ":rumble-cli", ":lib:rumble", ":lib:bot-project")
 
 if (gradle.startParameter.taskNames.any { it == "rumbleFixtureCheck" || it.endsWith(":rumbleFixtureCheck") } &&
     System.getProperty("rumble.live") == "true"
