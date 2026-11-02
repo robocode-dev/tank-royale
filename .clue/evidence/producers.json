@@ -89,7 +89,8 @@
         ".clue/evidence/aggregate.py",
         ".clue/evidence/python_unittest_producer.py",
         "scripts/rumble/test_*.py",
-        "scripts/rumble/rumble_environments.py"
+        "scripts/rumble/rumble_environments.py",
+        "scripts/rumble/fixture_report.py"
       ],
       "command": [
         "python",

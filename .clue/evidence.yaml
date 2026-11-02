@@ -25,7 +25,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
+          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -254,7 +254,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
+          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -312,7 +312,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
+          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -456,6 +456,7 @@
         ".clue/evidence/aggregate.py",
         ".clue/evidence/producers.json",
         ".clue/evidence/python_unittest_producer.py",
+        "scripts/rumble/fixture_report.py",
         "scripts/rumble/rumble_environments.py",
         "scripts/rumble/test_*.py"
       ],
@@ -467,11 +468,15 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
+          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
         },
         {
           "path": ".clue/evidence/python_unittest_producer.py",
           "sha256": "e152a04cbb79f632eb142b6054231ef889bca7e0be9f3e971f6146fa2951fa06"
+        },
+        {
+          "path": "scripts/rumble/fixture_report.py",
+          "sha256": "98a85ec15214fa0d851af82f0a34801317470d9ee61fdbdd18f4e26aa0ccbf76"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -482,11 +487,113 @@
           "sha256": "0252cfd6b8513b71201bfb73caa638f5a734c2ca503877ef4ba61f6cc74d75ff"
         },
         {
+          "path": "scripts/rumble/test_fixture_report.py",
+          "sha256": "db86c605836cc43bf2b8a7283220152c5aceab92970310a2122f6be23d76fc1e"
+        },
+        {
           "path": "scripts/rumble/test_rumble_environments.py",
           "sha256": "fb1264154c8ac04d806ecd22b1e67abeefe0f9a01e576b25fea43b8ee93e7c2d"
         }
       ],
       "references": [
+        {
+          "id": "RFX-005",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "FailingClosed.test_RFX_005_UnitNegative_text_that_still_looks_like_a_secret_is_never_written",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RFX-005",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "FailingClosed.test_RFX_005_UnitPositive_the_command_ends_with_its_own_code_and_writes_nothing",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RFX-001",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "GroupingIntoCases.test_RFX_001_UnitNegative_an_empty_case_a_missing_module_and_an_unassigned_class_fail",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RFX-001",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "GroupingIntoCases.test_RFX_001_UnitPositive_every_check_belongs_to_one_named_case_with_counts",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RFX-006",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "LiveSwitchAndFailures.test_RFX_006_UnitNegative_the_live_switch_stops_the_command_before_anything_runs",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RFX-006",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "LiveSwitchAndFailures.test_RFX_006_UnitPositive_with_the_switch_off_live_checks_are_skipped_and_listed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RFX-007",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "LiveSwitchAndFailures.test_RFX_007_UnitNegative_a_failed_check_fails_the_command_and_is_fully_reported",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RFX-004",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "Redaction.test_RFX_004_UnitNegative_ordinary_text_is_left_unchanged",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RFX-004",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "Redaction.test_RFX_004_UnitPositive_a_token_in_a_path_an_address_and_a_stack_trace_is_removed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RFX-004",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "Redaction.test_RFX_004_UnitPositive_secrets_and_machine_details_are_removed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RFX-002",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "ResultAndReport.test_RFX_002_UnitNegative_no_account_or_credential_value_is_in_the_environment_entries",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RFX-002",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "ResultAndReport.test_RFX_002_UnitPositive_the_result_has_versions_environments_cases_and_skipped_live_checks",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RFX-003",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "ResultAndReport.test_RFX_003_UnitNegative_the_sentence_is_in_a_failing_report_too",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RFX-003",
+          "path": "scripts/rumble/test_fixture_report.py",
+          "subject": "ResultAndReport.test_RFX_003_UnitPositive_the_report_lists_cases_and_always_says_what_a_green_run_does_not_claim",
+          "type": "Unit",
+          "direction": "positive"
+        },
         {
           "id": "RDA-010",
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -562,7 +669,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
+          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -1364,7 +1471,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "0f0a2692ce5cae3188bcf7e0630367e7415f83d1b5aea7fba79029d52e980072"
+          "sha256": "5d698431812bed29070af2ec1491d89f86b00f02cc1eabd577fa2dea4b07cc6f"
         },
         {
           "path": "server/build.gradle.kts",

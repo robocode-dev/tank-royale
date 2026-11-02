@@ -715,3 +715,56 @@ pluginManager.withPlugin("com.github.ben-manes.versions") {
         }
     }
 }
+
+// --- Rumble fixture check ---
+// One command, `./gradlew rumbleFixtureCheck`, runs the offline Rumble checks and writes build/rumble-fixture/result.json
+// and report.md with secrets removed. It never runs a live check and never touches a public resource.
+val rumbleFixtureModules = listOf(":lib:rumble-protocol", ":rumble", ":lib:rumble", ":lib:bot-project")
+
+if (gradle.startParameter.taskNames.any { it == "rumbleFixtureCheck" || it.endsWith(":rumbleFixtureCheck") } &&
+    System.getProperty("rumble.live") == "true"
+) {
+    throw GradleException("The Rumble fixture check never runs live checks. Run it without -Drumble.live=true.")
+}
+
+val rumbleFixtureToolTests by tasks.registering(Exec::class) {
+    group = "verification"
+    description = "Runs the unit tests of the Rumble fixture report generator."
+    workingDir = file("scripts/rumble")
+    commandLine(if (isWindows()) "python" else "python3", "-m", "unittest", "test_fixture_report")
+}
+
+val rumbleFixtureReport by tasks.registering(Exec::class) {
+    group = "verification"
+    description = "Groups the Rumble test results into cases and writes the redacted result and report."
+    // The report is built from the test results of the fixture modules, so it must run after all of them, passed or failed.
+    dependsOn(rumbleFixtureToolTests)
+    rumbleFixtureModules.forEach { mustRunAfter("$it:test") }
+    workingDir = projectDir
+    commandLine(
+        if (isWindows()) "python" else "python3", "scripts/rumble/fixture_report.py",
+        "--out", layout.buildDirectory.dir("rumble-fixture").get().asFile.path,
+        "--java-version", System.getProperty("java.version"),
+        "--live", System.getProperty("rumble.live") ?: "false",
+    )
+}
+
+val rumbleFixtureCheck by tasks.registering {
+    group = "verification"
+    description = "Runs the offline Rumble fixture checks and writes a redacted result and report below build/rumble-fixture."
+    dependsOn(rumbleFixtureModules.map { "$it:test" })
+    dependsOn(rumbleFixtureReport)
+}
+
+gradle.taskGraph.whenReady {
+    if (hasTask(rumbleFixtureCheck.get())) {
+        // Collect every failure instead of stopping at the first one, and always run the tests again.
+        rumbleFixtureModules.forEach { path ->
+            project(path).tasks.withType<Test>().matching { it.name == "test" }.configureEach {
+                ignoreFailures = true
+                failFast = false
+                outputs.upToDateWhen { false }
+            }
+        }
+    }
+}
