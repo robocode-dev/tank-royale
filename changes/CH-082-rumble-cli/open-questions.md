@@ -1,7 +1,7 @@
 ---
 id: CH-082-open-questions
 type: open-questions
-status: open
+status: resolved
 links: [CH-082]
 title: Two programs, and whether they are published
 ---
@@ -21,3 +21,5 @@ What Tank Royale publishes today: the runnable programs (server, booter, recorde
 Facts that bear on the choice. Anything published is a long-lived commitment: coordinates, a signed jar for every release, and users who may depend on its behavior, while the Rumble is in public Beta and its command line is new. The repository's own rule is that a release must give users something clear and is never made only to unblock internal work. And publishing needs no code in this change: it is switching on the shared publishing setup for a module later.
 
 Recommendation: do not publish anything in this change, and shape the programs so that publishing is a small step later. Only `rumble` (the command line) would ever be a candidate. The worker is an internal part of it, so the command line carries the worker's jar as an embedded resource, off its own classpath so the credential boundary still holds, and extracts it when it needs it, as the battle runner does with the server and the booter. The libraries stay unpublished, as all of the shared libraries are today. The decision to publish `rumble` to Maven Central and attach it to the GitHub release is taken at the first release where the command line gives users something real (for example when sign-in, submission and running battles work), and it is recorded as a decision at that time. The alternative is to publish from the first release that contains the module, which costs a commitment before the command line is useful and before its contract is stable.
+
+Resolved by the maintainer on 2026-11-02, following the recommendation: nothing is published in this change, only the command line is a candidate for publication later, the worker is carried inside it, and the decision is taken at the first release where the command line gives users something real and recorded then.

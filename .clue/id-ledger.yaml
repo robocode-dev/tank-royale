@@ -925,6 +925,31 @@ events:
     - {id: CH-082, kind: numeric, state: live, prefix: CH, component: "82"}
     - {id: CH-082-tasks, kind: opaque, state: live}
     - {id: CH-082-open-questions, kind: opaque, state: live}
+    - {id: RCI-002, kind: numeric, state: reserved, prefix: RCI, component: "2"}
+    - {id: RCI-003, kind: numeric, state: reserved, prefix: RCI, component: "3"}
+    - {id: RCI-004, kind: numeric, state: reserved, prefix: RCI, component: "4"}
+    - {id: RCI-005, kind: numeric, state: reserved, prefix: RCI, component: "5"}
+    - {id: RCI-006, kind: numeric, state: reserved, prefix: RCI, component: "6"}
+    - {id: RCI-007, kind: numeric, state: reserved, prefix: RCI, component: "7"}
+    - {id: RCI-008, kind: numeric, state: reserved, prefix: RCI, component: "8"}
+    - {id: RCI-009, kind: numeric, state: reserved, prefix: RCI, component: "9"}
+    - {id: RCI-010, kind: numeric, state: reserved, prefix: RCI, component: "10"}
+    - {id: RCI-011, kind: numeric, state: reserved, prefix: RCI, component: "11"}
+    - {id: RCI-012, kind: numeric, state: reserved, prefix: RCI, component: "12"}
+    - {id: RCI-001, kind: numeric, state: live, prefix: RCI, component: "1"}
+    - {id: RCI-002, kind: numeric, state: live, prefix: RCI, component: "2"}
+    - {id: RCI-003, kind: numeric, state: live, prefix: RCI, component: "3"}
+    - {id: RCI-004, kind: numeric, state: live, prefix: RCI, component: "4"}
+    - {id: RCI-005, kind: numeric, state: live, prefix: RCI, component: "5"}
+    - {id: RCI-006, kind: numeric, state: live, prefix: RCI, component: "6"}
+    - {id: RCI-007, kind: numeric, state: live, prefix: RCI, component: "7"}
+    - {id: RCI-008, kind: numeric, state: live, prefix: RCI, component: "8"}
+    - {id: RCI-009, kind: numeric, state: live, prefix: RCI, component: "9"}
+    - {id: RCI-010, kind: numeric, state: live, prefix: RCI, component: "10"}
+    - {id: RCI-011, kind: numeric, state: live, prefix: RCI, component: "11"}
+    - {id: RCI-012, kind: numeric, state: live, prefix: RCI, component: "12"}
+    - {id: CAP-024, kind: numeric, state: live, prefix: CAP, component: "24"}
+    - {id: CAP-024-criteria, kind: opaque, state: live}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
