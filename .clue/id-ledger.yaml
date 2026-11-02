@@ -832,6 +832,33 @@ events:
     - {id: CH-078, kind: numeric, state: retired, prefix: CH, component: "78"}
     - {id: CH-078-tasks, kind: opaque, state: retired}
     - {id: CH-078-open-questions, kind: opaque, state: retired}
+    - {id: CH-079, kind: numeric, state: reserved, prefix: CH, component: "79"}
+    - {id: CAP-022, kind: numeric, state: reserved, prefix: CAP, component: "22"}
+    - {id: RFX-001, kind: numeric, state: reserved, prefix: RFX, component: "1"}
+    - {id: CH-079, kind: numeric, state: live, prefix: CH, component: "79"}
+    - {id: CH-079-tasks, kind: opaque, state: live}
+    - {id: CH-079-open-questions, kind: opaque, state: live}
+    - {id: RFX-002, kind: numeric, state: reserved, prefix: RFX, component: "2"}
+    - {id: RFX-003, kind: numeric, state: reserved, prefix: RFX, component: "3"}
+    - {id: RFX-004, kind: numeric, state: reserved, prefix: RFX, component: "4"}
+    - {id: RFX-005, kind: numeric, state: reserved, prefix: RFX, component: "5"}
+    - {id: RFX-006, kind: numeric, state: reserved, prefix: RFX, component: "6"}
+    - {id: RFX-007, kind: numeric, state: reserved, prefix: RFX, component: "7"}
+    - {id: RFX-008, kind: numeric, state: reserved, prefix: RFX, component: "8"}
+    - {id: RFX-009, kind: numeric, state: reserved, prefix: RFX, component: "9"}
+    - {id: RFX-001, kind: numeric, state: live, prefix: RFX, component: "1"}
+    - {id: RFX-002, kind: numeric, state: live, prefix: RFX, component: "2"}
+    - {id: RFX-003, kind: numeric, state: live, prefix: RFX, component: "3"}
+    - {id: RFX-004, kind: numeric, state: live, prefix: RFX, component: "4"}
+    - {id: RFX-005, kind: numeric, state: live, prefix: RFX, component: "5"}
+    - {id: RFX-006, kind: numeric, state: live, prefix: RFX, component: "6"}
+    - {id: RFX-007, kind: numeric, state: live, prefix: RFX, component: "7"}
+    - {id: RFX-008, kind: numeric, state: live, prefix: RFX, component: "8"}
+    - {id: CAP-022, kind: numeric, state: live, prefix: CAP, component: "22"}
+    - {id: CAP-022-criteria, kind: opaque, state: live}
+    - {id: CH-079, kind: numeric, state: retired, prefix: CH, component: "79"}
+    - {id: CH-079-tasks, kind: opaque, state: retired}
+    - {id: CH-079-open-questions, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

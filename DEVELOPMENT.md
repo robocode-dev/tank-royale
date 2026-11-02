@@ -94,9 +94,16 @@ All build commands are run from the repo root via the Gradle wrapper.
 ./gradlew :bot-api:java:build
 ./gradlew :bot-api:dotnet:build
 ./gradlew :bot-api:python:build
+
+# Run the offline Rumble fixture checks and write a redacted result and report
+./gradlew rumbleFixtureCheck
 ```
 
 The first build downloads Gradle and all dependencies automatically.
+
+### Rumble fixture check
+
+`./gradlew rumbleFixtureCheck` runs the offline checks of the Rumble modules (`lib:rumble-protocol`, `rumble`, `lib:rumble` and `lib:bot-project`) and the Python checks in `scripts/rumble`, groups them into named cases, and writes two files below `build/rumble-fixture/`: `result.json`, which a program can read, and `report.md`, which a person can read. Both have tokens, the home folder, the user name and absolute paths removed automatically. The command needs no network, never runs a live check, writes nothing outside the build folder, and refuses to start when `-Drumble.live=true` is given. It collects every failure before it fails, and a case that ran no checks counts as failed. A green run says nothing about the sign-in App on a real fork, public installation permissions or a real account; the report says so every time. Python 3 must be on the path (`python` on Windows, `python3` elsewhere).
 
 ---
 
