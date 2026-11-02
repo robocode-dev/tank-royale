@@ -1,7 +1,7 @@
 ---
 id: CH-080-open-questions
 type: open-questions
-status: open
+status: resolved
 links: [CH-080]
 title: Whether the host sets the home folder through the Java environment variable
 ---
@@ -13,3 +13,5 @@ On Windows, Java finds the user's real home folder by asking the operating syste
 There is an environment variable that every Java process reads when it starts, `JAVA_TOOL_OPTIONS`. If the host puts the home and temporary folder settings there, every Java process in the tree uses the worker's empty folders, whatever command started it. The cost is that each of those processes prints one line saying it picked the settings up (the host throws that away, but it ends up in the server and booter logs the worker reads), and a Java bot that really wanted the real home folder will not get it.
 
 Recommendation: yes, set it. It closes the gap at the one place that starts the tree, instead of relying on every caller to remember the right command. The alternative is to leave the host as it is and document that a custom command must carry the settings itself, which leaves a boundary that depends on callers being careful.
+
+Resolved by the maintainer on 2026-11-02, following the recommendation: the host sets the home and temporary folder settings through `JAVA_TOOL_OPTIONS`.
