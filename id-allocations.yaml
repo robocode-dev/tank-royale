@@ -2000,6 +2000,11 @@ claims:
       state: reserved
       prefix: RLI
       component: "7"
+    - id: RLI-008
+      kind: numeric
+      state: reserved
+      prefix: RLI
+      component: "8"
     - id: RPR-001
       kind: numeric
       state: reserved
@@ -2266,11 +2271,11 @@ high-water:
       state: reserved
       prefix: RFX
       component: "9"
-    - id: RLI-006
+    - id: RLI-007
       kind: numeric
       state: reserved
       prefix: RLI
-      component: "6"
+      component: "7"
     - id: RPR-001
       kind: numeric
       state: reserved
