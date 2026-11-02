@@ -11,6 +11,7 @@ include("lib:rumble-protocol")
 
 // Rumble battle worker
 include("rumble")
+include("rumble-cli")
 
 // Booter
 include("booter")

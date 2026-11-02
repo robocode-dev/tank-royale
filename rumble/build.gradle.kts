@@ -1,3 +1,5 @@
+import build.tasks.FatJar
+
 description = "Robocode Tank Royale Rumble executable (battle worker)"
 
 // A group of its own: this project and lib:rumble are both called "rumble", and Gradle would take two projects with the
@@ -9,13 +11,11 @@ base {
 }
 
 plugins {
-    application
+    java
     alias(libs.plugins.kotlin.jvm)
 }
 
-application {
-    mainClass = "dev.robocode.tankroyale.rumble.worker.MainKt"
-}
+val workerMainClass = "dev.robocode.tankroyale.rumble.worker.MainKt"
 
 dependencies {
     implementation(project(":runner"))
@@ -50,6 +50,21 @@ val checkDependencyRules by tasks.registering {
 }
 
 tasks {
+    // A runnable jar with the runner and the messages inside it, like the booter and the runner are, so the worker can be
+    // started with java -jar. The runner's own jar carries the server and the booter as resources, and they come along.
+    val fatJar by registering(FatJar::class) {
+        dependsOn(classes)
+        destinationDirectory.set(layout.buildDirectory.dir("libs"))
+        archiveFileName.set("${base.archivesName.get()}-${project.version}.jar")
+        title.set("Robocode Tank Royale Rumble Battle Worker")
+        mainClass.set(workerMainClass)
+    }
+
+    jar {
+        enabled = false
+        dependsOn(fatJar)
+    }
+
     test {
         useJUnitPlatform {
             excludeTags("integration")

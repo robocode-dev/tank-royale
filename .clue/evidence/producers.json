@@ -74,7 +74,9 @@
         "lib/rumble-protocol/build.gradle.kts",
         "lib/rumble-protocol/src/test/kotlin/**/RumbleProtocol*Test.kt",
         "rumble/build.gradle.kts",
-        "rumble/src/test/kotlin/**/Worker*Test.kt"
+        "rumble/src/test/kotlin/**/Worker*Test.kt",
+        "rumble-cli/build.gradle.kts",
+        "rumble-cli/src/test/kotlin/**/RumbleCli*Test.kt"
       ],
       "command": [
         "python",

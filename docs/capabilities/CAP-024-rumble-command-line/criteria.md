@@ -28,7 +28,7 @@ Feature: rumble-command-line — Rumble command line
 
   @RCI-003
   Scenario: No command ever asks anything on the keyboard
-    Test-type: Unit
+    Test-type: Integration
     Given a command run as a real process whose standard input is closed
     When it runs
     Then it finishes with its answer and its exit code without waiting for input
