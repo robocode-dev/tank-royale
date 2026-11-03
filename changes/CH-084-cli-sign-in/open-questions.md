@@ -1,9 +1,9 @@
 ---
 id: CH-084-open-questions
 type: open-questions
-status: open
+status: resolved
 links: [CH-084]
-title: The sign-in flow, and carrying the program inside the desktop program
+title: The sign-in flow, and how the program reaches people
 ---
 
 ## Should the sign-in differ between programs and people?
@@ -14,24 +14,22 @@ Resolved by the maintainer on 2026-11-03: no. The review found that different be
 
 Resolved by the maintainer on 2026-11-03: yes, for the account its person approved. It never approves a sign-in and never creates an account. The decision is revised in this change.
 
-## How should the program come inside the desktop program, and how does a terminal reach it?
+## Which environment do the commands use when none is named?
 
-The maintainer intends it to be carried like the server and the booter, so nobody has to fetch it. This does not block the commands in this change. The direction should be settled so that the design and plan can say it.
+Resolved by the maintainer on 2026-11-03: the public Rumble, with `-e`, `--environment` or `RUMBLE_ENVIRONMENT` choosing another, and every answer naming the environment.
 
-What was found. The desktop program carries the server, the booter and the recorder as jars, and when it needs one it copies it to a new temporary file and starts it. That suits a program the desktop program starts itself, but not a command someone types: a temporary file has no stable name, and an agent calling many commands would leave many copies of a 20 MB file.
+## How does the program reach people?
 
-Three further facts bear on it:
+Resolved by the maintainer on 2026-11-03: the desktop program fetches it at first use. It is not carried inside the desktop program, so the desktop jar stays at about 22 MB and the server and the booter do not lie in it several times. The fetching is built in a separate change; this direction goes into the participation design and the plan.
 
-- The desktop program does not need the command line for its own work. The design has it use the shared library directly, and all it needs to start is the battle worker, which the command line already carries. Carrying the command line therefore gives it the worker as well, and gives terminal users a program.
-- Size. The desktop jar is about 22 MB and the command line about 21 MB, of which 14 MB is the worker, and the worker holds its own server and booter, which the desktop program already carries. Done simply, the download nearly doubles to about 43 MB. It is an acceptable price, but it can be reduced later, and the server and booter are shrunk at build time while the command line is not yet.
-- It reaches users at the next release, and today the public Rumble has no sign-in App. The step should therefore wait until the commands give something real, in line with the rule that a release must give users something clear.
+- **When.** The first time something in the Rumble menu needs the program. The desktop program asks first and shows the size, because this is code that will run on the computer. Nothing is fetched silently.
+- **From where.** Exactly the release `v<version>` in the Tank Royale repository and exactly the file for that version, over HTTPS only and never "latest", so the version always matches the desktop program.
+- **Check.** SHA-256 against the hash GitHub reports for the file in its API. The file is fetched under a temporary name with a size ceiling, checked, and only then given its real name. The program is then asked for its version, which must match.
+- **Where.** `<user data folder>/rumble/rumble.jar`, a fixed place, so a person or an agent can run it with `java -jar`. A new desktop version fetches a new one. A file in use on Windows is reported, not silently left.
+- **Failures.** Being offline, a missing release, GitHub's rate limit or a wrong hash give a clear message and leave nothing half done. Everything else in the desktop program keeps working. The Rumble needs the network anyway, so fetching adds no new offline loss; battles outside the Rumble are untouched.
+- **Development builds.** `main` carries the version number of the latest release, so a local build would otherwise fetch an older program. A setting, `-Drumble.jar=<path>`, which Gradle sets for local runs, points at the local build.
+- **Without the desktop program.** The same jar can be fetched from the release page. A separate Maven Central artifact is not needed, which answers the earlier open choice about publishing.
 
-Recommendation:
+Two facts were checked. A hash built into the desktop program cannot work: the installers are built separately on each operating system and the jars are not identical between builds, as the 1.4.0 desktop jar on GitHub (22072821 bytes) and a local build (22072115 bytes) show. And the program is about 20 MB, of which 13.8 MB is the worker with its own server and booter, so for people who use the Rumble those two still lie on the disk twice, though not inside the desktop jar. Removing that would make the program unable to stand alone, so it stays.
 
-1. Carry the command line inside the desktop program, and let the desktop program take the battle worker from it, so there is one embedded jar and one version.
-2. Reach it from a terminal through the desktop jar itself: `java -jar robocode-tankroyale-gui-<version>.jar rumble status`. The desktop program recognizes `rumble` as the first argument before it touches anything graphical, so it also works without a screen, as an agent on a server needs. The carried jar is extracted once, into the state folder and checked by its hash, as the worker is, not to a new temporary file for each call.
-3. Later, a menu item in the Rumble menu can install a short `rumble` launcher, which is also when shell completion becomes worthwhile.
-4. As a consequence, a separate Maven Central artifact for the command line is not needed for people to get it. That earlier open choice becomes a question only if someone wants the program without the desktop program.
-5. Build this as its own change, close to the Rumble menu and before the public launch, and not now.
-
-The alternative is to keep the command line as a separate download. It keeps the desktop jar smaller, but people must fetch a matching version themselves, which is what the maintainer wants to avoid.
+The hash from GitHub protects against interrupted and damaged files, not against a compromised release. The desktop program comes from the same place, so no new party is trusted; a stronger check with a signature can be added later. Whether the desktop program's screens use the library directly and take only the worker from the fetched jar, or run the program as a process with JSON, is decided together with the Rumble menu.
