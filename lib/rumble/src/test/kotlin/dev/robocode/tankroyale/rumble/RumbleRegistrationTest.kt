@@ -154,7 +154,7 @@ class RumbleRegistrationTest {
             comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: account `alice` is banned\nsecond line"}]"""
         }
         val refused = run(github, base).registration.register(tokens())
-        assertEquals(RegistrationResult.Refused("account `alice` is banned"), refused)
+        assertEquals(RegistrationResult.Refused("account `alice` is banned", account = "alice"), refused)
         assertEquals(null, RegistrationStore(env, base).load("alice"))
 
         val long = FakeRumbleGitHub().apply {

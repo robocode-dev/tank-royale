@@ -48,8 +48,11 @@ class RumbleSignInFlowTest {
         assertEquals("ABCD-EFGH", started.code.userCode)
         assertFalse(started.toString().contains("DEVICE-SECRET"))
         assertEquals(1, auth.urls.size)
-        assertFalse(java.nio.file.Files.exists(RumbleEnvironments.TEST.stateRoot(dir).resolve("signin.probe")))
+        assertEquals(emptyList<String>(), probes(dir))
     }
+
+    private fun probes(dir: Path): List<String> =
+        RumbleEnvironments.TEST.stateRoot(dir).toFile().listFiles().orEmpty().map { it.name }.filter { it.startsWith("signin.probe") }
 
     @Test
     @Tag("RCI-019")
@@ -63,7 +66,7 @@ class RumbleSignInFlowTest {
 
         assertInstanceOf(SignInStart.NotPrivate::class.java, answer)
         assertTrue(auth.urls.isEmpty(), "the person is never asked to approve a sign-in that could not be kept")
-        assertFalse(java.nio.file.Files.exists(RumbleEnvironments.TEST.stateRoot(dir).resolve("signin.probe")))
+        assertEquals(emptyList<String>(), probes(dir))
     }
 
     @Test
@@ -87,6 +90,23 @@ class RumbleSignInFlowTest {
     @Test
     @Tag("RCI-026")
     @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI026_UnitNegative_notBeingAbleToReadHowAnEarlierIssueEndedOpensNoNewIssue(@TempDir dir: Path) {
+        val env = RumbleEnvironments.TEST
+        val github = FakeRumbleGitHub().apply {
+            closedIssues = mutableListOf(FakeRumbleGitHub.issueJson(5, "[register] alice"))
+            commentsStatus = 403
+        }
+
+        val result = Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(GitHubTokens(SECRET_TOKEN, null, null, null))
+
+        assertInstanceOf(RegistrationResult.Failed::class.java, result)
+        assertTrue(github.postedBodies.isEmpty())
+    }
+
+    @Test
+    @Tag("RCI-026")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI026_UnitPositive_theNewestClosedIssueDecidesAndRetryOpensOneIssue(@TempDir dir: Path) {
         val env = RumbleEnvironments.TEST
@@ -96,7 +116,7 @@ class RumbleSignInFlowTest {
             comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: banned"}]"""
         }
 
-        assertEquals(RegistrationResult.Refused("banned", earlier = true), Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(tokens))
+        assertEquals(RegistrationResult.Refused("banned", earlier = true, account = "alice"), Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(tokens))
         assertTrue(github.postedBodies.isEmpty())
 
         Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(tokens, retry = true)

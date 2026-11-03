@@ -7,7 +7,11 @@ import dev.robocode.tankroyale.rumble.GitHubAuthTransport
 import dev.robocode.tankroyale.rumble.HttpGitHubApi
 import dev.robocode.tankroyale.rumble.HttpGitHubAuthTransport
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import java.io.PrintStream
 import java.nio.file.Path
 import java.time.Clock
@@ -85,8 +89,7 @@ class Io(
 ) {
     /** Writes [reply] as text or as one JSON document, cleaned, and ends the command with its exit code. */
     fun answer(reply: Reply, asJson: Boolean) {
-        val raw = if (asJson) Json.encodeToString(JsonObject.serializer(), reply.json) else reply.text
-        out.println(redaction.clean(raw, reply.keep))
+        out.println(if (asJson) encoded(reply.json, reply.keep) else redaction.clean(reply.text, reply.keep))
         out.flush()
         if (reply.exitCode != ExitCodes.DONE) throw ProgramResult(reply.exitCode)
     }
@@ -97,10 +100,21 @@ class Io(
         out.flush()
     }
 
-    /** Writes the answer to bad input as one cleaned JSON document. */
+    /** Writes an answer no command gave, such as to bad input, as one cleaned JSON document. */
     fun answerBadInput(json: JsonObject) {
-        out.println(redaction.clean(Json.encodeToString(JsonObject.serializer(), json)))
+        out.println(encoded(json, emptySet()))
         out.flush()
+    }
+
+    /** One JSON document with every text in it cleaned first, so the cleaning can never damage the document itself. */
+    private fun encoded(json: JsonObject, keep: Set<String>): String =
+        Json.encodeToString(JsonElement.serializer(), cleanedValues(json, keep))
+
+    private fun cleanedValues(element: JsonElement, keep: Set<String>): JsonElement = when (element) {
+        is JsonObject -> JsonObject(element.mapValues { cleanedValues(it.value, keep) })
+        is JsonArray -> JsonArray(element.map { cleanedValues(it, keep) })
+        is JsonNull -> element
+        is JsonPrimitive -> if (element.isString) JsonPrimitive(redaction.clean(element.content, keep)) else element
     }
 
     /** [text] with what must not be shown removed. */

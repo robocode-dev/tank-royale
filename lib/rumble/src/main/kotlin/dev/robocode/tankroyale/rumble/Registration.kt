@@ -21,9 +21,9 @@ sealed interface RegistrationResult {
 
     /**
      * The Rumble refused the registration; [reason] is the workflow's reason in one short line. [earlier] is true when
-     * the refusal comes from an earlier issue and no new one was opened.
+     * the refusal comes from an earlier issue and no new one was opened. [account] is the account that was refused.
      */
-    data class Refused(val reason: String, val earlier: Boolean = false) : RegistrationResult
+    data class Refused(val reason: String, val earlier: Boolean = false, val account: String? = null) : RegistrationResult
 
     /** The registration was not finished in time. A later try continues; [issueUrl] is the registration issue. */
     data class NotFinished(val issueUrl: String?) : RegistrationResult
@@ -69,7 +69,7 @@ class Registration(
 
             val open = openRegistrationIssue(account, token)
             if (open == null && !retry) {
-                earlierRefusal(account, token)?.let { return RegistrationResult.Refused(it, earlier = true) }
+                earlierRefusal(account, token)?.let { return RegistrationResult.Refused(it, earlier = true, account = account) }
             }
             waitForRegistration(account, token, open ?: createRegistrationIssue(account, token))
         } catch (stop: Stop) {
@@ -84,9 +84,7 @@ class Registration(
         val answer = api.get("/user", token)
         refuseBadToken(answer)
         if (answer.status != 200) throw Stop(RegistrationResult.Failed(unexpected(answer)))
-        val login = obj(answer.body)?.string("login")
-        if (login == null || !ACCOUNT.matches(login)) throw Stop(RegistrationResult.Failed("GitHub did not say which account is signed in."))
-        return login
+        return GitHubAccount.nameIn(answer) ?: throw Stop(RegistrationResult.Failed("GitHub did not say which account is signed in."))
     }
 
     /** The client ID in the account's registration file, or null if there is none yet. */
@@ -134,7 +132,12 @@ class Registration(
         if (answer.status != 200) throw Stop(RegistrationResult.Failed(unexpected(answer)))
         val issues = (parse(answer.body) as? JsonArray).orEmpty().mapNotNull { it as? JsonObject }
         val newest = issues.firstOrNull { it.string("title").orEmpty().startsWith(TITLE_PREFIX) && it["pull_request"] == null }
-        return newest?.let { issue(it) }?.let { refusalReason(it.number, token) }
+        return newest?.let { issue(it) }?.let { found ->
+            // Not knowing how it ended must not open a new public issue, as it would if this counted as no refusal.
+            val comments = commentsOf(found.number, token)
+            if (comments.status != 200) throw Stop(RegistrationResult.Failed(unexpected(comments)))
+            refusalIn(comments)
+        }
     }
 
     private fun createRegistrationIssue(account: String, token: String): Issue {
@@ -164,7 +167,7 @@ class Registration(
         val deadline = clock.instant().plusSeconds(maxWaitSeconds.toLong())
         while (true) {
             readRegistrationFile(account, token)?.let { return known(account, it, alreadyRegistered = false) }
-            refusalReason(issue.number, token)?.let { return RegistrationResult.Refused(it) }
+            refusalReason(issue.number, token)?.let { return RegistrationResult.Refused(it, account = account) }
             if (!clock.instant().isBefore(deadline)) return RegistrationResult.NotFinished(issue.url)
             sleep(Duration.ofSeconds(pollSeconds.toLong()).toMillis())
         }
@@ -175,8 +178,13 @@ class Registration(
      * the same words; only the account the workflow comments under counts, and nobody else can take that name.
      */
     private fun refusalReason(number: Int, token: String): String? {
-        val answer = api.get("$repository/issues/$number/comments?per_page=100", token)
-        if (answer.status != 200) return null
+        val answer = commentsOf(number, token)
+        return if (answer.status != 200) null else refusalIn(answer)
+    }
+
+    private fun commentsOf(number: Int, token: String): ApiResponse = api.get("$repository/issues/$number/comments?per_page=100", token)
+
+    private fun refusalIn(answer: ApiResponse): String? {
         val comments = (parse(answer.body) as? JsonArray).orEmpty().mapNotNull { it as? JsonObject }
             .filter { (it["user"] as? JsonObject)?.string("login") == WORKFLOW_ACCOUNT }
             .mapNotNull { it.string("body") }
@@ -214,7 +222,6 @@ class Registration(
         private const val REFUSED = "Registration refused:"
         private const val WORKFLOW_ACCOUNT = "github-actions[bot]"
         private const val MAX_REASON = 200
-        private val ACCOUNT = Regex("[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
         private val CLIENT_ID = Regex("[A-Za-z0-9._-]{1,80}")
     }
 }

@@ -5,10 +5,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.IOException
 import java.nio.charset.StandardCharsets
-import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.time.Instant
 
 /** What the Rumble knows about a registered account on this computer. None of it is secret. */
@@ -43,11 +41,7 @@ class RegistrationStore(private val environment: RumbleEnvironment, baseFolder: 
             Files.createDirectories(folder)
             val stored = Stored(1, record.account, record.clientId, record.environment, record.savedAt.toString())
             Files.write(temp, Json.encodeToString(Stored.serializer(), stored).toByteArray(StandardCharsets.UTF_8))
-            try {
-                Files.move(temp, file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-            } catch (e: AtomicMoveNotSupportedException) {
-                Files.move(temp, file, StandardCopyOption.REPLACE_EXISTING)
-            }
+            replaceFile(temp, file)
             true
         } catch (e: IOException) {
             runCatching { Files.deleteIfExists(temp) }

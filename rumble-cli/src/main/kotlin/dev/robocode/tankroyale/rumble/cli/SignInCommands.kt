@@ -74,7 +74,7 @@ internal class LoginCommand(io: Io, services: Services) : SignInLeaf("login", io
             "then run login --finish. With --wait and no --finish it does both in one call, in text only."
 
     private val finish by option("--finish", help = "Check whether the code has been approved.").flag()
-    private val wait by option("--wait", help = "Keep checking for this many seconds.").long().restrictTo(min = 0)
+    private val wait by option("--wait", help = "Keep checking for this many seconds, at most an hour.").long().restrictTo(0, MAX_WAIT_SECONDS)
 
     override fun run() {
         val env = environment()
@@ -141,6 +141,11 @@ internal class LoginCommand(io: Io, services: Services) : SignInLeaf("login", io
         put("verificationUri", code.verificationUri)
         put("expiresAt", code.expiresAt.toString())
     }
+
+    private companion object {
+        /** A code never lives this long, so a longer wait could only end the same way. */
+        const val MAX_WAIT_SECONDS = 3600L
+    }
 }
 
 internal class LogoutCommand(io: Io, services: Services) : SignInLeaf("logout", io, services) {
@@ -205,7 +210,13 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
         val afterwards = if (signInKept) null else "login"
         return when (result) {
             is RegistrationResult.Registered -> {
-                SavedAccountStore(env, base).save(result.account)
+                if (!flow(env).afterRegistration(result.account, signInKept)) {
+                    return reply(
+                        env, ExitCodes.DONE, "signed-out",
+                        "${result.account} is registered, but you signed out while it ran, so nothing was saved on this computer.",
+                        keep = setOf(result.account),
+                    ) { put("account", result.account); put("saved", false) }
+                }
                 val notSaved = if (result.saved) "" else " It could not be remembered on this computer, so it will be read from the Rumble next time."
                 reply(
                     env, ExitCodes.DONE, if (result.alreadyRegistered) "already-registered" else "registered",
@@ -222,7 +233,7 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
             is RegistrationResult.Refused -> reply(
                 env, ExitCodes.REFUSED, "refused",
                 "The Rumble refused the registration: ${result.reason}" + (if (result.earlier) " No new issue was opened. When you have fixed the reason, run register again with --retry." else "") + lost,
-                next = afterwards,
+                next = afterwards, keep = setOfNotNull(result.account),
             ) { put("reason", result.reason); put("earlier", result.earlier) }
             is RegistrationResult.NotFinished -> reply(
                 env, ExitCodes.NOT_FINISHED, "registration-pending",
@@ -239,11 +250,13 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
 internal class StatusFacts(env: RumbleEnvironment, base: java.nio.file.Path, services: Services) {
     private val store = SignInStore(env, base)
     val signIn: LoadResult = store.load()
-    val account: String? = SavedAccountStore(env, base).load()
+    val signedIn = signIn is LoadResult.Found
+
+    /** The account of the saved sign-in. A name left without a sign-in says nothing. */
+    val account: String? = if (signedIn) SavedAccountStore(env, base).load() else null
     val waiting: WaitingSignIn? = store.loadWaiting()?.takeIf { services.clock.instant().isBefore(it.expiresAt) }
     private val saved = RegistrationStore(env, base).loadAny()
     val registration = saved?.takeIf { account == null || it.account.equals(account, ignoreCase = true) }
-    val signedIn = signIn is LoadResult.Found
 
     val ready = signedIn && account != null && registration != null
 

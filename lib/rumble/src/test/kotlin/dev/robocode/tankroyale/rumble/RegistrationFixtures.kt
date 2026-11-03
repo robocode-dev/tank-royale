@@ -18,6 +18,7 @@ class FakeRumbleGitHub(
     var openIssues = mutableListOf<String>() // raw JSON objects
     var closedIssues = mutableListOf<String>() // raw JSON objects
     var comments: String = "[]"
+    var commentsStatus = 200
     var createStatus = 201
     var createdNumber = 7
     var userStatus = 200
@@ -39,7 +40,7 @@ class FakeRumbleGitHub(
             path == "/repos/$owner/$dataRepository/contents/clients/$login.json" -> contents()
             path.startsWith("/repos/$owner/$dataRepository/issues?") && path.contains("state=closed") -> ApiResponse(200, "[" + closedIssues.joinToString(",") + "]")
             path.startsWith("/repos/$owner/$dataRepository/issues?") -> ApiResponse(200, "[" + openIssues.joinToString(",") + "]")
-            path.startsWith("/repos/$owner/$dataRepository/issues/") && path.contains("/comments") -> ApiResponse(200, comments)
+            path.startsWith("/repos/$owner/$dataRepository/issues/") && path.contains("/comments") -> ApiResponse(commentsStatus, comments)
             else -> ApiResponse(404, "{}")
         }
     }

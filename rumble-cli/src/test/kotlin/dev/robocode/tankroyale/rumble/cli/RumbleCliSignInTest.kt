@@ -199,6 +199,31 @@ class RumbleCliSignInTest {
         assertEquals("", json.err)
     }
 
+    @Test
+    @Tag("RCI-014")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI014_UnitNegative_aFailureNoCommandExpectedStillAnswersInOneDocumentAndAPathFullOfQuotesStaysValidJson(@TempDir dir: Path) {
+        val blocker = dir.resolve("a-file").also { Files.writeString(it, "not a folder") }
+        val world = World(dir)
+
+        val failed = world.run("register", "-e", "test", "--json", "--state-folder", blocker.toString())
+        assertEquals(ExitCodes.FAILED, failed.exit, failed.out + failed.err)
+        assertEquals("failed", failed.outcome)
+        assertEquals("", failed.err)
+
+        val badPath = world.run("status", "--json", "--state-folder", "bad\u0000path")
+        assertEquals(ExitCodes.REFUSED, badPath.exit)
+        assertEquals("bad-input", badPath.outcome)
+
+        listOf("C:\\foo\"bar", "/home/x\"y").forEach { word ->
+            val answer = world.run(word, "--json")
+            assertEquals(ExitCodes.REFUSED, answer.exit)
+            assertEquals("bad-input", answer.outcome)
+            assertFalse(answer.json["message"]!!.jsonPrimitive.content.contains("foo"), answer.out)
+        }
+    }
+
     // RCI-015
 
     @Test
@@ -489,6 +514,32 @@ class RumbleCliSignInTest {
         assertEquals("rumble register -e test", noName.test("status").next)
     }
 
+    @Test
+    @Tag("RCI-021")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI021_UnitNegative_aNewSignInIsNeverTakenForTheAccountBefore(@TempDir dir: Path) {
+        val world = World(dir)
+        world.signIn()
+        RegistrationStore(RumbleEnvironments.TEST, dir).save(RegistrationRecord("alice", "alice-1", "test", record))
+
+        world.auth.renewal = mapOf("error" to "bad_refresh_token")
+        assertEquals("started", world.test("login").outcome, "the sign-in was revoked")
+        assertNull(world.test("status").json["signIn"]!!.jsonObject["account"], "a name left without a sign-in says nothing")
+
+        world.api.login = "bob"
+        world.api.userStatus = 500
+        world.advance(5)
+        world.approveNextCheck()
+        val signedIn = world.test("login", "--finish")
+        assertEquals("signed-in", signedIn.outcome)
+        assertFalse(signedIn.out.contains("alice"), signedIn.out)
+
+        val status = world.test("status")
+        assertFalse(status.out.contains("alice"), status.out)
+        assertFalse(status.json["ready"]!!.jsonPrimitive.boolean)
+    }
+
     // RCI-022
 
     @Test
@@ -532,6 +583,30 @@ class RumbleCliSignInTest {
         assertEquals(ExitCodes.SIGN_IN_NEEDED, waiting.exit)
         assertEquals("no-waiting-code", waiting.outcome)
         assertTrue(world.auth.checks.isEmpty(), "the used code is gone, so GitHub is not asked")
+        assertFalse(Files.exists(world.folder().resolve("signin.bin")))
+    }
+
+    @Test
+    @Tag("RCI-022")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI022_UnitNegative_nothingComesBackAfterLogoutWhenARegistrationFinishesLater(@TempDir dir: Path) {
+        val world = World(dir)
+        world.signIn()
+        var signedOut: Run? = null
+        world.duringSleep = {
+            if (signedOut == null) {
+                signedOut = world.test("logout")
+                world.api.clientId = "alice-1a2b3c4d" // the workflow finishes after the person has signed out
+            }
+        }
+
+        val answer = world.test("register")
+
+        assertEquals("signed-out", signedOut!!.outcome)
+        assertEquals("signed-out", answer.outcome)
+        assertFalse(Files.exists(world.folder().resolve("account.json")))
+        assertFalse(Files.exists(world.folder().resolve("registration.json")))
         assertFalse(Files.exists(world.folder().resolve("signin.bin")))
     }
 
@@ -872,6 +947,32 @@ class RumbleCliSignInTest {
         assertEquals(0, help.exit)
         assertTrue(world.auth.codeRequests.isEmpty())
         assertFalse(Files.exists(world.folder()))
+    }
+
+    @Test
+    @Tag("RCI-017")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCI017_UnitPositive_aRefusalNamingTheAccountKeepsItsName(@TempDir dir: Path) {
+        val world = World(dir, Redaction("C:\\Users\\alice", "alice"))
+        world.signIn()
+        world.api.closedIssues = closedIssue(5)
+        world.api.comments = comment("github-actions[bot]", "Registration refused: account alice is banned")
+
+        val refused = world.test("register")
+
+        assertEquals("account alice is banned", refused.json["reason"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    @Tag("RCI-028")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI028_UnitNegative_aWaitBeyondAnyCodesLifeIsBadInputAndNotAFailure(@TempDir dir: Path) {
+        val answer = World(dir).test("login", "--finish", "--wait", "9223372036854775807")
+
+        assertEquals(ExitCodes.REFUSED, answer.exit)
+        assertEquals("bad-input", answer.outcome)
     }
 
     private fun closedIssue(number: Int) =

@@ -15,6 +15,7 @@ import java.nio.file.StandardOpenOption
 import java.security.GeneralSecurityException
 import java.security.SecureRandom
 import java.time.Instant
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
 import javax.crypto.Cipher
@@ -174,10 +175,10 @@ class SignInStore(
      */
     fun canKeepPrivate(): Boolean {
         if (!enabled) return false
-        val probe = folder.resolve("signin.probe")
+        // A name of its own, so programs starting at the same time do not disturb each other's check.
+        val probe = folder.resolve("signin.probe.${UUID.randomUUID()}")
         return try {
             Files.createDirectories(folder)
-            Files.deleteIfExists(probe)
             protection.createOwnerOnly(probe)
             protection.isOwnerOnly(probe)
         } catch (e: IOException) {

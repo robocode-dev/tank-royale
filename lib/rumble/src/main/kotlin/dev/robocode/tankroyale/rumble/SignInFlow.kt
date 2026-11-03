@@ -54,7 +54,9 @@ data class SignOutResult(val removedSomething: Boolean, val remaining: List<Stri
  * signing out. Between runs the code waits, protected, beside the saved sign-in.
  *
  * The lock on the saved sign-in is held for one check at a time and the waiting code is read again every round, so a
- * wait blocks nobody, and a run that is waiting cannot bring a sign-in back after the person has signed out.
+ * wait blocks nobody for longer than one request to GitHub, and a run that is waiting cannot bring a sign-in back after
+ * the person has signed out. The lookup of an account name happens outside the lock, and its result is saved only if
+ * the sign-in is still there.
  */
 class SignInFlow(
     private val environment: RumbleEnvironment,
@@ -74,9 +76,9 @@ class SignInFlow(
 
         if (store.load() is LoadResult.Found) {
             when (val renewal = SavedSignIn(store, signIn).renew()) {
-                is SavedRenewal.Renewed -> if (renewal.kept) return SignInStart.AlreadySignedIn(identify(renewal.tokens))
+                is SavedRenewal.Renewed -> if (renewal.kept) return SignInStart.AlreadySignedIn(identify(renewal.tokens) ?: account.load())
                 is SavedRenewal.Failed -> return SignInStart.Failed(renewal.message)
-                is SavedRenewal.SignInNeeded -> Unit // GitHub refused it and it is gone; a new code follows.
+                is SavedRenewal.SignInNeeded -> account.forget() // GitHub refused it and it is gone; a new code follows.
             }
         }
         if (!store.canKeepPrivate()) {
@@ -116,7 +118,9 @@ class SignInFlow(
         if (environment.signInClientId == null) return SignInFinish.Unavailable(noApp)
         val deadline = clock.instant().plusSeconds(waitSeconds)
         while (true) {
-            val round = store.locked { checkLocked() }
+            var approvedTokens: GitHubTokens? = null
+            val round = store.locked { checkLocked { approvedTokens = it } }
+            approvedTokens?.let { return SignInFinish.SignedIn(identifyNewSignIn(it)) }
             if (round !is SignInFinish.Waiting) return round
             val next = round.code.nextCheckAt
             if (next.isAfter(deadline)) return round
@@ -125,7 +129,8 @@ class SignInFlow(
         }
     }
 
-    private fun checkLocked(): SignInFinish {
+    /** One round under the lock. [onSaved] receives a new sign-in once it is saved; its name is found outside the lock. */
+    private fun checkLocked(onSaved: (GitHubTokens) -> Unit): SignInFinish {
         val now = clock.instant()
         val waiting = store.loadWaiting()
             ?: return if (store.load() is LoadResult.Found) SignInFinish.SignedIn(account.load()) else SignInFinish.NoWaitingCode
@@ -139,7 +144,7 @@ class SignInFlow(
         return when (val step = signIn.check(deviceCode, waiting.intervalSeconds)) {
             SignInStep.Waiting -> again(waiting, waiting.intervalSeconds, now)
             is SignInStep.SlowDown -> again(waiting, step.intervalSeconds, now)
-            is SignInStep.SignedIn -> approved(step.tokens)
+            is SignInStep.SignedIn -> approved(step.tokens, onSaved)
             SignInStep.Expired -> {
                 store.forgetWaiting()
                 SignInFinish.CodeExpired
@@ -168,35 +173,61 @@ class SignInFlow(
         return SignInFinish.Waiting(waiting, (millis + 999) / 1000)
     }
 
-    private fun approved(tokens: GitHubTokens): SignInFinish {
+    private fun approved(tokens: GitHubTokens, onSaved: (GitHubTokens) -> Unit): SignInFinish {
         store.forgetWaiting()
         val refresh = tokens.refreshToken
             ?: return SignInFinish.NotSaved("GitHub gave no refresh token, so this sign-in cannot be saved.")
         return when (val saved = store.save(refresh, tokens.refreshTokenExpiresAt)) {
             is SaveResult.NotSaved -> SignInFinish.NotSaved(saved.reason)
-            SaveResult.Saved -> SignInFinish.SignedIn(identify(tokens))
+            SaveResult.Saved -> {
+                // This may be another account, so nothing saved for the earlier one may be taken for this one.
+                account.forget()
+                onSaved(tokens)
+                SignInFinish.SignedIn(null)
+            }
         }
     }
 
+    private fun identifyNewSignIn(tokens: GitHubTokens): String? {
+        val name = identify(tokens)
+        // Which account this is stays unknown, so a saved registration cannot be shown beside it. It can be read again.
+        if (name == null) store.locked { registration.forget() }
+        return name
+    }
+
     /**
-     * Finds the account of [tokens] and saves its name. A saved registration of another account is removed, so it is
-     * never shown beside this sign-in. Returns the saved name when GitHub cannot say.
+     * Finds the account of [tokens] and, if the sign-in is still saved, saves its name and removes a saved registration
+     * of another account, so that it is never shown beside this sign-in. Returns null when GitHub cannot say.
      */
     fun identify(tokens: GitHubTokens): String? {
         val name = try {
-            val answer = api.get("/user", tokens.accessToken)
-            if (answer.status != 200) null
-            else ((Json.parseToJsonElement(answer.body) as? JsonObject)?.get("login") as? JsonPrimitive)?.contentOrNull?.takeIf { ACCOUNT.matches(it) }
+            GitHubAccount.nameIn(api.get("/user", tokens.accessToken))
         } catch (e: IOException) {
             null
-        } catch (e: IllegalArgumentException) {
-            null
+        } ?: return null
+        store.locked {
+            if (store.load() is LoadResult.Found) {
+                val registered = registration.loadAny()
+                if (registered != null && !registered.account.equals(name, ignoreCase = true)) registration.forget()
+                account.save(name)
+            }
         }
-        if (name == null) return account.load()
-        val registered = registration.loadAny()
-        if (registered != null && !registered.account.equals(name, ignoreCase = true)) registration.forget()
-        account.save(name)
         return name
+    }
+
+    /**
+     * Saves [name] after a registration, or, when the person has signed out while it ran, removes what the registration
+     * left behind. [signInExpected] is false when the sign-in could not be kept, so its absence says nothing. Returns
+     * false when the person has signed out.
+     */
+    fun afterRegistration(name: String, signInExpected: Boolean): Boolean = store.locked {
+        if (signInExpected && store.load() !is LoadResult.Found) {
+            registration.forget()
+            false
+        } else {
+            account.save(name)
+            true
+        }
     }
 
     /** Removes what is saved for this environment, and creates nothing when nothing is saved. */
@@ -212,8 +243,20 @@ class SignInFlow(
             SignOutResult(true, remaining)
         }
     }
+}
 
-    private companion object {
-        val ACCOUNT = Regex("[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
+/** Reads the account name out of GitHub's answer to `/user`. */
+internal object GitHubAccount {
+    private val NAME = Regex("[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
+
+    /** The account name in [answer], or null when the answer does not hold a valid one. */
+    fun nameIn(answer: ApiResponse): String? {
+        if (answer.status != 200) return null
+        val body = try {
+            Json.parseToJsonElement(answer.body) as? JsonObject
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+        return (body?.get("login") as? JsonPrimitive)?.contentOrNull?.takeIf { NAME.matches(it) }
     }
 }

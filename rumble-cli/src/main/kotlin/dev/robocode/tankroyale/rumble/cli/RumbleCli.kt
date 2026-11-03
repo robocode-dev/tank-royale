@@ -34,6 +34,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.PrintStream
 import java.nio.file.Files
+import java.nio.file.InvalidPathException
 import java.nio.file.Path
 
 private const val SCHEMA_VERSION = 1
@@ -83,9 +84,26 @@ object RumbleCli {
         } catch (error: CliktError) {
             badInput(args, io, error.message ?: "Bad input.")
         } catch (e: Exception) {
-            io.err.println("rumble: the command failed unexpectedly.")
-            ExitCodes.FAILED
+            failedUnexpectedly(args, io)
         }
+    }
+
+    /** A failure no command could answer, for example a state folder that cannot be used. It is answered all the same. */
+    private fun failedUnexpectedly(args: Array<String>, io: Io): Int {
+        val message = "The command failed unexpectedly. Check that the state folder can be written to, and try again."
+        if ("--json" in args) {
+            io.answerBadInput(
+                buildJsonObject {
+                    put("schemaVersion", SCHEMA_VERSION)
+                    put("command", args.firstOrNull { it in COMMANDS } ?: "rumble")
+                    put("outcome", "failed")
+                    put("message", message)
+                },
+            )
+        } else {
+            io.err.println("rumble: $message")
+        }
+        return ExitCodes.FAILED
     }
 
     /** Answers bad input in the form asked for: one JSON document, or one line on standard error. */
@@ -136,7 +154,12 @@ object RumbleCli {
         protected val json by option("--json", help = "Answer with one JSON document instead of text.").flag()
         protected val stateFolder by option("--state-folder", help = "Where the Rumble state lives. Defaults to the Tank Royale user folder.")
 
-        protected fun base(): Path = stateFolder?.let { Path.of(it).toAbsolutePath().normalize() } ?: io.defaultStateFolder()
+        protected fun base(): Path =
+            try {
+                stateFolder?.let { Path.of(it).toAbsolutePath().normalize() } ?: io.defaultStateFolder()
+            } catch (e: InvalidPathException) {
+                throw BadInput("The state folder is not a valid path on this computer.")
+            }
 
         protected fun answer(reply: Reply) = io.answer(reply, json)
 
