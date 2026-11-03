@@ -49,13 +49,14 @@ class SavedAccountStore(private val environment: RumbleEnvironment, baseFolder: 
         }
     }
 
-    fun exists(): Boolean = Files.exists(file)
+    /** True unless the file is known to be absent. */
+    fun exists(): Boolean = !Files.notExists(file)
 
     /** Removes the saved name. Returns false when it is still there. */
     fun forget(): Boolean {
         runCatching { Files.deleteIfExists(file) }
         runCatching { Files.deleteIfExists(temp) }
-        return !Files.exists(file)
+        return Files.notExists(file)
     }
 }
 

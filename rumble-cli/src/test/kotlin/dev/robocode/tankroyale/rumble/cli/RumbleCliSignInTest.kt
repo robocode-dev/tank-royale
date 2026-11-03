@@ -57,16 +57,19 @@ class RumbleCliSignInTest {
         val checks = mutableListOf<Map<String, String>>()
         val renewals = mutableListOf<Map<String, String>>()
         val answers = ArrayDeque<Map<String, String>>()
-        var renewal: Map<String, String> = tokens()
         var offline = false
+        var broken = false
+        var refreshValue = refreshToken
+        var renewal: Map<String, String>? = null
 
         fun tokens(refresh: Boolean = true) = buildMap {
             put("access_token", accessToken)
-            if (refresh) put("refresh_token", refreshToken)
+            if (refresh) put("refresh_token", refreshValue)
         }
 
         override fun postForm(url: String, form: Map<String, String>): AuthResponse {
             if (offline) throw IOException("offline")
+            check(!broken) { "something nobody expected" }
             return when {
                 url == GitHubSignIn.DEVICE_CODE_URL -> {
                     codeRequests += form
@@ -74,11 +77,12 @@ class RumbleCliSignInTest {
                 }
                 form["grant_type"] == "refresh_token" -> {
                     renewals += form
-                    AuthResponse(200, renewal)
+                    AuthResponse(200, renewal ?: tokens())
                 }
                 else -> {
                     checks += form
-                    AuthResponse(200, answers.poll() ?: mapOf("error" to "authorization_pending"))
+                    val answer = answers.poll() ?: mapOf("error" to "authorization_pending")
+                    if (answer == SERVER_ERROR) AuthResponse(500, emptyMap()) else AuthResponse(200, answer)
                 }
             }
         }
@@ -100,7 +104,7 @@ class RumbleCliSignInTest {
             val data = "/repos/robocode-dev/rumble-data-test"
             return when {
                 path == "/user" -> ApiResponse(userStatus, """{"login":"$login"}""")
-                path == "$data/contents/clients/$login.json" -> clientId?.let { ApiResponse(200, file(login, it)) } ?: ApiResponse(404, "{}")
+                path.startsWith("$data/contents/clients/") -> clientId?.let { ApiResponse(200, file(path.substringAfterLast('/').removeSuffix(".json"), it)) } ?: ApiResponse(404, "{}")
                 path.startsWith("$data/issues?") && path.contains("state=closed") -> ApiResponse(200, closedIssues)
                 path.startsWith("$data/issues?") -> ApiResponse(200, openIssues)
                 path.startsWith("$data/issues/") -> ApiResponse(200, comments)
@@ -204,10 +208,11 @@ class RumbleCliSignInTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCI014_UnitNegative_aFailureNoCommandExpectedStillAnswersInOneDocumentAndAPathFullOfQuotesStaysValidJson(@TempDir dir: Path) {
-        val blocker = dir.resolve("a-file").also { Files.writeString(it, "not a folder") }
         val world = World(dir)
+        world.auth.broken = true
 
-        val failed = world.run("register", "-e", "test", "--json", "--state-folder", blocker.toString())
+        val failed = world.test("login")
+        world.auth.broken = false
         assertEquals(ExitCodes.FAILED, failed.exit, failed.out + failed.err)
         assertEquals("failed", failed.outcome)
         assertEquals("", failed.err)
@@ -465,6 +470,30 @@ class RumbleCliSignInTest {
         assertNull(world.store().loadWaiting())
     }
 
+    @Test
+    @Tag("RCI-020")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI020_UnitNegative_aShortOutageDoesNotEndAWaitAndSlowsTheChecksDownBetweenRuns(@TempDir dir: Path) {
+        val waiting = World(dir.resolve("a"))
+        waiting.test("login")
+        waiting.auth.answers.add(SERVER_ERROR)
+        waiting.approveNextCheck()
+        assertEquals("signed-in", waiting.test("login", "--finish", "--wait", "60").outcome)
+        assertEquals(2, waiting.auth.checks.size)
+
+        val runs = World(dir.resolve("b"))
+        runs.test("login")
+        runs.advance(5)
+        runs.auth.answers.add(SERVER_ERROR)
+        val failed = runs.test("login", "--finish")
+        assertEquals(ExitCodes.FAILED, failed.exit)
+        assertEquals("rumble login --finish -e test", failed.next)
+        assertEquals(10, failed.json["retryAfterSeconds"]!!.jsonPrimitive.long)
+        assertEquals("waiting", runs.test("login", "--finish").outcome)
+        assertEquals(1, runs.auth.checks.size, "another run does not press a struggling GitHub")
+    }
+
     // RCI-021
 
     @Test
@@ -540,6 +569,23 @@ class RumbleCliSignInTest {
         assertFalse(status.json["ready"]!!.jsonPrimitive.boolean)
     }
 
+    @Test
+    @Tag("RCI-021")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI021_UnitNegative_aRegisterThatEndsInARefusalStillFillsInTheMissingName(@TempDir dir: Path) {
+        val world = World(dir)
+        world.api.userStatus = 500
+        world.signIn()
+        world.api.userStatus = 200
+        world.api.closedIssues = closedIssue(5)
+        world.api.comments = comment("github-actions[bot]", "Registration refused: banned")
+
+        assertEquals("refused", world.test("register").outcome)
+
+        assertEquals("alice", world.test("status").json["signIn"]!!.jsonObject["account"]!!.jsonPrimitive.content)
+    }
+
     // RCI-022
 
     @Test
@@ -608,6 +654,36 @@ class RumbleCliSignInTest {
         assertFalse(Files.exists(world.folder().resolve("account.json")))
         assertFalse(Files.exists(world.folder().resolve("registration.json")))
         assertFalse(Files.exists(world.folder().resolve("signin.bin")))
+    }
+
+    @Test
+    @Tag("RCI-022")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI022_UnitNegative_aRegistrationFinishingAfterAChangeOfAccountIsNotSavedForTheNewSignIn(@TempDir dir: Path) {
+        val world = World(dir)
+        world.signIn()
+        var changed = false
+        world.duringSleep = {
+            if (!changed) {
+                changed = true
+                world.duringSleep = {}
+                world.test("logout")
+                world.api.login = "bob"
+                world.auth.refreshValue = "ghr_ANOTHERFAKEREFRESHTOKEN"
+                world.signIn()
+                world.api.clientId = "alice-1a2b3c4d" // the workflow finishes for the first account
+            }
+        }
+
+        val answer = world.test("register")
+
+        assertEquals("signed-out", answer.outcome)
+        val status = world.test("status")
+        assertEquals("bob", status.json["signIn"]!!.jsonObject["account"]!!.jsonPrimitive.content)
+        assertFalse(status.json["registration"]!!.jsonObject["saved"]!!.jsonPrimitive.boolean)
+        assertFalse(status.json["ready"]!!.jsonPrimitive.boolean)
+        assertFalse(status.out.contains("alice"), status.out)
     }
 
     // RCI-023
@@ -685,6 +761,31 @@ class RumbleCliSignInTest {
         assertEquals(ExitCodes.FAILED, answer.exit)
         assertEquals("not-removed", answer.outcome)
         assertEquals("registration", answer.json["remaining"]!!.jsonArray.single().jsonPrimitive.content)
+    }
+
+    @Test
+    @Tag("RCI-024")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI024_UnitNegative_noStateIsReportedWhereNothingWasSavedOrAfterLogoutAndNoConnectionIsBuilt(@TempDir dir: Path) {
+        val fresh = World(dir.resolve("fresh"))
+        assertEquals(ExitCodes.SIGN_IN_NEEDED, fresh.test("register").exit)
+        assertEquals(ExitCodes.SIGN_IN_NEEDED, fresh.test("login", "--finish").exit)
+        assertFalse(Files.exists(fresh.folder()), "a command that found nothing leaves nothing")
+
+        val world = World(dir.resolve("used"))
+        world.signIn()
+        fun stateExists() = world.run("environments", "--json").json["environments"]!!.jsonArray.map { it.jsonObject }
+            .first { it["name"]!!.jsonPrimitive.content == "test" }["stateExists"]!!.jsonPrimitive.boolean
+        assertTrue(stateExists())
+        world.test("logout")
+        assertFalse(stateExists(), "only the lock is left")
+
+        var built = 0
+        val services = Services({ built++; world.auth }, { built++; world.api })
+        val out = ByteArrayOutputStream()
+        RumbleCli.run(arrayOf("logout", "-e", "test", "--json", "--state-folder", dir.resolve("used").toString()), Io(PrintStream(out, true), PrintStream(ByteArrayOutputStream(), true), { dir }), services)
+        assertEquals(0, built, "signing out needs no connection")
     }
 
     // RCI-025
@@ -849,6 +950,22 @@ class RumbleCliSignInTest {
         assertEquals("rumble register -e test", pending.next)
     }
 
+    @Test
+    @Tag("RCI-027")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI027_UnitNegative_aUserNamedLikeAWordOfTheProgramCannotBreakTheNextStep(@TempDir dir: Path) {
+        listOf("test", "rumble", "login").forEach { user ->
+            val world = World(dir.resolve(user), Redaction("C:\\nowhere", user))
+            val json = world.test("status")
+            assertEquals("rumble login -e test", json.next, json.out)
+            assertEquals("test", json.json["environment"]!!.jsonPrimitive.content)
+            assertEquals("status", json.json["command"]!!.jsonPrimitive.content)
+            assertTrue(world.run("status", "-e", "test").out.contains("Next: rumble login -e test"), user)
+            assertEquals("started", world.test("login").outcome)
+        }
+    }
+
     // RCI-028
 
     @Test
@@ -981,6 +1098,7 @@ class RumbleCliSignInTest {
     private fun comment(author: String, body: String) = """[{"user":{"login":"$author"},"body":"$body"}]"""
 
     private companion object {
+        val SERVER_ERROR = mapOf("server" to "error")
         const val ISSUE_URL = "https://github.com/robocode-dev/rumble-data-test/issues/9"
     }
 }

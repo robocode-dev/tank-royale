@@ -42,8 +42,8 @@ sealed interface SignInFinish {
     data object CodeDenied : SignInFinish
     data class Unavailable(val message: String) : SignInFinish
 
-    /** The check failed. [codeStillWaiting] says whether checking again can still work. */
-    data class Failed(val message: String, val codeStillWaiting: Boolean) : SignInFinish
+    /** The check failed. [codeStillWaiting] says whether checking again can still work, after [retryAfterSeconds]. */
+    data class Failed(val message: String, val codeStillWaiting: Boolean, val retryAfterSeconds: Long = 0) : SignInFinish
 }
 
 /** What signing out did. [remaining] names what could not be removed. */
@@ -68,14 +68,17 @@ class SignInFlow(
     private val clock: Clock = Clock.systemUTC(),
     private val sleep: (Long) -> Unit = { Thread.sleep(it) },
 ) {
-    private val noApp get() = "Signing in is not available for the ${environment.displayName} Rumble yet."
+    private val noApp get() = environment.signInNotAvailable()
+
+    /** Renews the saved sign-in. */
+    fun renewSaved(): SavedRenewal = SavedSignIn(store, signIn).renew()
 
     /** Asks for a code unless the person is already signed in or a code is already waiting. */
     fun start(): SignInStart {
         if (environment.signInClientId == null) return SignInStart.Unavailable(noApp)
 
         if (store.load() is LoadResult.Found) {
-            when (val renewal = SavedSignIn(store, signIn).renew()) {
+            when (val renewal = renewSaved()) {
                 is SavedRenewal.Renewed -> if (renewal.kept) return SignInStart.AlreadySignedIn(identify(renewal.tokens) ?: account.load())
                 is SavedRenewal.Failed -> return SignInStart.Failed(renewal.message)
                 is SavedRenewal.SignInNeeded -> account.forget() // GitHub refused it and it is gone; a new code follows.
@@ -118,11 +121,17 @@ class SignInFlow(
         if (environment.signInClientId == null) return SignInFinish.Unavailable(noApp)
         val deadline = clock.instant().plusSeconds(waitSeconds)
         while (true) {
+            // Nothing to check needs no lock, and taking one would leave a lock file where nothing was saved.
+            if (!store.hasSavedFiles()) return SignInFinish.NoWaitingCode
             var approvedTokens: GitHubTokens? = null
             val round = store.locked { checkLocked { approvedTokens = it } }
             approvedTokens?.let { return SignInFinish.SignedIn(identifyNewSignIn(it)) }
-            if (round !is SignInFinish.Waiting) return round
-            val next = round.code.nextCheckAt
+            val next = when {
+                round is SignInFinish.Waiting -> round.code.nextCheckAt
+                // A short outage is no reason to stop while the person may still be typing the code.
+                round is SignInFinish.Failed && round.codeStillWaiting -> clock.instant().plusSeconds(round.retryAfterSeconds)
+                else -> return round
+            }
             if (next.isAfter(deadline)) return round
             val pause = Duration.between(clock.instant(), next).toMillis()
             if (pause > 0) sleep(pause)
@@ -154,10 +163,16 @@ class SignInFlow(
                 SignInFinish.CodeDenied
             }
             SignInStep.Cancelled -> SignInFinish.Failed("The check was stopped.", codeStillWaiting = true)
-            is SignInStep.Failed -> {
-                if (!step.codeStillUsable) store.forgetWaiting()
-                SignInFinish.Failed(step.message, step.codeStillUsable)
-            }
+            is SignInStep.Failed ->
+                if (step.codeStillUsable) {
+                    // Slower after a failure, and kept between runs, so repeated runs do not press a struggling GitHub.
+                    val interval = maxOf(waiting.intervalSeconds, minOf(waiting.intervalSeconds * 2, MAX_RETRY_SECONDS))
+                    store.saveWaiting(waiting.paced(interval, now.plusSeconds(interval.toLong())))
+                    SignInFinish.Failed(step.message, true, interval.toLong())
+                } else {
+                    store.forgetWaiting()
+                    SignInFinish.Failed(step.message, false)
+                }
         }
     }
 
@@ -216,23 +231,25 @@ class SignInFlow(
     }
 
     /**
-     * Saves [name] after a registration, or, when the person has signed out while it ran, removes what the registration
-     * left behind. [signInExpected] is false when the sign-in could not be kept, so its absence says nothing. Returns
-     * false when the person has signed out.
+     * Saves [name] after a registration that began with [renewed], or, when the person has signed out or signed in as
+     * another account while it ran, removes what the registration left behind. A sign-in is the same one when it still
+     * holds the refresh token of [renewed] or is saved for the same account. When [renewed] could not be kept, the
+     * absence of a sign-in says nothing. Returns false when the sign-in is gone or another.
      */
-    fun afterRegistration(name: String, signInExpected: Boolean): Boolean = store.locked {
-        if (signInExpected && store.load() !is LoadResult.Found) {
-            registration.forget()
-            false
-        } else {
-            account.save(name)
-            true
+    fun afterRegistration(name: String, renewed: SavedRenewal.Renewed): Boolean = store.locked {
+        val now = store.load()
+        val sameSignIn = when {
+            now is LoadResult.Found ->
+                now.refreshToken == renewed.tokens.refreshToken || account.load().equals(name, ignoreCase = true)
+            else -> !renewed.kept
         }
+        if (sameSignIn) account.save(name) else registration.forget()
+        sameSignIn
     }
 
     /** Removes what is saved for this environment, and creates nothing when nothing is saved. */
     fun signOut(): SignOutResult {
-        if (!store.hasSavedFiles() && !account.exists() && !registration.exists()) return SignOutResult(false, emptyList())
+        if (!hasSomethingSaved()) return SignOutResult(false, emptyList())
         return store.locked {
             val remaining = buildList {
                 if (!store.forget()) add("sign-in")
@@ -243,7 +260,17 @@ class SignInFlow(
             SignOutResult(true, remaining)
         }
     }
+
+    /** True unless each file is known to be absent, so a folder that cannot be read does not pass for an empty one. */
+    private fun hasSomethingSaved() = store.hasSavedFiles() || account.exists() || registration.exists()
+
+    private companion object {
+        const val MAX_RETRY_SECONDS = 60
+    }
 }
+
+/** What to say when [this] environment has no sign-in App. */
+fun RumbleEnvironment.signInNotAvailable(): String = "Signing in is not available for the $displayName Rumble yet."
 
 /** Reads the account name out of GitHub's answer to `/user`. */
 internal object GitHubAccount {

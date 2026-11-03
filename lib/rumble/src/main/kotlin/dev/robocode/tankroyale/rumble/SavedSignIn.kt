@@ -35,14 +35,19 @@ class SavedSignIn(
     }
 
     /** Renews the saved sign-in and returns the new tokens. */
-    fun renew(): SavedRenewal = store.locked {
+    fun renew(): SavedRenewal {
+        // Nothing to renew needs no lock, and taking one would leave a lock file where nothing was saved.
+        if (store.knownMissing()) return SavedRenewal.SignInNeeded("There is no saved sign-in. Sign in with a code.")
+        return store.locked { renewLocked() }
+    }
+
+    private fun renewLocked(): SavedRenewal =
         when (val loaded = store.load()) {
             is LoadResult.Found -> renewWith(loaded)
             LoadResult.Missing -> SavedRenewal.SignInNeeded("There is no saved sign-in. Sign in with a code.")
             LoadResult.Disabled -> SavedRenewal.SignInNeeded("Saving the sign-in is switched off. Sign in with a code.")
             is LoadResult.Unusable -> SavedRenewal.SignInNeeded(loaded.reason, SavedRenewal.SignInNeeded.Reason.UNUSABLE)
         }
-    }
 
     /** Signs out: removes the saved sign-in and, when one is kept, the saved registration. */
     fun forget() = store.locked {

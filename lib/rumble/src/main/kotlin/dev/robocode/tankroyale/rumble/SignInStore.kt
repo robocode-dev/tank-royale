@@ -7,10 +7,8 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
-import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 import java.security.GeneralSecurityException
 import java.security.SecureRandom
@@ -163,11 +161,14 @@ class SignInStore(
     fun forgetWaiting(): Boolean {
         runCatching { Files.deleteIfExists(waitingTemp) }
         runCatching { Files.deleteIfExists(waitingFile) }
-        return !Files.exists(waitingFile)
+        return Files.notExists(waitingFile)
     }
 
-    /** True when something is saved in this store, without creating anything. */
-    fun hasSavedFiles(): Boolean = listOf(file, temp, waitingFile, waitingTemp).any { Files.exists(it) }
+    /** True unless nothing is known to be saved in this store, without creating anything. */
+    fun hasSavedFiles(): Boolean = listOf(file, temp, waitingFile, waitingTemp).any { !Files.notExists(it) }
+
+    /** True when saving is on and no sign-in is known to be saved, so no lock is needed to find that out. */
+    fun knownMissing(): Boolean = enabled && Files.notExists(file)
 
     /**
      * True when a file in this folder can be kept private to its owner, checked with a small file that is removed
@@ -200,7 +201,7 @@ class SignInStore(
                 return SaveResult.NotSaved(PRIVATE)
             }
             Files.write(tempFile, encrypt(payload.toByteArray(StandardCharsets.UTF_8), context))
-            moveIntoPlace(tempFile, target)
+            replaceFile(tempFile, target)
             if (!protection.isOwnerOnly(target)) {
                 Files.deleteIfExists(target)
                 return SaveResult.NotSaved(PRIVATE)
@@ -251,7 +252,7 @@ class SignInStore(
         } catch (e: IOException) {
             // Nothing more can be done; load() refuses a file it cannot trust.
         }
-        return !Files.exists(file)
+        return Files.notExists(file)
     }
 
     /**
@@ -276,14 +277,6 @@ class SignInStore(
             Files.deleteIfExists(tempFile)
         } catch (e: IOException) {
             // The temporary file holds no readable token text; leave it for the next save to replace.
-        }
-    }
-
-    private fun moveIntoPlace(from: Path, to: Path) {
-        try {
-            Files.move(from, to, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-        } catch (e: AtomicMoveNotSupportedException) {
-            Files.move(from, to, StandardCopyOption.REPLACE_EXISTING)
         }
     }
 

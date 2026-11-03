@@ -25,6 +25,7 @@ import dev.robocode.tankroyale.rumble.LegacyPreview
 import dev.robocode.tankroyale.rumble.LoadResult
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
 import dev.robocode.tankroyale.rumble.RumbleEnvironments
+import dev.robocode.tankroyale.rumble.signInNotAvailable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonObjectBuilder
@@ -36,6 +37,7 @@ import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
+import java.util.stream.Collectors
 
 private const val SCHEMA_VERSION = 1
 private const val ENVIRONMENT_VARIABLE = "RUMBLE_ENVIRONMENT"
@@ -62,9 +64,10 @@ object RumbleCli {
             VersionCommand(io), EnvironmentsCommand(io), StatusCommand(io, services), LoginCommand(io, services),
             LogoutCommand(io, services), RegisterCommand(io, services), ImportLegacyCommand(io),
         ).context { readEnvvar = services.readEnv }
+        val commands = root.registeredSubcommandNames()
         val first = args.firstOrNull()
-        if (first != null && !first.startsWith("-") && first !in COMMANDS) {
-            return badInput(args, io, "There is no command called $first. The commands are ${COMMANDS.joinToString()}.")
+        if (first != null && !first.startsWith("-") && first !in commands) {
+            return badInput(args, io, commands, "There is no command called $first. The commands are ${commands.joinToString()}.")
         }
         return try {
             root.parse(args.toList())
@@ -78,53 +81,38 @@ object RumbleCli {
             io.out.println(message.message.orEmpty())
             ExitCodes.DONE
         } catch (bad: BadInput) {
-            badInput(args, io, bad.message.orEmpty())
+            badInput(args, io, commands, bad.message.orEmpty())
         } catch (usage: UsageError) {
-            badInput(args, io, usage.formatMessage(object : Localization {}, ParameterFormatter.Plain).ifBlank { "Bad input." })
+            badInput(args, io, commands, usage.formatMessage(object : Localization {}, ParameterFormatter.Plain).ifBlank { "Bad input." })
         } catch (error: CliktError) {
-            badInput(args, io, error.message ?: "Bad input.")
+            badInput(args, io, commands, error.message ?: "Bad input.")
         } catch (e: Exception) {
-            failedUnexpectedly(args, io)
+            // A failure no command could answer, for example a state folder that cannot be used.
+            problem(args, io, commands, "failed", "The command failed unexpectedly. Check that the state folder can be written to, and try again.")
+            ExitCodes.FAILED
         }
     }
 
-    /** A failure no command could answer, for example a state folder that cannot be used. It is answered all the same. */
-    private fun failedUnexpectedly(args: Array<String>, io: Io): Int {
-        val message = "The command failed unexpectedly. Check that the state folder can be written to, and try again."
-        if ("--json" in args) {
-            io.answerBadInput(
-                buildJsonObject {
-                    put("schemaVersion", SCHEMA_VERSION)
-                    put("command", args.firstOrNull { it in COMMANDS } ?: "rumble")
-                    put("outcome", "failed")
-                    put("message", message)
-                },
-            )
-        } else {
-            io.err.println("rumble: $message")
-        }
-        return ExitCodes.FAILED
-    }
-
-    /** Answers bad input in the form asked for: one JSON document, or one line on standard error. */
-    private fun badInput(args: Array<String>, io: Io, message: String): Int {
-        if ("--json" in args) {
-            val command = args.firstOrNull { it in COMMANDS } ?: "rumble"
-            io.answerBadInput(
-                buildJsonObject {
-                    put("schemaVersion", SCHEMA_VERSION)
-                    put("command", command)
-                    put("outcome", "bad-input")
-                    put("message", message)
-                },
-            )
-        } else {
-            io.err.println(io.cleaned("rumble: $message Run rumble --help for what is possible."))
-        }
+    private fun badInput(args: Array<String>, io: Io, commands: Collection<String>, message: String): Int {
+        problem(args, io, commands, "bad-input", "$message Run rumble --help for what is possible.")
         return ExitCodes.REFUSED
     }
 
-    private val COMMANDS = setOf("version", "environments", "status", "login", "logout", "register", "import-legacy")
+    /** Answers a problem no command answered in the form asked for: one JSON document, or one line on standard error. */
+    private fun problem(args: Array<String>, io: Io, commands: Collection<String>, outcome: String, message: String) {
+        if ("--json" in args) {
+            io.answerProblem(
+                buildJsonObject {
+                    put("schemaVersion", SCHEMA_VERSION)
+                    put("command", args.firstOrNull { it in commands } ?: "rumble")
+                    put("outcome", outcome)
+                    put("message", message)
+                },
+            )
+        } else {
+            io.err.println(io.cleaned("rumble: $message"))
+        }
+    }
 
     private class Root : CoreCliktCommand(name = "rumble") {
         init {
@@ -229,7 +217,7 @@ object RumbleCli {
 
         override fun run() {
             val base = base()
-            val rows = RumbleEnvironments.all.map { it to Files.isDirectory(it.stateRoot(base)) }
+            val rows = RumbleEnvironments.all.map { it to hasState(it.stateRoot(base)) }
             val json = head("environments") {
                 put("environments", buildJsonArray {
                     rows.forEach { (env, exists) ->
@@ -252,6 +240,13 @@ object RumbleCli {
                     (if (exists) ", has saved state" else ", no saved state")
             }
             answer(Reply(ExitCodes.DONE, json, text))
+        }
+
+        /** A folder holding only the lock left by signing in and out has no state in it. */
+        private fun hasState(folder: Path): Boolean {
+            if (!Files.isDirectory(folder)) return false
+            val names = Files.list(folder).use { list -> list.map { it.fileName.toString() }.collect(Collectors.toList()) }
+            return names != listOf("signin.lock")
         }
     }
 
@@ -289,7 +284,7 @@ object RumbleCli {
                     put("verificationUri", waiting.verificationUri)
                     put("expiresAt", waiting.expiresAt.toString())
                 })
-                if (noApp) put("message", notAvailable(env))
+                if (noApp) put("message", env.signInNotAvailable())
                 facts.next?.let { putNext(it) }
             }
             val text = buildString {
@@ -306,15 +301,14 @@ object RumbleCli {
                 if (waiting != null) appendLine("Waiting code: ${waiting.userCode} at ${waiting.verificationUri}, runs out at ${waiting.expiresAt}")
                 appendLine(registration?.let { "Registration: saved for ${it.account}, client ID ${it.clientId}" } ?: "Registration: none saved")
                 when {
-                    noApp -> append(notAvailable(env))
+                    noApp -> append(env.signInNotAvailable())
                     facts.ready -> append("Ready.")
                     else -> facts.next?.let { append(nextLine(it)) }
                 }
             }.trimEnd()
-            answer(Reply(ExitCodes.DONE, json, text, setOfNotNull(facts.account, registration?.account, waiting?.verificationUri)))
+            val keep = setOfNotNull(facts.account, registration?.account, waiting?.verificationUri, env.name, facts.next?.let { nextCommand(it) })
+            answer(Reply(ExitCodes.DONE, json, text, keep))
         }
-
-        private fun notAvailable(env: RumbleEnvironment) = "Signing in is not available for the ${env.displayName} Rumble yet."
     }
 
     private class ImportLegacyCommand(io: Io) : Leaf("import-legacy", io) {

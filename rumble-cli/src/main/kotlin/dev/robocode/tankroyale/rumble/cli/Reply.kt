@@ -38,8 +38,8 @@ class Reply(
 
 /** Where the commands reach GitHub and tell the time. Tests give fakes; nothing is built until a command needs it. */
 class Services(
-    auth: () -> GitHubAuthTransport = { HttpGitHubAuthTransport() },
-    api: () -> GitHubApi = { HttpGitHubApi() },
+    makeAuth: () -> GitHubAuthTransport = { HttpGitHubAuthTransport() },
+    makeApi: () -> GitHubApi = { HttpGitHubApi() },
     val clock: Clock = Clock.systemUTC(),
     val sleep: (Long) -> Unit = { Thread.sleep(it) },
     val registrationPollSeconds: Int = 5,
@@ -47,8 +47,20 @@ class Services(
     /** Reads an environment variable. */
     val readEnv: (String) -> String? = { System.getenv(it) },
 ) {
-    val auth: GitHubAuthTransport by lazy(auth)
-    val api: GitHubApi by lazy(api)
+    private val realAuth by lazy(makeAuth)
+    private val realApi by lazy(makeApi)
+
+    /** Reaches GitHub's sign-in pages; the connection is built at the first request. */
+    val auth: GitHubAuthTransport = object : GitHubAuthTransport {
+        override fun postForm(url: String, form: Map<String, String>) = realAuth.postForm(url, form)
+    }
+
+    /** Reaches GitHub's API; the connection is built at the first request. */
+    val api: GitHubApi = object : GitHubApi {
+        override fun get(path: String, token: String?) = realApi.get(path, token)
+        override fun postJson(path: String, token: String, json: String) = realApi.postJson(path, token, json)
+        override fun patchJson(path: String, token: String, json: String) = realApi.patchJson(path, token, json)
+    }
 }
 
 /**
@@ -101,7 +113,7 @@ class Io(
     }
 
     /** Writes an answer no command gave, such as to bad input, as one cleaned JSON document. */
-    fun answerBadInput(json: JsonObject) {
+    fun answerProblem(json: JsonObject) {
         out.println(encoded(json, emptySet()))
         out.flush()
     }
@@ -111,7 +123,8 @@ class Io(
         Json.encodeToString(JsonElement.serializer(), cleanedValues(json, keep))
 
     private fun cleanedValues(element: JsonElement, keep: Set<String>): JsonElement = when (element) {
-        is JsonObject -> JsonObject(element.mapValues { cleanedValues(it.value, keep) })
+        // The program's own words are what a program reads and runs, so a user name like one of them cannot change them.
+        is JsonObject -> JsonObject(element.mapValues { (key, value) -> if (key in PROGRAM_WORDS) value else cleanedValues(value, keep) })
         is JsonArray -> JsonArray(element.map { cleanedValues(it, keep) })
         is JsonNull -> element
         is JsonPrimitive -> if (element.isString) JsonPrimitive(redaction.clean(element.content, keep)) else element
@@ -124,5 +137,9 @@ class Io(
     fun say(text: String) {
         out.println(redaction.clean(text))
         out.flush()
+    }
+
+    private companion object {
+        val PROGRAM_WORDS = setOf("command", "environment", "outcome")
     }
 }

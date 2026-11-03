@@ -13,12 +13,12 @@ import dev.robocode.tankroyale.rumble.RegistrationStore
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
 import dev.robocode.tankroyale.rumble.SavedAccountStore
 import dev.robocode.tankroyale.rumble.SavedRenewal
-import dev.robocode.tankroyale.rumble.SavedSignIn
 import dev.robocode.tankroyale.rumble.SignInFinish
 import dev.robocode.tankroyale.rumble.SignInFlow
 import dev.robocode.tankroyale.rumble.SignInStart
 import dev.robocode.tankroyale.rumble.SignInStore
 import dev.robocode.tankroyale.rumble.WaitingSignIn
+import dev.robocode.tankroyale.rumble.signInNotAvailable
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
@@ -50,7 +50,7 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
         next: String? = null,
         keep: Set<String> = emptySet(),
         extra: JsonObjectBuilder.() -> Unit = {},
-    ) = Reply(
+    ): Reply = Reply(
         code,
         head(commandName) {
             put("environment", env.name)
@@ -64,7 +64,7 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
             append(message)
             next?.let { appendLine(); append(nextLine(it)) }
         },
-        keep,
+        keep + setOfNotNull(env.name, next?.let { nextCommand(it) }),
     )
 }
 
@@ -133,7 +133,9 @@ internal class LoginCommand(io: Io, services: Services) : SignInLeaf("login", io
         SignInFinish.CodeExpired -> reply(env, ExitCodes.SIGN_IN_NEEDED, "code-expired", "The code ran out of time. Ask for a new one.", next = "login")
         SignInFinish.CodeDenied -> reply(env, ExitCodes.SIGN_IN_NEEDED, "code-denied", "The code was refused on GitHub's page. Ask for a new one to try again.", next = "login")
         is SignInFinish.Unavailable -> reply(env, ExitCodes.REFUSED, "no-sign-in-app", finish.message)
-        is SignInFinish.Failed -> reply(env, ExitCodes.FAILED, "failed", finish.message, next = if (finish.codeStillWaiting) "login --finish" else "login")
+        is SignInFinish.Failed -> reply(env, ExitCodes.FAILED, "failed", finish.message, next = if (finish.codeStillWaiting) "login --finish" else "login") {
+            if (finish.codeStillWaiting) put("retryAfterSeconds", finish.retryAfterSeconds)
+        }
     }
 
     private fun JsonObjectBuilder.describe(code: WaitingSignIn) {
@@ -182,12 +184,12 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
     override fun run() {
         val env = environment()
         if (env.signInClientId == null) {
-            answer(reply(env, ExitCodes.REFUSED, "no-sign-in-app", "Signing in is not available for the ${env.displayName} Rumble yet."))
+            answer(reply(env, ExitCodes.REFUSED, "no-sign-in-app", env.signInNotAvailable()))
             return
         }
         val base = base()
-        val signIn = GitHubSignIn(env, services.auth, services.clock)
-        when (val renewal = SavedSignIn(SignInStore(env, base), signIn).renew()) {
+        val flow = flow(env)
+        when (val renewal = flow.renewSaved()) {
             is SavedRenewal.SignInNeeded -> answer(
                 reply(env, ExitCodes.SIGN_IN_NEEDED, when (renewal.reason) {
                     SavedRenewal.SignInNeeded.Reason.MISSING -> "no-sign-in"
@@ -197,23 +199,26 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
             )
             is SavedRenewal.Failed -> answer(reply(env, ExitCodes.FAILED, "failed", renewal.message, next = "register"))
             is SavedRenewal.Renewed -> {
+                // The promise is that the next register fills in a name that was missing, however this one ends.
+                if (SavedAccountStore(env, base).load() == null) flow.identify(renewal.tokens)
                 val store = RegistrationStore(env, base)
                 val result = Registration(env, services.api, store, services.clock, services.sleep, services.registrationPollSeconds, services.registrationWaitSeconds)
                     .register(renewal.tokens, retry)
-                answer(registered(env, base, result, renewal.kept))
+                answer(registered(env, flow, result, renewal))
             }
         }
     }
 
-    private fun registered(env: RumbleEnvironment, base: java.nio.file.Path, result: RegistrationResult, signInKept: Boolean): Reply {
+    private fun registered(env: RumbleEnvironment, flow: SignInFlow, result: RegistrationResult, renewal: SavedRenewal.Renewed): Reply {
+        val signInKept = renewal.kept
         val lost = if (signInKept) "" else " The sign-in could not be kept on this computer, so sign in again before the next command."
         val afterwards = if (signInKept) null else "login"
         return when (result) {
             is RegistrationResult.Registered -> {
-                if (!flow(env).afterRegistration(result.account, signInKept)) {
+                if (!flow.afterRegistration(result.account, renewal)) {
                     return reply(
                         env, ExitCodes.DONE, "signed-out",
-                        "${result.account} is registered, but you signed out while it ran, so nothing was saved on this computer.",
+                        "${result.account} is registered, but you signed out or changed account while it ran, so nothing was saved for it on this computer.",
                         keep = setOf(result.account),
                     ) { put("account", result.account); put("saved", false) }
                 }

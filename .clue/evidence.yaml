@@ -342,7 +342,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
-          "sha256": "242f7ba7b21903952ce71cf3ff57ef89d8adeb4077973f8ee90b8dad44bde08f"
+          "sha256": "534ee7f36bf0c22f52b3e76810da973b20a8a312cf759f8211d5f8852117806d"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
@@ -538,6 +538,13 @@
         {
           "id": "RCI-020",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
+          "subject": "RumbleCliSignInTest.testRCI020_UnitNegative_aShortOutageDoesNotEndAWaitAndSlowsTheChecksDownBetweenRuns",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-020",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
           "subject": "RumbleCliSignInTest.testRCI020_UnitNegative_aSlowerPaceIsKeptAndExpiredDeniedAndMissingCodesAreExitThree",
           "type": "Unit",
           "direction": "negative"
@@ -559,6 +566,13 @@
         {
           "id": "RCI-021",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
+          "subject": "RumbleCliSignInTest.testRCI021_UnitNegative_aRegisterThatEndsInARefusalStillFillsInTheMissingName",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-021",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
           "subject": "RumbleCliSignInTest.testRCI021_UnitNegative_aSignInNotSavedSendsTheCallerBackAndAnUnknownAccountIsFilledInLater",
           "type": "Unit",
           "direction": "negative"
@@ -569,6 +583,13 @@
           "subject": "RumbleCliSignInTest.testRCI021_UnitPositive_anApprovedSignInIsSavedWithItsAccountAndAnotherAccountsRegistrationIsRemoved",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCI-022",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
+          "subject": "RumbleCliSignInTest.testRCI022_UnitNegative_aRegistrationFinishingAfterAChangeOfAccountIsNotSavedForTheNewSignIn",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCI-022",
@@ -604,6 +625,13 @@
           "subject": "RumbleCliSignInTest.testRCI023_UnitPositive_onePersonSignsInWithOneCommandThatShowsTheCodeFirst",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCI-024",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
+          "subject": "RumbleCliSignInTest.testRCI024_UnitNegative_noStateIsReportedWhereNothingWasSavedOrAfterLogoutAndNoConnectionIsBuilt",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCI-024",
@@ -646,6 +674,13 @@
           "subject": "RumbleCliSignInTest.testRCI026_UnitPositive_aRefusalOnTheNewestClosedIssueOpensNoNewIssueAndRetryOpensOne",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCI-027",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
+          "subject": "RumbleCliSignInTest.testRCI027_UnitNegative_aUserNamedLikeAWordOfTheProgramCannotBreakTheNextStep",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCI-027",
