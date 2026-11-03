@@ -32,6 +32,7 @@ json = { module = "org.json:json", version.ref = "json" }
 jsvg = { module = "com.github.weisj:jsvg", version.ref = "jsvg" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+clikt-core = { module = "com.github.ajalt.clikt:clikt-core", version.ref = "clikt" }
 r8 = { module = "com.android.tools:r8", version.ref = "r8" }
 flatlaf = { module = "com.formdev:flatlaf", version.ref = "flatlaf" }
 miglayout-swing = { module = "com.miglayout:miglayout-swing", version.ref = "miglayout-swing" }

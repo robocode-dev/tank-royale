@@ -29,7 +29,8 @@ sealed interface SignInStep {
     /** The caller stopped waiting. */
     data object Cancelled : SignInStep
 
-    data class Failed(val message: String) : SignInStep
+    /** [codeStillUsable] is true when the code itself was not the problem, so checking again can still work. */
+    data class Failed(val message: String, val codeStillUsable: Boolean = false) : SignInStep
 }
 
 /** The result of renewing a sign-in. */
@@ -84,7 +85,7 @@ class GitHubSignIn(
                 mapOf("client_id" to clientId, "device_code" to code.deviceCode, "grant_type" to DEVICE_GRANT),
             )
         } catch (e: IOException) {
-            return SignInStep.Failed(OFFLINE)
+            return SignInStep.Failed(OFFLINE, codeStillUsable = true)
         }
         tokensOf(answer)?.let { return SignInStep.SignedIn(it) }
         return when (errorOf(answer)) {
@@ -93,7 +94,7 @@ class GitHubSignIn(
             "expired_token" -> SignInStep.Expired
             "access_denied" -> SignInStep.Denied
             "device_flow_disabled" -> SignInStep.Failed("Signing in with a code is switched off for this GitHub App.")
-            else -> SignInStep.Failed(describeProblem(answer))
+            else -> SignInStep.Failed(describeProblem(answer), codeStillUsable = errorOf(answer) == null)
         }
     }
 

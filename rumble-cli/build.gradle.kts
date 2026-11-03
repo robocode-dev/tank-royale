@@ -22,7 +22,8 @@ dependencies {
     implementation(project(":lib:rumble-protocol"))
     implementation(project(":lib:bot-project"))
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.clikt)
+    // The core only, without the terminal library: a smaller program, and no native access warning from Java.
+    implementation(libs.clikt.core)
 
     testImplementation(platform(testLibs.junit.bom))
     testImplementation(testLibs.bundles.junit)

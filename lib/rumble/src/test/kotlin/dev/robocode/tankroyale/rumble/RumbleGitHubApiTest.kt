@@ -71,7 +71,7 @@ class RumbleGitHubApiTest {
             flow { tokenAccepted = false }
             flow { offline = true }
             flow { createStatus = 404 }
-            flow { comments = """[{"body":"Registration refused: leaked $SECRET_TOKEN"}]""" }
+            flow { comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: leaked $SECRET_TOKEN"}]""" }
             flow { }
         } finally {
             System.setOut(originalOut)

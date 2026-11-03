@@ -95,9 +95,13 @@ class RegistrationStore(private val environment: RumbleEnvironment, baseFolder: 
         }
     }
 
-    /** Removes the saved registration. It is not an error when there is none. */
-    fun forget() {
+    /** True when a registration file exists, without reading it. */
+    fun exists(): Boolean = Files.exists(file)
+
+    /** Removes the saved registration. It is not an error when there is none. Returns false when it is still there. */
+    fun forget(): Boolean {
         runCatching { Files.deleteIfExists(file) }
         runCatching { Files.deleteIfExists(temp) }
+        return !Files.exists(file)
     }
 }

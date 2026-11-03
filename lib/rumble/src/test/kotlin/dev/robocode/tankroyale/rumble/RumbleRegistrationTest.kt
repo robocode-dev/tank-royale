@@ -151,18 +151,18 @@ class RumbleRegistrationTest {
     @Tag("Negative")
     fun testRCL038_UnitNegative_aRefusalReturnsTheWorkflowsReasonInOneShortLine(@TempDir base: Path) {
         val github = FakeRumbleGitHub().apply {
-            comments = """[{"body":"Registration refused: account `alice` is banned\nsecond line"}]"""
+            comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: account `alice` is banned\nsecond line"}]"""
         }
         val refused = run(github, base).registration.register(tokens())
         assertEquals(RegistrationResult.Refused("account `alice` is banned"), refused)
         assertEquals(null, RegistrationStore(env, base).load("alice"))
 
         val long = FakeRumbleGitHub().apply {
-            comments = """[{"body":"Registration refused: ${"x".repeat(500)}"}]"""
+            comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: ${"x".repeat(500)}"}]"""
         }
         assertEquals(200, (run(long, base).registration.register(tokens()) as RegistrationResult.Refused).reason.length)
 
-        val bare = FakeRumbleGitHub().apply { comments = """[{"body":"Registration refused:"}]""" }
+        val bare = FakeRumbleGitHub().apply { comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused:"}]""" }
         assertTrue((run(bare, base).registration.register(tokens()) as RegistrationResult.Refused).reason.isNotEmpty())
     }
 

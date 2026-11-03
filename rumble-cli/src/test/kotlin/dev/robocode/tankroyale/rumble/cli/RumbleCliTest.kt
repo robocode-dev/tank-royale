@@ -140,14 +140,16 @@ class RumbleCliTest {
     @Tag("RCI-015")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCI015_UnitNegative_theCodeForNeedingASignInIsReservedAndNoCommandUsesIt(@TempDir dir: Path) {
+    fun testRCI015_UnitNegative_theCommandsThatOnlyReadNeverAnswerThatASignInIsNeededOrThatTheyAreNotFinished(@TempDir dir: Path) {
         assertEquals(3, ExitCodes.SIGN_IN_NEEDED)
+        assertEquals(4, ExitCodes.NOT_FINISHED)
         val codes = listOf(
             run(dir, "version"), run(dir, "environments", "--state-folder", dir.toString()), run(dir, "status", "--state-folder", dir.toString()),
             run(dir, "nonsense"), run(dir, "import-legacy", dir.resolve("none.json").toString(), "--state-folder", dir.toString()),
         ).map { it.exit }
 
         assertFalse(ExitCodes.SIGN_IN_NEEDED in codes, codes.toString())
+        assertFalse(ExitCodes.NOT_FINISHED in codes, codes.toString())
     }
 
     // RCI-004

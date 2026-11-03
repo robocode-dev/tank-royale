@@ -2,10 +2,13 @@ package dev.robocode.tankroyale.rumble
 
 /** The result of renewing a saved sign-in. */
 sealed interface SavedRenewal {
-    data class Renewed(val tokens: GitHubTokens) : SavedRenewal
+    /** [kept] is false when the new sign-in could not be saved, so the next run must sign in again. */
+    data class Renewed(val tokens: GitHubTokens, val kept: Boolean = true) : SavedRenewal
 
     /** There is no usable saved sign-in, or GitHub refused it; the person must sign in with a code. */
-    data class SignInNeeded(val message: String) : SavedRenewal
+    data class SignInNeeded(val message: String, val reason: Reason = Reason.MISSING) : SavedRenewal {
+        enum class Reason { MISSING, UNUSABLE, REFUSED }
+    }
 
     /** The renewal could not be tried or answered; trying again later may work. */
     data class Failed(val message: String) : SavedRenewal
@@ -37,7 +40,7 @@ class SavedSignIn(
             is LoadResult.Found -> renewWith(loaded)
             LoadResult.Missing -> SavedRenewal.SignInNeeded("There is no saved sign-in. Sign in with a code.")
             LoadResult.Disabled -> SavedRenewal.SignInNeeded("Saving the sign-in is switched off. Sign in with a code.")
-            is LoadResult.Unusable -> SavedRenewal.SignInNeeded(loaded.reason)
+            is LoadResult.Unusable -> SavedRenewal.SignInNeeded(loaded.reason, SavedRenewal.SignInNeeded.Reason.UNUSABLE)
         }
     }
 
@@ -54,11 +57,11 @@ class SavedSignIn(
                 val kept = newRefresh != null && store.save(newRefresh, result.tokens.refreshTokenExpiresAt) == SaveResult.Saved
                 // The old refresh token no longer works at GitHub, so an old file must not be left behind.
                 if (!kept) store.forget()
-                SavedRenewal.Renewed(result.tokens)
+                SavedRenewal.Renewed(result.tokens, kept)
             }
             is RefreshResult.Refused -> {
                 store.forget()
-                SavedRenewal.SignInNeeded(result.message)
+                SavedRenewal.SignInNeeded(result.message, SavedRenewal.SignInNeeded.Reason.REFUSED)
             }
             is RefreshResult.Failed -> SavedRenewal.Failed(result.message)
         }
