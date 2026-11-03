@@ -969,6 +969,47 @@ events:
     - {id: CH-084, kind: numeric, state: live, prefix: CH, component: "84"}
     - {id: CH-084-tasks, kind: opaque, state: live}
     - {id: CH-084-open-questions, kind: opaque, state: live}
+    - {id: RCI-014, kind: numeric, state: reserved, prefix: RCI, component: "14"}
+    - {id: RCI-015, kind: numeric, state: reserved, prefix: RCI, component: "15"}
+    - {id: RCI-016, kind: numeric, state: reserved, prefix: RCI, component: "16"}
+    - {id: RCI-017, kind: numeric, state: reserved, prefix: RCI, component: "17"}
+    - {id: RCI-018, kind: numeric, state: reserved, prefix: RCI, component: "18"}
+    - {id: RCI-019, kind: numeric, state: reserved, prefix: RCI, component: "19"}
+    - {id: RCI-020, kind: numeric, state: reserved, prefix: RCI, component: "20"}
+    - {id: RCI-021, kind: numeric, state: reserved, prefix: RCI, component: "21"}
+    - {id: RCI-022, kind: numeric, state: reserved, prefix: RCI, component: "22"}
+    - {id: RCI-023, kind: numeric, state: reserved, prefix: RCI, component: "23"}
+    - {id: RCI-024, kind: numeric, state: reserved, prefix: RCI, component: "24"}
+    - {id: RCI-025, kind: numeric, state: reserved, prefix: RCI, component: "25"}
+    - {id: RCI-026, kind: numeric, state: reserved, prefix: RCI, component: "26"}
+    - {id: RCI-027, kind: numeric, state: reserved, prefix: RCI, component: "27"}
+    - {id: RCI-028, kind: numeric, state: reserved, prefix: RCI, component: "28"}
+    - {id: RCI-029, kind: numeric, state: reserved, prefix: RCI, component: "29"}
+    - {id: RCI-030, kind: numeric, state: reserved, prefix: RCI, component: "30"}
+    - {id: RCI-031, kind: numeric, state: reserved, prefix: RCI, component: "31"}
+    - {id: RCI-001, kind: numeric, state: retired, prefix: RCI, component: "1"}
+    - {id: RCI-002, kind: numeric, state: retired, prefix: RCI, component: "2"}
+    - {id: RCI-007, kind: numeric, state: retired, prefix: RCI, component: "7"}
+    - {id: RCI-009, kind: numeric, state: retired, prefix: RCI, component: "9"}
+    - {id: RCI-013, kind: numeric, state: retired, prefix: RCI, component: "13"}
+    - {id: RCI-014, kind: numeric, state: live, prefix: RCI, component: "14"}
+    - {id: RCI-015, kind: numeric, state: live, prefix: RCI, component: "15"}
+    - {id: RCI-016, kind: numeric, state: live, prefix: RCI, component: "16"}
+    - {id: RCI-017, kind: numeric, state: live, prefix: RCI, component: "17"}
+    - {id: RCI-018, kind: numeric, state: live, prefix: RCI, component: "18"}
+    - {id: RCI-019, kind: numeric, state: live, prefix: RCI, component: "19"}
+    - {id: RCI-020, kind: numeric, state: live, prefix: RCI, component: "20"}
+    - {id: RCI-021, kind: numeric, state: live, prefix: RCI, component: "21"}
+    - {id: RCI-022, kind: numeric, state: live, prefix: RCI, component: "22"}
+    - {id: RCI-023, kind: numeric, state: live, prefix: RCI, component: "23"}
+    - {id: RCI-024, kind: numeric, state: live, prefix: RCI, component: "24"}
+    - {id: RCI-025, kind: numeric, state: live, prefix: RCI, component: "25"}
+    - {id: RCI-026, kind: numeric, state: live, prefix: RCI, component: "26"}
+    - {id: RCI-027, kind: numeric, state: live, prefix: RCI, component: "27"}
+    - {id: RCI-028, kind: numeric, state: live, prefix: RCI, component: "28"}
+    - {id: RCI-029, kind: numeric, state: live, prefix: RCI, component: "29"}
+    - {id: RCI-030, kind: numeric, state: live, prefix: RCI, component: "30"}
+    - {id: RCI-031, kind: numeric, state: live, prefix: RCI, component: "31"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

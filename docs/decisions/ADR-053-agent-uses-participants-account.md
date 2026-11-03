@@ -1,11 +1,11 @@
 ---
 id: ADR-053
 type: decision
-status: inferred
+status: verified
 links: [ADR-052, P-007, ARCH-027, CAP-024]
 title: An AI agent works with the participant's own GitHub account
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-11-03, Claude Code conversation)
 ---
 
 # An AI agent works with the participant's own GitHub account
@@ -18,7 +18,7 @@ The Rumble command line is meant to work for AI agents as well as for people. Th
 
 An agent acts for one participant, with that participant's own GitHub account and saved sign-in. Registrations, pull requests and results carry the participant's name. An agent with a GitHub account of its own is not supported; it can be added by a later decision that also gives rules for registration, ownership of a bot and the rankings, and names a person who answers for it.
 
-The sign-in commands follow these rules. The person starts and approves the sign-in at GitHub with the device code; an agent never approves it in a browser and never creates or registers an account. A command that needs a sign-in and finds none, or one that cannot be used, ends with exit code 3, says so in its JSON answer and asks nothing. No answer shows a token. A command works on one environment at a time and never mixes the public and the test environment.
+The sign-in commands follow these rules. An agent may start a sign-in, hand the device code to its person, and register the account that person approved; the person approves the sign-in at GitHub, and an agent never approves it in a browser and never creates an account. A command that needs a sign-in and finds none, or one that cannot be used, ends with exit code 3, says so in its JSON answer and asks nothing. No answer shows a token. A command works on one environment at a time and never mixes the public and the test environment.
 
 ## Consequences
 
