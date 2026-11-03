@@ -36,6 +36,24 @@ class Reply(
     val keep: Set<String> = emptySet(),
 )
 
+/**
+ * The values in [json] that must come out exactly as they are: the facts a person types or a program reads, like a
+ * sign-in code, a client ID or a command. Only free text, which may hold anything, is left for the cleaning.
+ */
+fun exactValuesIn(json: JsonElement): Set<String> = buildSet {
+    fun visit(element: JsonElement) {
+        when (element) {
+            is JsonObject -> element.forEach { (key, value) -> if (key !in FREE_TEXT) visit(value) }
+            is JsonArray -> element.forEach { visit(it) }
+            is JsonNull -> Unit
+            is JsonPrimitive -> if (element.isString) add(element.content)
+        }
+    }
+    visit(json)
+}
+
+private val FREE_TEXT = setOf("message", "reason")
+
 /** Where the commands reach GitHub and tell the time. Tests give fakes; nothing is built until a command needs it. */
 class Services(
     makeAuth: () -> GitHubAuthTransport = { HttpGitHubAuthTransport() },
@@ -75,12 +93,15 @@ class Redaction(private val home: String, private val user: String) {
         }
         result = WINDOWS_PATH.replace(result, "<path>")
         result = UNIX_HOME_PATH.replace(result, "<path>")
+        if (user.length < 3) return result
         // The values to keep are set aside only here, after the paths, so a path holding one of them is still removed.
+        // One pass with one expression, so a kept value can never match inside what stands in for another.
         val kept = keep.filter { it.isNotEmpty() }.sortedByDescending { it.length }
-        kept.forEachIndexed { index, value -> result = result.replace(value, "\u0000$index\u0000") }
-        if (user.length >= 3) result = Regex("(?i)\\b" + Regex.escape(user) + "\\b").replace(result, "<user>")
-        kept.forEachIndexed { index, value -> result = result.replace("\u0000$index\u0000", value) }
-        return result
+        if (kept.isNotEmpty()) {
+            result = Regex(kept.joinToString("|") { Regex.escape(it) }).replace(result) { "\uE000${kept.indexOf(it.value)}\uE001" }
+        }
+        result = Regex("(?i)\\b" + Regex.escape(user) + "\\b").replace(result, "<user>")
+        return Regex("\uE000(\\d+)\uE001").replace(result) { kept[it.groupValues[1].toInt()] }
     }
 
     companion object {

@@ -81,7 +81,9 @@ class SignInFlow(
             when (val renewal = renewSaved()) {
                 is SavedRenewal.Renewed -> if (renewal.kept) return SignInStart.AlreadySignedIn(identify(renewal.tokens) ?: account.load())
                 is SavedRenewal.Failed -> return SignInStart.Failed(renewal.message)
-                is SavedRenewal.SignInNeeded -> account.forget() // GitHub refused it and it is gone; a new code follows.
+                is SavedRenewal.SignInNeeded -> store.locked { // GitHub refused it and it is gone; a new code follows.
+                    if (store.load() !is LoadResult.Found) account.forget()
+                }
             }
         }
         if (!store.canKeepPrivate()) {
@@ -93,13 +95,12 @@ class SignInFlow(
     private fun startLocked(): SignInStart {
         val now = clock.instant()
         store.loadWaiting()?.let { waiting ->
-            if (now.isBefore(waiting.expiresAt)) return SignInStart.Started(waiting, reused = true)
+            // A code about to run out is no use to a person who still has to open the page.
+            if (now.plus(MIN_TIME_TO_TYPE).isBefore(waiting.expiresAt)) return SignInStart.Started(waiting, reused = true)
             store.forgetWaiting()
         }
         val code = try {
             signIn.start()
-        } catch (e: SignInUnavailable) {
-            return SignInStart.Unavailable(noApp)
         } catch (e: SignInFailed) {
             return SignInStart.Failed(e.message.orEmpty())
         }
@@ -109,7 +110,8 @@ class SignInFlow(
         )
         return when (val saved = store.saveWaiting(waiting)) {
             SaveResult.Saved -> SignInStart.Started(waiting, reused = false)
-            is SaveResult.NotSaved -> SignInStart.NotPrivate(saved.reason)
+            // The folder passed the check for privacy just before, so this is an ordinary failure, such as a full disk.
+            is SaveResult.NotSaved -> SignInStart.Failed(saved.reason)
         }
     }
 
@@ -162,13 +164,14 @@ class SignInFlow(
                 store.forgetWaiting()
                 SignInFinish.CodeDenied
             }
-            SignInStep.Cancelled -> SignInFinish.Failed("The check was stopped.", codeStillWaiting = true)
+            SignInStep.Cancelled -> SignInFinish.Failed("The check was stopped.", true, waiting.intervalSeconds.toLong())
             is SignInStep.Failed ->
                 if (step.codeStillUsable) {
-                    // Slower after a failure, and kept between runs, so repeated runs do not press a struggling GitHub.
-                    val interval = maxOf(waiting.intervalSeconds, minOf(waiting.intervalSeconds * 2, MAX_RETRY_SECONDS))
-                    store.saveWaiting(waiting.paced(interval, now.plusSeconds(interval.toLong())))
-                    SignInFinish.Failed(step.message, true, interval.toLong())
+                    // A longer pause after a failure, kept between runs so repeated runs do not press a struggling
+                    // GitHub. Only this pause is longer: the pace returns to normal when GitHub answers again.
+                    val pause = maxOf(waiting.intervalSeconds, minOf(waiting.intervalSeconds * 2, MAX_RETRY_SECONDS))
+                    store.saveWaiting(waiting.paced(waiting.intervalSeconds, now.plusSeconds(pause.toLong())))
+                    SignInFinish.Failed(step.message, true, pause.toLong())
                 } else {
                     store.forgetWaiting()
                     SignInFinish.Failed(step.message, false)
@@ -211,8 +214,9 @@ class SignInFlow(
     }
 
     /**
-     * Finds the account of [tokens] and, if the sign-in is still saved, saves its name and removes a saved registration
-     * of another account, so that it is never shown beside this sign-in. Returns null when GitHub cannot say.
+     * Finds the account of [tokens] and, if they are still the saved sign-in, saves its name and removes a saved
+     * registration of another account, so that it is never shown beside this sign-in. Another sign-in may have been
+     * saved during the lookup, and it must not get this name. Returns null when GitHub cannot say.
      */
     fun identify(tokens: GitHubTokens): String? {
         val name = try {
@@ -221,7 +225,7 @@ class SignInFlow(
             null
         } ?: return null
         store.locked {
-            if (store.load() is LoadResult.Found) {
+            if ((store.load() as? LoadResult.Found)?.refreshToken == tokens.refreshToken) {
                 val registered = registration.loadAny()
                 if (registered != null && !registered.account.equals(name, ignoreCase = true)) registration.forget()
                 account.save(name)
@@ -231,10 +235,10 @@ class SignInFlow(
     }
 
     /**
-     * Saves [name] after a registration that began with [renewed], or, when the person has signed out or signed in as
-     * another account while it ran, removes what the registration left behind. A sign-in is the same one when it still
-     * holds the refresh token of [renewed] or is saved for the same account. When [renewed] could not be kept, the
-     * absence of a sign-in says nothing. Returns false when the sign-in is gone or another.
+     * Saves [name] after a registration that began with [renewed], or, when it cannot be known that the sign-in is still
+     * the same, removes what the registration left behind, which running it again restores. A sign-in is the same one
+     * when it still holds the refresh token of [renewed] or is saved for the same account. When [renewed] could not be
+     * kept, the absence of a sign-in says nothing. Returns false when it cannot be known.
      */
     fun afterRegistration(name: String, renewed: SavedRenewal.Renewed): Boolean = store.locked {
         val now = store.load()
@@ -266,6 +270,7 @@ class SignInFlow(
 
     private companion object {
         const val MAX_RETRY_SECONDS = 60
+        val MIN_TIME_TO_TYPE: Duration = Duration.ofMinutes(1)
     }
 }
 

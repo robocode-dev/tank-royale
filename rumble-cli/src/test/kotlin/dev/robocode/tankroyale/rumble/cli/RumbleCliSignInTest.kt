@@ -60,6 +60,7 @@ class RumbleCliSignInTest {
         var offline = false
         var broken = false
         var refreshValue = refreshToken
+        var code = userCode
         var renewal: Map<String, String>? = null
 
         fun tokens(refresh: Boolean = true) = buildMap {
@@ -73,7 +74,7 @@ class RumbleCliSignInTest {
             return when {
                 url == GitHubSignIn.DEVICE_CODE_URL -> {
                     codeRequests += form
-                    AuthResponse(200, mapOf("device_code" to deviceSecret, "user_code" to userCode, "verification_uri" to address, "expires_in" to "900", "interval" to "5"))
+                    AuthResponse(200, mapOf("device_code" to deviceSecret, "user_code" to code, "verification_uri" to address, "expires_in" to "900", "interval" to "5"))
                 }
                 form["grant_type"] == "refresh_token" -> {
                     renewals += form
@@ -94,6 +95,7 @@ class RumbleCliSignInTest {
         val created = mutableListOf<String>()
         var userStatus = 200
         var clientId: String? = null
+        var onUser: () -> Unit = {}
         var registerOnCreate = false
         var openIssues = "[]"
         var closedIssues = "[]"
@@ -103,7 +105,11 @@ class RumbleCliSignInTest {
             requests += path
             val data = "/repos/robocode-dev/rumble-data-test"
             return when {
-                path == "/user" -> ApiResponse(userStatus, """{"login":"$login"}""")
+                path == "/user" -> {
+                    val name = login
+                    onUser()
+                    ApiResponse(userStatus, """{"login":"$name"}""")
+                }
                 path.startsWith("$data/contents/clients/") -> clientId?.let { ApiResponse(200, file(path.substringAfterLast('/').removeSuffix(".json"), it)) } ?: ApiResponse(404, "{}")
                 path.startsWith("$data/issues?") && path.contains("state=closed") -> ApiResponse(200, closedIssues)
                 path.startsWith("$data/issues?") -> ApiResponse(200, openIssues)
@@ -650,7 +656,9 @@ class RumbleCliSignInTest {
         val answer = world.test("register")
 
         assertEquals("signed-out", signedOut!!.outcome)
-        assertEquals("signed-out", answer.outcome)
+        assertEquals(ExitCodes.NOT_FINISHED, answer.exit)
+        assertEquals("sign-in-changed", answer.outcome)
+        assertEquals("rumble register -e test", answer.next)
         assertFalse(Files.exists(world.folder().resolve("account.json")))
         assertFalse(Files.exists(world.folder().resolve("registration.json")))
         assertFalse(Files.exists(world.folder().resolve("signin.bin")))
@@ -678,12 +686,39 @@ class RumbleCliSignInTest {
 
         val answer = world.test("register")
 
-        assertEquals("signed-out", answer.outcome)
+        assertEquals("sign-in-changed", answer.outcome)
         val status = world.test("status")
         assertEquals("bob", status.json["signIn"]!!.jsonObject["account"]!!.jsonPrimitive.content)
         assertFalse(status.json["registration"]!!.jsonObject["saved"]!!.jsonPrimitive.boolean)
         assertFalse(status.json["ready"]!!.jsonPrimitive.boolean)
         assertFalse(status.out.contains("alice"), status.out)
+    }
+
+    @Test
+    @Tag("RCI-022")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI022_UnitNegative_aSlowLookupOfAnAccountDoesNotNameASignInMadeInTheMeantime(@TempDir dir: Path) {
+        val world = World(dir)
+        world.test("login")
+        world.advance(5)
+        world.approveNextCheck()
+        var first = true
+        world.api.onUser = {
+            if (first) {
+                first = false
+                // While the first run looks up alice, the person signs out and signs in as bob.
+                world.test("logout")
+                world.api.login = "bob"
+                world.auth.refreshValue = "ghr_ANOTHERFAKEREFRESHTOKEN"
+                world.signIn()
+                world.api.login = "alice"
+            }
+        }
+
+        world.test("login", "--finish")
+
+        assertEquals("bob", SavedAccountStore(RumbleEnvironments.TEST, dir).load())
     }
 
     // RCI-023
@@ -1079,6 +1114,58 @@ class RumbleCliSignInTest {
         val refused = world.test("register")
 
         assertEquals("account alice is banned", refused.json["reason"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    @Tag("RCI-017")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCI017_UnitPositive_aCodeHoldingTheUserNameAndAOneLetterAccountComeOutExactly(@TempDir dir: Path) {
+        val world = World(dir, Redaction("C:\\nowhere", "anna"))
+        world.auth.code = "ANNA-1234"
+        world.api.login = "1"
+
+        val json = world.test("login")
+        assertEquals("ANNA-1234", json.json["userCode"]!!.jsonPrimitive.content)
+        assertTrue(json.json["message"]!!.jsonPrimitive.content.contains("ANNA-1234"), json.out)
+        assertTrue(world.run("login", "-e", "test").out.contains("ANNA-1234"))
+
+        world.advance(5)
+        world.approveNextCheck()
+        val signedIn = world.test("login", "--finish")
+        assertEquals("1", signedIn.json["account"]!!.jsonPrimitive.content)
+        assertEquals("rumble register -e test", signedIn.next)
+        assertFalse(signedIn.out.contains("\uE000"), signedIn.out)
+    }
+
+    @Test
+    @Tag("RCI-019")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI019_UnitNegative_aCodeAboutToRunOutIsReplacedAndNotHandedOut(@TempDir dir: Path) {
+        val world = World(dir)
+        world.test("login")
+        world.advance(880)
+
+        val answer = world.test("login")
+
+        assertEquals("started", answer.outcome)
+        assertFalse(answer.json["reused"]!!.jsonPrimitive.boolean)
+        assertEquals(2, world.auth.codeRequests.size)
+    }
+
+    @Test
+    @Tag("RCI-020")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI020_UnitNegative_afterAnOutageThePaceReturnsToNormal(@TempDir dir: Path) {
+        val world = World(dir)
+        world.test("login")
+        world.advance(5)
+        world.auth.answers.add(SERVER_ERROR)
+        assertEquals(10, world.test("login", "--finish").json["retryAfterSeconds"]!!.jsonPrimitive.long)
+        world.advance(10)
+        assertEquals(5, world.test("login", "--finish").json["retryAfterSeconds"]!!.jsonPrimitive.long)
     }
 
     @Test

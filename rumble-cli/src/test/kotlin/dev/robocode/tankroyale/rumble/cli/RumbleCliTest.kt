@@ -159,8 +159,8 @@ class RumbleCliTest {
     @Tag("Unit")
     @Tag("Positive")
     fun testRCI004_UnitPositive_theStateFolderOptionOverridesTheDefaultAndTheDefaultIsUsedWithoutIt(@TempDir dir: Path) {
-        val chosenBase = dir.resolve("chosen").also { Files.createDirectories(it.resolve("environments/test")) }
-        val standardBase = dir.resolve("standard").also { Files.createDirectories(it.resolve("environments/public")) }
+        val chosenBase = dir.resolve("chosen").also { Files.writeString(Files.createDirectories(it.resolve("environments/test")).resolve("registration.json"), "{}") }
+        val standardBase = dir.resolve("standard").also { Files.writeString(Files.createDirectories(it.resolve("environments/public")).resolve("registration.json"), "{}") }
 
         val withOption = run(standardBase, "environments", "--json", "--state-folder", chosenBase.toString())
         val withoutOption = run(chosenBase, "environments", "--json")
@@ -219,7 +219,7 @@ class RumbleCliTest {
     @Tag("Unit")
     @Tag("Positive")
     fun testRCI006_UnitPositive_everyKnownEnvironmentIsListedWithItsRepositoriesAndWhetherStateExists(@TempDir dir: Path) {
-        Files.createDirectories(dir.resolve("environments/test"))
+        Files.writeString(Files.createDirectories(dir.resolve("environments/test")).resolve("registration.json"), "{}")
 
         val rows = run(dir, "environments", "--json", "--state-folder", dir.toString()).json["environments"]!!.jsonArray.map { it.jsonObject }
 

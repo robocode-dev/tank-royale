@@ -50,22 +50,21 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
         next: String? = null,
         keep: Set<String> = emptySet(),
         extra: JsonObjectBuilder.() -> Unit = {},
-    ): Reply = Reply(
-        code,
-        head(commandName) {
+    ): Reply {
+        val json = head(commandName) {
             put("environment", env.name)
             put("outcome", outcome)
             put("message", message)
             extra()
             next?.let { step -> putNext(step) }
-        },
-        buildString {
+        }
+        val text = buildString {
             appendLine("Environment: ${env.displayName} (${env.name})")
             append(message)
             next?.let { appendLine(); append(nextLine(it)) }
-        },
-        keep + setOfNotNull(env.name, next?.let { nextCommand(it) }),
-    )
+        }
+        return Reply(code, json, text, keep + exactValuesIn(json) + env.displayName)
+    }
 }
 
 internal class LoginCommand(io: Io, services: Services) : SignInLeaf("login", io, services) {
@@ -120,12 +119,12 @@ internal class LoginCommand(io: Io, services: Services) : SignInLeaf("login", io
     private fun finished(env: RumbleEnvironment, finish: SignInFinish): Reply = when (finish) {
         is SignInFinish.SignedIn -> reply(
             env, ExitCodes.DONE, "signed-in",
-            finish.account?.let { "Signed in as $it." } ?: "Signed in, but GitHub would not say as which account yet. The next login or register finds out.",
+            finish.account?.let { "Signed in as $it." } ?: "Signed in. Which account is not known yet; the next login or register finds out.",
             next = "register", keep = setOfNotNull(finish.account),
         ) { put("account", finish.account) }
         is SignInFinish.Waiting -> reply(
             env, ExitCodes.NOT_FINISHED, "waiting",
-            "Not approved yet. Type the code ${finish.code.userCode} at ${finish.code.verificationUri}, and check again in ${finish.retryAfterSeconds} seconds.",
+            "No approval seen yet. Type the code ${finish.code.userCode} at ${finish.code.verificationUri}, and check again in ${finish.retryAfterSeconds} seconds.",
             next = "login --finish", keep = setOf(finish.code.verificationUri),
         ) { describe(finish.code); put("retryAfterSeconds", finish.retryAfterSeconds) }
         is SignInFinish.NotSaved -> reply(env, ExitCodes.FAILED, "not-saved", "GitHub approved the sign-in, but it could not be kept. ${finish.reason}", next = "login")
@@ -217,9 +216,9 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
             is RegistrationResult.Registered -> {
                 if (!flow.afterRegistration(result.account, renewal)) {
                     return reply(
-                        env, ExitCodes.DONE, "signed-out",
-                        "${result.account} is registered, but you signed out or changed account while it ran, so nothing was saved for it on this computer.",
-                        keep = setOf(result.account),
+                        env, ExitCodes.NOT_FINISHED, "sign-in-changed",
+                        "${result.account} is registered, but the sign-in changed while it ran, so nothing was saved for it on this computer. Run register again.",
+                        next = "register", keep = setOf(result.account),
                     ) { put("account", result.account); put("saved", false) }
                 }
                 val notSaved = if (result.saved) "" else " It could not be remembered on this computer, so it will be read from the Rumble next time."

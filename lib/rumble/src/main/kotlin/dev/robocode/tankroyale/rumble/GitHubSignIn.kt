@@ -57,7 +57,7 @@ class GitHubSignIn(
     /** Asks GitHub for a sign-in code to show the person. */
     fun start(): DeviceCode {
         val clientId = environment.signInClientId
-            ?: throw SignInUnavailable("Signing in is not available for the ${environment.displayName} Rumble yet.")
+            ?: throw SignInUnavailable(environment.signInNotAvailable())
         val answer = try {
             transport.postForm(DEVICE_CODE_URL, mapOf("client_id" to clientId))
         } catch (e: IOException) {
@@ -78,7 +78,7 @@ class GitHubSignIn(
     /** Checks once whether the person has approved [code]. [intervalSeconds] is the pace in use now. */
     fun check(code: DeviceCode, intervalSeconds: Int = code.intervalSeconds): SignInStep {
         val clientId = environment.signInClientId
-            ?: return SignInStep.Failed("Signing in is not available for the ${environment.displayName} Rumble yet.")
+            ?: return SignInStep.Failed(environment.signInNotAvailable())
         val answer = try {
             transport.postForm(
                 TOKEN_URL,
@@ -122,7 +122,7 @@ class GitHubSignIn(
     /** Renews [tokens] with their refresh token. No client secret is sent. */
     fun refresh(tokens: GitHubTokens): RefreshResult {
         val clientId = environment.signInClientId
-            ?: return RefreshResult.Failed("Signing in is not available for the ${environment.displayName} Rumble yet.")
+            ?: return RefreshResult.Failed(environment.signInNotAvailable())
         val refreshToken = tokens.refreshToken
             ?: return RefreshResult.Refused("This sign-in cannot be renewed. Sign in again.")
         val answer = try {

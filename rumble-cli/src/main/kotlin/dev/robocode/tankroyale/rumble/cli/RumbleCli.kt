@@ -151,21 +151,6 @@ object RumbleCli {
 
         protected fun answer(reply: Reply) = io.answer(reply, json)
 
-        /** Puts the next step in a JSON answer. A chosen state folder cannot be written in it, since no answer holds a path. */
-        protected fun JsonObjectBuilder.putNext(step: String) {
-            put("next", buildJsonObject {
-                put("command", nextCommand(step))
-                if (stateFolder != null) put("addStateFolder", true)
-            })
-        }
-
-        /** The next step as a line of text. */
-        protected fun nextLine(step: String): String =
-            "Next: " + nextCommand(step) + if (stateFolder != null) " (add the same --state-folder)" else ""
-
-        /** The whole command for [step], naming the environment so it stays in the same place when run as it stands. */
-        protected abstract fun nextCommand(step: String): String
-
         protected fun head(command: String, build: JsonObjectBuilder.() -> Unit): JsonObject = buildJsonObject {
             put("schemaVersion", SCHEMA_VERSION)
             put("command", command)
@@ -180,13 +165,24 @@ object RumbleCli {
 
         protected fun environment(): RumbleEnvironment = RumbleEnvironments.all.first { it.name == environmentName }
 
-        override fun nextCommand(step: String): String = "rumble $step -e $environmentName"
+        /** The whole command for [step], naming the environment so it stays in the same place when run as it stands. */
+        protected fun nextCommand(step: String): String = "rumble $step -e $environmentName"
+
+        /** Puts the next step in a JSON answer. A chosen state folder cannot be written in it, since no answer holds a path. */
+        protected fun JsonObjectBuilder.putNext(step: String) {
+            put("next", buildJsonObject {
+                put("command", nextCommand(step))
+                if (stateFolder != null) put("addStateFolder", true)
+            })
+        }
+
+        /** The next step as a line of text. */
+        protected fun nextLine(step: String): String =
+            "Next: " + nextCommand(step) + if (stateFolder != null) " (add the same --state-folder)" else ""
     }
 
     private class VersionCommand(io: Io) : Leaf("version", io) {
         override fun help(context: Context) = "Shows the program, the engine behavior version, Java and the battle worker the program carries."
-
-        override fun nextCommand(step: String) = "rumble $step"
 
         override fun run() {
             val worker = EmbeddedWorker.info()
@@ -212,8 +208,6 @@ object RumbleCli {
 
     private class EnvironmentsCommand(io: Io) : Leaf("environments", io) {
         override fun help(context: Context) = "Lists the known Rumble environments and whether state for them exists."
-
-        override fun nextCommand(step: String) = "rumble $step"
 
         override fun run() {
             val base = base()
@@ -246,7 +240,7 @@ object RumbleCli {
         private fun hasState(folder: Path): Boolean {
             if (!Files.isDirectory(folder)) return false
             val names = Files.list(folder).use { list -> list.map { it.fileName.toString() }.collect(Collectors.toList()) }
-            return names != listOf("signin.lock")
+            return names.any { it != "signin.lock" }
         }
     }
 
@@ -306,14 +300,11 @@ object RumbleCli {
                     else -> facts.next?.let { append(nextLine(it)) }
                 }
             }.trimEnd()
-            val keep = setOfNotNull(facts.account, registration?.account, waiting?.verificationUri, env.name, facts.next?.let { nextCommand(it) })
-            answer(Reply(ExitCodes.DONE, json, text, keep))
+            answer(Reply(ExitCodes.DONE, json, text, exactValuesIn(json) + env.displayName))
         }
     }
 
     private class ImportLegacyCommand(io: Io) : Leaf("import-legacy", io) {
-        override fun nextCommand(step: String) = "rumble $step"
-
         override fun help(context: Context) =
             "Previews, or with --copy makes, a copy of the old Rumble client's state. The old files are only read, never changed or removed."
 

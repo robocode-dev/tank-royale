@@ -135,6 +135,7 @@ class Registration(
         return newest?.let { issue(it) }?.let { found ->
             // Not knowing how it ended must not open a new public issue, as it would if this counted as no refusal.
             val comments = commentsOf(found.number, token)
+            refuseBadToken(comments)
             if (comments.status != 200) throw Stop(RegistrationResult.Failed(unexpected(comments)))
             refusalIn(comments)
         }
