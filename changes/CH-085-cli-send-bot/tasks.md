@@ -6,7 +6,8 @@ links: [CH-085]
 title: Check, send and follow a bot from the Rumble command line
 ---
 
-- [ ] Settle with the maintainer: the command names and the rule that the license confirmation is an explicit option an agent passes only when told to.
+- [x] Settle with the maintainer: the command names and the rule that the license confirmation is an explicit option an agent passes only when told to, and that the source being public is shown before sending.
+- [ ] Write the notice that the source is public into the answers of `bot send`, and into the design of the sending screen of the desktop program.
 - [ ] Reserve identities and write the acceptance criteria for `bot check`, `bot send`, `bot status`, the license confirmation, setup that only the person can do and the answer contract, before any code, each with its test type.
 - [ ] Add `bot check` with tests that use real bot folders, including the sample bots.
 - [ ] Add `bot send` with `--dry-run` and `--certify-license`, staging into the state folder, the advisory check and the readiness check, with in-process tests using a fake GitHub.
