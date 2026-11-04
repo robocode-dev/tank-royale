@@ -20,7 +20,7 @@ class RumbleRegistrationLiveTest {
     fun testSanity_theRealRegistrationFileIsReadAndAnUnknownAccountHasNone(@TempDir base: Path) {
         assumeTrue(System.getProperty("rumble.live") == "true", "Set -Drumble.live=true to contact GitHub")
         val env = RumbleEnvironments.TEST
-        val registration = Registration(env, HttpGitHubApi(), RegistrationStore(env, base))
+        val registration = Registration(env, HttpGitHubApi(), InMemoryRegistrations())
 
         val clientId = registration.readRegistrationFile("robocode-rumble-test", null)
 

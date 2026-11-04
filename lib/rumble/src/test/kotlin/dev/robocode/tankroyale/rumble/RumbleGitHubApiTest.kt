@@ -56,7 +56,7 @@ class RumbleGitHubApiTest {
                 val github = FakeRumbleGitHub().apply(configure)
                 val clock = MutableClock(START)
                 val result = Registration(
-                    RumbleEnvironments.TEST, github, RegistrationStore(RumbleEnvironments.TEST, base), clock,
+                    RumbleEnvironments.TEST, github, InMemoryRegistrations(), clock,
                     sleep = { clock.advanceMillis(it) },
                 ).register(tokens())
                 github.requests.forEach { addresses += it.second }
@@ -71,7 +71,7 @@ class RumbleGitHubApiTest {
             flow { tokenAccepted = false }
             flow { offline = true }
             flow { createStatus = 404 }
-            flow { comments = """[{"body":"Registration refused: leaked $SECRET_TOKEN"}]""" }
+            flow { comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: leaked $SECRET_TOKEN"}]""" }
             flow { }
         } finally {
             System.setOut(originalOut)

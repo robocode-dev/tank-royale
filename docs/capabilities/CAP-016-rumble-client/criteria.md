@@ -263,7 +263,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Then none of those values appears in any text, message, log line or console output the library produces
     And the sign-in code that talks to GitHub uses no files, console or logging
 
-  @RCL-031
+  # RCL-031 retired (CH-084): the saved file now also holds what belongs to the sign-in. Reminted as RCL-041.
+  @RCL-031 @retired
   Scenario: The saved sign-in holds only the refresh token and is written only by the sign-in store
     Test-type: Unit
     Given a signed-in person and a folder for the environment's saved state
@@ -329,7 +330,8 @@ Feature: rumble-client — Local ranked and practice battle client
     And a wait that ends without a registration is returned as not finished with the address of the issue, and a later attempt continues from the registration file or the open issue
     And GitHub not accepting the token is returned as sign in again, and every other problem, including being offline or the App not being installed, is returned as failed with a reason in plain words
 
-  @RCL-039
+  # RCL-039 retired (CH-084): the registration moved from a plain file into the sign-in's one file. Reminted as RCL-042.
+  @RCL-039 @retired
   Scenario: The saved registration is kept per environment and only used for the same account
     Test-type: Unit
     Given a registration saved for an environment and an account
@@ -344,4 +346,23 @@ Feature: rumble-client — Local ranked and practice battle client
     When the requests are built and every result and failure is turned into text
     Then the token is sent only in the authorization header of requests to GitHub's API address
     And it appears in no address, no result, no message and no console output
+
+  @RCL-041
+  Scenario: The saved sign-in holds the refresh token and what belongs to it, never the access token, in one file
+    Test-type: Unit
+    Given a signed-in person and a folder for the environment's saved state
+    When the sign-in is saved and then loaded by a new store object on the same folder
+    Then the loaded value is the refresh token and when it stops working, and the access token was never saved
+    And the one file holds no readable token text, and no other part of the library writes a token to disk
+    And a file that cannot be read just now is left as it is, not written over
+    And when saving is switched off nothing is written and nothing is loaded
+
+  @RCL-042
+  Scenario: The saved registration belongs to one sign-in in that sign-in's file
+    Test-type: Unit
+    Given a registration saved for a sign-in in an environment
+    When the sign-in is renewed, replaced by a newly approved one or removed, or the registration is read back
+    Then it holds the account, the client ID, the environment and when it was saved, and a renewal keeps it
+    And it is ignored for another account and is useless in another environment, a newly approved sign-in starts without it, and it goes when the person signs out
+    And a registration or an account name that arrives after its sign-in was replaced or removed saves nothing, and a name that has changed on GitHub leaves the registration behind
 ```

@@ -29,7 +29,8 @@ sealed interface SignInStep {
     /** The caller stopped waiting. */
     data object Cancelled : SignInStep
 
-    data class Failed(val message: String) : SignInStep
+    /** [codeStillUsable] is true when the code itself was not the problem, so checking again can still work. */
+    data class Failed(val message: String, val codeStillUsable: Boolean = false) : SignInStep
 }
 
 /** The result of renewing a sign-in. */
@@ -56,7 +57,7 @@ class GitHubSignIn(
     /** Asks GitHub for a sign-in code to show the person. */
     fun start(): DeviceCode {
         val clientId = environment.signInClientId
-            ?: throw SignInUnavailable("Signing in is not available for the ${environment.displayName} Rumble yet.")
+            ?: throw SignInUnavailable(environment.signInNotAvailable())
         val answer = try {
             transport.postForm(DEVICE_CODE_URL, mapOf("client_id" to clientId))
         } catch (e: IOException) {
@@ -77,14 +78,14 @@ class GitHubSignIn(
     /** Checks once whether the person has approved [code]. [intervalSeconds] is the pace in use now. */
     fun check(code: DeviceCode, intervalSeconds: Int = code.intervalSeconds): SignInStep {
         val clientId = environment.signInClientId
-            ?: return SignInStep.Failed("Signing in is not available for the ${environment.displayName} Rumble yet.")
+            ?: return SignInStep.Failed(environment.signInNotAvailable())
         val answer = try {
             transport.postForm(
                 TOKEN_URL,
                 mapOf("client_id" to clientId, "device_code" to code.deviceCode, "grant_type" to DEVICE_GRANT),
             )
         } catch (e: IOException) {
-            return SignInStep.Failed(OFFLINE)
+            return SignInStep.Failed(OFFLINE, codeStillUsable = true)
         }
         tokensOf(answer)?.let { return SignInStep.SignedIn(it) }
         return when (errorOf(answer)) {
@@ -93,7 +94,7 @@ class GitHubSignIn(
             "expired_token" -> SignInStep.Expired
             "access_denied" -> SignInStep.Denied
             "device_flow_disabled" -> SignInStep.Failed("Signing in with a code is switched off for this GitHub App.")
-            else -> SignInStep.Failed(describeProblem(answer))
+            else -> SignInStep.Failed(describeProblem(answer), codeStillUsable = errorOf(answer) == null)
         }
     }
 
@@ -121,7 +122,7 @@ class GitHubSignIn(
     /** Renews [tokens] with their refresh token. No client secret is sent. */
     fun refresh(tokens: GitHubTokens): RefreshResult {
         val clientId = environment.signInClientId
-            ?: return RefreshResult.Failed("Signing in is not available for the ${environment.displayName} Rumble yet.")
+            ?: return RefreshResult.Failed(environment.signInNotAvailable())
         val refreshToken = tokens.refreshToken
             ?: return RefreshResult.Refused("This sign-in cannot be renewed. Sign in again.")
         val answer = try {

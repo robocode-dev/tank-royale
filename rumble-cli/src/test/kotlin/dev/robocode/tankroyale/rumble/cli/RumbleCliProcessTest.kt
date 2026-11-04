@@ -142,4 +142,34 @@ class RumbleCliProcessTest {
         assertEquals(extracted, EmbeddedWorker.extract(dir), "A second extraction reuses the file")
         assertFalse(Files.list(dir.resolve("worker")).use { s -> s.anyMatch { it.fileName.toString().endsWith(".part") } })
     }
+
+    // RCI-031
+
+    @Test
+    @Tag("RCI-031")
+    @Tag("Integration")
+    @Tag("Positive")
+    fun testRCI031_IntegrationPositive_aCommandThatNeedsASignInEndsWithExitThreeAndOneDocument(@TempDir dir: Path) {
+        val answer = runCli("register", "-e", "test", "--json", "--state-folder", dir.toString())
+
+        assertEquals(3, answer.exit, answer.out + answer.err)
+        assertEquals("no-sign-in", Json.parseToJsonElement(answer.out.trim()).jsonObject["outcome"]!!.jsonPrimitive.content)
+        assertEquals("", answer.err)
+    }
+
+    @Test
+    @Tag("RCI-031")
+    @Tag("Integration")
+    @Tag("Negative")
+    fun testRCI031_IntegrationNegative_noWarningFromJavaReachesStandardErrorInNormalUse() {
+        listOf(listOf("--help"), listOf("version"), listOf("environments", "--json")).forEach { command ->
+            val answer = runCli(*command.toTypedArray())
+            assertEquals(0, answer.exit, command.toString())
+            assertEquals("", answer.err, command.toString())
+        }
+        val bad = runCli("status", "-e", "nowhere")
+        assertEquals(2, bad.exit)
+        assertFalse(bad.err.contains("WARNING"), bad.err)
+        assertEquals(1, bad.err.trim().lines().size, bad.err)
+    }
 }

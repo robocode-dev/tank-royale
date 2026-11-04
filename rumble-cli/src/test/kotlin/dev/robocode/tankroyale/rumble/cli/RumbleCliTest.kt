@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.rumble.cli
 
 import dev.robocode.tankroyale.rumble.RegistrationRecord
-import dev.robocode.tankroyale.rumble.RegistrationStore
+import dev.robocode.tankroyale.rumble.LoadResult
 import dev.robocode.tankroyale.rumble.RumbleEnvironments
 import dev.robocode.tankroyale.rumble.SaveResult
 import dev.robocode.tankroyale.rumble.SignInIdentity
@@ -72,13 +72,13 @@ class RumbleCliTest {
         assertEquals(SaveResult.Saved, store.save(fakeToken, null))
     }
 
-    // RCI-001
+    // RCI-014
 
     @Test
-    @Tag("RCI-001")
+    @Tag("RCI-014")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCI001_UnitPositive_everyCommandAnswersInTextOrInOneJsonDocumentWithAVersion(@TempDir dir: Path) {
+    fun testRCI014_UnitPositive_everyCommandAnswersInTextOrInOneJsonDocumentWithAVersion(@TempDir dir: Path) {
         val state = dir.resolve("state")
         val config = oldClient(dir)
         val commands = listOf(
@@ -102,10 +102,10 @@ class RumbleCliTest {
     }
 
     @Test
-    @Tag("RCI-001")
+    @Tag("RCI-014")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCI001_UnitNegative_aFailureStillAnswersInOneDocumentAndWritesNothingElseToStandardOutput(@TempDir dir: Path) {
+    fun testRCI014_UnitNegative_aFailureStillAnswersInOneDocumentAndWritesNothingElseToStandardOutput(@TempDir dir: Path) {
         val result = run(dir, "import-legacy", dir.resolve("missing.json").toString(), "--json", "--state-folder", dir.resolve("state").toString())
 
         assertEquals(1, result.out.trim().lines().size)
@@ -113,13 +113,13 @@ class RumbleCliTest {
         assertTrue(result.json["message"]!!.jsonPrimitive.content.isNotBlank())
     }
 
-    // RCI-002
+    // RCI-015
 
     @Test
-    @Tag("RCI-002")
+    @Tag("RCI-015")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCI002_UnitPositive_success_failure_and_bad_input_have_their_own_exit_codes(@TempDir dir: Path) {
+    fun testRCI015_UnitPositive_success_failure_and_bad_input_have_their_own_exit_codes(@TempDir dir: Path) {
         val state = dir.resolve("state")
         assertEquals(0, run(dir, "version").exit)
         assertEquals(0, run(dir, "environments", "--state-folder", state.toString()).exit)
@@ -137,17 +137,19 @@ class RumbleCliTest {
     }
 
     @Test
-    @Tag("RCI-002")
+    @Tag("RCI-015")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCI002_UnitNegative_theCodeForNeedingASignInIsReservedAndNoCommandUsesIt(@TempDir dir: Path) {
+    fun testRCI015_UnitNegative_theCommandsThatOnlyReadNeverAnswerThatASignInIsNeededOrThatTheyAreNotFinished(@TempDir dir: Path) {
         assertEquals(3, ExitCodes.SIGN_IN_NEEDED)
+        assertEquals(4, ExitCodes.NOT_FINISHED)
         val codes = listOf(
             run(dir, "version"), run(dir, "environments", "--state-folder", dir.toString()), run(dir, "status", "--state-folder", dir.toString()),
             run(dir, "nonsense"), run(dir, "import-legacy", dir.resolve("none.json").toString(), "--state-folder", dir.toString()),
         ).map { it.exit }
 
         assertFalse(ExitCodes.SIGN_IN_NEEDED in codes, codes.toString())
+        assertFalse(ExitCodes.NOT_FINISHED in codes, codes.toString())
     }
 
     // RCI-004
@@ -157,8 +159,8 @@ class RumbleCliTest {
     @Tag("Unit")
     @Tag("Positive")
     fun testRCI004_UnitPositive_theStateFolderOptionOverridesTheDefaultAndTheDefaultIsUsedWithoutIt(@TempDir dir: Path) {
-        val chosenBase = dir.resolve("chosen").also { Files.createDirectories(it.resolve("environments/test")) }
-        val standardBase = dir.resolve("standard").also { Files.createDirectories(it.resolve("environments/public")) }
+        val chosenBase = dir.resolve("chosen").also { Files.writeString(Files.createDirectories(it.resolve("environments/test")).resolve("registration.json"), "{}") }
+        val standardBase = dir.resolve("standard").also { Files.writeString(Files.createDirectories(it.resolve("environments/public")).resolve("registration.json"), "{}") }
 
         val withOption = run(standardBase, "environments", "--json", "--state-folder", chosenBase.toString())
         val withoutOption = run(chosenBase, "environments", "--json")
@@ -217,7 +219,7 @@ class RumbleCliTest {
     @Tag("Unit")
     @Tag("Positive")
     fun testRCI006_UnitPositive_everyKnownEnvironmentIsListedWithItsRepositoriesAndWhetherStateExists(@TempDir dir: Path) {
-        Files.createDirectories(dir.resolve("environments/test"))
+        Files.writeString(Files.createDirectories(dir.resolve("environments/test")).resolve("registration.json"), "{}")
 
         val rows = run(dir, "environments", "--json", "--state-folder", dir.toString()).json["environments"]!!.jsonArray.map { it.jsonObject }
 
@@ -234,16 +236,17 @@ class RumbleCliTest {
         assertTrue(test["stateExists"]!!.jsonPrimitive.boolean)
     }
 
-    // RCI-007
+    // RCI-016
 
     @Test
-    @Tag("RCI-007")
+    @Tag("RCI-016")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCI007_UnitPositive_statusSaysWhatIsSavedAndNeverShowsTheToken(@TempDir dir: Path) {
+    fun testRCI016_UnitPositive_statusSaysWhatIsSavedAndNeverShowsTheToken(@TempDir dir: Path) {
         val env = RumbleEnvironments.TEST
-        assertTrue(RegistrationStore(env, dir).save(RegistrationRecord("alice", "alice-1a2b3c4d", "test", Instant.parse("2026-11-01T10:00:00Z"))))
         saveSignIn(dir, "test")
+        val store = SignInStore(env, dir)
+        assertTrue(store.registrationFor((store.load() as LoadResult.Found).signInId).save(RegistrationRecord("alice", "alice-1a2b3c4d", "test", Instant.parse("2026-11-01T10:00:00Z"))))
 
         val saved = run(dir, "status", "--environment", "test", "--json", "--state-folder", dir.toString())
         val none = run(dir, "status", "--environment", "public", "--json", "--state-folder", dir.toString())
@@ -262,10 +265,10 @@ class RumbleCliTest {
     }
 
     @Test
-    @Tag("RCI-007")
+    @Tag("RCI-016")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCI007_UnitNegative_aSignInThatCannotBeUsedIsSaidSoWithTheReasonAndAnUnknownEnvironmentIsRefused(@TempDir dir: Path) {
+    fun testRCI016_UnitNegative_aSignInThatCannotBeUsedIsSaidSoWithTheReasonAndAnUnknownEnvironmentIsRefused(@TempDir dir: Path) {
         saveSignIn(dir, "test", SignInIdentity("someone-else", "C:/another/home", "Other OS"))
 
         val answer = run(dir, "status", "--environment", "test", "--json", "--state-folder", dir.toString())
@@ -327,17 +330,18 @@ class RumbleCliTest {
         assertEquals("nothing", nothing.json["outcome"]!!.jsonPrimitive.content)
     }
 
-    // RCI-009
+    // RCI-017
 
     @Test
-    @Tag("RCI-009")
+    @Tag("RCI-017")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCI009_UnitPositive_noAnswerHoldsTheTokenTheHomeFolderTheUserNameOrAnAbsolutePathOfThisComputer(@TempDir dir: Path) {
+    fun testRCI017_UnitPositive_noAnswerHoldsTheTokenTheHomeFolderTheUserNameOrAnAbsolutePathOfThisComputer(@TempDir dir: Path) {
         val state = dir.resolve("state")
         val config = oldClient(dir)
-        RegistrationStore(RumbleEnvironments.PUBLIC, state).save(RegistrationRecord("alice", "alice-1a2b3c4d", "public", Instant.parse("2026-11-01T10:00:00Z")))
         saveSignIn(state, "public")
+        val store = SignInStore(RumbleEnvironments.PUBLIC, state)
+        store.registrationFor((store.load() as LoadResult.Found).signInId).save(RegistrationRecord("alice", "alice-1a2b3c4d", "public", Instant.parse("2026-11-01T10:00:00Z")))
         val user = System.getProperty("user.name").orEmpty()
         val home = System.getProperty("user.home").orEmpty()
 
@@ -357,16 +361,17 @@ class RumbleCliTest {
     }
 
     @Test
-    @Tag("RCI-009")
+    @Tag("RCI-017")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCI009_UnitNegative_theRedactionRemovesHomeUserAndAbsolutePathsFromAnyText() {
+    fun testRCI017_UnitNegative_theRedactionRemovesHomeUserAndAbsolutePathsFromAnyText() {
         val redaction = Redaction("C:\\Users\\alice", "alice")
 
-        val cleaned = redaction.clean("""in C:\Users\alice\work and C:/Users/alice/x, also D:\data\f.txt and /home/bob/y, by alice""")
+        val cleaned = redaction.outside("""in C:\Users\alice\work and C:/Users/alice/x, also D:\data\f.txt and /home/bob/y, by alice""")
 
         listOf("alice", "C:\\Users", "D:\\data", "/home/bob").forEach { assertFalse(cleaned.contains(it), cleaned) }
-        assertEquals("plain words stay", redaction.clean("plain words stay"))
+        assertEquals("plain words stay", redaction.outside("plain words stay"))
+        assertEquals("the words of alice stay", redaction.paths("the words of alice stay"))
     }
 
 }

@@ -2,10 +2,16 @@ package dev.robocode.tankroyale.rumble
 
 /** The result of renewing a saved sign-in. */
 sealed interface SavedRenewal {
-    data class Renewed(val tokens: GitHubTokens) : SavedRenewal
+    /**
+     * [kept] is false when the new sign-in could not be saved, so the next run must sign in again. [signInId] and
+     * [account] are those of the sign-in that was renewed.
+     */
+    data class Renewed(val tokens: GitHubTokens, val kept: Boolean = true, val signInId: String = "", val account: String? = null) : SavedRenewal
 
     /** There is no usable saved sign-in, or GitHub refused it; the person must sign in with a code. */
-    data class SignInNeeded(val message: String) : SavedRenewal
+    data class SignInNeeded(val message: String, val reason: Reason = Reason.MISSING) : SavedRenewal {
+        enum class Reason { MISSING, UNUSABLE, REFUSED }
+    }
 
     /** The renewal could not be tried or answered; trying again later may work. */
     data class Failed(val message: String) : SavedRenewal
@@ -20,31 +26,33 @@ sealed interface SavedRenewal {
 class SavedSignIn(
     private val store: SignInStore,
     private val signIn: GitHubSignIn,
-    /** When given, signing out removes the saved registration too. */
-    private val registration: RegistrationStore? = null,
 ) {
 
     /** Remembers a fresh sign-in so later runs can renew it. A sign-in without a refresh token is not saved. */
     fun remember(tokens: GitHubTokens): SaveResult = store.locked {
         val refresh = tokens.refreshToken
         if (refresh == null) SaveResult.NotSaved("GitHub gave no refresh token, so this sign-in cannot be saved.")
-        else store.save(refresh, tokens.refreshTokenExpiresAt)
+        else store.beginSignIn(refresh, tokens.refreshTokenExpiresAt)
     }
 
     /** Renews the saved sign-in and returns the new tokens. */
-    fun renew(): SavedRenewal = store.locked {
+    fun renew(): SavedRenewal {
+        // Nothing to renew needs no lock, and taking one would leave a lock file where nothing was saved.
+        if (store.knownMissing()) return SavedRenewal.SignInNeeded("There is no saved sign-in. Sign in with a code.")
+        return store.locked { renewLocked() }
+    }
+
+    private fun renewLocked(): SavedRenewal =
         when (val loaded = store.load()) {
             is LoadResult.Found -> renewWith(loaded)
             LoadResult.Missing -> SavedRenewal.SignInNeeded("There is no saved sign-in. Sign in with a code.")
             LoadResult.Disabled -> SavedRenewal.SignInNeeded("Saving the sign-in is switched off. Sign in with a code.")
-            is LoadResult.Unusable -> SavedRenewal.SignInNeeded(loaded.reason)
+            is LoadResult.Unusable -> SavedRenewal.SignInNeeded(loaded.reason, SavedRenewal.SignInNeeded.Reason.UNUSABLE)
         }
-    }
 
-    /** Signs out: removes the saved sign-in and, when one is kept, the saved registration. */
+    /** Signs out: removes the saved sign-in and all that belongs to it. */
     fun forget() = store.locked {
         store.forget()
-        registration?.forget()
     }
 
     private fun renewWith(saved: LoadResult.Found): SavedRenewal =
@@ -54,11 +62,11 @@ class SavedSignIn(
                 val kept = newRefresh != null && store.save(newRefresh, result.tokens.refreshTokenExpiresAt) == SaveResult.Saved
                 // The old refresh token no longer works at GitHub, so an old file must not be left behind.
                 if (!kept) store.forget()
-                SavedRenewal.Renewed(result.tokens)
+                SavedRenewal.Renewed(result.tokens, kept, saved.signInId, saved.account)
             }
             is RefreshResult.Refused -> {
                 store.forget()
-                SavedRenewal.SignInNeeded(result.message)
+                SavedRenewal.SignInNeeded(result.message, SavedRenewal.SignInNeeded.Reason.REFUSED)
             }
             is RefreshResult.Failed -> SavedRenewal.Failed(result.message)
         }

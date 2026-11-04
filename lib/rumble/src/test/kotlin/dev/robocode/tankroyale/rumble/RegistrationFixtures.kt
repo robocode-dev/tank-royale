@@ -5,6 +5,20 @@ import java.util.Base64
 
 const val SECRET_TOKEN = "ghu_REGISTRATIONSECRET789"
 
+/** Remembers registrations for the length of a test. */
+class InMemoryRegistrations : RegistrationMemory {
+    var refuseToSave = false
+    private val records = mutableListOf<RegistrationRecord>()
+
+    override fun load(account: String) = records.lastOrNull { it.account.equals(account, ignoreCase = true) }
+
+    override fun save(record: RegistrationRecord): Boolean {
+        if (refuseToSave) return false
+        records += record
+        return true
+    }
+}
+
 /** Plays GitHub and the Rumble result repository: the account, its registration file, open issues and the workflow. */
 class FakeRumbleGitHub(
     private val login: String = "alice",
@@ -16,7 +30,10 @@ class FakeRumbleGitHub(
     var registeredClientId: String? = null
     var offline = false
     var openIssues = mutableListOf<String>() // raw JSON objects
+    var closedIssues = mutableListOf<String>() // raw JSON objects
     var comments: String = "[]"
+    var commentsStatus = 200
+    var issuesBody: String? = null
     var createStatus = 201
     var createdNumber = 7
     var userStatus = 200
@@ -36,8 +53,10 @@ class FakeRumbleGitHub(
         return when {
             path == "/user" -> ApiResponse(userStatus, """{"login":"$login"}""")
             path == "/repos/$owner/$dataRepository/contents/clients/$login.json" -> contents()
+            path.startsWith("/repos/$owner/$dataRepository/issues?") && issuesBody != null -> ApiResponse(200, issuesBody!!)
+            path.startsWith("/repos/$owner/$dataRepository/issues?") && path.contains("state=closed") -> ApiResponse(200, "[" + closedIssues.joinToString(",") + "]")
             path.startsWith("/repos/$owner/$dataRepository/issues?") -> ApiResponse(200, "[" + openIssues.joinToString(",") + "]")
-            path.startsWith("/repos/$owner/$dataRepository/issues/") && path.contains("/comments") -> ApiResponse(200, comments)
+            path.startsWith("/repos/$owner/$dataRepository/issues/") && path.contains("/comments") -> ApiResponse(commentsStatus, comments)
             else -> ApiResponse(404, "{}")
         }
     }

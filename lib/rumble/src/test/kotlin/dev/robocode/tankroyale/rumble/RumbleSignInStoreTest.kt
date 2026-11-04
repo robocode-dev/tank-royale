@@ -35,13 +35,13 @@ class RumbleSignInStoreTest {
 
     private fun signInFile(base: Path, env: RumbleEnvironment = test): Path = env.stateRoot(base).resolve("signin.bin")
 
-    // RCL-031
+    // RCL-041
 
     @Test
-    @Tag("RCL-031")
+    @Tag("RCL-041")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCL031_UnitPositive_aNewStoreLoadsWhatWasSavedAndTheFileHoldsNoReadableToken(@TempDir base: Path) {
+    fun testRCL041_UnitPositive_aNewStoreLoadsWhatWasSavedAndTheFileHoldsNoReadableToken(@TempDir base: Path) {
         assertEquals(SaveResult.Saved, store(base).save(refreshToken, expires))
 
         val loaded = assertInstanceOf(LoadResult.Found::class.java, store(base).load())
@@ -56,10 +56,10 @@ class RumbleSignInStoreTest {
     }
 
     @Test
-    @Tag("RCL-031")
+    @Tag("RCL-041")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCL031_UnitNegative_nothingIsWrittenOrLoadedWhenSavingIsSwitchedOff(@TempDir base: Path) {
+    fun testRCL041_UnitNegative_nothingIsWrittenOrLoadedWhenSavingIsSwitchedOff(@TempDir base: Path) {
         val off = store(base, enabled = false)
 
         assertTrue(off.save(refreshToken, expires) is SaveResult.NotSaved)
