@@ -70,6 +70,47 @@ class RumbleSignInFlowTest {
     }
 
     @Test
+    @Tag("RCI-019")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI019_UnitNegative_aSignInSavedWhileLoginStartedGivesNoCode(@TempDir dir: Path) {
+        val auth = RecordingAuth()
+        lateinit var store: SignInStore
+        var signedInMeanwhile = false
+        val protection = object : FileProtection {
+            override fun createOwnerOnly(file: Path) {
+                java.nio.file.Files.createFile(file)
+                // Checking the folder is the last step before the lock: here another run finishes signing in.
+                if (!signedInMeanwhile && file.fileName.toString().startsWith("signin.probe")) {
+                    signedInMeanwhile = true
+                    assertEquals(SaveResult.Saved, store.beginSignIn("ghr_OTHER", null))
+                }
+            }
+
+            override fun isOwnerOnly(file: Path) = true
+        }
+        store = SignInStore(RumbleEnvironments.TEST, dir, protection = protection)
+
+        val answer = flow(dir, auth, store).start()
+
+        assertInstanceOf(SignInStart.AlreadySignedIn::class.java, answer)
+        assertTrue(auth.urls.isEmpty())
+    }
+
+    @Test
+    @Tag("RCI-026")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI026_UnitNegative_anUnreadableListOfOpenIssuesOpensNoNewIssue(@TempDir dir: Path) {
+        val env = RumbleEnvironments.TEST
+        val tokens = GitHubTokens(SECRET_TOKEN, null, null, null)
+        val github = FakeRumbleGitHub().apply { issuesBody = "<html>an error page</html>" }
+
+        assertInstanceOf(RegistrationResult.Failed::class.java, Registration(env, github, InMemoryRegistrations(), sleep = {}).register(tokens))
+        assertTrue(github.postedBodies.isEmpty())
+    }
+
+    @Test
     @Tag("RCI-026")
     @Tag("Unit")
     @Tag("Negative")

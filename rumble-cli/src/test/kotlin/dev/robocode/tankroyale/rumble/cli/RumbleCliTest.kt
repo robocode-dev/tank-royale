@@ -367,10 +367,11 @@ class RumbleCliTest {
     fun testRCI017_UnitNegative_theRedactionRemovesHomeUserAndAbsolutePathsFromAnyText() {
         val redaction = Redaction("C:\\Users\\alice", "alice")
 
-        val cleaned = redaction.clean("""in C:\Users\alice\work and C:/Users/alice/x, also D:\data\f.txt and /home/bob/y, by alice""")
+        val cleaned = redaction.outside("""in C:\Users\alice\work and C:/Users/alice/x, also D:\data\f.txt and /home/bob/y, by alice""")
 
         listOf("alice", "C:\\Users", "D:\\data", "/home/bob").forEach { assertFalse(cleaned.contains(it), cleaned) }
-        assertEquals("plain words stay", redaction.clean("plain words stay"))
+        assertEquals("plain words stay", redaction.outside("plain words stay"))
+        assertEquals("the words of alice stay", redaction.paths("the words of alice stay"))
     }
 
 }

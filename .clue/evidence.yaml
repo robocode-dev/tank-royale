@@ -342,11 +342,11 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
-          "sha256": "400799a9ddd7a795e76b613c5d8aea6afe34a57c029c861746a9d6c4222450cd"
+          "sha256": "d4fb0e9562f2a04defa818ab9f40c092898aa9a9d03cbc717ad780bccb38f2ab"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
-          "sha256": "3748d78387ad924c90b1cff7de0cd75873cc68fa680a58a762a9ba7c7880d6a5"
+          "sha256": "5c10a8e5b41a8f3ea67778174d01909491bd971c47864138b169898df11b2710"
         },
         {
           "path": "rumble/build.gradle.kts",
@@ -707,6 +707,13 @@
           "id": "RCI-026",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
           "subject": "RumbleCliSignInTest.testRCI026_UnitPositive_aRefusalOnTheNewestClosedIssueOpensNoNewIssueAndRetryOpensOne",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-026",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
+          "subject": "RumbleCliSignInTest.testRCI026_UnitPositive_retryOpensANewIssueBesideOneTheWorkflowGaveUpOn",
           "type": "Unit",
           "direction": "positive"
         },
@@ -1252,7 +1259,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
-          "sha256": "952a51252e6d017535f5b4a9074fa5688d1b5a91331ead171bd5a30377466ba5"
+          "sha256": "20e86e0ec632c435ad6a764b77f14dc9bdf12669d50c014841eb17ce39a8de13"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInLiveTest.kt",
@@ -1844,9 +1851,23 @@
         {
           "id": "RCI-019",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
+          "subject": "RumbleSignInFlowTest.testRCI019_UnitNegative_aSignInSavedWhileLoginStartedGivesNoCode",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-019",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
           "subject": "RumbleSignInFlowTest.testRCI019_UnitPositive_aComputerThatKeepsFilesPrivateGetsACodeThatNeverShowsTheDeviceCode",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCI-026",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
+          "subject": "RumbleSignInFlowTest.testRCI026_UnitNegative_anUnreadableListOfOpenIssuesOpensNoNewIssue",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCI-026",

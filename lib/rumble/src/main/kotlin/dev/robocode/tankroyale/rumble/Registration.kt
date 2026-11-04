@@ -74,8 +74,8 @@ class Registration(
 
     /**
      * Registers the account of [tokens]. The workflow closes every registration issue, refused or not, so a refusal on
-     * the account's newest closed issue is answered without opening another. [retry] opens one new issue anyway, for a
-     * person who has fixed the reason.
+     * the account's newest closed issue is answered without opening another. [retry] opens one new issue anyway, also
+     * beside an open one the workflow may have given up on, for a person who has fixed the reason.
      */
     fun register(tokens: GitHubTokens, retry: Boolean = false): RegistrationResult =
         try {
@@ -85,7 +85,7 @@ class Registration(
             store.load(account)?.let { return RegistrationResult.Registered(it.account, it.clientId, alreadyRegistered = true) }
             readRegistrationFile(account, token)?.let { return known(account, it, alreadyRegistered = true) }
 
-            val open = openRegistrationIssue(account, token)
+            val open = if (retry) null else openRegistrationIssue(account, token)
             if (open == null && !retry) {
                 earlierRefusal(account, token)?.let { return RegistrationResult.Refused(it, earlier = true, account = account) }
             }
@@ -135,9 +135,9 @@ class Registration(
         val answer = api.get("$repository/issues?creator=$account&state=open&per_page=30", token)
         refuseBadToken(answer)
         if (answer.status != 200) throw Stop(RegistrationResult.Failed(unexpected(answer)))
-        val issues = (parse(answer.body) as? JsonArray).orEmpty().mapNotNull { it as? JsonObject }
+        val issues = arrayIn(answer).mapNotNull { it as? JsonObject }
         val earlier = issues.firstOrNull { it.string("title").orEmpty().startsWith(TITLE_PREFIX) && it["pull_request"] == null }
-        return earlier?.let { issue(it) }
+        return earlier?.let { issue(it) ?: throw Stop(RegistrationResult.Failed(unexpected(answer))) }
     }
 
     /**
@@ -150,7 +150,7 @@ class Registration(
         if (answer.status != 200) throw Stop(RegistrationResult.Failed(unexpected(answer)))
         val issues = arrayIn(answer).mapNotNull { it as? JsonObject }
         val newest = issues.firstOrNull { it.string("title").orEmpty().startsWith(TITLE_PREFIX) && it["pull_request"] == null }
-        return newest?.let { issue(it) }?.let { found ->
+        return newest?.let { issue(it) ?: throw Stop(RegistrationResult.Failed(unexpected(answer))) }?.let { found ->
             // Not knowing how it ended must not open a new public issue, as it would if this counted as no refusal.
             val comments = commentsOf(found.number, token)
             refuseBadToken(comments)

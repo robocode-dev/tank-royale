@@ -365,11 +365,10 @@ class RumbleCliSignInTest {
         }
 
         val redaction = Redaction("C:\\Users\\alice", "alice")
-        val cleaned = redaction.clean("""alice at https://github.com/x and D:\alice\data and another alice""", setOf("https://github.com/x"))
-        assertEquals("<user> at https://github.com/x and <path> and another <user>", cleaned)
-        assertEquals("<user> and test", Redaction("C:\\nowhere", "tester").clean("tester and test", setOf("test")), "a kept word inside the user name")
-        assertEquals("a7b", Redaction("C:\\nowhere", "anna").clean("a\uE0007\uE001b", setOf("x")), "text from outside is no stand-in")
-        assertEquals("""<path>""", redaction.clean("""C:/alice/x""", setOf("alice")))
+        assertEquals("<user> at https://github.com/x and <path> and another <user>", redaction.outside("""alice at https://github.com/x and D:\alice\data and another alice"""))
+        assertEquals("<path>", redaction.outside("C:/alice/x", "alice"), "the public name keeps no path")
+        assertEquals("<user> for rumble-test", Redaction("C:\\nowhere", "test-user").outside("test-user for rumble-test"))
+        assertEquals("rumble-test is here", Redaction("C:\\nowhere", "test").outside("rumble-test is here"), "part of a longer name")
     }
 
     // RCI-019
@@ -1027,6 +1026,9 @@ class RumbleCliSignInTest {
             assertEquals("status", json.json["command"]!!.jsonPrimitive.content)
             assertTrue(world.run("status", "-e", "test").out.contains("Next: rumble login -e test"), user)
             assertEquals("started", world.test("login").outcome)
+            val environments = world.run("environments", "--json").json["environments"]!!.jsonArray.map { it.jsonObject["name"]!!.jsonPrimitive.content }
+            assertEquals(listOf("public", "test"), environments, user)
+            assertEquals("rumble", world.run("version", "--json").json["program"]!!.jsonPrimitive.content, user)
         }
     }
 
@@ -1051,6 +1053,9 @@ class RumbleCliSignInTest {
             assertEquals("", answer.err)
         }
         assertFalse(world.run("nonsense", "--json").json["message"]!!.jsonPrimitive.content.contains("--json"), "the message is about the command")
+        val badPath = world.run("import-legacy", "bad\u0000path", "--json")
+        assertEquals(ExitCodes.REFUSED, badPath.exit)
+        assertEquals("bad-input", badPath.outcome)
     }
 
     @Test
@@ -1143,6 +1148,32 @@ class RumbleCliSignInTest {
         val refused = world.test("register")
 
         assertEquals("account alice is banned", refused.json["reason"]!!.jsonPrimitive.content)
+        assertTrue(refused.json["message"]!!.jsonPrimitive.content.contains("--retry"))
+
+        val other = World(dir.resolve("other"), Redaction("C:\\nowhere", "anna"))
+        other.signIn()
+        other.api.openIssues = closedIssue(6)
+        other.api.comments = comment("github-actions[bot]", "Registration refused: anna is not alice")
+        val fromOutside = other.test("register")
+        assertEquals("<user> is not alice", fromOutside.json["reason"]!!.jsonPrimitive.content, "the user name is removed from text from outside")
+        assertTrue(fromOutside.json["message"]!!.jsonPrimitive.content.contains("--retry"), "a refusal in this very run also says what to do")
+    }
+
+    @Test
+    @Tag("RCI-026")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCI026_UnitPositive_retryOpensANewIssueBesideOneTheWorkflowGaveUpOn(@TempDir dir: Path) {
+        val world = World(dir)
+        world.signIn()
+        world.api.openIssues = closedIssue(6)
+
+        assertEquals("registration-pending", world.test("register").outcome)
+        assertTrue(world.api.created.isEmpty())
+
+        world.api.registerOnCreate = true
+        assertEquals("registered", world.test("register", "--retry").outcome)
+        assertEquals(1, world.api.created.size)
     }
 
     @Test
@@ -1164,7 +1195,6 @@ class RumbleCliSignInTest {
         val signedIn = world.test("login", "--finish")
         assertEquals("1", signedIn.json["account"]!!.jsonPrimitive.content)
         assertEquals("rumble register -e test", signedIn.next)
-        assertFalse(signedIn.out.contains("\uE000"), signedIn.out)
     }
 
     @Test

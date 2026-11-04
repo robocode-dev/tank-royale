@@ -28,31 +28,7 @@ object ExitCodes {
 }
 
 /** What a command answers: its exit code, the same facts as JSON and as text for a person. */
-class Reply(
-    val exitCode: Int,
-    val json: JsonObject,
-    val text: String,
-    /** Public values the cleaning must leave whole: the signed-in account name and web addresses. */
-    val keep: Set<String> = emptySet(),
-)
-
-/**
- * The values in [json] that must come out exactly as they are: the facts a person types or a program reads, like a
- * sign-in code, a client ID or a command. Only free text, which may hold anything, is left for the cleaning.
- */
-fun exactValuesIn(json: JsonElement): Set<String> = buildSet {
-    fun visit(element: JsonElement) {
-        when (element) {
-            is JsonObject -> element.forEach { (key, value) -> if (key !in FREE_TEXT) visit(value) }
-            is JsonArray -> element.forEach { visit(it) }
-            is JsonNull -> Unit
-            is JsonPrimitive -> if (element.isString) add(element.content)
-        }
-    }
-    visit(json)
-}
-
-private val FREE_TEXT = setOf("message", "reason")
+class Reply(val exitCode: Int, val json: JsonObject, val text: String)
 
 /** Where the commands reach GitHub and tell the time. Tests give fakes; nothing is built until a command needs it. */
 class Services(
@@ -82,30 +58,30 @@ class Services(
 }
 
 /**
- * Removes what must not be in an answer that may be pasted into an issue or a chat: the home folder, the user name,
- * and any absolute path of this computer.
+ * Removes what must not be in an answer that may be pasted into an issue or a chat. Every answer loses the home folder
+ * and any absolute path of this computer, which never touches the program's own words. The user name is removed only
+ * from text that comes from outside the program, because it can be any word: a user called `test` must not change the
+ * name of an environment, nor one called `anna` the sign-in code `ANNA-1234`.
  */
 class Redaction(private val home: String, private val user: String) {
-    fun clean(text: String, keep: Set<String> = emptySet()): String {
+    /** [text] without the home folder and any absolute path. */
+    fun paths(text: String): String {
         var result = text
         for (form in setOf(home, home.replace("\\", "/"), home.replace("/", "\\"), home.replace("\\", "\\\\")).filter { it.length > 3 }.sortedByDescending { it.length }) {
             result = result.replace(form, "~")
         }
         result = WINDOWS_PATH.replace(result, "<path>")
-        result = UNIX_HOME_PATH.replace(result, "<path>")
-        if (user.length < 3) return result
-        // The values to keep are set aside only here, after the paths, so a path holding one of them is still removed.
-        // One pass with one expression, so a kept value can never match inside what stands in for another.
-        // Whole words only, so a kept word inside the user name does not save the user name from being removed. The two
-        // marker characters are removed first, so text from outside can never pass for what stands in for a kept value.
-        val kept = keep.filter { it.isNotEmpty() }.sortedByDescending { it.length }
-        result = result.replace("\uE000", "").replace("\uE001", "")
-        if (kept.isNotEmpty()) {
-            val anyKept = Regex("(?<![\\p{L}\\p{N}_])(?:" + kept.joinToString("|") { Regex.escape(it) } + ")(?![\\p{L}\\p{N}_])")
-            result = anyKept.replace(result) { "\uE000${kept.indexOf(it.value)}\uE001" }
-        }
-        result = Regex("(?i)\\b" + Regex.escape(user) + "\\b").replace(result, "<user>")
-        return Regex("\uE000(\\d+)\uE001").replace(result) { kept[it.groupValues[1].toInt()] }
+        return UNIX_HOME_PATH.replace(result, "<path>")
+    }
+
+    /**
+     * Text from outside the program, without paths and the user name. When the user name is also [publicName], the
+     * participant's public GitHub account name, it stays: it is no secret, and the text would otherwise be wrong.
+     */
+    fun outside(text: String, publicName: String? = null): String {
+        val result = paths(text)
+        if (user.length < 3 || user.equals(publicName, ignoreCase = true)) return result
+        return Regex("(?i)(?<![\\p{L}\\p{N}_-])" + Regex.escape(user) + "(?![\\p{L}\\p{N}_-])").replace(result, "<user>")
     }
 
     companion object {
@@ -126,45 +102,39 @@ class Io(
 ) {
     /** Writes [reply] as text or as one JSON document, cleaned, and ends the command with its exit code. */
     fun answer(reply: Reply, asJson: Boolean) {
-        out.println(if (asJson) encoded(reply.json, reply.keep) else redaction.clean(reply.text, reply.keep))
+        out.println(if (asJson) encoded(reply.json) else redaction.paths(reply.text))
         out.flush()
         if (reply.exitCode != ExitCodes.DONE) throw ProgramResult(reply.exitCode)
     }
 
     /** Writes [reply] as text, cleaned, and carries on. Only for a command in text form that has more to say. */
-    fun say(reply: Reply) {
-        out.println(redaction.clean(reply.text, reply.keep))
+    fun say(reply: Reply) = say(reply.text)
+
+    /** Writes [text], cleaned, and carries on. Only for a command in text form that has more to say. */
+    fun say(text: String) {
+        out.println(redaction.paths(text))
         out.flush()
     }
 
     /** Writes an answer no command gave, such as to bad input, as one cleaned JSON document. */
     fun answerProblem(json: JsonObject) {
-        out.println(encoded(json, emptySet()))
+        out.println(encoded(json))
         out.flush()
     }
+
+    /** [text] without paths. */
+    fun cleaned(text: String): String = redaction.paths(text)
+
+    /** Text from outside the program, cleaned for use in an answer. See [Redaction.outside]. */
+    fun outside(text: String, publicName: String? = null): String = redaction.outside(text, publicName)
 
     /** One JSON document with every text in it cleaned first, so the cleaning can never damage the document itself. */
-    private fun encoded(json: JsonObject, keep: Set<String>): String =
-        Json.encodeToString(JsonElement.serializer(), cleanedValues(json, keep))
+    private fun encoded(json: JsonObject): String = Json.encodeToString(JsonElement.serializer(), cleanedValues(json))
 
-    private fun cleanedValues(element: JsonElement, keep: Set<String>): JsonElement = when (element) {
-        // The program's own words are what a program reads and runs, so a user name like one of them cannot change them.
-        is JsonObject -> JsonObject(element.mapValues { (key, value) -> if (key in PROGRAM_WORDS) value else cleanedValues(value, keep) })
-        is JsonArray -> JsonArray(element.map { cleanedValues(it, keep) })
+    private fun cleanedValues(element: JsonElement): JsonElement = when (element) {
+        is JsonObject -> JsonObject(element.mapValues { cleanedValues(it.value) })
+        is JsonArray -> JsonArray(element.map { cleanedValues(it) })
         is JsonNull -> element
-        is JsonPrimitive -> if (element.isString) JsonPrimitive(redaction.clean(element.content, keep)) else element
-    }
-
-    /** [text] with what must not be shown removed. */
-    fun cleaned(text: String): String = redaction.clean(text)
-
-    /** Writes [text], cleaned, and carries on. Only for a command in text form that has more to say. */
-    fun say(text: String) {
-        out.println(redaction.clean(text))
-        out.flush()
-    }
-
-    private companion object {
-        val PROGRAM_WORDS = setOf("command", "environment", "outcome")
+        is JsonPrimitive -> if (element.isString) JsonPrimitive(redaction.paths(element.content)) else element
     }
 }

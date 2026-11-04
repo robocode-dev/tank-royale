@@ -7,6 +7,7 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
+import java.nio.file.AccessDeniedException
 import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -375,11 +376,24 @@ class SignInStore(
         }
     }
 
+    /**
+     * Moves the new file into place. On Windows a move can be refused for a moment while another program, such as a virus
+     * scanner, has the old file open, and failing here can lose a sign-in GitHub has already replaced, so it is tried again.
+     */
     private fun moveIntoPlace() {
-        try {
-            Files.move(temp, file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-        } catch (e: AtomicMoveNotSupportedException) {
-            Files.move(temp, file, StandardCopyOption.REPLACE_EXISTING)
+        var triesLeft = MOVE_TRIES
+        while (true) {
+            try {
+                try {
+                    Files.move(temp, file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+                } catch (e: AtomicMoveNotSupportedException) {
+                    Files.move(temp, file, StandardCopyOption.REPLACE_EXISTING)
+                }
+                return
+            } catch (e: AccessDeniedException) {
+                if (--triesLeft == 0) throw e
+                Thread.sleep(MOVE_PAUSE_MILLIS)
+            }
         }
     }
 
@@ -412,6 +426,8 @@ class SignInStore(
 
     companion object {
         private const val FILE_NAME = "signin.bin"
+        private const val MOVE_TRIES = 5
+        private const val MOVE_PAUSE_MILLIS = 100L
         private const val LOCK_FILE_NAME = "signin.lock"
         private const val PROBE_PREFIX = "signin.probe."
 

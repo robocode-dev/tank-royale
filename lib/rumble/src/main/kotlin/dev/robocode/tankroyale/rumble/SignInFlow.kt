@@ -90,6 +90,8 @@ class SignInFlow(
     }
 
     private fun startLocked(): SignInStart {
+        // Another run may have finished signing in since this one looked, and a second code could replace that sign-in.
+        (store.load() as? LoadResult.Found)?.let { return SignInStart.AlreadySignedIn(it.account) }
         val now = clock.instant()
         store.loadWaiting()?.let { waiting ->
             // A code about to run out is no use to a person who still has to open the page.

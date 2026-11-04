@@ -43,7 +43,6 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
         outcome: String,
         message: String,
         next: String? = null,
-        keep: Set<String> = emptySet(),
         extra: JsonObjectBuilder.() -> Unit = {},
     ): Reply {
         val json = head(commandName) {
@@ -58,7 +57,7 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
             append(message)
             next?.let { appendLine(); append(nextLine(it)) }
         }
-        return Reply(code, json, text, keep + exactValuesIn(json) + env.displayName)
+        return Reply(code, json, text)
     }
 }
 
@@ -224,14 +223,19 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
                     put("signInKept", signInKept)
                 }
             }
-            is RegistrationResult.Refused -> reply(
-                env, ExitCodes.REFUSED, "refused",
-                "The Rumble refused the registration: ${result.reason}" + (if (result.earlier) " No new issue was opened. When you have fixed the reason, run register again with --retry." else "") + lost,
-                next = afterwards, keep = setOfNotNull(result.account),
-            ) { put("reason", result.reason); put("earlier", result.earlier) }
+            is RegistrationResult.Refused -> {
+                val reason = io.outside(result.reason, result.account)
+                reply(
+                    env, ExitCodes.REFUSED, "refused",
+                    "The Rumble refused the registration: $reason" + (if (result.earlier) " No new issue was opened." else "") +
+                        " When you have fixed the reason, run register again with --retry." + lost,
+                    next = afterwards,
+                ) { put("reason", reason); put("earlier", result.earlier) }
+            }
             is RegistrationResult.NotFinished -> reply(
                 env, ExitCodes.NOT_FINISHED, "registration-pending",
-                "The registration is not finished yet." + (result.issueUrl?.let { " You can follow it at $it." } ?: "") + lost,
+                "The registration is not finished yet." + (result.issueUrl?.let { " You can follow it at $it." } ?: "") +
+                    " If it never finishes, run register with --retry to open a new issue." + lost,
                 next = afterwards ?: "register",
             ) { result.issueUrl?.let { put("issueUrl", it) } }
             is RegistrationResult.SignInNeeded -> {

@@ -143,11 +143,14 @@ object RumbleCli {
         protected val json by option("--json", help = "Answer with one JSON document instead of text.").flag()
         protected val stateFolder by option("--state-folder", help = "Where the Rumble state lives. Defaults to the Tank Royale user folder.")
 
-        protected fun base(): Path =
+        protected fun base(): Path = stateFolder?.let { pathOf(it, "The state folder").toAbsolutePath().normalize() } ?: io.defaultStateFolder()
+
+        /** [text] as a path, or bad input naming [what] when it cannot be one on this computer. */
+        protected fun pathOf(text: String, what: String): Path =
             try {
-                stateFolder?.let { Path.of(it).toAbsolutePath().normalize() } ?: io.defaultStateFolder()
+                Path.of(text)
             } catch (e: InvalidPathException) {
-                throw BadInput("The state folder is not a valid path on this computer.")
+                throw BadInput("$what is not a valid path on this computer.")
             }
 
         protected fun answer(reply: Reply) = io.answer(reply, json)
@@ -301,7 +304,7 @@ object RumbleCli {
                     else -> facts.next?.let { append(nextLine(it)) }
                 }
             }.trimEnd()
-            answer(Reply(ExitCodes.DONE, json, text, exactValuesIn(json) + env.displayName))
+            answer(Reply(ExitCodes.DONE, json, text))
         }
     }
 
@@ -316,8 +319,8 @@ object RumbleCli {
         override fun run() {
             val base = base()
             val importer = LegacyClientImport(base, programVersion = programVersion())
-            val configPath = Path.of(config)
-            val work = workFolder?.let { Path.of(it) }
+            val configPath = pathOf(config, "The configuration file")
+            val work = workFolder?.let { pathOf(it, "The work folder") }
             fun relative(path: Path): String = try { base.relativize(path.toAbsolutePath().normalize()).toString().replace("\\", "/") } catch (e: IllegalArgumentException) { "" }
             val mode = if (copy) "copy" else "preview"
 
@@ -331,12 +334,12 @@ object RumbleCli {
                             head("import-legacy") {
                                 put("mode", mode); put("outcome", "plan"); put("environment", plan.environment.name)
                                 put("target", relative(plan.target))
-                                put("files", buildJsonArray { plan.files.forEach { f -> add(buildJsonObject { put("path", f.path); put("size", f.size) }) } })
-                                put("notCopied", buildJsonArray { plan.notCopied.forEach { n -> add(buildJsonObject { put("path", n.path); put("reason", n.reason) }) } })
+                                put("files", buildJsonArray { plan.files.forEach { f -> add(buildJsonObject { put("path", io.outside(f.path)); put("size", f.size) }) } })
+                                put("notCopied", buildJsonArray { plan.notCopied.forEach { n -> add(buildJsonObject { put("path", io.outside(n.path)); put("reason", io.outside(n.reason)) }) } })
                             },
                             buildString {
                                 appendLine("Would copy ${plan.files.size} files ($total bytes) into ${relative(plan.target)} for the ${plan.environment.displayName} Rumble. Nothing was written. Add --copy to copy.")
-                                plan.notCopied.forEach { appendLine("Not copied: ${it.path}. ${it.reason}") }
+                                plan.notCopied.forEach { appendLine(io.outside("Not copied: ${it.path}. ${it.reason}")) }
                             }.trimEnd(),
                         )
                     }
@@ -359,9 +362,9 @@ object RumbleCli {
                         ExitCodes.FAILED,
                         head("import-legacy") {
                             put("mode", mode); put("outcome", "incomplete"); put("copied", result.copied)
-                            put("changedDuringImport", JsonArray(result.changedDuringImport.map { JsonPrimitive(it) }))
+                            put("changedDuringImport", JsonArray(result.changedDuringImport.map { JsonPrimitive(io.outside(it)) }))
                         },
-                        "Copied ${result.copied} files, but ${result.changedDuringImport.size} changed while they were read: ${result.changedDuringImport.joinToString()}. Run the same command again.",
+                        "Copied ${result.copied} files, but ${result.changedDuringImport.size} changed while they were read: ${io.outside(result.changedDuringImport.joinToString())}. Run the same command again.",
                     )
                     is LegacyImportResult.Failed -> simple("failed", ExitCodes.FAILED, result.message, mode)
                 }
@@ -369,7 +372,9 @@ object RumbleCli {
             answer(reply)
         }
 
-        private fun simple(outcome: String, code: Int, message: String, mode: String) =
-            Reply(code, head("import-legacy") { put("mode", mode); put("outcome", outcome); put("message", message) }, message)
+        private fun simple(outcome: String, code: Int, message: String, mode: String): Reply {
+            val text = io.outside(message)
+            return Reply(code, head("import-legacy") { put("mode", mode); put("outcome", outcome); put("message", text) }, text)
+        }
     }
 }

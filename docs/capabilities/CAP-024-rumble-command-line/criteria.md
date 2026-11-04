@@ -148,7 +148,8 @@ Feature: rumble-command-line — Rumble command line
     Given a saved sign-in with a fake token, a waiting code, an old client folder, and a GitHub account named like the operating system user
     When every command is run in both forms
     Then no answer contains a token, a device code, the home folder or an absolute path of this computer, and paths are shown relative to the folder they belong to
-    And the address to open and the address of a registration issue are whole, and the account name is shown; the operating system user name appears nowhere else, even when a word of the answer is part of it
+    And the address to open and the address of a registration issue are whole, and the account name is shown
+    And the operating system user name is removed from text that comes from outside the program, and the program's own words and facts are never changed because a user is named like one of them
 
   @RCI-018
   Scenario: The documentation describes the programs, the contract, the account decision and how the program reaches people
@@ -165,7 +166,7 @@ Feature: rumble-command-line — Rumble command line
     Test-type: Unit
     Given an environment and a state folder
     When login is run
-    Then it first refuses an environment without a sign-in App and a folder that cannot be kept private, before asking GitHub for a code
+    Then it first refuses an environment without a sign-in App and a folder that cannot be kept private, before asking GitHub for a code, and asks for none if a sign-in was saved while it started
     And otherwise it answers at once with the short code, the address and when the code runs out, and saves the waiting code protected so the secret device code is never shown
     And a second login while the code is valid gives the same code, a saved sign-in that still renews is answered as already signed in, and one that GitHub refuses is removed and a new code is given
 
@@ -226,9 +227,10 @@ Feature: rumble-command-line — Rumble command line
     Test-type: Unit
     Given an account's registration issues in the public result repository
     When register is run
-    Then a refusal on the account's newest closed registration issue is answered as refused without opening an issue, and the retry option opens one new issue
+    Then a refusal on the account's newest closed registration issue is answered as refused without opening an issue, and the retry option opens one new issue, also beside an open issue the workflow may have given up on
     And a comment from anyone but the workflow is ignored, whatever it says, both while waiting and on closed issues
-    And when it cannot be read how the newest closed issue ended, the run fails and no new issue is opened
+    And when it cannot be read which issues are open or how the newest closed issue ended, the run fails and no new issue is opened
+    And every refusal says that the retry option exists
 
   @RCI-027
   Scenario: The next step can be run as it stands
@@ -241,7 +243,7 @@ Feature: rumble-command-line — Rumble command line
   @RCI-028
   Scenario: Bad input answers in the form asked for
     Test-type: Unit
-    Given an unknown command, option or environment
+    Given an unknown command, option or environment, or a path that cannot be one on this computer
     When the program is run with and without the JSON option
     Then with it standard output holds one JSON document with the outcome bad-input and the real message, and without it standard error holds one line and not the whole help text, and the exit code is 2
 
