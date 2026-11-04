@@ -36,6 +36,16 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
         )
     }
 
+    /** The name of the command in its answers. */
+    protected open val answerName: String get() = commandName
+
+    /** The outcome word for a missing or refused sign-in. */
+    protected fun outcomeOf(needed: SavedRenewal.SignInNeeded): String = when (needed.reason) {
+        SavedRenewal.SignInNeeded.Reason.MISSING -> "no-sign-in"
+        SavedRenewal.SignInNeeded.Reason.UNUSABLE -> "sign-in-unusable"
+        SavedRenewal.SignInNeeded.Reason.REFUSED -> "sign-in-refused"
+    }
+
     /** Builds an answer with an outcome word, the environment, a message, and the next step when there is one. */
     protected fun reply(
         env: RumbleEnvironment,
@@ -45,7 +55,7 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
         next: String? = null,
         extra: JsonObjectBuilder.() -> Unit = {},
     ): Reply {
-        val json = head(commandName) {
+        val json = head(answerName) {
             put("environment", env.name)
             put("outcome", outcome)
             put("message", message)

@@ -77,10 +77,23 @@ sealed interface SubmissionResult {
  * the last step before the pull request. An account has at most one open pull request per bot, and no branch is ever
  * forced, overwritten or deleted.
  */
+/** What the commands need of sending a bot, so a test can stand in for GitHub. */
+interface BotSending {
+    fun checkReadiness(tokens: GitHubTokens): SubmissionReadiness
+
+    fun submit(tokens: GitHubTokens, submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult
+}
+
+/** What every way of sending a bot says before it sends. A bot is sent to a public repository, so nothing in it is private. */
+object SourceNotice {
+    const val TEXT = "Everything in these files becomes public the moment the bot is sent: anyone can read and copy the source, " +
+        "and it stays in the history even if the pull request is closed."
+}
+
 class BotSubmission(
     private val environment: RumbleEnvironment,
     private val api: GitHubApi,
-) {
+) : BotSending {
     private val owner = RumbleEnvironments.owner
     private val repository = environment.botsRepository
     private val upstream = "/repos/$owner/$repository"
@@ -88,7 +101,7 @@ class BotSubmission(
     private class Stop(val signInNeeded: Boolean, message: String) : Exception(message, null, false, false)
 
     /** Checks, by reading only, whether the account can send a bot. */
-    fun checkReadiness(tokens: GitHubTokens): SubmissionReadiness =
+    override fun checkReadiness(tokens: GitHubTokens): SubmissionReadiness =
         try {
             readiness(tokens.accessToken)
         } catch (stop: Stop) {
@@ -101,7 +114,7 @@ class BotSubmission(
      * Sends [submission]. [authorCertifiesLicense] must be true only when the author has confirmed that they agree to
      * publish the source under its declared license; without it nothing is sent.
      */
-    fun submit(tokens: GitHubTokens, submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult {
+    override fun submit(tokens: GitHubTokens, submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult {
         if (!authorCertifiesLicense) {
             return SubmissionResult.Refused("The author has not confirmed that the source may be published under its license. Nothing was sent.")
         }

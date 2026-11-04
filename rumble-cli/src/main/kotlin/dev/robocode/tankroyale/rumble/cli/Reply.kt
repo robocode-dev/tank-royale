@@ -2,7 +2,14 @@ package dev.robocode.tankroyale.rumble.cli
 
 import com.github.ajalt.clikt.core.ProgramResult
 import dev.robocode.tankroyale.common.util.UserDataDirectory
+import dev.robocode.tankroyale.rumble.BotProgressReading
+import dev.robocode.tankroyale.rumble.BotSending
+import dev.robocode.tankroyale.rumble.BotSubmission
+import dev.robocode.tankroyale.rumble.CatalogSource
 import dev.robocode.tankroyale.rumble.GitHubApi
+import dev.robocode.tankroyale.rumble.GitHubCatalogSource
+import dev.robocode.tankroyale.rumble.RumbleEnvironment
+import dev.robocode.tankroyale.rumble.SubmissionProgress
 import dev.robocode.tankroyale.rumble.GitHubAuthTransport
 import dev.robocode.tankroyale.rumble.HttpGitHubApi
 import dev.robocode.tankroyale.rumble.HttpGitHubAuthTransport
@@ -40,7 +47,17 @@ class Services(
     val registrationWaitSeconds: Int = 120,
     /** Reads an environment variable. */
     val readEnv: (String) -> String? = { System.getenv(it) },
+    /** Where the bot repository's public catalog and rules are read. */
+    val catalog: (RumbleEnvironment) -> CatalogSource = { GitHubCatalogSource(it) },
+    /** Sends a bot; given the GitHub API, so a test can stand in for the whole of sending. */
+    private val makeSubmission: ((RumbleEnvironment, GitHubApi) -> BotSending)? = null,
+    /** Reads the progress of a sent bot. */
+    private val makeProgress: ((RumbleEnvironment, GitHubApi) -> BotProgressReading)? = null,
 ) {
+    fun submission(env: RumbleEnvironment): BotSending = (makeSubmission ?: { e, a -> BotSubmission(e, a) })(env, api)
+
+    fun progress(env: RumbleEnvironment): BotProgressReading = (makeProgress ?: { e, a -> SubmissionProgress(e, a) })(env, api)
+
     private val realAuth by lazy(makeAuth)
     private val realApi by lazy(makeApi)
 

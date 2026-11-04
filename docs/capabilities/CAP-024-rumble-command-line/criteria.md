@@ -269,4 +269,93 @@ Feature: rumble-command-line — Rumble command line
     Given the built command line jar run as a real process with standard input closed
     When a command that needs a sign-in, the help and bad input are run
     Then the sign-in command ends with exit code 3 and one JSON document, and in normal use standard error holds no warning from Java
+
+  @RCI-032
+  Scenario: bot check validates a bot folder offline and lists every problem
+    Test-type: Unit
+    Given a bot or team folder, a folder that is no bot, and a bot with several problems
+    When bot check is run on each
+    Then a passing bot gives exit code 0, and every problem is listed with its code, file and the change that fixes it, with exit code 2
+    And it needs no sign-in and no network, makes no request, and writes nothing in the folder, the state folder or anywhere else
+
+  @RCI-033
+  Scenario: bot send with the dry run option does everything except sending
+    Test-type: Unit
+    Given a passing bot, a signed-in and registered account that is ready, and an environment with a sign-in App
+    When bot send is run with the dry run option
+    Then the bot is checked, staged in the state folder, checked against the catalog, owners and bans of the environment and against the account's setup, and the answer says what would be sent, with exit code 0 and the outcome dry-run
+    And nothing is created on GitHub, and no license confirmation is needed
+
+  @RCI-034
+  Scenario: The author's license confirmation is an explicit option and nothing else
+    Test-type: Unit
+    Given a passing bot and an account that is ready
+    When bot send is run without and with the certify option
+    Then without it nothing is sent and nothing on GitHub is touched, the answer is exit code 2 with the outcome license-not-certified, and the program asks for nothing on the keyboard
+    And with it the bot is sent and the answer repeats that the author confirmed it
+    And the confirmation is never a default, is not remembered between runs and comes from no setting or environment variable, and the help says what it means and that the source becomes public
+
+  @RCI-035
+  Scenario: Every answer of bot send says that the source becomes public, before anything is sent
+    Test-type: Unit
+    Given a bot that passes
+    When bot send is run as a dry run, refused for a missing confirmation, sent, or stopped by a problem
+    Then the answer, in both forms, says that all the files of the bot become public and stay in the history even if the pull request is closed, and lists those files, and in JSON carries source-is-public as a fact
+    And the notice is the same in the test environment, whose bot repository is also public
+
+  @RCI-036
+  Scenario: bot send sends the bot as one pull request and says what it did to it
+    Test-type: Unit
+    Given a passing bot, an account that is ready, and the certify option
+    When bot send is run for a new bot, again with the same files, with other files, and after an interrupted attempt
+    Then each answer says whether a pull request was opened, resumed, left unchanged or updated, with its address and number, and the next step is bot status for that bot
+    And a pull request is never opened twice for one bot and account, and a failure from GitHub is exit code 1 with the reason
+
+  @RCI-037
+  Scenario: Setup that only the person can do and the Rumble's own rules stop a send before it begins
+    Test-type: Unit
+    Given an account with no copy of the bot repository, with the copy but without the sign-in App, with a repository that is not a copy, a banned account, a name owned by another account, and a version that is already published
+    When bot send is run
+    Then a missing setup is exit code 2 with the outcome setup-needed, the address of the page to open and what to do there, and a broken Rumble rule is exit code 2 with the outcome precheck-failed and every finding with its fix
+    And nothing has been created on GitHub, and a catalog that cannot be read does not stop the send but is said so in the answer
+
+  @RCI-038
+  Scenario: Commands that need a sign-in send the person to log in
+    Test-type: Unit
+    Given no saved sign-in, a sign-in that GitHub refuses, and a token that GitHub's API refuses
+    When bot send or bot status is run
+    Then each ends with exit code 3, the outcome that says which, and login as the next step, and a refused token removes the saved sign-in so the next login gives a new code
+    And an environment without a sign-in App is refused with exit code 2 before anything is asked
+
+  @RCI-039
+  Scenario: bot status says where the pull request of a bot stands, and only reads
+    Test-type: Unit
+    Given pull requests that wait for the checks, are being checked, were sent back with a reason, wait for a moderator, are accepted, merged, in the catalog or closed, a bot that was never sent, and a catalog that cannot be read
+    When bot status is run for the bot
+    Then each state has its own outcome word, a sent-back reason is shown as text from outside, and a bot never sent is exit code 2 with bot send as the next step
+    And nothing is written on GitHub, and an unreadable catalog is said so and does not hide the pull request's state
+
+  @RCI-040
+  Scenario: The documentation describes the commands, the public source, the license rule and the sending screen
+    Test-type: Human
+    Given the participation design
+    When a maintainer reads about sending a bot
+    Then it says what bot check, bot send and bot status do and what they cannot do, and that sending is the first command that publishes something under the participant's name and cannot be taken back
+    And it says that the source of a sent bot is public, that every way of sending says so first, and that the desktop program must show the same notice on its sending screen and require the person to confirm it before it sends
+    And it says that an agent passes the license confirmation only when its person has told it to for that bot, that the program cannot tell who typed the option, and that the unproven point about building the branch from the Rumble's head is still unproven
+
+  @RCI-041
+  Scenario: The real program checks a sample bot and sends a person who is not signed in to log in
+    Test-type: Integration
+    Given the built command line jar run as a real process with standard input closed
+    When bot check is run on a sample bot, on a folder that is no bot, and bot send is run without a saved sign-in
+    Then the sample bot passes with exit code 0, the other folder is exit code 2, and the send is exit code 3, each with one JSON document and nothing on standard error
+
+  @RCI-042
+  Scenario: The bot commands follow the answer contract
+    Test-type: Unit
+    Given the three bot commands
+    When each is run in both forms and with a user name that equals one of the program's words
+    Then each answers in the form asked for with an outcome word, the environment where one is used, and a next step that can be run as it stands, and never asks anything
+    And no answer holds a token or an absolute path, the user name is removed only from text from outside such as a bot's name or a file name, and bad input answers as bad input
 ```
