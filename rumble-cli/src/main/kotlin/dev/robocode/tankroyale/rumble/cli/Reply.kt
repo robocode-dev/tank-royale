@@ -96,9 +96,13 @@ class Redaction(private val home: String, private val user: String) {
         if (user.length < 3) return result
         // The values to keep are set aside only here, after the paths, so a path holding one of them is still removed.
         // One pass with one expression, so a kept value can never match inside what stands in for another.
+        // Whole words only, so a kept word inside the user name does not save the user name from being removed. The two
+        // marker characters are removed first, so text from outside can never pass for what stands in for a kept value.
         val kept = keep.filter { it.isNotEmpty() }.sortedByDescending { it.length }
+        result = result.replace("\uE000", "").replace("\uE001", "")
         if (kept.isNotEmpty()) {
-            result = Regex(kept.joinToString("|") { Regex.escape(it) }).replace(result) { "\uE000${kept.indexOf(it.value)}\uE001" }
+            val anyKept = Regex("(?<![\\p{L}\\p{N}_])(?:" + kept.joinToString("|") { Regex.escape(it) } + ")(?![\\p{L}\\p{N}_])")
+            result = anyKept.replace(result) { "\uE000${kept.indexOf(it.value)}\uE001" }
         }
         result = Regex("(?i)\\b" + Regex.escape(user) + "\\b").replace(result, "<user>")
         return Regex("\uE000(\\d+)\uE001").replace(result) { kept[it.groupValues[1].toInt()] }

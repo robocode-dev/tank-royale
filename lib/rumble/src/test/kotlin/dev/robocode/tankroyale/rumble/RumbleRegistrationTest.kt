@@ -255,4 +255,68 @@ class RumbleRegistrationTest {
         assertEquals(null, freshMemory.load("alice"))
         assertFalse(freshMemory.save(RegistrationRecord("alice", "alice-1", "test", START)), "too late after signing out")
     }
+
+    @Test
+    @Tag("RCL-042")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL042_UnitNegative_aNameThatChangedOnGitHubLeavesTheRegistrationBehind(@TempDir base: Path) {
+        val (store, id) = signedIn(base)
+        store.registrationFor(id).save(RegistrationRecord("alice", "alice-1", "test", START))
+
+        assertTrue(store.saveAccount(id, "ALICE"))
+        assertEquals("alice-1", (store.load() as LoadResult.Found).registration!!.clientId, "the same name in other letters")
+
+        assertTrue(store.saveAccount(id, "alice-renamed"))
+        val loaded = store.load() as LoadResult.Found
+        assertEquals("alice-renamed", loaded.account)
+        assertEquals(null, loaded.registration)
+        assertEquals(null, store.registrationFor(id).load("alice-renamed"))
+    }
+
+    @Test
+    @Tag("RCL-042")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL042_UnitNegative_whatCannotBeSavedAnswersFalseAndThrowsNothing(@TempDir base: Path) {
+        val notAFolder = java.nio.file.Files.writeString(base.resolve("a-file"), "not a folder")
+        val store = SignInStore(env, notAFolder, alice)
+
+        assertFalse(store.saveAccount("id", "alice"))
+        assertFalse(store.registrationFor("id").save(RegistrationRecord("alice", "alice-1", "test", START)))
+    }
+
+    @Test
+    @Tag("RCL-041")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL041_UnitNegative_aFileThatCannotBeReadJustNowIsLeftAsItIs(@TempDir base: Path) {
+        val trusting = object : FileProtection {
+            override fun createOwnerOnly(file: Path) {
+                java.nio.file.Files.createFile(file)
+            }
+
+            override fun isOwnerOnly(file: Path) = true
+        }
+        val store = SignInStore(env, base, alice, trusting)
+        val file = env.stateRoot(base).resolve("signin.bin")
+        java.nio.file.Files.createDirectories(file.resolve("cannot-be-read-as-a-file"))
+
+        assertInstanceOf(SaveResult.NotSaved::class.java, store.save("ghr_NEW", null))
+        assertTrue((store.saveWaiting(WaitingSignIn("A-B", "https://github.com/login/device", START, 5, START, "secret")) as SaveResult.NotSaved).reason.contains("left as it is"))
+        assertTrue(java.nio.file.Files.isDirectory(file.resolve("cannot-be-read-as-a-file")))
+    }
+
+    @Test
+    @Tag("RCI-026")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI026_UnitNegative_anAnswerThatIsNoListOpensNoNewIssue(@TempDir base: Path) {
+        val comments = FakeRumbleGitHub().apply {
+            closedIssues = mutableListOf(FakeRumbleGitHub.issueJson(5, "[register] alice"))
+            this.comments = "not json"
+        }
+        assertInstanceOf(RegistrationResult.Failed::class.java, run(comments, base).registration.register(tokens()))
+        assertTrue(comments.postedBodies.isEmpty())
+    }
 }

@@ -354,6 +354,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When the sign-in is saved and then loaded by a new store object on the same folder
     Then the loaded value is the refresh token and when it stops working, and the access token was never saved
     And the one file holds no readable token text, and no other part of the library writes a token to disk
+    And a file that cannot be read just now is left as it is, not written over
     And when saving is switched off nothing is written and nothing is loaded
 
   @RCL-042
@@ -363,5 +364,5 @@ Feature: rumble-client — Local ranked and practice battle client
     When the sign-in is renewed, replaced by a newly approved one or removed, or the registration is read back
     Then it holds the account, the client ID, the environment and when it was saved, and a renewal keeps it
     And it is ignored for another account and is useless in another environment, a newly approved sign-in starts without it, and it goes when the person signs out
-    And a registration or an account name that arrives after its sign-in was replaced or removed saves nothing
+    And a registration or an account name that arrives after its sign-in was replaced or removed saves nothing, and a name that has changed on GitHub leaves the registration behind
 ```

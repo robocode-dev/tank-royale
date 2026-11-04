@@ -148,16 +148,21 @@ class Registration(
         val answer = api.get("$repository/issues?creator=$account&state=closed&sort=created&direction=desc&per_page=100", token)
         refuseBadToken(answer)
         if (answer.status != 200) throw Stop(RegistrationResult.Failed(unexpected(answer)))
-        val issues = (parse(answer.body) as? JsonArray).orEmpty().mapNotNull { it as? JsonObject }
+        val issues = arrayIn(answer).mapNotNull { it as? JsonObject }
         val newest = issues.firstOrNull { it.string("title").orEmpty().startsWith(TITLE_PREFIX) && it["pull_request"] == null }
         return newest?.let { issue(it) }?.let { found ->
             // Not knowing how it ended must not open a new public issue, as it would if this counted as no refusal.
             val comments = commentsOf(found.number, token)
             refuseBadToken(comments)
             if (comments.status != 200) throw Stop(RegistrationResult.Failed(unexpected(comments)))
+            arrayIn(comments)
             refusalIn(comments)
         }
     }
+
+    /** The list in [answer]. An answer that is no list says nothing about how an issue ended, so it stops the run. */
+    private fun arrayIn(answer: ApiResponse): JsonArray =
+        parse(answer.body) as? JsonArray ?: throw Stop(RegistrationResult.Failed(unexpected(answer)))
 
     private fun createRegistrationIssue(account: String, token: String): Issue {
         val body = Json.encodeToString(

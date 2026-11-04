@@ -148,7 +148,7 @@ Feature: rumble-command-line — Rumble command line
     Given a saved sign-in with a fake token, a waiting code, an old client folder, and a GitHub account named like the operating system user
     When every command is run in both forms
     Then no answer contains a token, a device code, the home folder or an absolute path of this computer, and paths are shown relative to the folder they belong to
-    And the address to open and the address of a registration issue are whole, and the account name is shown; the operating system user name appears nowhere else
+    And the address to open and the address of a registration issue are whole, and the account name is shown; the operating system user name appears nowhere else, even when a word of the answer is part of it
 
   @RCI-018
   Scenario: The documentation describes the programs, the contract, the account decision and how the program reaches people
@@ -219,6 +219,7 @@ Feature: rumble-command-line — Rumble command line
     Then it registers the account and saves the client ID, and running it again answers the same account and client ID as already registered
     And an environment without a sign-in App is refused first with exit code 2, a missing or refused sign-in is exit code 3 with login as the next step, and a registration not finished in time is exit code 4 with the address of the issue
     And a registration or a renewed sign-in that could not be saved on this computer is said so in the answer
+    And a token GitHub's API refuses removes the saved sign-in, so the next step of signing in gives a new code
 
   @RCI-026
   Scenario: A refusal counts only when the workflow wrote it, and it does not open new issues
@@ -227,6 +228,7 @@ Feature: rumble-command-line — Rumble command line
     When register is run
     Then a refusal on the account's newest closed registration issue is answered as refused without opening an issue, and the retry option opens one new issue
     And a comment from anyone but the workflow is ignored, whatever it says, both while waiting and on closed issues
+    And when it cannot be read how the newest closed issue ended, the run fails and no new issue is opened
 
   @RCI-027
   Scenario: The next step can be run as it stands

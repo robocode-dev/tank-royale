@@ -98,13 +98,12 @@ internal class LoginCommand(io: Io, services: Services) : SignInLeaf("login", io
             reply(
                 env, ExitCodes.DONE, "started",
                 "Open ${code.verificationUri} and type the code ${code.userCode}. It runs out at ${code.expiresAt}.",
-                next = "login --finish", keep = setOf(code.verificationUri),
+                next = "login --finish",
             ) { describe(code); put("reused", start.reused) }
         }
         is SignInStart.AlreadySignedIn -> reply(
             env, ExitCodes.DONE, "already-signed-in",
-            start.account?.let { "Already signed in as $it. To change account, run logout first." } ?: "Already signed in, but GitHub would not say as which account. Try login again.",
-            keep = setOfNotNull(start.account),
+            start.account?.let { "Already signed in as $it. To change account, run logout first." } ?: "Already signed in, but GitHub would not say as which account. Try login again, and if this goes on, run logout first.",
         ) { put("account", start.account) }
         is SignInStart.Unavailable -> reply(env, ExitCodes.REFUSED, "no-sign-in-app", start.message)
         is SignInStart.NotPrivate -> reply(env, ExitCodes.REFUSED, "not-private", start.message)
@@ -115,12 +114,12 @@ internal class LoginCommand(io: Io, services: Services) : SignInLeaf("login", io
         is SignInFinish.SignedIn -> reply(
             env, ExitCodes.DONE, "signed-in",
             finish.account?.let { "Signed in as $it." } ?: "Signed in. Which account is not known yet; the next login or register finds out.",
-            next = "register", keep = setOfNotNull(finish.account),
+            next = "register",
         ) { put("account", finish.account) }
         is SignInFinish.Waiting -> reply(
             env, ExitCodes.NOT_FINISHED, "waiting",
             "No approval seen yet. Type the code ${finish.code.userCode} at ${finish.code.verificationUri}, and check again in ${finish.retryAfterSeconds} seconds.",
-            next = "login --finish", keep = setOf(finish.code.verificationUri),
+            next = "login --finish",
         ) { describe(finish.code); put("retryAfterSeconds", finish.retryAfterSeconds) }
         is SignInFinish.NotSaved -> reply(env, ExitCodes.FAILED, "not-saved", "GitHub approved the sign-in, but it could not be kept. ${finish.reason}", next = "login")
         SignInFinish.NoWaitingCode -> reply(env, ExitCodes.SIGN_IN_NEEDED, "no-waiting-code", "No code is waiting. Ask for one first.", next = "login")
@@ -209,14 +208,14 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
                     return reply(
                         env, ExitCodes.NOT_FINISHED, "sign-in-changed",
                         "${result.account} is registered, but the sign-in changed while it ran, so nothing was saved for it on this computer. Run register again.",
-                        next = "register", keep = setOf(result.account),
+                        next = "register",
                     ) { put("account", result.account); put("saved", false) }
                 }
                 val notSaved = if (result.saved) "" else " It could not be remembered on this computer, so it will be read from the Rumble next time."
                 reply(
                     env, ExitCodes.DONE, if (result.alreadyRegistered) "already-registered" else "registered",
                     (if (result.alreadyRegistered) "${result.account} is already registered" else "${result.account} is now registered") + " with client ID ${result.clientId}.$notSaved$lost",
-                    next = afterwards, keep = setOf(result.account),
+                    next = afterwards,
                 ) {
                     put("account", result.account)
                     put("clientId", result.clientId)
@@ -233,9 +232,13 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
             is RegistrationResult.NotFinished -> reply(
                 env, ExitCodes.NOT_FINISHED, "registration-pending",
                 "The registration is not finished yet." + (result.issueUrl?.let { " You can follow it at $it." } ?: "") + lost,
-                next = afterwards ?: "register", keep = setOfNotNull(result.issueUrl),
+                next = afterwards ?: "register",
             ) { result.issueUrl?.let { put("issueUrl", it) } }
-            is RegistrationResult.SignInNeeded -> reply(env, ExitCodes.SIGN_IN_NEEDED, "sign-in-refused", result.message, next = "login")
+            is RegistrationResult.SignInNeeded -> {
+                // Without this, login would renew the refused sign-in and say it is fine, and nobody could get further.
+                flow.forgetRefused(renewal)
+                reply(env, ExitCodes.SIGN_IN_NEEDED, "sign-in-refused", result.message, next = "login")
+            }
             is RegistrationResult.Failed -> reply(env, ExitCodes.FAILED, "failed", result.message + lost, next = afterwards ?: "register")
         }
     }

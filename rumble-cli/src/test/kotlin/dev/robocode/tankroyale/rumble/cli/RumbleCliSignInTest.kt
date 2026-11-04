@@ -93,6 +93,7 @@ class RumbleCliSignInTest {
         val requests = mutableListOf<String>()
         val created = mutableListOf<String>()
         var userStatus = 200
+        var tokenRefused = false
         var clientId: String? = null
         var onUser: () -> Unit = {}
         var registerOnCreate = false
@@ -103,6 +104,7 @@ class RumbleCliSignInTest {
         override fun get(path: String, token: String?): ApiResponse {
             requests += path
             val data = "/repos/robocode-dev/rumble-data-test"
+            if (tokenRefused) return ApiResponse(401, "{}")
             return when {
                 path == "/user" -> {
                     val name = login
@@ -365,6 +367,8 @@ class RumbleCliSignInTest {
         val redaction = Redaction("C:\\Users\\alice", "alice")
         val cleaned = redaction.clean("""alice at https://github.com/x and D:\alice\data and another alice""", setOf("https://github.com/x"))
         assertEquals("<user> at https://github.com/x and <path> and another <user>", cleaned)
+        assertEquals("<user> and test", Redaction("C:\\nowhere", "tester").clean("tester and test", setOf("test")), "a kept word inside the user name")
+        assertEquals("a7b", Redaction("C:\\nowhere", "anna").clean("a\uE0007\uE001b", setOf("x")), "text from outside is no stand-in")
         assertEquals("""<path>""", redaction.clean("""C:/alice/x""", setOf("alice")))
     }
 
@@ -896,6 +900,24 @@ class RumbleCliSignInTest {
         assertFalse(answer.json["saved"]!!.jsonPrimitive.boolean)
         assertFalse(answer.json["signInKept"]!!.jsonPrimitive.boolean)
         assertEquals("rumble login -e test", answer.next)
+    }
+
+    @Test
+    @Tag("RCI-025")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI025_UnitNegative_aTokenTheApiRefusesLeadsToANewCodeAndNotInACircle(@TempDir dir: Path) {
+        val world = World(dir)
+        world.signIn()
+        world.register("alice", "alice-1")
+        world.api.tokenRefused = true
+
+        val refused = world.test("register")
+
+        assertEquals(ExitCodes.SIGN_IN_NEEDED, refused.exit)
+        assertEquals("sign-in-refused", refused.outcome)
+        assertEquals("rumble login -e test", refused.next)
+        assertEquals("started", world.test("login").outcome, "the step it names gives a new code")
     }
 
     // RCI-026

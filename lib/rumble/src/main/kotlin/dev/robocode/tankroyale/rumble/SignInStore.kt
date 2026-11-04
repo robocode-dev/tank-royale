@@ -113,7 +113,7 @@ class SignInStore(
     private val folder: Path = environment.stateRoot(baseFolder)
     private val file: Path = folder.resolve(FILE_NAME)
     private val temp: Path = folder.resolve("$FILE_NAME.tmp")
-    private val lockFile: Path = folder.resolve("signin.lock")
+    private val lockFile: Path = folder.resolve(LOCK_FILE_NAME)
     private val key: SecretKey by lazy { deriveKey(identity.keyMaterial()) }
 
     @Serializable
@@ -142,20 +142,22 @@ class SignInStore(
      * Saves a renewed [refreshToken] for the sign-in already saved, keeping what belongs to it, or starts a new one when
      * none is saved. Reports in plain words why it could not.
      */
-    fun save(refreshToken: String, expiresAt: Instant?): SaveResult {
-        val now = current() ?: Payload()
-        return if (now.refreshToken == null) beginSignIn(refreshToken, expiresAt)
+    fun save(refreshToken: String, expiresAt: Instant?): SaveResult = changing { now ->
+        if (now?.refreshToken == null) beginSignIn(refreshToken, expiresAt)
         else write(now.copy(refreshToken = refreshToken, expiresAt = expiresAt?.toString()))
     }
 
-    /** Saves a sign-in the person has just approved. It gets a new identity and nothing from any earlier sign-in. */
-    fun beginSignIn(refreshToken: String, expiresAt: Instant?): SaveResult =
-        write(Payload(refreshToken, expiresAt?.toString(), UUID.randomUUID().toString()))
+    /** Saves a sign-in the person has just approved. It has identity [signInId] and nothing from any earlier sign-in. */
+    fun beginSignIn(refreshToken: String, expiresAt: Instant?, signInId: String = UUID.randomUUID().toString()): SaveResult =
+        write(Payload(refreshToken, expiresAt?.toString(), signInId))
 
-    /** Saves [account] as the name of sign-in [signInId], unless that is no longer the saved sign-in. Takes the lock. */
-    fun saveAccount(signInId: String, account: String): Boolean = locked {
-        val now = current()
-        now != null && now.refreshToken != null && now.signInId == signInId && write(now.copy(account = account)) == SaveResult.Saved
+    /**
+     * Saves [account] as the name of sign-in [signInId], unless that is no longer the saved sign-in. A registration is
+     * for one account name, so a name that has changed on GitHub leaves it behind. Takes the lock.
+     */
+    fun saveAccount(signInId: String, account: String): Boolean = updating(signInId) { now ->
+        if (account.equals(now.account, ignoreCase = true)) now.copy(account = account)
+        else now.copy(account = account, clientId = null, registeredAt = null)
     }
 
     /**
@@ -167,22 +169,41 @@ class SignInStore(
             (this@SignInStore.load() as? LoadResult.Found)?.takeIf { it.signInId == signInId }?.registration
                 ?.takeIf { it.account.equals(account, ignoreCase = true) }
 
-        override fun save(record: RegistrationRecord): Boolean = locked {
-            val now = current()
-            now != null && now.refreshToken != null && now.signInId == signInId &&
-                write(now.copy(account = record.account, clientId = record.clientId, registeredAt = record.savedAt.toString())) == SaveResult.Saved
+        override fun save(record: RegistrationRecord): Boolean = updating(signInId) { now ->
+            now.copy(account = record.account, clientId = record.clientId, registeredAt = record.savedAt.toString())
         }
     }
 
+    /** Changes the saved sign-in if it is still [signInId]. Returns false when it is not, or it could not be done. */
+    private fun updating(signInId: String, change: (Payload) -> Payload): Boolean =
+        try {
+            locked {
+                val now = forChanging()
+                now?.refreshToken != null && now.signInId.orEmpty() == signInId && write(change(now)) == SaveResult.Saved
+            }
+        } catch (e: IOException) {
+            false
+        }
+
+    /** Runs [action] on what is saved. A file that cannot be read just now is left alone rather than written over. */
+    private fun changing(action: (Payload?) -> SaveResult): SaveResult =
+        try {
+            action(forChanging())
+        } catch (e: IOException) {
+            SaveResult.NotSaved("The saved sign-in could not be read just now, so it was left as it is.")
+        }
+
     /** Saves a code that is waiting for the person's approval. */
-    fun saveWaiting(waiting: WaitingSignIn): SaveResult = write(
-        (current() ?: Payload()).copy(
-            waiting = SavedCode(
-                waiting.userCode, waiting.verificationUri, waiting.expiresAt.toString(), waiting.intervalSeconds,
-                waiting.nextCheckAt.toString(), waiting.deviceCode,
+    fun saveWaiting(waiting: WaitingSignIn): SaveResult = changing { now ->
+        write(
+            (now ?: Payload()).copy(
+                waiting = SavedCode(
+                    waiting.userCode, waiting.verificationUri, waiting.expiresAt.toString(), waiting.intervalSeconds,
+                    waiting.nextCheckAt.toString(), waiting.deviceCode,
+                ),
             ),
-        ),
-    )
+        )
+    }
 
     /** The code that is waiting, or null when none is, or the file cannot be trusted. */
     fun loadWaiting(): WaitingSignIn? {
@@ -196,7 +217,7 @@ class SignInStore(
 
     /** Removes the waiting code and keeps the rest. */
     fun forgetWaiting() {
-        current()?.takeIf { it.waiting != null }?.let { write(it.copy(waiting = null)) }
+        changing { now -> if (now?.waiting != null) write(now.copy(waiting = null)) else SaveResult.Saved }
     }
 
     /** True unless nothing is known to be saved in this store, without creating anything. */
@@ -212,7 +233,7 @@ class SignInStore(
     fun canKeepPrivate(): Boolean {
         if (!enabled) return false
         // A name of its own, so programs starting at the same time do not disturb each other's check.
-        val probe = folder.resolve("signin.probe.${UUID.randomUUID()}")
+        val probe = folder.resolve("$PROBE_PREFIX${UUID.randomUUID()}")
         return try {
             Files.createDirectories(folder)
             protection.createOwnerOnly(probe)
@@ -259,14 +280,23 @@ class SignInStore(
         }
     }
 
-    /** What is saved, or null when nothing is or it cannot be trusted. */
-    private fun current(): Payload? {
+    /** What is saved, or null when nothing is, it cannot be trusted or it cannot be read. */
+    private fun current(): Payload? =
+        try {
+            forChanging()
+        } catch (e: IOException) {
+            null
+        }
+
+    /**
+     * What is saved, for changing it. A file that cannot be trusted counts as nothing, so the person can sign in again
+     * and replace it. A file that cannot be read right now throws, because it may hold a good sign-in.
+     */
+    private fun forChanging(): Payload? {
         if (!enabled || !Files.exists(file)) return null
         return try {
             if (protection.isOwnerOnly(file)) read() else null
         } catch (e: GeneralSecurityException) {
-            null
-        } catch (e: IOException) {
             null
         } catch (e: IllegalArgumentException) {
             null
@@ -382,6 +412,11 @@ class SignInStore(
 
     companion object {
         private const val FILE_NAME = "signin.bin"
+        private const val LOCK_FILE_NAME = "signin.lock"
+        private const val PROBE_PREFIX = "signin.probe."
+
+        /** True for the store's own files that hold nothing: its lock and a check left behind by a stopped program. */
+        fun holdsNothing(fileName: String): Boolean = fileName == LOCK_FILE_NAME || fileName.startsWith(PROBE_PREFIX)
         private const val NONCE_BYTES = 12
         private const val TAG_BITS = 128
         private const val ITERATIONS = 100_000

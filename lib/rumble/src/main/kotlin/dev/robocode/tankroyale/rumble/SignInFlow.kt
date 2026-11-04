@@ -8,6 +8,7 @@ import java.io.IOException
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
+import java.util.UUID
 
 /** How asking for a sign-in code ended. */
 sealed interface SignInStart {
@@ -189,13 +190,14 @@ class SignInFlow(
 
     private fun approved(tokens: GitHubTokens, onSaved: (GitHubTokens, String) -> Unit): SignInFinish {
         val refresh = tokens.refreshToken
+        val signInId = UUID.randomUUID().toString()
         val saved = if (refresh == null) SaveResult.NotSaved("GitHub gave no refresh token, so this sign-in cannot be saved.")
-        else store.beginSignIn(refresh, tokens.refreshTokenExpiresAt)
+        else store.beginSignIn(refresh, tokens.refreshTokenExpiresAt, signInId)
         if (saved is SaveResult.NotSaved) {
             store.forgetWaiting() // It is used up, so checking it again could never work.
             return SignInFinish.NotSaved(saved.reason)
         }
-        onSaved(tokens, (store.load() as LoadResult.Found).signInId)
+        onSaved(tokens, signInId)
         return SignInFinish.SignedIn(null)
     }
 
@@ -217,6 +219,14 @@ class SignInFlow(
 
     /** True when the sign-in [renewal] renewed is still the saved one. */
     fun stillSignedIn(renewal: SavedRenewal.Renewed): Boolean = (store.load() as? LoadResult.Found)?.signInId == renewal.signInId
+
+    /**
+     * Removes the sign-in [renewal] renewed after GitHub's API has refused its token. Renewing could give another token
+     * that is refused the same way, so only a new approval by the person can help. A later sign-in is left alone.
+     */
+    fun forgetRefused(renewal: SavedRenewal.Renewed) {
+        store.locked { if (stillSignedIn(renewal)) store.forget() }
+    }
 
     /** Removes what is saved for this environment, and creates nothing when nothing is saved. */
     fun signOut(): SignOutResult {

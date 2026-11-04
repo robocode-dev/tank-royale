@@ -342,7 +342,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
-          "sha256": "6e09f5a2d0a73bdb8f7ca5d489c67da469ecf4ca4c16dec72f7a6ad1333fcc94"
+          "sha256": "400799a9ddd7a795e76b613c5d8aea6afe34a57c029c861746a9d6c4222450cd"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
@@ -674,6 +674,13 @@
           "subject": "RumbleCliSignInTest.testRCI024_UnitPositive_logoutRemovesOneEnvironmentAndSaysWhatStaysAtGitHub",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCI-025",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
+          "subject": "RumbleCliSignInTest.testRCI025_UnitNegative_aTokenTheApiRefusesLeadsToANewCodeAndNotInACircle",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCI-025",
@@ -1237,7 +1244,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
-          "sha256": "c45f6d41c6c5ba8c0ae65cdae7f791a85141e02bf7eaa9d778c279541ccbb0f5"
+          "sha256": "50e08d8f7d6962c5718e2f83e7c554b0876e5bb0bd88654863dc98f9bdc3f164"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
@@ -1688,6 +1695,13 @@
           "direction": "positive"
         },
         {
+          "id": "RCI-026",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
+          "subject": "RumbleRegistrationTest.testRCI026_UnitNegative_anAnswerThatIsNoListOpensNoNewIssue",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
           "id": "RCL-036",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
           "subject": "RumbleRegistrationTest.testRCL036_UnitNegative_aRegistrationFileForAnotherAccountOrWithoutAClientIdIsNotTrusted",
@@ -1744,9 +1758,30 @@
           "direction": "positive"
         },
         {
+          "id": "RCL-041",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
+          "subject": "RumbleRegistrationTest.testRCL041_UnitNegative_aFileThatCannotBeReadJustNowIsLeftAsItIs",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-042",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
+          "subject": "RumbleRegistrationTest.testRCL042_UnitNegative_aNameThatChangedOnGitHubLeavesTheRegistrationBehind",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
           "id": "RCL-042",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
           "subject": "RumbleRegistrationTest.testRCL042_UnitNegative_aRegistrationIsIgnoredForAnotherAccountAndEnvironmentAndAlwaysFollowsItsSignIn",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-042",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
+          "subject": "RumbleRegistrationTest.testRCL042_UnitNegative_whatCannotBeSavedAnswersFalseAndThrowsNothing",
           "type": "Unit",
           "direction": "negative"
         },

@@ -25,6 +25,7 @@ import dev.robocode.tankroyale.rumble.LegacyPreview
 import dev.robocode.tankroyale.rumble.LoadResult
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
 import dev.robocode.tankroyale.rumble.RumbleEnvironments
+import dev.robocode.tankroyale.rumble.SignInStore
 import dev.robocode.tankroyale.rumble.signInNotAvailable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -240,7 +241,7 @@ object RumbleCli {
         private fun hasState(folder: Path): Boolean {
             if (!Files.isDirectory(folder)) return false
             val names = Files.list(folder).use { list -> list.map { it.fileName.toString() }.collect(Collectors.toList()) }
-            return names.any { it != "signin.lock" }
+            return names.any { !SignInStore.holdsNothing(it) }
         }
     }
 
