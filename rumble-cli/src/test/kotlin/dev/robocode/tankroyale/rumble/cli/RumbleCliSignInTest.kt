@@ -5,11 +5,10 @@ import dev.robocode.tankroyale.rumble.AuthResponse
 import dev.robocode.tankroyale.rumble.GitHubApi
 import dev.robocode.tankroyale.rumble.GitHubAuthTransport
 import dev.robocode.tankroyale.rumble.GitHubSignIn
+import dev.robocode.tankroyale.rumble.LoadResult
 import dev.robocode.tankroyale.rumble.RegistrationRecord
-import dev.robocode.tankroyale.rumble.RegistrationStore
 import dev.robocode.tankroyale.rumble.RumbleEnvironments
 import dev.robocode.tankroyale.rumble.SaveResult
-import dev.robocode.tankroyale.rumble.SavedAccountStore
 import dev.robocode.tankroyale.rumble.SignInStore
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -180,6 +179,12 @@ class RumbleCliSignInTest {
         }
 
         fun store() = SignInStore(RumbleEnvironments.TEST, state)
+
+        fun saved() = store().load() as? LoadResult.Found
+
+        fun register(account: String, clientId: String) {
+            assertTrue(store().registrationFor(saved()!!.signInId).save(RegistrationRecord(account, clientId, "test", record)))
+        }
         fun folder(): Path = RumbleEnvironments.TEST.stateRoot(state)
     }
 
@@ -282,7 +287,7 @@ class RumbleCliSignInTest {
         assertFalse(signedIn.json["signIn"]!!.jsonObject["checkedWithGitHub"]!!.jsonPrimitive.boolean)
         assertEquals("rumble register -e test", signedIn.next)
 
-        RegistrationStore(RumbleEnvironments.TEST, dir).save(RegistrationRecord("alice", "alice-1", "test", record))
+        world.register("alice", "alice-1")
         val ready = world.test("status")
         assertTrue(ready.json["ready"]!!.jsonPrimitive.boolean)
         assertNull(ready.next)
@@ -293,11 +298,12 @@ class RumbleCliSignInTest {
     @Tag("RCI-016")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCI016_UnitNegative_aRegistrationOfAnotherAccountIsNotShownAndStatusMakesNoRequestAndWritesNothing(@TempDir dir: Path) {
+    fun testRCI016_UnitNegative_aRegistrationOfAnEarlierAccountIsNotShownAndStatusMakesNoRequestAndWritesNothing(@TempDir dir: Path) {
         val world = World(dir)
-        RegistrationStore(RumbleEnvironments.TEST, dir).save(RegistrationRecord("bob", "bob-1", "test", record))
-        assertEquals(SaveResult.Saved, world.store().save(refreshToken, null))
-        SavedAccountStore(RumbleEnvironments.TEST, dir).save("alice")
+        assertEquals(SaveResult.Saved, world.store().beginSignIn(refreshToken, null))
+        world.register("bob", "bob-1")
+        assertEquals(SaveResult.Saved, world.store().beginSignIn(refreshToken, null))
+        assertTrue(world.store().saveAccount(world.saved()!!.signInId, "alice"))
         val before = world.folder().toFile().listFiles()!!.map { it.name to it.lastModified() }.toSet()
 
         val status = world.test("status")
@@ -351,7 +357,7 @@ class RumbleCliSignInTest {
             val text = answer.out + answer.err
             listOf(deviceSecret, accessToken, refreshToken).forEach { assertFalse(text.contains(it), text) }
         }
-        listOf("signin.bin", "signin-waiting.bin").map { world.folder().resolve(it) }.filter { Files.exists(it) }.forEach { file ->
+        listOf("signin.bin").map { world.folder().resolve(it) }.filter { Files.exists(it) }.forEach { file ->
             val bytes = String(Files.readAllBytes(file), Charsets.ISO_8859_1)
             listOf(deviceSecret, refreshToken).forEach { assertFalse(bytes.contains(it)) }
         }
@@ -508,17 +514,25 @@ class RumbleCliSignInTest {
     @Tag("Positive")
     fun testRCI021_UnitPositive_anApprovedSignInIsSavedWithItsAccountAndAnotherAccountsRegistrationIsRemoved(@TempDir dir: Path) {
         val world = World(dir)
-        val registrations = RegistrationStore(RumbleEnvironments.TEST, dir)
-        registrations.save(RegistrationRecord("bob", "bob-1", "test", record))
+        world.api.login = "bob"
+        world.signIn()
+        world.register("bob", "bob-1")
+        world.api.login = "alice"
+        world.auth.renewal = mapOf("error" to "bad_refresh_token")
+        world.auth.answers.clear()
+        world.test("login")
+        world.auth.renewal = null
+        world.advance(5)
+        world.approveNextCheck()
 
-        val signedIn = world.signIn()
+        val signedIn = world.test("login", "--finish")
 
         assertEquals(0, signedIn.exit)
         assertEquals("signed-in", signedIn.outcome)
         assertEquals("alice", signedIn.json["account"]!!.jsonPrimitive.content)
         assertEquals("rumble register -e test", signedIn.next)
-        assertEquals("alice", SavedAccountStore(RumbleEnvironments.TEST, dir).load())
-        assertNull(registrations.loadAny())
+        assertEquals("alice", world.saved()!!.account)
+        assertNull(world.saved()!!.registration)
         assertNull(world.store().loadWaiting())
     }
 
@@ -556,7 +570,7 @@ class RumbleCliSignInTest {
     fun testRCI021_UnitNegative_aNewSignInIsNeverTakenForTheAccountBefore(@TempDir dir: Path) {
         val world = World(dir)
         world.signIn()
-        RegistrationStore(RumbleEnvironments.TEST, dir).save(RegistrationRecord("alice", "alice-1", "test", record))
+        world.register("alice", "alice-1")
 
         world.auth.renewal = mapOf("error" to "bad_refresh_token")
         assertEquals("started", world.test("login").outcome, "the sign-in was revoked")
@@ -659,8 +673,6 @@ class RumbleCliSignInTest {
         assertEquals(ExitCodes.NOT_FINISHED, answer.exit)
         assertEquals("sign-in-changed", answer.outcome)
         assertEquals("rumble register -e test", answer.next)
-        assertFalse(Files.exists(world.folder().resolve("account.json")))
-        assertFalse(Files.exists(world.folder().resolve("registration.json")))
         assertFalse(Files.exists(world.folder().resolve("signin.bin")))
     }
 
@@ -718,7 +730,7 @@ class RumbleCliSignInTest {
 
         world.test("login", "--finish")
 
-        assertEquals("bob", SavedAccountStore(RumbleEnvironments.TEST, dir).load())
+        assertEquals("bob", world.saved()!!.account)
     }
 
     // RCI-023
@@ -762,21 +774,18 @@ class RumbleCliSignInTest {
     fun testRCI024_UnitPositive_logoutRemovesOneEnvironmentAndSaysWhatStaysAtGitHub(@TempDir dir: Path) {
         val world = World(dir)
         world.signIn()
-        RegistrationStore(RumbleEnvironments.TEST, dir).save(RegistrationRecord("alice", "alice-1", "test", record))
-        val publicRegistration = RegistrationStore(RumbleEnvironments.PUBLIC, dir)
-        publicRegistration.save(RegistrationRecord("alice", "alice-2", "public", record))
-        assertEquals(SaveResult.Saved, SignInStore(RumbleEnvironments.PUBLIC, dir).save(refreshToken, null))
+        world.register("alice", "alice-1")
+        val public = SignInStore(RumbleEnvironments.PUBLIC, dir)
+        assertEquals(SaveResult.Saved, public.save(refreshToken, null))
+        assertTrue(public.registrationFor((public.load() as LoadResult.Found).signInId).save(RegistrationRecord("alice", "alice-2", "public", record)))
 
         val answer = world.test("logout")
 
         assertEquals(0, answer.exit)
         assertEquals("signed-out", answer.outcome)
         assertTrue(answer.json["message"]!!.jsonPrimitive.content.contains("revoke the App"))
-        listOf("signin.bin", "signin-waiting.bin", "account.json", "registration.json").forEach {
-            assertFalse(Files.exists(world.folder().resolve(it)), it)
-        }
-        assertEquals("alice-2", publicRegistration.loadAny()?.clientId)
-        assertTrue(Files.exists(RumbleEnvironments.PUBLIC.stateRoot(dir).resolve("signin.bin")))
+        assertEquals(listOf("signin.lock"), world.folder().toFile().list()!!.toList(), "one file held it all")
+        assertEquals("alice-2", (public.load() as LoadResult.Found).registration!!.clientId)
     }
 
     @Test
@@ -791,11 +800,10 @@ class RumbleCliSignInTest {
         assertFalse(Files.exists(dir.resolve("empty")), "nothing is created")
 
         val stuck = World(dir.resolve("stuck"))
-        Files.createDirectories(stuck.folder().resolve("registration.json/inside"))
+        Files.createDirectories(stuck.folder().resolve("signin.bin/inside"))
         val answer = stuck.test("logout")
         assertEquals(ExitCodes.FAILED, answer.exit)
         assertEquals("not-removed", answer.outcome)
-        assertEquals("registration", answer.json["remaining"]!!.jsonArray.single().jsonPrimitive.content)
     }
 
     @Test
@@ -847,7 +855,7 @@ class RumbleCliSignInTest {
         assertEquals("alice-1a2b3c4d", second.json["clientId"]!!.jsonPrimitive.content)
         assertTrue(second.json["alreadyRegistered"]!!.jsonPrimitive.boolean)
         assertEquals(1, world.api.created.size, "no new issue")
-        assertEquals("alice", RegistrationStore(RumbleEnvironments.TEST, dir).loadAny()?.account)
+        assertEquals("alice", world.saved()!!.registration!!.account)
         assertTrue(world.test("status").json["ready"]!!.jsonPrimitive.boolean)
     }
 
@@ -882,7 +890,6 @@ class RumbleCliSignInTest {
         val unsaved = World(dir.resolve("c"))
         unsaved.signIn()
         unsaved.api.clientId = "alice-1a2b3c4d"
-        Files.createDirectories(unsaved.folder().resolve("registration.json/inside"))
         unsaved.auth.renewal = unsaved.auth.tokens(refresh = false)
         val answer = unsaved.test("register")
         assertEquals("already-registered", answer.outcome)

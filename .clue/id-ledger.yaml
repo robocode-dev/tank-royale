@@ -1013,6 +1013,12 @@ events:
     - {id: CH-084, kind: numeric, state: retired, prefix: CH, component: "84"}
     - {id: CH-084-tasks, kind: opaque, state: retired}
     - {id: CH-084-open-questions, kind: opaque, state: retired}
+    - {id: RCL-041, kind: numeric, state: reserved, prefix: RCL, component: "41"}
+    - {id: RCL-042, kind: numeric, state: reserved, prefix: RCL, component: "42"}
+    - {id: RCL-031, kind: numeric, state: retired, prefix: RCL, component: "31"}
+    - {id: RCL-039, kind: numeric, state: retired, prefix: RCL, component: "39"}
+    - {id: RCL-041, kind: numeric, state: live, prefix: RCL, component: "41"}
+    - {id: RCL-042, kind: numeric, state: live, prefix: RCL, component: "42"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

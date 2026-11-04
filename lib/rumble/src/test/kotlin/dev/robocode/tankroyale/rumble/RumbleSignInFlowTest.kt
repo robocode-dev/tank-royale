@@ -33,7 +33,7 @@ class RumbleSignInFlowTest {
 
     private fun flow(dir: Path, auth: GitHubAuthTransport, store: SignInStore): SignInFlow {
         val env = RumbleEnvironments.TEST
-        return SignInFlow(env, GitHubSignIn(env, auth), store, SavedAccountStore(env, dir), RegistrationStore(env, dir), FakeRumbleGitHub())
+        return SignInFlow(env, GitHubSignIn(env, auth), store, FakeRumbleGitHub())
     }
 
     @Test
@@ -82,7 +82,7 @@ class RumbleSignInFlowTest {
             workflowRegistersAfterFileChecks = 2
         }
 
-        val result = Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(tokens)
+        val result = Registration(env, github, InMemoryRegistrations(), sleep = {}).register(tokens)
 
         assertInstanceOf(RegistrationResult.Registered::class.java, result)
     }
@@ -98,7 +98,7 @@ class RumbleSignInFlowTest {
             commentsStatus = 403
         }
 
-        val result = Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(GitHubTokens(SECRET_TOKEN, null, null, null))
+        val result = Registration(env, github, InMemoryRegistrations(), sleep = {}).register(GitHubTokens(SECRET_TOKEN, null, null, null))
 
         assertInstanceOf(RegistrationResult.Failed::class.java, result)
         assertTrue(github.postedBodies.isEmpty())
@@ -116,10 +116,10 @@ class RumbleSignInFlowTest {
             comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: banned"}]"""
         }
 
-        assertEquals(RegistrationResult.Refused("banned", earlier = true, account = "alice"), Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(tokens))
+        assertEquals(RegistrationResult.Refused("banned", earlier = true, account = "alice"), Registration(env, github, InMemoryRegistrations(), sleep = {}).register(tokens))
         assertTrue(github.postedBodies.isEmpty())
 
-        Registration(env, github, RegistrationStore(env, dir), sleep = {}).register(tokens, retry = true)
+        Registration(env, github, InMemoryRegistrations(), sleep = {}).register(tokens, retry = true)
         assertEquals(1, github.postedBodies.size)
     }
 }

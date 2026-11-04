@@ -9,9 +9,7 @@ import dev.robocode.tankroyale.rumble.GitHubSignIn
 import dev.robocode.tankroyale.rumble.LoadResult
 import dev.robocode.tankroyale.rumble.Registration
 import dev.robocode.tankroyale.rumble.RegistrationResult
-import dev.robocode.tankroyale.rumble.RegistrationStore
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
-import dev.robocode.tankroyale.rumble.SavedAccountStore
 import dev.robocode.tankroyale.rumble.SavedRenewal
 import dev.robocode.tankroyale.rumble.SignInFinish
 import dev.robocode.tankroyale.rumble.SignInFlow
@@ -20,7 +18,6 @@ import dev.robocode.tankroyale.rumble.SignInStore
 import dev.robocode.tankroyale.rumble.WaitingSignIn
 import dev.robocode.tankroyale.rumble.signInNotAvailable
 import kotlinx.serialization.json.JsonObjectBuilder
-import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -33,8 +30,6 @@ internal abstract class SignInLeaf(name: String, io: Io, protected val services:
             env,
             GitHubSignIn(env, services.auth, services.clock),
             SignInStore(env, base),
-            SavedAccountStore(env, base),
-            RegistrationStore(env, base),
             services.api,
             services.clock,
             services.sleep,
@@ -156,15 +151,13 @@ internal class LogoutCommand(io: Io, services: Services) : SignInLeaf("logout", 
     override fun run() {
         val env = environment()
         val result = flow(env).signOut()
-        val reply = if (result.remaining.isEmpty()) {
+        val reply = if (result.removed) {
             reply(
                 env, ExitCodes.DONE, "signed-out",
                 (if (result.removedSomething) "Signed out on this computer." else "Nothing was saved, so nothing was removed.") + " $REVOKE_NOTE",
             ) { put("removedSomething", result.removedSomething) }
         } else {
-            reply(env, ExitCodes.FAILED, "not-removed", "Could not remove: ${result.remaining.joinToString()}. Close other programs that use it and run logout again.", next = "logout") {
-                put("remaining", buildJsonArray { result.remaining.forEach { add(kotlinx.serialization.json.JsonPrimitive(it)) } })
-            }
+            reply(env, ExitCodes.FAILED, "not-removed", "The saved sign-in could not be removed. Close other programs that use it and run logout again.", next = "logout")
         }
         answer(reply)
     }
@@ -186,7 +179,6 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
             answer(reply(env, ExitCodes.REFUSED, "no-sign-in-app", env.signInNotAvailable()))
             return
         }
-        val base = base()
         val flow = flow(env)
         when (val renewal = flow.renewSaved()) {
             is SavedRenewal.SignInNeeded -> answer(
@@ -199,9 +191,8 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
             is SavedRenewal.Failed -> answer(reply(env, ExitCodes.FAILED, "failed", renewal.message, next = "register"))
             is SavedRenewal.Renewed -> {
                 // The promise is that the next register fills in a name that was missing, however this one ends.
-                if (SavedAccountStore(env, base).load() == null) flow.identify(renewal.tokens)
-                val store = RegistrationStore(env, base)
-                val result = Registration(env, services.api, store, services.clock, services.sleep, services.registrationPollSeconds, services.registrationWaitSeconds)
+                if (renewal.account == null) flow.identify(renewal)
+                val result = Registration(env, services.api, flow.registrationMemory(renewal), services.clock, services.sleep, services.registrationPollSeconds, services.registrationWaitSeconds)
                     .register(renewal.tokens, retry)
                 answer(registered(env, flow, result, renewal))
             }
@@ -214,7 +205,7 @@ internal class RegisterCommand(io: Io, services: Services) : SignInLeaf("registe
         val afterwards = if (signInKept) null else "login"
         return when (result) {
             is RegistrationResult.Registered -> {
-                if (!flow.afterRegistration(result.account, renewal)) {
+                if (signInKept && !flow.stillSignedIn(renewal)) {
                     return reply(
                         env, ExitCodes.NOT_FINISHED, "sign-in-changed",
                         "${result.account} is registered, but the sign-in changed while it ran, so nothing was saved for it on this computer. Run register again.",
@@ -255,12 +246,9 @@ internal class StatusFacts(env: RumbleEnvironment, base: java.nio.file.Path, ser
     private val store = SignInStore(env, base)
     val signIn: LoadResult = store.load()
     val signedIn = signIn is LoadResult.Found
-
-    /** The account of the saved sign-in. A name left without a sign-in says nothing. */
-    val account: String? = if (signedIn) SavedAccountStore(env, base).load() else null
+    val account: String? = (signIn as? LoadResult.Found)?.account
     val waiting: WaitingSignIn? = store.loadWaiting()?.takeIf { services.clock.instant().isBefore(it.expiresAt) }
-    private val saved = RegistrationStore(env, base).loadAny()
-    val registration = saved?.takeIf { account == null || it.account.equals(account, ignoreCase = true) }
+    val registration = (signIn as? LoadResult.Found)?.registration
 
     val ready = signedIn && account != null && registration != null
 

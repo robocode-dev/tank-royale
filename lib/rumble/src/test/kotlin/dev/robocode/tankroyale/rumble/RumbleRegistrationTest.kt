@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.rumble
 
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -15,12 +16,16 @@ class RumbleRegistrationTest {
     private val env = RumbleEnvironments.TEST
     private val dataRepo = "/repos/robocode-dev/rumble-data-test"
 
-    private class Run(val registration: Registration, val clock: MutableClock, val sleeps: MutableList<Long>, val store: RegistrationStore)
+    private class Run(val registration: Registration, val clock: MutableClock, val sleeps: MutableList<Long>, val store: InMemoryRegistrations)
+
+    private val memories = HashMap<Path, InMemoryRegistrations>()
+
+    private fun memory(base: Path) = memories.getOrPut(base) { InMemoryRegistrations() }
 
     private fun run(github: FakeRumbleGitHub, base: Path): Run {
         val clock = MutableClock(START)
         val sleeps = mutableListOf<Long>()
-        val store = RegistrationStore(env, base)
+        val store = memory(base)
         val registration = Registration(env, github, store, clock, sleep = { millis -> sleeps += millis; clock.advanceMillis(millis) })
         return Run(registration, clock, sleeps, store)
     }
@@ -64,7 +69,7 @@ class RumbleRegistrationTest {
 
         val garbage = FakeRumbleGitHub().apply { contentsBody = """{"content":"%%%not base64%%%"}""" }
         assertTrue(run(garbage, base).registration.register(tokens()) is RegistrationResult.Failed)
-        assertEquals(null, RegistrationStore(env, base).load("alice"))
+        assertEquals(null, memory(base).load("alice"))
     }
 
     // RCL-037
@@ -155,7 +160,7 @@ class RumbleRegistrationTest {
         }
         val refused = run(github, base).registration.register(tokens())
         assertEquals(RegistrationResult.Refused("account `alice` is banned", account = "alice"), refused)
-        assertEquals(null, RegistrationStore(env, base).load("alice"))
+        assertEquals(null, memory(base).load("alice"))
 
         val long = FakeRumbleGitHub().apply {
             comments = """[{"user":{"login":"github-actions[bot]"},"body":"Registration refused: ${"x".repeat(500)}"}]"""
@@ -187,66 +192,67 @@ class RumbleRegistrationTest {
         assertTrue((run(broken, base).registration.register(tokens()) as RegistrationResult.Failed).message.contains("HTTP 500"))
     }
 
-    // RCL-039
+    // RCL-042
+
+    private val alice = SignInIdentity("alice", "/home/alice", "Linux")
+
+    private fun signedIn(base: Path, environment: RumbleEnvironment = env): Pair<SignInStore, String> {
+        val store = SignInStore(environment, base, alice)
+        assertEquals(SaveResult.Saved, store.beginSignIn("ghr_X", null))
+        return store to (store.load() as LoadResult.Found).signInId
+    }
 
     @Test
-    @Tag("RCL-039")
+    @Tag("RCL-042")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCL039_UnitPositive_theSavedRegistrationIsAPlainFileWithAccountClientIdEnvironmentAndTime(@TempDir base: Path) {
-        val store = RegistrationStore(env, base)
+    fun testRCL042_UnitPositive_theRegistrationIsSavedInTheSignInsOneFileAndARenewalKeepsIt(@TempDir base: Path) {
+        val (store, id) = signedIn(base)
 
-        assertTrue(store.save(RegistrationRecord("Alice", "alice-1a2b3c4d", "test", START)))
+        assertTrue(store.registrationFor(id).save(RegistrationRecord("Alice", "alice-1a2b3c4d", "test", START)))
+        assertEquals(SaveResult.Saved, store.save("ghr_RENEWED", null))
 
-        val loaded = store.load("alice")
-        assertNotNull(loaded)
-        assertEquals("alice-1a2b3c4d", loaded!!.clientId)
-        assertEquals(START, loaded.savedAt)
-        val text = java.nio.file.Files.readString(env.stateRoot(base).resolve("registration.json"))
-        listOf("alice-1a2b3c4d", "\"environment\":\"test\"", "\"account\":\"Alice\"", START.toString()).forEach { assertTrue(text.contains(it), it) }
+        val loaded = SignInStore(env, base, alice).load() as LoadResult.Found
+        assertEquals("ghr_RENEWED", loaded.refreshToken)
+        assertEquals(id, loaded.signInId)
+        assertEquals("Alice", loaded.account)
+        assertEquals("alice-1a2b3c4d", loaded.registration!!.clientId)
+        assertEquals("test", loaded.registration!!.environment)
+        assertEquals(START, loaded.registration!!.savedAt)
+        assertEquals("alice-1a2b3c4d", store.registrationFor(id).load("alice")!!.clientId)
+        assertEquals(listOf("signin.bin", "signin.lock"), env.stateRoot(base).toFile().list()!!.sorted())
     }
 
     @Test
-    @Tag("RCL-039")
+    @Tag("RCL-042")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCL039_UnitNegative_aRegistrationForAnotherAccountEnvironmentOrADamagedFileIsIgnoredAndSigningOutRemovesIt(@TempDir base: Path) {
-        val store = RegistrationStore(env, base)
-        store.save(RegistrationRecord("alice", "alice-1", "test", START))
-        val file = env.stateRoot(base).resolve("registration.json")
+    fun testRCL042_UnitNegative_aRegistrationIsIgnoredForAnotherAccountAndEnvironmentAndAlwaysFollowsItsSignIn(@TempDir base: Path) {
+        val (store, id) = signedIn(base)
+        val memory = store.registrationFor(id)
+        memory.save(RegistrationRecord("alice", "alice-1", "test", START))
 
-        assertEquals(null, store.load("bob"))
+        assertEquals(null, memory.load("bob"))
 
-        val publicFolder = RumbleEnvironments.PUBLIC.stateRoot(base)
-        java.nio.file.Files.createDirectories(publicFolder)
-        java.nio.file.Files.copy(file, publicFolder.resolve("registration.json"))
-        assertEquals(null, RegistrationStore(RumbleEnvironments.PUBLIC, base).load("alice"))
+        val publicFile = RumbleEnvironments.PUBLIC.stateRoot(base).resolve("signin.bin")
+        java.nio.file.Files.createDirectories(publicFile.parent)
+        java.nio.file.Files.copy(env.stateRoot(base).resolve("signin.bin"), publicFile)
+        assertInstanceOf(LoadResult.Unusable::class.java, SignInStore(RumbleEnvironments.PUBLIC, base, alice).load())
 
-        java.nio.file.Files.writeString(file, "{ damaged")
-        assertEquals(null, store.load("alice"))
-        java.nio.file.Files.writeString(file, """{"schemaVersion":2,"account":"alice","clientId":"x","environment":"test","savedAt":"$START"}""")
-        assertEquals(null, store.load("alice"))
+        assertEquals(SaveResult.Saved, store.beginSignIn("ghr_NEW", null))
+        val fresh = store.load() as LoadResult.Found
+        assertNotEquals(id, fresh.signInId)
+        assertEquals(null, fresh.registration)
+        assertEquals(null, fresh.account)
+        assertFalse(memory.save(RegistrationRecord("alice", "alice-1", "test", START)), "too late for a later sign-in")
+        assertFalse(store.saveAccount(id, "alice"), "too late for a later sign-in")
+        assertEquals(null, (store.load() as LoadResult.Found).account)
 
-        store.save(RegistrationRecord("alice", "alice-1", "test", START))
-        store.forget()
-        assertFalse(java.nio.file.Files.exists(file))
-        assertEquals(null, store.load("alice"))
-    }
-
-    @Test
-    @Tag("RCL-039")
-    @Tag("Unit")
-    @Tag("Negative")
-    fun testRCL039_UnitNegative_signingOutRemovesTheSavedSignInAndTheSavedRegistration(@TempDir base: Path) {
-        val registrationStore = RegistrationStore(env, base)
-        val signInStore = SignInStore(env, base, SignInIdentity("alice", "/home/alice", "Linux"))
-        val saved = SavedSignIn(signInStore, GitHubSignIn(env, FakeTransport(), MutableClock(START)), registrationStore)
-        signInStore.save("ghr_X", null)
-        registrationStore.save(RegistrationRecord("alice", "alice-1", "test", START))
-
-        saved.forget()
-
-        assertEquals(LoadResult.Missing, signInStore.load())
-        assertEquals(null, registrationStore.load("alice"))
+        val freshMemory = store.registrationFor(fresh.signInId)
+        freshMemory.save(RegistrationRecord("alice", "alice-1", "test", START))
+        SavedSignIn(store, GitHubSignIn(env, FakeTransport(), MutableClock(START))).forget()
+        assertEquals(LoadResult.Missing, store.load())
+        assertEquals(null, freshMemory.load("alice"))
+        assertFalse(freshMemory.save(RegistrationRecord("alice", "alice-1", "test", START)), "too late after signing out")
     }
 }

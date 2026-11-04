@@ -9,7 +9,25 @@ import kotlinx.serialization.json.contentOrNull
 import java.io.IOException
 import java.time.Clock
 import java.time.Duration
+import java.time.Instant
 import java.util.Base64
+
+/** What the Rumble knows about a registered account on this computer. None of it is secret. */
+class RegistrationRecord(
+    val account: String,
+    val clientId: String,
+    val environment: String,
+    val savedAt: Instant,
+)
+
+/** Where a registration is remembered, so later runs do not need the network. */
+interface RegistrationMemory {
+    /** The registration of [account], or null when none is remembered. */
+    fun load(account: String): RegistrationRecord?
+
+    /** Remembers [record]. Returns false when it could not be; the registration itself is not lost. */
+    fun save(record: RegistrationRecord): Boolean
+}
 
 /** How registering an account with the Rumble ended. */
 sealed interface RegistrationResult {
@@ -44,7 +62,7 @@ sealed interface RegistrationResult {
 class Registration(
     private val environment: RumbleEnvironment,
     private val api: GitHubApi,
-    private val store: RegistrationStore,
+    private val store: RegistrationMemory,
     private val clock: Clock = Clock.systemUTC(),
     private val sleep: (Long) -> Unit = { Thread.sleep(it) },
     private val pollSeconds: Int = 5,

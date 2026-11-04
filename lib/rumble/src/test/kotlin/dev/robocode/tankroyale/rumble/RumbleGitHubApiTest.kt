@@ -56,7 +56,7 @@ class RumbleGitHubApiTest {
                 val github = FakeRumbleGitHub().apply(configure)
                 val clock = MutableClock(START)
                 val result = Registration(
-                    RumbleEnvironments.TEST, github, RegistrationStore(RumbleEnvironments.TEST, base), clock,
+                    RumbleEnvironments.TEST, github, InMemoryRegistrations(), clock,
                     sleep = { clock.advanceMillis(it) },
                 ).register(tokens())
                 github.requests.forEach { addresses += it.second }

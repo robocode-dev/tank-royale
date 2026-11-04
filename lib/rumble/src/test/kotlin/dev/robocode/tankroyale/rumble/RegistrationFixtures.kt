@@ -5,6 +5,20 @@ import java.util.Base64
 
 const val SECRET_TOKEN = "ghu_REGISTRATIONSECRET789"
 
+/** Remembers registrations for the length of a test. */
+class InMemoryRegistrations : RegistrationMemory {
+    var refuseToSave = false
+    private val records = mutableListOf<RegistrationRecord>()
+
+    override fun load(account: String) = records.lastOrNull { it.account.equals(account, ignoreCase = true) }
+
+    override fun save(record: RegistrationRecord): Boolean {
+        if (refuseToSave) return false
+        records += record
+        return true
+    }
+}
+
 /** Plays GitHub and the Rumble result repository: the account, its registration file, open issues and the workflow. */
 class FakeRumbleGitHub(
     private val login: String = "alice",

@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.rumble.cli
 
 import dev.robocode.tankroyale.rumble.RegistrationRecord
-import dev.robocode.tankroyale.rumble.RegistrationStore
+import dev.robocode.tankroyale.rumble.LoadResult
 import dev.robocode.tankroyale.rumble.RumbleEnvironments
 import dev.robocode.tankroyale.rumble.SaveResult
 import dev.robocode.tankroyale.rumble.SignInIdentity
@@ -244,8 +244,9 @@ class RumbleCliTest {
     @Tag("Positive")
     fun testRCI016_UnitPositive_statusSaysWhatIsSavedAndNeverShowsTheToken(@TempDir dir: Path) {
         val env = RumbleEnvironments.TEST
-        assertTrue(RegistrationStore(env, dir).save(RegistrationRecord("alice", "alice-1a2b3c4d", "test", Instant.parse("2026-11-01T10:00:00Z"))))
         saveSignIn(dir, "test")
+        val store = SignInStore(env, dir)
+        assertTrue(store.registrationFor((store.load() as LoadResult.Found).signInId).save(RegistrationRecord("alice", "alice-1a2b3c4d", "test", Instant.parse("2026-11-01T10:00:00Z"))))
 
         val saved = run(dir, "status", "--environment", "test", "--json", "--state-folder", dir.toString())
         val none = run(dir, "status", "--environment", "public", "--json", "--state-folder", dir.toString())
@@ -338,8 +339,9 @@ class RumbleCliTest {
     fun testRCI017_UnitPositive_noAnswerHoldsTheTokenTheHomeFolderTheUserNameOrAnAbsolutePathOfThisComputer(@TempDir dir: Path) {
         val state = dir.resolve("state")
         val config = oldClient(dir)
-        RegistrationStore(RumbleEnvironments.PUBLIC, state).save(RegistrationRecord("alice", "alice-1a2b3c4d", "public", Instant.parse("2026-11-01T10:00:00Z")))
         saveSignIn(state, "public")
+        val store = SignInStore(RumbleEnvironments.PUBLIC, state)
+        store.registrationFor((store.load() as LoadResult.Found).signInId).save(RegistrationRecord("alice", "alice-1a2b3c4d", "public", Instant.parse("2026-11-01T10:00:00Z")))
         val user = System.getProperty("user.name").orEmpty()
         val home = System.getProperty("user.home").orEmpty()
 

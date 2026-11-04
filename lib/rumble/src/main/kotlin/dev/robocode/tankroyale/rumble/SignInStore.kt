@@ -7,8 +7,10 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
+import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 import java.security.GeneralSecurityException
 import java.security.SecureRandom
@@ -44,8 +46,17 @@ sealed interface SaveResult {
 }
 
 sealed interface LoadResult {
-    /** A saved refresh token. Its text form hides the token. */
-    class Found(val refreshToken: String, val refreshTokenExpiresAt: Instant?) : LoadResult {
+    /**
+     * A saved sign-in and what belongs to it: [signInId] is the same from the person's approval until they sign out, and
+     * [account] and [registration] are what is known of it so far. Its text form hides the token.
+     */
+    class Found(
+        val refreshToken: String,
+        val refreshTokenExpiresAt: Instant?,
+        val signInId: String = "",
+        val account: String? = null,
+        val registration: RegistrationRecord? = null,
+    ) : LoadResult {
         override fun toString(): String = "Found(refreshToken=hidden, refreshTokenExpiresAt=$refreshTokenExpiresAt)"
     }
 
@@ -84,7 +95,9 @@ class WaitingSignIn internal constructor(
 /**
  * Keeps the sign-in between runs in one file per Rumble environment, with standard Java on every operating system.
  *
- * Only the refresh token is saved. The file is created so that only its owner may use it, its rights are read back,
+ * The file holds the refresh token and what belongs to that sign-in: its identity, the account name and the
+ * registration, and a code waiting for approval. Because it is one file written in one step, those parts cannot get out
+ * of step and signing out removes them all. The access token is never saved. The file is created so that only its owner may use it, its rights are read back,
  * its content is encrypted with AES-256-GCM using a key derived from the user, the home folder and the operating
  * system, and the environment name is protected context so a file from one environment is useless in another. This
  * keeps a copied file closed, but a program running as the same user on the same computer can derive the same key.
@@ -100,16 +113,11 @@ class SignInStore(
     private val folder: Path = environment.stateRoot(baseFolder)
     private val file: Path = folder.resolve(FILE_NAME)
     private val temp: Path = folder.resolve("$FILE_NAME.tmp")
-    private val waitingFile: Path = folder.resolve(WAITING_FILE_NAME)
-    private val waitingTemp: Path = folder.resolve("$WAITING_FILE_NAME.tmp")
     private val lockFile: Path = folder.resolve("signin.lock")
     private val key: SecretKey by lazy { deriveKey(identity.keyMaterial()) }
 
     @Serializable
-    private class Payload(val refreshToken: String, val expiresAt: String? = null)
-
-    @Serializable
-    private class WaitingPayload(
+    private class SavedCode(
         val userCode: String,
         val verificationUri: String,
         val expiresAt: String,
@@ -118,54 +126,81 @@ class SignInStore(
         val deviceCode: String,
     )
 
-    /** Saves [refreshToken], or reports in plain words why it could not. */
+    /** Everything saved for this environment, written as one, so its parts can never get out of step. */
+    @Serializable
+    private data class Payload(
+        val refreshToken: String? = null,
+        val expiresAt: String? = null,
+        val signInId: String? = null,
+        val account: String? = null,
+        val clientId: String? = null,
+        val registeredAt: String? = null,
+        val waiting: SavedCode? = null,
+    )
+
+    /**
+     * Saves a renewed [refreshToken] for the sign-in already saved, keeping what belongs to it, or starts a new one when
+     * none is saved. Reports in plain words why it could not.
+     */
     fun save(refreshToken: String, expiresAt: Instant?): SaveResult {
-        if (!enabled) return SaveResult.NotSaved("Saving the sign-in is switched off.")
-        val payload = Json.encodeToString(Payload.serializer(), Payload(refreshToken, expiresAt?.toString()))
-        return writeProtected(file, temp, payload, associatedData())
+        val now = current() ?: Payload()
+        return if (now.refreshToken == null) beginSignIn(refreshToken, expiresAt)
+        else write(now.copy(refreshToken = refreshToken, expiresAt = expiresAt?.toString()))
     }
 
-    /** Saves a code that is waiting for the person's approval, protected like the sign-in. */
-    fun saveWaiting(waiting: WaitingSignIn): SaveResult {
-        if (!enabled) return SaveResult.NotSaved("Saving the sign-in is switched off.")
-        val payload = Json.encodeToString(
-            WaitingPayload.serializer(),
-            WaitingPayload(
+    /** Saves a sign-in the person has just approved. It gets a new identity and nothing from any earlier sign-in. */
+    fun beginSignIn(refreshToken: String, expiresAt: Instant?): SaveResult =
+        write(Payload(refreshToken, expiresAt?.toString(), UUID.randomUUID().toString()))
+
+    /** Saves [account] as the name of sign-in [signInId], unless that is no longer the saved sign-in. Takes the lock. */
+    fun saveAccount(signInId: String, account: String): Boolean = locked {
+        val now = current()
+        now != null && now.refreshToken != null && now.signInId == signInId && write(now.copy(account = account)) == SaveResult.Saved
+    }
+
+    /**
+     * Where a registration is remembered for sign-in [signInId]. Once that is no longer the saved sign-in, a registration
+     * finishing late saves nothing, so it can never be taken for another account's. It takes the lock.
+     */
+    fun registrationFor(signInId: String): RegistrationMemory = object : RegistrationMemory {
+        override fun load(account: String): RegistrationRecord? =
+            (this@SignInStore.load() as? LoadResult.Found)?.takeIf { it.signInId == signInId }?.registration
+                ?.takeIf { it.account.equals(account, ignoreCase = true) }
+
+        override fun save(record: RegistrationRecord): Boolean = locked {
+            val now = current()
+            now != null && now.refreshToken != null && now.signInId == signInId &&
+                write(now.copy(account = record.account, clientId = record.clientId, registeredAt = record.savedAt.toString())) == SaveResult.Saved
+        }
+    }
+
+    /** Saves a code that is waiting for the person's approval. */
+    fun saveWaiting(waiting: WaitingSignIn): SaveResult = write(
+        (current() ?: Payload()).copy(
+            waiting = SavedCode(
                 waiting.userCode, waiting.verificationUri, waiting.expiresAt.toString(), waiting.intervalSeconds,
                 waiting.nextCheckAt.toString(), waiting.deviceCode,
             ),
-        )
-        return writeProtected(waitingFile, waitingTemp, payload, waitingData())
-    }
+        ),
+    )
 
     /** The code that is waiting, or null when none is, or the file cannot be trusted. */
     fun loadWaiting(): WaitingSignIn? {
-        if (!enabled || !Files.exists(waitingFile)) return null
+        val code = current()?.waiting ?: return null
         return try {
-            if (!protection.isOwnerOnly(waitingFile)) return null
-            val plain = decrypt(Files.readAllBytes(waitingFile), waitingData())
-            val p = Json.decodeFromString(WaitingPayload.serializer(), String(plain, StandardCharsets.UTF_8))
-            WaitingSignIn(p.userCode, p.verificationUri, Instant.parse(p.expiresAt), p.intervalSeconds, Instant.parse(p.nextCheckAt), p.deviceCode)
-        } catch (e: GeneralSecurityException) {
-            null
-        } catch (e: IOException) {
-            null
-        } catch (e: IllegalArgumentException) {
-            null
+            WaitingSignIn(code.userCode, code.verificationUri, Instant.parse(code.expiresAt), code.intervalSeconds, Instant.parse(code.nextCheckAt), code.deviceCode)
         } catch (e: java.time.format.DateTimeParseException) {
             null
         }
     }
 
-    /** Removes the waiting code. Returns false when it is still there. */
-    fun forgetWaiting(): Boolean {
-        runCatching { Files.deleteIfExists(waitingTemp) }
-        runCatching { Files.deleteIfExists(waitingFile) }
-        return Files.notExists(waitingFile)
+    /** Removes the waiting code and keeps the rest. */
+    fun forgetWaiting() {
+        current()?.takeIf { it.waiting != null }?.let { write(it.copy(waiting = null)) }
     }
 
     /** True unless nothing is known to be saved in this store, without creating anything. */
-    fun hasSavedFiles(): Boolean = listOf(file, temp, waitingFile, waitingTemp).any { !Files.notExists(it) }
+    fun hasSavedFiles(): Boolean = listOf(file, temp).any { !Files.notExists(it) }
 
     /** True when saving is on and no sign-in is known to be saved, so no lock is needed to find that out. */
     fun knownMissing(): Boolean = enabled && Files.notExists(file)
@@ -191,32 +226,64 @@ class SignInStore(
         }
     }
 
-    private fun writeProtected(target: Path, tempFile: Path, payload: String, context: ByteArray): SaveResult {
+    private fun write(payload: Payload): SaveResult {
+        if (!enabled) return SaveResult.NotSaved("Saving the sign-in is switched off.")
+        if (payload.refreshToken == null && payload.waiting == null) {
+            return if (forget()) SaveResult.Saved else SaveResult.NotSaved("The sign-in could not be saved to this computer.")
+        }
         try {
             Files.createDirectories(folder)
-            Files.deleteIfExists(tempFile)
-            protection.createOwnerOnly(tempFile)
-            if (!protection.isOwnerOnly(tempFile)) {
-                Files.deleteIfExists(tempFile)
+            Files.deleteIfExists(temp)
+            protection.createOwnerOnly(temp)
+            if (!protection.isOwnerOnly(temp)) {
+                Files.deleteIfExists(temp)
                 return SaveResult.NotSaved(PRIVATE)
             }
-            Files.write(tempFile, encrypt(payload.toByteArray(StandardCharsets.UTF_8), context))
-            replaceFile(tempFile, target)
-            if (!protection.isOwnerOnly(target)) {
-                Files.deleteIfExists(target)
+            val text = Json.encodeToString(Payload.serializer(), payload)
+            Files.write(temp, encrypt(text.toByteArray(StandardCharsets.UTF_8)))
+            moveIntoPlace()
+            if (!protection.isOwnerOnly(file)) {
+                Files.deleteIfExists(file)
                 return SaveResult.NotSaved(PRIVATE)
             }
             return SaveResult.Saved
         } catch (e: IOException) {
-            discard(tempFile)
+            discard()
             return SaveResult.NotSaved("The sign-in could not be saved to this computer.")
         } catch (e: GeneralSecurityException) {
-            discard(tempFile)
+            discard()
             return SaveResult.NotSaved("The sign-in could not be encrypted on this computer.")
         } catch (e: UnsupportedOperationException) {
-            discard(tempFile)
+            discard()
             return SaveResult.NotSaved(PRIVATE)
         }
+    }
+
+    /** What is saved, or null when nothing is or it cannot be trusted. */
+    private fun current(): Payload? {
+        if (!enabled || !Files.exists(file)) return null
+        return try {
+            if (protection.isOwnerOnly(file)) read() else null
+        } catch (e: GeneralSecurityException) {
+            null
+        } catch (e: IOException) {
+            null
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
+
+    private fun read(): Payload =
+        Json.decodeFromString(Payload.serializer(), String(decrypt(Files.readAllBytes(file)), StandardCharsets.UTF_8))
+
+    private fun found(payload: Payload): LoadResult {
+        val refreshToken = payload.refreshToken ?: return LoadResult.Missing
+        val account = payload.account
+        val clientId = payload.clientId
+        val registeredAt = payload.registeredAt
+        val registration =
+            if (account != null && clientId != null && registeredAt != null) RegistrationRecord(account, clientId, environment.name, Instant.parse(registeredAt)) else null
+        return LoadResult.Found(refreshToken, payload.expiresAt?.let { Instant.parse(it) }, payload.signInId.orEmpty(), account, registration)
     }
 
     /** Loads the saved refresh token, or says that there is none or why it cannot be used. */
@@ -227,9 +294,7 @@ class SignInStore(
             if (!protection.isOwnerOnly(file)) {
                 LoadResult.Unusable("The saved sign-in can be used by other people, so it was ignored. Sign in again.")
             } else {
-                val plain = decrypt(Files.readAllBytes(file), associatedData())
-                val payload = Json.decodeFromString(Payload.serializer(), String(plain, StandardCharsets.UTF_8))
-                LoadResult.Found(payload.refreshToken, payload.expiresAt?.let { Instant.parse(it) })
+                found(read())
             }
         } catch (e: GeneralSecurityException) {
             LoadResult.Unusable(
@@ -244,9 +309,9 @@ class SignInStore(
         }
     }
 
-    /** Removes the saved sign-in. It is not an error when there is none. Returns false when it is still there. */
+    /** Removes everything saved here. It is not an error when nothing is. Returns false when it is still there. */
     fun forget(): Boolean {
-        discard(temp)
+        discard()
         try {
             Files.deleteIfExists(file)
         } catch (e: IOException) {
@@ -272,33 +337,39 @@ class SignInStore(
         }
     }
 
-    private fun discard(tempFile: Path) {
+    private fun discard() {
         try {
-            Files.deleteIfExists(tempFile)
+            Files.deleteIfExists(temp)
         } catch (e: IOException) {
             // The temporary file holds no readable token text; leave it for the next save to replace.
         }
     }
 
+    private fun moveIntoPlace() {
+        try {
+            Files.move(temp, file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+        } catch (e: AtomicMoveNotSupportedException) {
+            Files.move(temp, file, StandardCopyOption.REPLACE_EXISTING)
+        }
+    }
+
     private fun associatedData(): ByteArray = MAGIC + environment.name.toByteArray(StandardCharsets.UTF_8)
 
-    private fun waitingData(): ByteArray = associatedData() + WAITING_CONTEXT
-
-    private fun encrypt(plain: ByteArray, context: ByteArray): ByteArray {
+    private fun encrypt(plain: ByteArray): ByteArray {
         val nonce = ByteArray(NONCE_BYTES).also { SecureRandom().nextBytes(it) }
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, key, GCMParameterSpec(TAG_BITS, nonce))
-        cipher.updateAAD(context)
+        cipher.updateAAD(associatedData())
         val encrypted = cipher.doFinal(plain)
         return ByteBuffer.allocate(MAGIC.size + nonce.size + encrypted.size).put(MAGIC).put(nonce).put(encrypted).array()
     }
 
-    private fun decrypt(stored: ByteArray, context: ByteArray): ByteArray {
+    private fun decrypt(stored: ByteArray): ByteArray {
         if (stored.size < MAGIC.size + NONCE_BYTES + TAG_BITS / 8) throw GeneralSecurityException("too short")
         if (!stored.copyOfRange(0, MAGIC.size).contentEquals(MAGIC)) throw GeneralSecurityException("not a sign-in file")
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(TAG_BITS, stored, MAGIC.size, NONCE_BYTES))
-        cipher.updateAAD(context)
+        cipher.updateAAD(associatedData())
         val start = MAGIC.size + NONCE_BYTES
         return cipher.doFinal(stored, start, stored.size - start)
     }
@@ -311,8 +382,6 @@ class SignInStore(
 
     companion object {
         private const val FILE_NAME = "signin.bin"
-        private const val WAITING_FILE_NAME = "signin-waiting.bin"
-        private val WAITING_CONTEXT = "|waiting".toByteArray(StandardCharsets.UTF_8)
         private const val NONCE_BYTES = 12
         private const val TAG_BITS = 128
         private const val ITERATIONS = 100_000
