@@ -172,4 +172,52 @@ class RumbleCliProcessTest {
         assertFalse(bad.err.contains("WARNING"), bad.err)
         assertEquals(1, bad.err.trim().lines().size, bad.err)
     }
+
+    // RCI-041
+
+    private fun botFolder(parent: Path): Path {
+        val dir = Files.createDirectories(parent.resolve("MyBot"))
+        Files.writeString(dir.resolve("MyBot.json"), """{ "name": "MyBot", "version": "1.0.0", "authors": ["A. Author"], "license": "MIT", "description": "A test bot", "platform": "JVM" }""")
+        Files.writeString(dir.resolve("MyBot.sh"), "#!/bin/sh\n")
+        Files.writeString(dir.resolve("MyBot.cmd"), "@echo off\r\n")
+        Files.createDirectories(dir.resolve("src"))
+        Files.writeString(dir.resolve("src/MyBot.java"), "import dev.robocode.tankroyale.botapi.Bot;\nclass MyBot\n")
+        return dir
+    }
+
+    @Test
+    @Tag("RCI-041")
+    @Tag("Integration")
+    @Tag("Positive")
+    fun testRCI041_IntegrationPositive_theRealProgramChecksABotAndSendsAPersonWhoIsNotSignedInToLogIn(@TempDir dir: Path) {
+        val bot = botFolder(dir)
+        val state = dir.resolve("state")
+
+        val check = runCli("bot", "check", bot.toString(), "--json", "--state-folder", state.toString())
+        assertEquals(0, check.exit, check.out + check.err)
+        assertEquals("passes", Json.parseToJsonElement(check.out.trim()).jsonObject["outcome"]!!.jsonPrimitive.content)
+        assertEquals("", check.err)
+        assertFalse(Files.exists(state), "checking writes nothing")
+
+        val send = runCli("bot", "send", bot.toString(), "--certify-license", "-e", "test", "--json", "--state-folder", state.toString())
+        assertEquals(3, send.exit, send.out + send.err)
+        assertEquals("no-sign-in", Json.parseToJsonElement(send.out.trim()).jsonObject["outcome"]!!.jsonPrimitive.content)
+        assertEquals("", send.err)
+    }
+
+    @Test
+    @Tag("RCI-041")
+    @Tag("Integration")
+    @Tag("Negative")
+    fun testRCI041_IntegrationNegative_aFolderThatIsNoBotIsRefusedAndTheHelpWarnsThatTheSourceIsPublic(@TempDir dir: Path) {
+        val none = runCli("bot", "check", dir.resolve("nothing").toString(), "--json")
+        assertEquals(2, none.exit)
+        assertEquals("check-failed", Json.parseToJsonElement(none.out.trim()).jsonObject["outcome"]!!.jsonPrimitive.content)
+        assertEquals("", none.err)
+
+        val help = runCli("bot", "send", "--help")
+        assertEquals(0, help.exit)
+        assertTrue(help.out.contains("BECOMES PUBLIC") || help.out.contains("BECOME PUBLIC"), help.out)
+        assertEquals("", help.err)
+    }
 }

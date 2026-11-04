@@ -42,6 +42,20 @@ sealed interface BotProgress {
     data class Failed(val message: String) : BotProgress
 }
 
+/** GitHub did not accept the sign-in while looking for a pull request. */
+class SignInRefused : IOException("GitHub did not accept the sign-in. Sign in again.")
+
+/** What the commands need of reading a bot's progress, so a test can stand in for GitHub. */
+interface BotProgressReading {
+    /** The newest pull request [account] sent for the bot [name], or null when there is none. */
+    fun find(tokens: GitHubTokens, account: String, name: String): SentBot?
+
+    fun read(tokens: GitHubTokens, pullRequestNumber: Int, name: String, version: String, catalog: Catalog?): BotProgress
+}
+
+/** A pull request an account sent for a bot, and the version it carries. */
+data class SentBot(val pullRequestNumber: Int, val version: String)
+
 /**
  * Reads, and only reads, what became of a bot's pull request in the Rumble's bot repository: the pull request, the
  * status and reviews the moderation workflow wrote for its head, and the catalog. It never comments, approves or merges.
@@ -51,13 +65,13 @@ sealed interface BotProgress {
 class SubmissionProgress(
     environment: RumbleEnvironment,
     private val api: GitHubApi,
-) {
+) : BotProgressReading {
     private val upstream = "/repos/${RumbleEnvironments.owner}/${environment.botsRepository}"
 
     private class Stop(val signInNeeded: Boolean, message: String) : Exception(message, null, false, false)
 
     /** [catalog] is the Rumble's current catalog, or null when it could not be read; [name] and [version] are the bot sent. */
-    fun read(tokens: GitHubTokens, pullRequestNumber: Int, name: String, version: String, catalog: Catalog?): BotProgress =
+    override fun read(tokens: GitHubTokens, pullRequestNumber: Int, name: String, version: String, catalog: Catalog?): BotProgress =
         try {
             progress(tokens.accessToken, pullRequestNumber, name, version, catalog)
         } catch (stop: Stop) {
@@ -65,6 +79,29 @@ class SubmissionProgress(
         } catch (e: IOException) {
             BotProgress.Failed("GitHub cannot be reached. Try again when you are online.")
         }
+
+    /**
+     * Finds the newest pull request that [account] opened for the bot [name], open or not. The program names its
+     * branches `submit/<name>-<version>`, which is how the version is found. Anything not found is null; a problem
+     * with GitHub throws [IOException] with a plain message.
+     */
+    override fun find(tokens: GitHubTokens, account: String, name: String): SentBot? {
+        val answer = api.get("$upstream/pulls?state=all&sort=created&direction=desc&per_page=100", tokens.accessToken)
+        if (answer.status == 401) throw SignInRefused()
+        if (answer.status != 200) throw IOException("GitHub gave an unexpected answer (HTTP ${answer.status}). Try again later.")
+        val pulls = (parse(answer.body) as? JsonArray) ?: throw IOException(NOT_UNDERSTOOD)
+        val prefix = "submit/$name-"
+        for (element in pulls) {
+            val pull = element as? JsonObject ?: continue
+            val author = (pull["user"] as? JsonObject)?.string("login")
+            val branch = (pull["head"] as? JsonObject)?.string("ref") ?: continue
+            if (!account.equals(author, ignoreCase = true) || !branch.startsWith(prefix)) continue
+            val number = (pull["number"] as? JsonPrimitive)?.contentOrNull?.toIntOrNull() ?: continue
+            val version = branch.removePrefix(prefix).replace(Regex("-\\d+$"), "")
+            if (version.isNotEmpty()) return SentBot(number, version)
+        }
+        return null
+    }
 
     private fun progress(token: String, number: Int, name: String, version: String, catalog: Catalog?): BotProgress {
         val pull = obj(expect(api.get("$upstream/pulls/$number", token)).body) ?: throw Stop(false, NOT_UNDERSTOOD)

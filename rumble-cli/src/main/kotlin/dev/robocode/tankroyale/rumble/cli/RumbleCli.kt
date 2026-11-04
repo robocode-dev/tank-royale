@@ -64,6 +64,7 @@ object RumbleCli {
         val root = Root().subcommands(
             VersionCommand(io), EnvironmentsCommand(io), StatusCommand(io, services), LoginCommand(io, services),
             LogoutCommand(io, services), RegisterCommand(io, services), ImportLegacyCommand(io),
+            BotGroup().subcommands(BotCheckCommand(io, services), BotSendCommand(io, services), BotStatusCommand(io, services)),
         ).context { readEnvvar = services.readEnv }
         val commands = root.registeredSubcommandNames()
         val first = args.firstOrNull()
@@ -167,7 +168,7 @@ object RumbleCli {
         private val environmentName by option("-e", "--environment", envvar = ENVIRONMENT_VARIABLE, help = "The Rumble environment. Defaults to the public Rumble.")
             .choice(*RumbleEnvironments.all.map { it.name }.toTypedArray()).default(RumbleEnvironments.PUBLIC.name)
 
-        protected fun environment(): RumbleEnvironment = RumbleEnvironments.all.first { it.name == environmentName }
+        protected open fun environment(): RumbleEnvironment = RumbleEnvironments.all.first { it.name == environmentName }
 
         /** The whole command for [step], naming the environment so it stays in the same place when run as it stands. */
         protected fun nextCommand(step: String): String = "rumble $step -e $environmentName"

@@ -337,8 +337,12 @@
           "sha256": "80f555981999a961dbbcf949fbff5052fc00bed49f8a0da79e107e9dc86ce9f1"
         },
         {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "sha256": "7a21a10fe2d898784f72c26b6a310d31109d2b64fca71a7a1789151e1e27876b"
+        },
+        {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
-          "sha256": "64c220a429a8952229ffb48af886f97e956bd84255ec8076cca82db4e16b8307"
+          "sha256": "e83d9658bd36fc0eb9b324626b71e1fedbdb1c9a292b3003dc6e7c8397e067eb"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
@@ -410,6 +414,132 @@
           "direction": "negative"
         },
         {
+          "id": "RCI-032",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI032_UnitNegative_everyProblemIsListedWithItsFixAndAFolderThatIsNoBotIsRefused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-032",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI032_UnitPositive_aPassingBotIsExitZeroWithNoSignInNoNetworkAndNothingWritten",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-033",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI033_UnitNegative_aDryRunStopsAtAProblemOfTheBotAndAtAnAccountThatIsNotReady",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-033",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI033_UnitPositive_aDryRunStagesChecksAndStopsBeforeSendingAnythingWithoutAConfirmation",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-034",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI034_UnitNegative_withoutTheOptionNothingIsSentAndNothingAsksForIt",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-034",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI034_UnitPositive_withTheCertifyOptionTheBotIsSentAndTheAnswerSaysTheAuthorConfirmed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-035",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI035_UnitNegative_theNoticeIsAlsoGivenWhenAProblemStopsTheSendAndInTheTestEnvironment",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-035",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI035_UnitPositive_everyAnswerSaysTheSourceIsPublicAndListsTheFilesInBothForms",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-036",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI036_UnitNegative_aFailureAndARefusalFromSendingAreAnsweredWithTheirReason",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-036",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI036_UnitPositive_eachOutcomeOfSendingIsSaidWithTheAddressAndTheNextStep",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-037",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI037_UnitNegative_theRumblesRulesStopASendAndAnUnreadableCatalogDoesNot",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-037",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI037_UnitPositive_aMissingSetupIsSaidWithTheAddressAndNothingIsSent",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-038",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI038_UnitNegative_aRefusedSignInOrTokenIsRemovedAndAnEnvironmentWithoutAnAppIsRefusedFirst",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-038",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI038_UnitPositive_noSavedSignInIsExitThreeWithLoginAsTheNextStep",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-039",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI039_UnitNegative_aBotNeverSentIsRefusedAndAnUnreadableCatalogIsSaidAndAFailureIsExitOne",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-039",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI039_UnitPositive_eachStateOfAPullRequestHasItsOwnOutcomeWord",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-042",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI042_UnitNegative_aUserNamedLikeAProgramWordChangesNothingButTheNameOfABotFromOutside",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-042",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI042_UnitPositive_theBotCommandsAnswerInBothFormsWithAnOutcomeTheEnvironmentAndARunnableNextStep",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
           "id": "RCI-003",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
           "subject": "RumbleCliProcessTest.testRCI003_IntegrationPositive_noCommandWaitsForInputWhenStandardInputIsClosed",
@@ -462,6 +592,20 @@
           "id": "RCI-031",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
           "subject": "RumbleCliProcessTest.testRCI031_IntegrationPositive_aCommandThatNeedsASignInEndsWithExitThreeAndOneDocument",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-041",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI041_IntegrationNegative_aFolderThatIsNoBotIsRefusedAndTheHelpWarnsThatTheSourceIsPublic",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-041",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCI041_IntegrationPositive_theRealProgramChecksABotAndSendsAPersonWhoIsNotSignedInToLogIn",
           "type": "Integration",
           "direction": "positive"
         },
