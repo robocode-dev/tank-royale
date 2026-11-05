@@ -390,4 +390,11 @@ Feature: rumble-command-line — Rumble command line
     When a maintainer reads about sending a bot
     Then it says that a bot was sent from the command line to the test environment and followed to the moderator, and that the program cannot make the copy of the bot repository because GitHub refuses it for the sign-in App
     And it says that a launcher that differs from the starter launcher needs a moderator, that the dry run and the send say so without blocking, and that building the branch from the Rumble's head when the copy is behind, other systems and the public environment are still unproven
+
+  @RCI-047
+  Scenario: The release carries the Rumble command line and its smoke test runs it
+    Test-type: Unit
+    Given the release build and the release instructions
+    When the release assets, the smoke test of the release and the release instructions are read
+    Then the command line jar of the release version is one of the uploaded assets, the smoke test runs it with the version option, and the instructions name it among the executable jars
 ```
