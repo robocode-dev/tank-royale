@@ -42,6 +42,29 @@ dependencies {
     testImplementation(testLibs.kotest.junit6)
 }
 
+// The desktop program calls the shared Rumble libraries in its own process and never depends on the Rumble command
+// line or the battle worker. The sources are checked by RumbleCliDependencyRulesTest in the command line's tests.
+val forbiddenRumbleProjects = setOf(":rumble-cli", ":rumble")
+
+val checkRumbleDependencyRules by tasks.registering {
+    group = "verification"
+    description = "Fails when the desktop program depends, directly or through another project, on the Rumble command line or the battle worker."
+    doLast {
+        val violations = listOf(configurations.runtimeClasspath, configurations.compileClasspath)
+            .flatMap { it.get().incoming.resolutionResult.allComponents }
+            .mapNotNull { (it.id as? ProjectComponentIdentifier)?.projectPath }
+            .filter { it in forbiddenRumbleProjects }
+            .toSortedSet()
+        check(violations.isEmpty()) {
+            "The desktop program must not depend on ${violations.joinToString()}"
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn(checkRumbleDependencyRules)
+}
+
 tasks {
     val copyBooterJar by registering(Copy::class) {
         dependsOn(":booter:r8ShrinkTask")
