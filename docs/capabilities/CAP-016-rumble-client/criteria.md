@@ -430,4 +430,60 @@ Feature: rumble-client — Local ranked and practice battle client
     When a maintainer reads how the desktop program and the command line use the Rumble code
     Then they say the desktop program calls the shared libraries in its own process and the command line is a second front end over the same libraries, and that nothing but the battle worker is fetched for the desktop program
     And they say that sending a bot needs no fetch, that the desktop program holds the sign-in token in its own memory and why that is accepted, and that the desktop program never depends on the command line or the worker
+
+  @RCL-051
+  Scenario: The account screen starts from the saved sign-in and shows what it found
+    Test-type: Unit
+    Given the account screen's behavior with a fake library
+    When it is opened with a saved sign-in that works, with none, with one that cannot be used, with one GitHub cannot be asked about, and in an environment without a sign-in App
+    Then the state is signed in with the account, signed out, signed out with the reason, signed out with the library's plain message, and unavailable with the library's plain message
+    And no state, message or text holds a token
+
+  @RCL-052
+  Scenario: Signing in shows the code, waits at GitHub's pace, registers the account and shows the client ID
+    Test-type: Unit
+    Given the account screen's behavior, a fake library and a clock the test moves
+    When the person signs in and approves, and when the code expires, is denied, the check fails for good, the sign-in cannot be kept or the registration is refused, not finished or needs a new sign-in
+    Then the state is waiting for the code with the code, the address and when it expires, then signed in while the account is registered and with the client ID, and in each failure the state says in plain words what happened and what the person can do
+    And GitHub is asked again only after the pace it asked for, a check that fails but can still work is tried again, and a refused registration is shown as such while the person stays signed in
+
+  @RCL-053
+  Scenario: Cancelling, closing and signing out stop the waiting and remove what they should, and nothing blocks the screen
+    Test-type: Unit
+    Given the account screen's behavior with a library whose calls block until released
+    When the person cancels, closes the dialog and signs out, and when every call to the library is blocked
+    Then every call to the screen returns at once, all work runs on a thread of its own, and results reach the screen through its own queue in order
+    And cancelling forgets the waiting code and stops further checks, closing stops the checks and keeps the code, and signing out removes the saved sign-in and shows signed out, or says plainly that it could not
+
+  @RCL-054
+  Scenario: The library behind the account screen signs in, registers and signs out as the command line does
+    Test-type: Unit
+    Given a fake GitHub and the library's real sign-in and registration
+    When the account screen's library is used to open, begin, check, register, cancel and sign out
+    Then it gives the same results as the command line's commands would, with the account and client ID, and each failure as the plain message of the library
+    And the sign-in and registration it saves are the same files the command line reads
+
+  @RCL-055
+  Scenario: The Rumble menu is shown only when a developer switches it on, and the environment follows the command line's rule
+    Test-type: Unit
+    Given the switch property or variable set to a true word, to another word and not set, and the variable naming an environment, an unknown name and nothing
+    When the menu switch and the environment are worked out
+    Then the menu is shown only for a true word in the property or the variable, the environment is the named one, the public Rumble when none is named, and an unknown name is reported as unknown and never replaced silently
+    And nothing in the switch reads or writes anything else
+
+  @RCL-056
+  Scenario: Every text the account screen shows is in the desktop program's English resource file
+    Test-type: Unit
+    Given the account screen's states and notices and the English resource files of the desktop program
+    When every text key that a state, a notice or a registration result needs is looked up
+    Then each key is in the English file with a non-empty text, and the English menu file has the Rumble menu and its account item
+    And no text says "token" or shows how to read the saved sign-in
+
+  @RCL-057
+  Scenario: The desktop program shows the account screen and signs in to the test environment
+    Test-type: Human
+    Given the desktop program started with the menu switched on and the test environment chosen
+    When the maintainer opens Rumble, GitHub account, signs in with the code, looks at the account and the client ID, closes and opens the screen again and signs out
+    Then the screen shows the code and the address and opens the page, shows the account and the client ID after approval, shows the same account after reopening, and shows signed out after signing out
+    And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
 ```
