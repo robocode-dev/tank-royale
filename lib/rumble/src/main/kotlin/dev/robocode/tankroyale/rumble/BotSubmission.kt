@@ -81,6 +81,9 @@ sealed interface SubmissionResult {
 interface BotSending {
     fun checkReadiness(tokens: GitHubTokens): SubmissionReadiness
 
+    /** Compares the bot's launchers with the Rumble's starter launchers. Advice only; it never throws and never stops a send. */
+    fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission): LauncherState
+
     fun submit(tokens: GitHubTokens, submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult
 }
 
@@ -101,6 +104,9 @@ class BotSubmission(
     private class Stop(val signInNeeded: Boolean, message: String) : Exception(message, null, false, false)
 
     /** Checks, by reading only, whether the account can send a bot. */
+    override fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission): LauncherState =
+        LauncherCheck(environment, api).compare(tokens, submission)
+
     override fun checkReadiness(tokens: GitHubTokens): SubmissionReadiness =
         try {
             readiness(tokens.accessToken)

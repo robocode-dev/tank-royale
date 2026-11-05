@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.rumble.CatalogUnreadable
 import dev.robocode.tankroyale.rumble.GitHubApi
 import dev.robocode.tankroyale.rumble.GitHubAuthTransport
 import dev.robocode.tankroyale.rumble.GitHubTokens
+import dev.robocode.tankroyale.rumble.LauncherState
 import dev.robocode.tankroyale.rumble.LoadResult
 import dev.robocode.tankroyale.rumble.RumbleEnvironments
 import dev.robocode.tankroyale.rumble.SaveResult
@@ -93,9 +94,11 @@ class RumbleCliBotTest {
 
     private class Sending : BotSending {
         var readiness: SubmissionReadiness = SubmissionReadiness.Ready("alice", "alice/rumble-bots-test")
+        var launchers: LauncherState = LauncherState.Same
         var result: ((StagedSubmission) -> SubmissionResult) = { SubmissionResult.Submitted("https://github.com/x/y/pull/7", 7, "submit/MyBot-1.0.0", SubmissionOutcome.OPENED) }
         val sent = mutableListOf<Pair<StagedSubmission, Boolean>>()
         override fun checkReadiness(tokens: GitHubTokens) = readiness
+        override fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission) = launchers
         override fun submit(tokens: GitHubTokens, submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult {
             sent += submission to authorCertifiesLicense
             return result(submission)
@@ -604,5 +607,109 @@ class RumbleCliBotTest {
         val answer = world.test("bot", "send", named.toString(), "--dry-run")
         assertFalse(answer.out.contains("secretname"), answer.out)
         assertNull(answer.json["bot"]?.jsonObject?.get("name")?.jsonPrimitive?.content?.takeIf { it == "secretname" })
+    }
+
+    // RCI-043
+
+    @Test
+    @Tag("RCI-043")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCI043_UnitPositive_aDryRunAndASendSayWhetherTheLaunchersAreTheStarterLaunchers(@TempDir dir: Path) {
+        val world = World(dir.resolve("state"))
+        world.signedIn()
+        val folder = bot(dir.resolve("work"))
+
+        val same = world.test("bot", "send", folder.toString(), "--dry-run")
+        assertEquals("same", same.json["launchers"]!!.jsonObject["state"]!!.jsonPrimitive.content)
+        assertTrue(world.run("bot", "send", folder.toString(), "--dry-run", "-e", "test").out.contains("Launchers: same"))
+
+        world.sending.launchers = LauncherState.Differs(listOf("MyBot.sh"))
+        val differs = world.test("bot", "send", folder.toString(), "--dry-run")
+        val launchers = differs.json["launchers"]!!.jsonObject
+        assertEquals("differs", launchers["state"]!!.jsonPrimitive.content)
+        assertEquals(listOf("MyBot.sh"), launchers["files"]!!.jsonArray.map { it.jsonPrimitive.content })
+        assertTrue(launchers["message"]!!.jsonPrimitive.content.contains("moderator must look at this bot"))
+        assertTrue(launchers["fix"]!!.jsonPrimitive.content.contains("StarterBot"))
+        val text = world.run("bot", "send", folder.toString(), "--dry-run", "-e", "test").out
+        assertTrue(text.contains("Launchers: differs (MyBot.sh)") && text.contains("moderator must look at this bot"), text)
+
+        val sent = world.test("bot", "send", folder.toString(), "--certify-license")
+        assertEquals("differs", sent.json["launchers"]!!.jsonObject["state"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    @Tag("RCI-043")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI043_UnitNegative_aTemplateThatCouldNotBeReadIsNotCheckedWithItsReasonAndIsNeverTheSameAsFine(@TempDir dir: Path) {
+        val world = World(dir.resolve("state"))
+        world.signedIn()
+        world.sending.launchers = LauncherState.NotChecked("GitHub could not be reached, so the starter launchers were not read")
+
+        val answer = world.test("bot", "send", bot(dir.resolve("work")).toString(), "--dry-run")
+        val launchers = answer.json["launchers"]!!.jsonObject
+
+        assertEquals("not-checked", launchers["state"]!!.jsonPrimitive.content)
+        assertTrue(launchers["reason"]!!.jsonPrimitive.content.contains("could not be reached"))
+        assertFalse(launchers.containsKey("files"))
+        assertEquals(0, answer.exit)
+    }
+
+    // RCI-044 (the comparison itself is in RumbleCliLauncherTest)
+
+    @Test
+    @Tag("RCI-044")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCI044_UnitPositive_aDifferenceOrAnUnreadableTemplateDoesNotStopTheSend(@TempDir dir: Path) {
+        val world = World(dir.resolve("state"))
+        world.signedIn()
+        val folder = bot(dir.resolve("work"))
+
+        listOf(LauncherState.Differs(listOf("MyBot.cmd")), LauncherState.NotChecked("GitHub could not be reached")).forEach { state ->
+            world.sending.launchers = state
+            val answer = world.test("bot", "send", folder.toString(), "--certify-license")
+            assertEquals(0, answer.exit, answer.out)
+            assertEquals("opened", answer.outcome)
+        }
+        assertEquals(2, world.sending.sent.size)
+    }
+
+    // RCI-045
+
+    @Test
+    @Tag("RCI-045")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCI045_UnitPositive_botCheckStaysOfflineAndSaysWhereTheLaunchersAreCompared(@TempDir dir: Path) {
+        val world = World(dir.resolve("state"))
+        val folder = bot(dir.resolve("work"))
+        val before = tree(dir)
+
+        val json = world.test("bot", "check", folder.toString())
+        val text = world.run("bot", "check", folder.toString(), "-e", "test")
+
+        val notes = json.json["notes"]!!.jsonArray.map { it.jsonPrimitive.content }
+        assertEquals(1, notes.count { it.contains("compared with the Rumble's starter launchers at the dry run") }, notes.toString())
+        assertTrue(text.out.contains("at the dry run"), text.out)
+        assertTrue(world.api.requests.isEmpty(), "nothing is read from GitHub")
+        assertEquals(before, tree(dir))
+    }
+
+    @Test
+    @Tag("RCI-045")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI045_UnitNegative_aFailingCheckAlsoCarriesTheNoteAndNeverLooksAtTheLaunchers(@TempDir dir: Path) {
+        val world = World(dir.resolve("state"))
+        val broken = bot(dir.resolve("work"), "Broken", license = null)
+
+        val answer = world.test("bot", "check", broken.toString())
+
+        assertEquals(2, answer.exit)
+        assertTrue(answer.json["notes"]!!.jsonArray.any { it.jsonPrimitive.content.contains("at the dry run") })
+        assertFalse(answer.json.containsKey("launchers"))
+        assertTrue(world.api.requests.isEmpty())
     }
 }
