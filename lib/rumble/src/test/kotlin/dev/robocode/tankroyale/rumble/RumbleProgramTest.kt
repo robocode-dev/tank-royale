@@ -164,7 +164,8 @@ class RumbleProgramTest {
         assertEquals(ProgramProblem.NO_RELEASE, problem({ it.status = 404 }))
         assertEquals(ProgramProblem.RATE_LIMITED, problem({ it.status = 403 }))
         assertEquals(ProgramProblem.RATE_LIMITED, problem({ it.status = 429 }))
-        assertEquals(ProgramProblem.BAD_ANSWER, problem({ it.status = 500 }))
+        assertEquals(ProgramProblem.OFFLINE, problem({ it.status = 503 }))
+        assertEquals(ProgramProblem.BAD_ANSWER, problem({ it.status = 418 }))
         assertEquals(ProgramProblem.BAD_ANSWER, problem({ it.release = { ApiResponse(200, "not json") } }))
         assertEquals(ProgramProblem.NO_FILE, problem({ it.assetsJson = """[{"name":"robocode-tankroyale-gui-1.4.0.jar","size":5,"digest":"sha256:${"0".repeat(64)}"}]""" }))
         assertEquals(ProgramProblem.NO_HASH, problem({ it.assetsJson = """[{"name":"$fileName","size":${bytes.size}}]""" }))
@@ -281,6 +282,26 @@ class RumbleProgramTest {
         assertFalse(Files.exists(dir.resolve("rumble")))
         assertTrue(runCatching { HttpProgramDownload().open("https://evil.example/rumble.jar") }.exceptionOrNull() is IOException)
         assertTrue(runCatching { HttpProgramDownload().open("http://github.com/robocode-dev/tank-royale/releases/download/v1/x") }.exceptionOrNull() is IOException)
+    }
+
+    @Test
+    @Tag("RCL-045")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL045_UnitNegative_aRedirectOnlyGoesToGitHubOverHttpsAndAFileThatIsNoProgramHasNoVersion(@TempDir dir: Path) {
+        val http = HttpProgramDownload()
+        assertTrue(http.allowed("https://release-assets.githubusercontent.com/github-production-release-asset/1/2?x=y"))
+        assertTrue(http.allowed("https://objects.githubusercontent.com/a"))
+        assertTrue(http.allowed("https://github.com/robocode-dev/tank-royale/releases/download/v1/x"))
+        assertFalse(http.allowed("http://github.com/x"))
+        assertFalse(http.allowed("https://evil.example/githubusercontent.com"))
+        assertFalse(http.allowed("https://github.com.evil.example/x"))
+        assertFalse(http.allowed("https://notgithub.com/x"))
+
+        val garbage = dir.resolve("garbage.jar")
+        Files.write(garbage, "not a jar".toByteArray())
+        assertEquals(null, JavaProgramVersion.ask(garbage), "a file that is no program does not answer a version")
+        assertEquals(null, JavaProgramVersion.ask(dir.resolve("missing.jar")))
     }
 
     // RCL-047

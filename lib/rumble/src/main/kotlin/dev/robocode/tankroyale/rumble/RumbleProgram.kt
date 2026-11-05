@@ -101,14 +101,14 @@ class RumbleProgram(
 
     private val fileName = "robocode-tankroyale-rumble-cli-$version.jar"
 
-    /** Looks, and changes nothing. */
+    /** Looks, and changes nothing. It runs the installed file to ask its version, so a screen calls it off its event thread. */
     fun look(): ProgramStatus {
         if (!Files.isRegularFile(jar)) return ProgramStatus.Missing(jar)
         val found = asking.ask(jar)
         return if (found == version) ProgramStatus.Ready(jar, version, developerChoice = false) else ProgramStatus.WrongVersion(jar, found)
     }
 
-    /** What fetching would involve. Nothing is downloaded or written. */
+    /** What fetching would involve. Nothing is downloaded or written. Like [look] it can run the installed file, and it asks GitHub. */
     fun plan(): FetchPlan {
         developer()?.let { return it }
         val status = look()
@@ -124,7 +124,8 @@ class RumbleProgram(
         when (answer.status) {
             200 -> Unit
             404 -> return unavailable(ProgramProblem.NO_RELEASE, "There is no release v$version, so there is no Rumble program to fetch for this version of Tank Royale.")
-            403, 429 -> return unavailable(ProgramProblem.RATE_LIMITED, "GitHub is limiting requests right now (HTTP ${answer.status}). Try again later.")
+            403, 429 -> return unavailable(ProgramProblem.RATE_LIMITED, "GitHub refused the request (HTTP ${answer.status}), most often because of its limit on requests. Try again later.")
+            in 500..599 -> return unavailable(ProgramProblem.OFFLINE, "GitHub is not answering properly right now (HTTP ${answer.status}). Try again later.")
             else -> return unavailable(ProgramProblem.BAD_ANSWER, "GitHub gave an unexpected answer (HTTP ${answer.status}) about the release v$version.")
         }
         val assets = try {
@@ -255,52 +256,96 @@ class RumbleProgram(
     }
 }
 
-/** Downloads over HTTPS from the Tank Royale releases on github.com, and from nowhere else. */
+/**
+ * Downloads over HTTPS from the Tank Royale releases on github.com. GitHub serves a release file from its own storage,
+ * so up to five redirects are followed, each only over HTTPS and only to github.com or githubusercontent.com. The
+ * file is trusted for nothing but its size and hash, which are checked by the caller.
+ */
 class HttpProgramDownload(
-    private val client: HttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).followRedirects(HttpClient.Redirect.NORMAL).build(),
+    private val client: HttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).followRedirects(HttpClient.Redirect.NEVER).build(),
 ) : ProgramDownload {
     override fun open(url: String): InputStream {
         if (!url.startsWith("https://github.com/robocode-dev/tank-royale/releases/download/")) throw IOException("Only the Tank Royale releases on github.com are downloaded from.")
-        val request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofMinutes(10)).header("User-Agent", "robocode-tank-royale").build()
-        val response = try {
-            client.send(request, HttpResponse.BodyHandlers.ofInputStream())
-        } catch (e: InterruptedException) {
-            Thread.currentThread().interrupt()
-            throw IOException("The download was interrupted.")
+        var address = url
+        repeat(MAX_REDIRECTS + 1) {
+            val request = HttpRequest.newBuilder(URI.create(address)).timeout(Duration.ofMinutes(10)).header("User-Agent", "robocode-tank-royale").build()
+            val response = try {
+                client.send(request, HttpResponse.BodyHandlers.ofInputStream())
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+                throw IOException("The download was interrupted.")
+            }
+            when (response.statusCode()) {
+                200 -> return response.body()
+                301, 302, 303, 307, 308 -> {
+                    response.body().close()
+                    val next = response.headers().firstValue("Location").orElse(null) ?: throw IOException("GitHub redirected the download without saying where.")
+                    address = URI.create(address).resolve(next).toString()
+                    if (!allowed(address)) throw IOException("GitHub redirected the download somewhere that is not trusted, so it was stopped.")
+                }
+                else -> {
+                    response.body().close()
+                    throw IOException("GitHub answered HTTP ${response.statusCode()} for the download.")
+                }
+            }
         }
-        if (response.statusCode() != 200) {
-            response.body().close()
-            throw IOException("GitHub answered HTTP ${response.statusCode()} for the download.")
+        throw IOException("GitHub redirected the download too many times.")
+    }
+
+    internal fun allowed(address: String): Boolean {
+        val uri = try {
+            URI.create(address)
+        } catch (e: IllegalArgumentException) {
+            return false
         }
-        return response.body()
+        val host = uri.host?.lowercase() ?: return false
+        return uri.scheme == "https" && (host == "github.com" || host.endsWith(".github.com") || host.endsWith(".githubusercontent.com"))
+    }
+
+    private companion object {
+        const val MAX_REDIRECTS = 5
     }
 }
 
-/** Runs `java -jar <file> --version` and reads `rumble <version>`. The file is only run after its hash matched. */
+/**
+ * Runs `java -jar <file> --version` and reads the line `rumble <version>` from its standard output, ignoring any
+ * other line (a Java tool message, say). The file is only run after its hash matched. Starting a Java process takes
+ * a moment, so a screen calls this off its event thread.
+ */
 object JavaProgramVersion : ProgramVersionAsking {
     private val ANSWER = Regex("rumble (\\S+)")
 
     override fun ask(jar: Path): String? {
-        val java = Path.of(System.getProperty("java.home"), "bin", "java").toString()
+        val javaExe = Path.of(System.getProperty("java.home"), "bin", "java").toString()
         val process = try {
-            ProcessBuilder(java, "-jar", jar.toString(), "--version").redirectErrorStream(true).start()
+            ProcessBuilder(javaExe, "-jar", jar.toString(), "--version")
+                .redirectError(ProcessBuilder.Redirect.DISCARD)
+                .start()
         } catch (e: IOException) {
             return null
         }
-        return try {
+        val lines = java.util.Collections.synchronizedList(mutableListOf<String>())
+        // The whole output is read, so the process never waits on a full pipe; only the first lines are kept.
+        val reader = Thread { runCatching { process.inputStream.bufferedReader().forEachLine { if (lines.size < 50) lines += it } } }
+        reader.isDaemon = true
+        try {
             process.outputStream.close()
-            val output = StringBuilder()
-            val reader = Thread { runCatching { process.inputStream.bufferedReader().useLines { lines -> lines.take(20).forEach { output.appendLine(it) } } } }
-            reader.isDaemon = true
             reader.start()
             if (!process.waitFor(30, TimeUnit.SECONDS)) return null
-            reader.join(2000)
-            if (process.exitValue() != 0) null else ANSWER.matchEntire(output.toString().trim())?.groupValues?.get(1)
+            reader.join(5000)
+            if (process.exitValue() != 0) return null
+            return synchronized(lines) { lines.mapNotNull { ANSWER.matchEntire(it.trim())?.groupValues?.get(1) }.lastOrNull() }
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
-            null
+            return null
         } finally {
             process.destroyForcibly()
+            // On Windows a file that a process still has open cannot be replaced, so wait for the process to be gone.
+            try {
+                process.waitFor(5, TimeUnit.SECONDS)
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+            }
         }
     }
 }

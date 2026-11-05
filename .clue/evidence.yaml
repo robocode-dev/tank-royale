@@ -334,7 +334,7 @@
         },
         {
           "path": "rumble-cli/build.gradle.kts",
-          "sha256": "c1f4dd122e6cfb9aba095c1db46c32fe641aa645274b0bea670e210ca55c4678"
+          "sha256": "ffbb67141b03f908dae96fa71a0977765593a887f13ed00ff6f530bad336c340"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliReleaseTest.kt",
-          "sha256": "45ab5c60a044f6f6db838db6b2e19a50d82b83a4de8f7a63a34c91e33d87c107"
+          "sha256": "536061ee1fa1a67c78c5aac5068ff36aac03f56279ea0ae3d41bd0e67b7211c9"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
@@ -1497,7 +1497,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
-          "sha256": "aab554787e4b619ce60d50a98510a30b255c9721e81f865f57f15a11a20df180"
+          "sha256": "6acb93d9fc0beebe3a7e5f0580fa59173c402789f7d690880be32f8bc2fd5cdd"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationLiveTest.kt",
@@ -2008,6 +2008,13 @@
           "id": "RCL-045",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
           "subject": "RumbleProgramTest.testRCL045_UnitNegative_aPlanThatIsNotForThisVersionIsRefusedAndTheDownloadOnlyGoesToGitHub",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-045",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL045_UnitNegative_aRedirectOnlyGoesToGitHubOverHttpsAndAFileThatIsNoProgramHasNoVersion",
           "type": "Unit",
           "direction": "negative"
         },

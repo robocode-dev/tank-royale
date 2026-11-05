@@ -19,13 +19,20 @@ class RumbleCliReleaseTest {
 
     private val root = Path.of(System.getProperty("repo.root") ?: error("System property 'repo.root' not set — run via :rumble-cli:test"))
 
-    private fun read(path: String) = Files.readString(root.resolve(path))
+    /** A file without its comments, so a name that only appears in a comment does not count. */
+    private fun read(path: String) = Files.readString(root.resolve(path)).lines().joinToString("\n") { it.replace(Regex("//.*$"), "") }
 
-    /** The text between the first line holding [start] and the next line holding a closing brace on its own, of a Gradle task. */
+    /** The text of the parentheses that follow [start], found by counting them, so layout does not matter. */
     private fun block(text: String, start: String): String {
         val from = text.indexOf(start)
         assertTrue(from >= 0, "$start is missing")
-        return text.substring(from, text.indexOf("\n        )", from).takeIf { it > 0 } ?: text.length)
+        val open = text.indexOf("(", text.indexOf("dependsOn", from))
+        var depth = 0
+        for (i in open until text.length) {
+            if (text[i] == '(') depth++
+            if (text[i] == ')' && --depth == 0) return text.substring(open, i + 1)
+        }
+        error("$start has no end")
     }
 
     // RCI-047
