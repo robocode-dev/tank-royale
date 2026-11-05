@@ -262,7 +262,7 @@
         },
         {
           "path": "gui/build.gradle.kts",
-          "sha256": "c1dc73e3c3fdabaf19a31e18103ba0ab7eb3c0fbcf21dc279f2f352792106dde"
+          "sha256": "885e11f2415956593cbb4c2a24050a3686ff272c5d8940ccd01c826c7fd69c62"
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
@@ -339,6 +339,10 @@
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
           "sha256": "1559c06ccfae9a45b53b9b7351c5d28676f396ba5c7a99890b273970b995b990"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
+          "sha256": "a240b5daa77c7353fc35532935aab911709c4c38a389ffdee29195ef32e1a01d"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -586,6 +590,20 @@
           "id": "RCI-045",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
           "subject": "RumbleCliBotTest.testRCI045_UnitPositive_botCheckStaysOfflineAndSaysWhereTheLaunchersAreCompared",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-049",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
+          "subject": "RumbleCliDependencyRulesTest.testRCL049_UnitNegative_everyDeliberateViolationIsReportedWithWhereItIsAndCommentsAreIgnored",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-049",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
+          "subject": "RumbleCliDependencyRulesTest.testRCL049_UnitPositive_theDesktopProgramDependsOnAndNamesNeitherTheCommandLineNorTheWorker",
           "type": "Unit",
           "direction": "positive"
         },

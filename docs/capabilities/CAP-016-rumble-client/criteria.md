@@ -414,4 +414,20 @@ Feature: rumble-client — Local ranked and practice battle client
     When a maintainer reads about how the program reaches people
     Then it says the desktop program fetches the command line at first use from the release of its own version, asks first and shows the size, checks size, hash and version before placing it, and keeps it as rumble.jar in the user's folder
     And it says that the hash protects against a broken or changed file and not against a release that has been taken over, that releases before this one hold no such file, and the developer setting
+
+  @RCL-049
+  Scenario: The desktop program never depends on the command line or the battle worker
+    Test-type: Unit
+    Given the desktop program's build file and its sources
+    When the dependencies it declares and the packages it imports are read, with a deliberate violation added
+    Then it depends on and imports neither the Rumble command line nor the battle worker, and every deliberate violation is reported with where it is
+    And the desktop build fails the same rule on the real dependency graph, so a dependency added by another route is also caught
+
+  @RCL-050
+  Scenario: The documentation says the desktop program uses the Rumble libraries in its own process
+    Test-type: Human
+    Given the participation design and the decision record
+    When a maintainer reads how the desktop program and the command line use the Rumble code
+    Then they say the desktop program calls the shared libraries in its own process and the command line is a second front end over the same libraries, and that nothing but the battle worker is fetched for the desktop program
+    And they say that sending a bot needs no fetch, that the desktop program holds the sign-in token in its own memory and why that is accepted, and that the desktop program never depends on the command line or the worker
 ```
