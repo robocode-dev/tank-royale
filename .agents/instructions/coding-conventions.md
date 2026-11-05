@@ -24,6 +24,7 @@
 - Every new key goes in the base file and in all language files (`_ca`, `_da`, `_es`); `PropertiesConsistencyTest` requires the same keys everywhere. Text that is not translated yet is written in English with the comment `(English until translated)`.
 - Logic outside Swing (behavior classes, libraries) returns codes or keys, never English sentences; the GUI turns them into resource texts. A sentence from a lower layer may be shown only as a labelled detail line.
 - Parameters in texts use `String.format` (`%s`, `%d`). Pure formats such as `m:ss` and markup are not text.
+- **Texts must wrap.** A sentence in a window must wrap at the window's edge and never run out over it, because translations are longer than English and any line may become too long. Use a wrapping component (a read-only, transparent `JTextArea` with `lineWrap` and `wrapStyleWord`, or an HTML label with a width) and give each component the width of the window and no more (in MigLayout, `growx, wmin 10`). Never rely on a single-line `JLabel` for a sentence. Check a new window with a long text before handing it over.
 - Some language files are ISO-8859-1 although `standards.md` says UTF-8 (Java reads both). Add plain ASCII only, or keep the file's encoding.
 
 ## Python Conventions
