@@ -358,4 +358,36 @@ Feature: rumble-command-line — Rumble command line
     When each is run in both forms and with a user name that equals one of the program's words
     Then each answers in the form asked for with an outcome word, the environment where one is used, and a next step that can be run as it stands, and never asks anything
     And no answer holds a token or an absolute path, the user name is removed only from text from outside such as a bot's name or a file name, and bad input answers as bad input
+
+  @RCI-043
+  Scenario: The dry run and the send say whether the launchers are the starter launchers
+    Test-type: Unit
+    Given a passing bot and an account that is ready, and the starter launchers of the bot's language in the Rumble's bot repository
+    When bot send is run with the dry run option and without it
+    Then the launchers are read from the default branch of that repository with the account's sign-in and compared as the moderator compares them, and the answer in both forms says same, differs or not-checked for the launchers
+    And a difference names the file, says that a moderator must look at the bot because its launcher differs from the starter launcher, and says to use the starter launcher for the language with the bot's name in place of StarterBot
+    And not-checked says why in plain words, so that a program can tell fine from could not look
+
+  @RCI-044
+  Scenario: A launcher difference is reported and never blocks, and the comparison follows the moderator
+    Test-type: Unit
+    Given launchers that are identical to the starter ones, copies with Windows line endings, copies with the name replaced, and edited copies
+    When each is compared, and when the starter launchers cannot be read
+    Then identical, Windows line-ending and renamed copies are the same, and an edited copy differs
+    And a difference or an unreadable template does not stop bot send, which goes on to send or to the dry run result as before
+
+  @RCI-045
+  Scenario: bot check stays offline and says where the launchers are compared
+    Test-type: Unit
+    Given a bot folder and no network
+    When bot check is run in both forms
+    Then it reads nothing from GitHub and writes nothing, and its answer holds one fixed note that the launchers are compared at the dry run
+
+  @RCI-046
+  Scenario: The documentation records the first real send and the launcher finding
+    Test-type: Human
+    Given the participation design
+    When a maintainer reads about sending a bot
+    Then it says that a bot was sent from the command line to the test environment and followed to the moderator, and that the program cannot make the copy of the bot repository because GitHub refuses it for the sign-in App
+    And it says that a launcher that differs from the starter launcher needs a moderator, that the dry run and the send say so without blocking, and that building the branch from the Rumble's head when the copy is behind, other systems and the public environment are still unproven
 ```
