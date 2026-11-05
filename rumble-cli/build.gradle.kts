@@ -1,4 +1,5 @@
 import build.tasks.FatJar
+import java.io.ByteArrayOutputStream
 
 description = "Robocode Tank Royale Rumble command line (program name: rumble)"
 
@@ -89,6 +90,26 @@ tasks {
             excludeTags("integration")
         }
         failFast = true
+
+        systemProperty("repo.root", rootDir.absolutePath)
+    }
+
+    val smokeTest by registering(Exec::class) {
+        dependsOn(fatJar)
+        group = "verification"
+        description = "Smoke test the distributable JAR with --version"
+
+        val answer = ByteArrayOutputStream()
+        commandLine("java", "-jar", layout.buildDirectory.file("libs/$fatJarName").get().asFile.absolutePath, "--version")
+        standardOutput = answer
+        val expected = "rumble ${project.version}"
+
+        // The desktop program fetches this file and requires exactly this answer from it.
+        doLast {
+            val said = answer.toString(Charsets.UTF_8).trim()
+            if (said != expected) throw GradleException("The program said '$said' to --version, not '$expected'.")
+            logger.lifecycle(said)
+        }
     }
 
     val integrationTest by registering(Test::class) {

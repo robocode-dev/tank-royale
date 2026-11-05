@@ -365,4 +365,53 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it holds the account, the client ID, the environment and when it was saved, and a renewal keeps it
     And it is ignored for another account and is useless in another environment, a newly approved sign-in starts without it, and it goes when the person signs out
     And a registration or an account name that arrives after its sign-in was replaced or removed saves nothing, and a name that has changed on GitHub leaves the registration behind
+
+  @RCL-043
+  Scenario: The library says where the Rumble command line is and whether it is the right version
+    Test-type: Unit
+    Given a user data folder and a desktop version
+    When the program is looked up with nothing there, with a file of the same version, with a file of another version and with a file that does not answer
+    Then the answers are missing, ready, wrong version and wrong version, each with the path, and nothing is fetched or changed by looking
+    And the place is the file rumble.jar in the folder rumble below the user data folder
+
+  @RCL-044
+  Scenario: A fetch is planned from exactly the release of the desktop version, and the person can be asked first
+    Test-type: Unit
+    Given a desktop version and a fake GitHub with that version's release and its assets
+    When a fetch is planned
+    Then it reads the release for that exact version and never the latest, finds the one file for that version, and gives its name, size, the hash GitHub reports and the address the program built itself from the version and the name over HTTPS from github.com
+    And nothing is downloaded or written by planning
+    And a missing release, a missing file, a missing hash, a file over the size ceiling, a request limit, a bad answer and being offline each give a typed answer with a plain message and no exception
+
+  @RCL-045
+  Scenario: The file is placed only after the size, the hash and the version are right, and nothing bad is left behind
+    Test-type: Unit
+    Given a plan and a fake download
+    When the fetch runs with a good file, a file with another hash, a file over the ceiling, a file of another version, an interrupted download and a file that is in use
+    Then only the good file ends as rumble.jar, after it was downloaded under a temporary name, matched with the hash and asked for its version before it was moved
+    And every other case leaves no file and no temporary file, an earlier good copy is never touched, and a file in use answers that it is in use
+    And a file that is already the right version is not fetched again
+
+  @RCL-046
+  Scenario: The real command line jar passes the fetch's checks and runs from the place it was put
+    Test-type: Integration
+    Given the built command line jar served as the release's file by a fake GitHub
+    When it is fetched into a user data folder
+    Then it passes the hash and version checks, is placed as rumble.jar, and answers its version when run with java -jar from there
+
+  @RCL-047
+  Scenario: A developer can name a jar to use, and then nothing is fetched
+    Test-type: Unit
+    Given the system property rumble.jar naming a jar, and the same property naming nothing usable
+    When the program is looked up and a fetch is asked for
+    Then the named jar is the answer, it is marked as the developer's choice, and nothing is fetched or written
+    And an unusable name is answered as such, with the reason, and never falls back to fetching in silence
+
+  @RCL-048
+  Scenario: The documentation says how the program reaches people and what the hash protects against
+    Test-type: Human
+    Given the participation design
+    When a maintainer reads about how the program reaches people
+    Then it says the desktop program fetches the command line at first use from the release of its own version, asks first and shows the size, checks size, hash and version before placing it, and keeps it as rumble.jar in the user's folder
+    And it says that the hash protects against a broken or changed file and not against a release that has been taken over, that releases before this one hold no such file, and the developer setting
 ```

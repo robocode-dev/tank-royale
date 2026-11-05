@@ -334,7 +334,7 @@
         },
         {
           "path": "rumble-cli/build.gradle.kts",
-          "sha256": "80f555981999a961dbbcf949fbff5052fc00bed49f8a0da79e107e9dc86ce9f1"
+          "sha256": "ffbb67141b03f908dae96fa71a0977765593a887f13ed00ff6f530bad336c340"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
@@ -346,7 +346,11 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
-          "sha256": "e83d9658bd36fc0eb9b324626b71e1fedbdb1c9a292b3003dc6e7c8397e067eb"
+          "sha256": "88c3a0e3404668c70e8ef70363d4dc75620a7442ae6b37a67581618da4ed7cfc"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliReleaseTest.kt",
+          "sha256": "536061ee1fa1a67c78c5aac5068ff36aac03f56279ea0ae3d41bd0e67b7211c9"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
@@ -688,6 +692,27 @@
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
           "subject": "RumbleCliProcessTest.testRCI041_IntegrationPositive_theRealProgramChecksABotAndSendsAPersonWhoIsNotSignedInToLogIn",
           "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-046",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
+          "subject": "RumbleCliProcessTest.testRCL046_IntegrationPositive_theRealJarPassesTheFetchChecksAndRunsFromThePlaceItWasPut",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-047",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliReleaseTest.kt",
+          "subject": "RumbleCliReleaseTest.testRCI047_UnitNegative_theNameTheReleaseUploadsIsTheNameTheFetchingLooksFor",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-047",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliReleaseTest.kt",
+          "subject": "RumbleCliReleaseTest.testRCI047_UnitPositive_theReleaseUploadsTheCommandLineAndItsSmokeTestRunsIt",
+          "type": "Unit",
           "direction": "positive"
         },
         {
@@ -1231,7 +1256,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "829a8f1b9bf9373066937ae668ba42503e57b1b12bfeaaf1c43e05e2a2c05d84"
+          "sha256": "d5a8e5099f8bb9da1469b98c7a90772eb65203130cd764db38d639c58e919766"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1469,6 +1494,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
           "sha256": "6cd2c697190f4f7b0130b7d30c6d043546fbac16588928249fbd46b5da34ff9e"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "sha256": "6acb93d9fc0beebe3a7e5f0580fa59173c402789f7d690880be32f8bc2fd5cdd"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationLiveTest.kt",
@@ -1923,6 +1952,104 @@
           "id": "RLI-010",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
           "subject": "RumbleLegacyImportTest.testRLI010_UnitPositive_everyEndingIsATypedResultWithAPlainMessage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-043",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL043_UnitNegative_anotherVersionOrAFileThatDoesNotAnswerIsWrongAndNothingIsChangedByLooking",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-043",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL043_UnitPositive_theProgramIsLookedForAtAFixedPlaceAndTheRightVersionIsReady",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-044",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL044_UnitNegative_everyWayThePlanCanFailGivesATypedAnswerWithAPlainMessage",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-044",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL044_UnitPositive_aFetchIsPlannedFromExactlyThisReleaseAndNothingIsDownloaded",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-044",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL044_UnitPositive_anAddressInGitHubsAnswerIsNeverUsedAndAReadyProgramNeedsNoFetch",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-045",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL045_UnitNegative_aBadDownloadLeavesNoFileAndNeverTouchesAnEarlierGoodCopy",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-045",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL045_UnitNegative_aFileInUseAnswersThatItIsInUseAndAFolderThatCannotBeWrittenIsSaid",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-045",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL045_UnitNegative_aPlanThatIsNotForThisVersionIsRefusedAndTheDownloadOnlyGoesToGitHub",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-045",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL045_UnitNegative_aRedirectOnlyGoesToGitHubOverHttpsAndAFileThatIsNoProgramHasNoVersion",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-045",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL045_UnitPositive_aGoodFileIsDownloadedCheckedAskedForItsVersionAndPlacedAsTheProgram",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-045",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL045_UnitPositive_aProgramOfAnotherVersionIsReplacedByTheRightOne",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-047",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL047_UnitNegative_aSettingThatNamesNothingUsableIsAnsweredAndNeverFallsBackToFetching",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-047",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL047_UnitPositive_aDevelopersJarIsUsedAndNothingIsFetchedOrWritten",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-047",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
+          "subject": "RumbleProgramTest.testRCL047_UnitPositive_theSettingIsReadFromTheSystemProperty",
           "type": "Unit",
           "direction": "positive"
         },

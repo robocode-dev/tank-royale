@@ -48,6 +48,13 @@ fun createRelease(projectDir: File, version: String, token: String) {
         JAR_MIME_TYPE, "Recorder (jar)"
     )
 
+    // Rumble command line. The desktop program fetches exactly this file, by this name, from the release of its own
+    // version, so the name must not change without changing the fetching.
+    uploadAsset(
+        projectDir, releaseId, token, "rumble-cli/build/libs/robocode-tankroyale-rumble-cli-$version.jar",
+        JAR_MIME_TYPE, "Rumble command line (jar)"
+    )
+
     // Sample Bots
     val sampleBotsDir = File(projectDir, "sample-bots")
     sampleBotsDir.listFiles { f -> f.isDirectory }?.forEach { subprojectDir ->
