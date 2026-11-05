@@ -338,7 +338,11 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
-          "sha256": "7a21a10fe2d898784f72c26b6a310d31109d2b64fca71a7a1789151e1e27876b"
+          "sha256": "68c880a0f020b78b63af5f09870fa512f10f599907fcd90b56b0918fd847c203"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "sha256": "1897c0678ca208682aeb124873616ae75812ca98469b1159f2ec44f7f240594a"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
@@ -536,6 +540,69 @@
           "id": "RCI-042",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
           "subject": "RumbleCliBotTest.testRCI042_UnitPositive_theBotCommandsAnswerInBothFormsWithAnOutcomeTheEnvironmentAndARunnableNextStep",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-043",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI043_UnitNegative_aTemplateThatCouldNotBeReadIsNotCheckedWithItsReasonAndIsNeverTheSameAsFine",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-043",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI043_UnitPositive_aDryRunAndASendSayWhetherTheLaunchersAreTheStarterLaunchers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI044_UnitPositive_aDifferenceOrAnUnreadableTemplateDoesNotStopTheSend",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-045",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI045_UnitNegative_aFailingCheckAlsoCarriesTheNoteAndNeverLooksAtTheLaunchers",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-045",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI045_UnitPositive_botCheckStaysOfflineAndSaysWhereTheLaunchersAreCompared",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitNegative_aTemplateThatCannotBeReadIsNotCheckedWithAReasonAndNeverThrows",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitNegative_anEditedLauncherDiffersAndNothingElseIsNormalised",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitPositive_identicalWindowsLineEndingAndRenamedLaunchersAreTheSame",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitPositive_theStarterLaunchersAreReadFromTheDefaultBranchWithTheSignIn",
           "type": "Unit",
           "direction": "positive"
         },
