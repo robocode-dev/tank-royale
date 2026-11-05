@@ -89,4 +89,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [PDR-018 — Tracked changes use exact-candidate local human acceptance](PDR-018-local-human-acceptance.md) · `verified` — The accepted `.clue/acceptance.yaml` selects local acceptance on `main`, while repository instructions still prescribe pull requests.
 - [PDR-019 — Invite public Beta participation while replacing the difficult onboarding journey](PDR-019-rumble-public-beta-campaign.md) · `verified` — The earlier readiness campaign demonstrated working pieces but left a demanding end-to-end walkthrough.
 - [ADR-053 — An AI agent works with the participant's own GitHub account](ADR-053-agent-uses-participants-account.md) · `verified` — The Rumble command line is meant to work for AI agents as well as for people.
+- [ADR-054 — The desktop program uses the Rumble libraries in its own process](ADR-054-desktop-program-uses-rumble-libraries.md) · `verified` — A screen can call the shared libraries inside the desktop program or run `rumble` and read its answers; the desktop program calls the libraries, and only the battle worker is fetched.
 <!-- clue:index:end -->
