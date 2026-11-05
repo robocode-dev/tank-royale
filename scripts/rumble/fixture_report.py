@@ -44,7 +44,7 @@ RESULTS_CASE = ("test-results", "Test results")
 # Which case a JVM test class belongs to, first match wins. A class that matches none is reported as a problem, so a new
 # test cannot vanish from the report by being forgotten here.
 CLASS_CASES = [
-    (re.compile(r"^RumbleCli\w*Test$"), "command-line"),
+    (re.compile(r"^(RumbleCli\w*Test|RumbleProgramTest)$"), "command-line"),
     (re.compile(r"^RumbleLegacyImportTest$"), "legacy-client-import"),
     (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),

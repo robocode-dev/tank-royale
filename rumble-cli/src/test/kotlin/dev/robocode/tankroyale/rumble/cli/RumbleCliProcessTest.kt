@@ -1,6 +1,11 @@
 package dev.robocode.tankroyale.rumble.cli
 
 import dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION
+import dev.robocode.tankroyale.rumble.ApiResponse
+import dev.robocode.tankroyale.rumble.FetchPlan
+import dev.robocode.tankroyale.rumble.GitHubApi
+import dev.robocode.tankroyale.rumble.ProgramFetch
+import dev.robocode.tankroyale.rumble.RumbleProgram
 import dev.robocode.tankroyale.rumble.WorkerCommands
 import dev.robocode.tankroyale.rumble.WorkerHost
 import dev.robocode.tankroyale.rumble.WorkerLimits
@@ -18,6 +23,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -219,5 +225,39 @@ class RumbleCliProcessTest {
         assertEquals(0, help.exit)
         assertTrue(help.out.contains("BECOMES PUBLIC") || help.out.contains("BECOME PUBLIC"), help.out)
         assertEquals("", help.err)
+    }
+
+    // RCL-046
+
+    @Test
+    @Tag("RCL-046")
+    @Tag("Integration")
+    @Tag("Positive")
+    fun testRCL046_IntegrationPositive_theRealJarPassesTheFetchChecksAndRunsFromThePlaceItWasPut(@TempDir dir: Path) {
+        val bytes = Files.readAllBytes(cliJar)
+        val version = Json.parseToJsonElement(runCli("version", "--json").out.trim()).jsonObject["version"]!!.jsonPrimitive.content
+        val release = object : GitHubApi {
+            override fun get(path: String, token: String?) = ApiResponse(
+                200,
+                """{"assets":[{"name":"robocode-tankroyale-rumble-cli-$version.jar","size":${bytes.size},"digest":"sha256:${sha256(bytes)}"}]}""",
+            )
+
+            override fun postJson(path: String, token: String, json: String): ApiResponse = error("Only reads are expected")
+            override fun patchJson(path: String, token: String, json: String): ApiResponse = error("Only reads are expected")
+        }
+        val program = RumbleProgram(dir, version, release, { ByteArrayInputStream(bytes) })
+
+        val plan = program.plan()
+        assertInstanceOf(FetchPlan.Needed::class.java, plan, plan.toString())
+        val fetched = program.fetch(plan as FetchPlan.Needed)
+
+        assertEquals(ProgramFetch.Fetched(dir.resolve("rumble").resolve("rumble.jar"), version), fetched, fetched.toString())
+        assertEquals(sha256(bytes), sha256(Files.readAllBytes(program.jar)))
+        val running = ProcessBuilder(listOf(java, "-jar", program.jar.toString(), "--version")).start()
+        running.outputStream.close()
+        assertEquals("rumble $version", running.inputStream.bufferedReader().readText().trim())
+        assertTrue(running.waitFor(60, TimeUnit.SECONDS))
+        assertEquals(0, running.exitValue())
+        assertInstanceOf(FetchPlan.NotNeeded::class.java, program.plan(), "the placed program is the right version")
     }
 }

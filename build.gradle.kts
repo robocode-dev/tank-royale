@@ -610,18 +610,20 @@ tasks {
             "recorder:assemble",         // Recorder
             "runner:assemble",           // Battle Runner
             "gui:assemble",              // GUI
+            "rumble-cli:assemble",       // Rumble command line (fetched by the GUI at first use)
             "sample-bots:zip",           // Sample bots
         )
     }
 
     register("smokeTestRelease") {
-        description = "Smoke tests all executable release jars (booter, server, recorder, gui) with --version. " +
+        description = "Smoke tests all executable release jars (booter, server, recorder, gui, rumble-cli) with --version. " +
             "runner and the Bot API jars are libraries with no --version entry point and are intentionally excluded."
         dependsOn(
             "booter:smokeTest",
             "server:smokeTest",
             "recorder:smokeTest",
             "gui:smokeTest",
+            "rumble-cli:smokeTest",
         )
     }
 

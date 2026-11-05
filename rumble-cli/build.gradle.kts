@@ -89,6 +89,16 @@ tasks {
             excludeTags("integration")
         }
         failFast = true
+
+        systemProperty("repo.root", rootDir.absolutePath)
+    }
+
+    val smokeTest by registering(Exec::class) {
+        dependsOn(fatJar)
+        group = "verification"
+        description = "Smoke test the distributable JAR with --version"
+
+        commandLine("java", "-jar", layout.buildDirectory.file("libs/$fatJarName").get().asFile.absolutePath, "--version")
     }
 
     val integrationTest by registering(Test::class) {
