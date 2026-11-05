@@ -262,7 +262,7 @@
         },
         {
           "path": "gui/build.gradle.kts",
-          "sha256": "e5517f68fbffd40c34326866dd2eca22e4d7a7840cc5981aac7c30fa01a16ae3"
+          "sha256": "885e11f2415956593cbb4c2a24050a3686ff272c5d8940ccd01c826c7fd69c62"
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
@@ -342,7 +342,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
-          "sha256": "84b85a2b41a3f57f39e7cde750fb6747906f352024abf54060acc321a7c07791"
+          "sha256": "a240b5daa77c7353fc35532935aab911709c4c38a389ffdee29195ef32e1a01d"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -596,14 +596,14 @@
         {
           "id": "RCL-049",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
-          "subject": "RumbleCliDependencyRulesTest.testRCL049_UnitNegative_everyDeliberateViolationIsReportedWithWhereItIs",
+          "subject": "RumbleCliDependencyRulesTest.testRCL049_UnitNegative_everyDeliberateViolationIsReportedWithWhereItIsAndCommentsAreIgnored",
           "type": "Unit",
           "direction": "negative"
         },
         {
           "id": "RCL-049",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
-          "subject": "RumbleCliDependencyRulesTest.testRCL049_UnitPositive_theDesktopProgramDependsOnAndImportsNeitherTheCommandLineNorTheWorker",
+          "subject": "RumbleCliDependencyRulesTest.testRCL049_UnitPositive_theDesktopProgramDependsOnAndNamesNeitherTheCommandLineNorTheWorker",
           "type": "Unit",
           "direction": "positive"
         },

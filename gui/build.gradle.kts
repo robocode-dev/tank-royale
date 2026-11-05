@@ -43,20 +43,33 @@ dependencies {
 }
 
 // The desktop program calls the shared Rumble libraries in its own process and never depends on the Rumble command
-// line or the battle worker. The sources are checked by RumbleCliDependencyRulesTest in the command line's tests.
+// line or the battle worker, in its main code or its tests. The rule is checked on the dependency graph here and on
+// the sources both here and by RumbleCliDependencyRulesTest in the command line's tests, which also proves that the
+// rule reports a deliberate violation.
 val forbiddenRumbleProjects = setOf(":rumble-cli", ":rumble")
+val forbiddenRumblePackages = listOf("dev.robocode.tankroyale.rumble.cli.", "dev.robocode.tankroyale.rumble.worker.")
 
 val checkRumbleDependencyRules by tasks.registering {
     group = "verification"
-    description = "Fails when the desktop program depends, directly or through another project, on the Rumble command line or the battle worker."
+    description = "Fails when the desktop program depends, directly or through another project, on the Rumble command line or the battle worker, or names their packages."
     doLast {
-        val violations = listOf(configurations.runtimeClasspath, configurations.compileClasspath)
+        val violations = listOf(
+            configurations.runtimeClasspath, configurations.compileClasspath,
+            configurations.testRuntimeClasspath, configurations.testCompileClasspath,
+        )
             .flatMap { it.get().incoming.resolutionResult.allComponents }
             .mapNotNull { (it.id as? ProjectComponentIdentifier)?.projectPath }
             .filter { it in forbiddenRumbleProjects }
             .toSortedSet()
         check(violations.isEmpty()) {
             "The desktop program must not depend on ${violations.joinToString()}"
+        }
+        val naming = fileTree("src") { include("**/*.kt", "**/*.java") }.files.filter { file ->
+            val text = file.readText()
+            forbiddenRumblePackages.any { text.contains(it) }
+        }.map { it.relativeTo(projectDir).path }
+        check(naming.isEmpty()) {
+            "The desktop program must not use the Rumble command line or the battle worker: ${naming.joinToString()}"
         }
     }
 }
