@@ -2190,6 +2190,11 @@ claims:
       state: reserved
       prefix: RCL
       component: "47"
+    - id: RCL-048
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "48"
     - id: RDA-001
       kind: numeric
       state: reserved
@@ -2591,11 +2596,11 @@ high-water:
       state: reserved
       prefix: RCI
       component: "46"
-    - id: RCL-046
+    - id: RCL-047
       kind: numeric
       state: reserved
       prefix: RCL
-      component: "46"
+      component: "47"
     - id: RDA-009
       kind: numeric
       state: reserved
