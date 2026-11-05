@@ -1,0 +1,14 @@
+---
+id: CH-086-tasks
+type: tasks
+status: open
+links: [CH-086]
+title: Tell a bot's author before sending that its launchers need a moderator, and record the first real send
+---
+
+- [ ] Settle with the maintainer: where the launcher comparison runs and that a difference reports but does not block.
+- [ ] Reserve identities and write the acceptance criteria for the launcher finding (difference found, no difference, template unreadable, answer in both forms, no block) before any code, each with its test type.
+- [ ] Read the starter launchers from the Rumble's bot repository head and compare as the moderator does, with tests using a fake GitHub for every outcome.
+- [ ] Show the finding in the dry run and send answers, text and JSON, with the file, the reason and the fix.
+- [ ] Say in the `bot check` answer that the launchers are compared at the dry run.
+- [ ] Update the participation design with the first real send, what it proved and what it did not, the command line capability, the plan note and the indexes, regenerate the evidence manifest and validate the corpus.
