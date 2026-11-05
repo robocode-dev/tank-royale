@@ -338,7 +338,11 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
-          "sha256": "7a21a10fe2d898784f72c26b6a310d31109d2b64fca71a7a1789151e1e27876b"
+          "sha256": "1559c06ccfae9a45b53b9b7351c5d28676f396ba5c7a99890b273970b995b990"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "sha256": "57cf139e492e648f3a75c5cc2e775126948c4ff1004605b3eb279f5e43ba5cbd"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
@@ -536,6 +540,83 @@
           "id": "RCI-042",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
           "subject": "RumbleCliBotTest.testRCI042_UnitPositive_theBotCommandsAnswerInBothFormsWithAnOutcomeTheEnvironmentAndARunnableNextStep",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-043",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI043_UnitNegative_aTemplateThatCouldNotBeReadIsNotCheckedWithItsReasonAndIsNeverTheSameAsFine",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-043",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI043_UnitPositive_aDryRunAndASendSayWhetherTheLaunchersAreTheStarterLaunchers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI044_UnitNegative_aSendThatTheRulesRefuseNeverAsksGitHubForTheStarterLaunchers",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI044_UnitPositive_aDifferenceOrAnUnreadableTemplateDoesNotStopTheSend",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-045",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI045_UnitNegative_aFailingCheckAlsoCarriesTheNoteAndNeverLooksAtTheLaunchers",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-045",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI045_UnitPositive_botCheckStaysOfflineAndSaysWhereTheLaunchersAreCompared",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitNegative_aTemplateThatCannotBeReadIsNotCheckedWithAReasonAndNeverThrows",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitNegative_anEditedLauncherDiffersAndNothingElseIsNormalised",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitNegative_anUnexpectedFailureIsNotCheckedAndALauncherThatIsNotTextDiffers",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitPositive_identicalWindowsLineEndingAndRenamedLaunchersAreTheSame",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitPositive_theStarterLaunchersAreReadFromTheDefaultBranchWithTheSignIn",
           "type": "Unit",
           "direction": "positive"
         },

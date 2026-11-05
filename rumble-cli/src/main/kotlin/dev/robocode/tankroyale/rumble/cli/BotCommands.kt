@@ -16,6 +16,8 @@ import dev.robocode.tankroyale.rumble.CatalogUnreadable
 import dev.robocode.tankroyale.rumble.GitHubTokens
 import dev.robocode.tankroyale.rumble.PrecheckReport
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
+import dev.robocode.tankroyale.rumble.LauncherCheck
+import dev.robocode.tankroyale.rumble.LauncherState
 import dev.robocode.tankroyale.rumble.RumbleHead
 import dev.robocode.tankroyale.rumble.RumbleRules
 import dev.robocode.tankroyale.rumble.SavedRenewal
@@ -49,6 +51,11 @@ internal class BotGroup : CoreCliktCommand(name = "bot") {
 internal abstract class BotLeaf(name: String, io: Io, services: Services) : SignInLeaf(name, io, services) {
     override val answerName: String get() = "bot $commandName"
 
+    companion object {
+        /** Said by `bot check`, which is offline, so that nobody believes it also looked at the launchers. */
+        const val LAUNCHER_NOTE = "The launcher scripts are compared with the Rumble's starter launchers at the dry run: rumble bot send <folder> --dry-run."
+    }
+
     /** A folder given on the command line. */
     protected fun folder(text: String): Path = pathOf(text, "The bot folder").toAbsolutePath().normalize()
 
@@ -81,15 +88,15 @@ internal class BotCheckCommand(io: Io, services: Services) : BotLeaf("check", io
         val env = environment()
         val report = BotValidator.validate(folder(botFolder))
         val reply = if (report.passes) {
-            reply(env, ExitCodes.DONE, "passes", "The bot passes the checks of the Rumble's bot repository for one bot.", next = null) {
+            reply(env, ExitCodes.DONE, "passes", "The bot passes the checks of the Rumble's bot repository for one bot.\n$LAUNCHER_NOTE", next = null) {
                 putFindings(emptyList())
-                put("notes", buildJsonArray { report.notes.forEach { add(JsonPrimitive(io.outside(it))) } })
+                put("notes", buildJsonArray { report.notes.forEach { add(JsonPrimitive(io.outside(it))) }; add(JsonPrimitive(LAUNCHER_NOTE)) })
             }
         } else {
             reply(
                 env, ExitCodes.REFUSED, "check-failed",
-                "The bot has ${report.findings.size} problem" + (if (report.findings.size == 1) "" else "s") + ":\n" + findingsText(report.findings),
-            ) { putFindings(report.findings) }
+                "The bot has ${report.findings.size} problem" + (if (report.findings.size == 1) "" else "s") + ":\n" + findingsText(report.findings) + "\n$LAUNCHER_NOTE",
+            ) { putFindings(report.findings); put("notes", buildJsonArray { report.notes.forEach { add(JsonPrimitive(io.outside(it))) }; add(JsonPrimitive(LAUNCHER_NOTE)) }) }
         }
         answer(reply)
     }
@@ -189,14 +196,15 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
             )
             return
         }
-        val facts = factsText(staged, advice, files)
+        val launchers = sending.compareLaunchers(tokens, staged)
+        val facts = factsText(staged, advice, files, launchers)
         if (dryRun) {
             answer(
                 reply(
                     env, ExitCodes.DONE, "dry-run",
                     "Dry run: nothing was sent. This is what would be sent.\n$facts",
                     next = "bot send ${quoted(botFolder)} --certify-license",
-                ) { putStaged(staged, advice); putNotice(files) },
+                ) { putStaged(staged, advice, launchers); putNotice(files) },
             )
             return
         }
@@ -219,7 +227,7 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
                         put("pullRequestNumber", result.pullRequestNumber)
                         put("pullRequestUrl", result.pullRequestUrl)
                         put("licenseCertified", true)
-                        putStaged(staged, advice)
+                        putStaged(staged, advice, launchers)
                         putNotice(files)
                     },
                 )
@@ -250,21 +258,41 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
             Advice(null, "The Rumble's catalog and rules could not be read (${io.outside(e.message.orEmpty())}), so the name, owner and version were not checked. The bot repository checks them anyway.")
         }
 
-    private fun factsText(staged: StagedSubmission, advice: Advice, files: List<String>): String = buildString {
+    private fun factsText(staged: StagedSubmission, advice: Advice, files: List<String>, launchers: LauncherState): String = buildString {
         appendLine("Bot: ${io.outside(staged.name)} ${io.outside(staged.version.orEmpty())} (${staged.language}), license ${io.outside(staged.license ?: "none declared")}")
         appendLine("PUBLIC: ${SourceNotice.TEXT}")
         appendLine("Files (${files.size}): ${files.joinToString { io.outside(it) }}")
         advice.report?.warnings?.forEach { appendLine(io.outside("Note: ${it.message} ${it.fix}")) }
         advice.note?.let { appendLine(it) }
+        when (launchers) {
+            is LauncherState.Differs -> appendLine(io.outside("Launchers: differs (${launchers.files.joinToString()}). ${LauncherCheck.DIFFERS_MESSAGE} ${LauncherCheck.DIFFERS_FIX}"))
+            is LauncherState.NotChecked -> appendLine(io.outside("Launchers: not checked, because ${launchers.reason}. The bot repository's moderation checks them anyway."))
+            LauncherState.Same -> appendLine("Launchers: same as the starter launchers.")
+        }
     }.trimEnd()
 
-    private fun JsonObjectBuilder.putStaged(staged: StagedSubmission, advice: Advice) {
+    private fun JsonObjectBuilder.putStaged(staged: StagedSubmission, advice: Advice, launchers: LauncherState) {
         put("bot", buildJsonObject {
             put("name", io.outside(staged.name))
             put("version", io.outside(staged.version.orEmpty()))
             put("language", staged.language)
             put("license", io.outside(staged.license.orEmpty()))
             put("treeHash", staged.treeHash)
+        })
+        put("launchers", buildJsonObject {
+            when (launchers) {
+                LauncherState.Same -> put("state", "same")
+                is LauncherState.Differs -> {
+                    put("state", "differs")
+                    put("files", buildJsonArray { launchers.files.forEach { add(JsonPrimitive(io.outside(it))) } })
+                    put("message", LauncherCheck.DIFFERS_MESSAGE)
+                    put("fix", LauncherCheck.DIFFERS_FIX)
+                }
+                is LauncherState.NotChecked -> {
+                    put("state", "not-checked")
+                    put("reason", io.outside(launchers.reason))
+                }
+            }
         })
         put("catalogChecked", advice.report != null)
         advice.note?.let { put("catalogNote", it) }
