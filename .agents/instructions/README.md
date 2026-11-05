@@ -8,7 +8,7 @@ Load only files relevant to your task.
 |-------------------------|-------|---------------------------------------------------------------------------------|
 | `core-principles.md`    | ~45   | clean code, principles, refactor, git, commit, governance, maintainer           |
 | `cross-platform.md`     | ~50   | Bot API, Java, Python, .NET, C#, cross-platform, port, reference implementation |
-| `coding-conventions.md` | ~30   | style, conventions, naming, format, PEP 8, immutability, type hints             |
+| `coding-conventions.md` | ~40   | style, conventions, naming, format, PEP 8, immutability, type hints, GUI text, resources, properties, i18n |
 | `testing-and-build.md`  | ~45   | test, build, Gradle, gradlew, compile, validation, sample bot, registry, parity |
 | `documentation.md`      | ~80   | docs, README, Javadoc, docstring, mermaid, diagram, flowchart                   |
 | `changelog.md`          | ~45   | changelog, CHANGELOG.md, release notes, version, user-visible                   |

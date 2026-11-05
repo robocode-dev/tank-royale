@@ -230,6 +230,11 @@ class SignInFlow(
         store.locked { if (stillSignedIn(renewal)) store.forget() }
     }
 
+    /** Forgets a waiting code and keeps anything else that is saved. Creates nothing when nothing is saved. */
+    fun cancelWaiting() {
+        if (store.hasSavedFiles()) store.locked { store.forgetWaiting() }
+    }
+
     /** Removes what is saved for this environment, and creates nothing when nothing is saved. */
     fun signOut(): SignOutResult {
         if (!store.hasSavedFiles()) return SignOutResult(removedSomething = false, removed = true)

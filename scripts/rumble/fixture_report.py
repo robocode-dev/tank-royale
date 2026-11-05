@@ -48,7 +48,7 @@ CLASS_CASES = [
     (re.compile(r"^RumbleLegacyImportTest$"), "legacy-client-import"),
     (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),
-    (re.compile(r"^(RumbleSignIn\w*|RumbleSavedSignInTest|RumbleRegistration\w*|RumbleGitHubApiTest|RumbleTokenSecrecyTest)$"), "sign-in-and-registration"),
+    (re.compile(r"^(RumbleSignIn\w*|RumbleSavedSignInTest|RumbleRegistration\w*|RumbleGitHubApiTest|RumbleTokenSecrecyTest|RumbleAccount\w*Test|RumbleMenuSwitchTest)$"), "sign-in-and-registration"),
     (re.compile(r"^(RumbleCatalogTest|RumbleBotFetchTest|RumbleTreeHashTest|RumbleBotProjectCrossCheckTest|BotProject\w*)$"), "catalog-download-and-staging"),
     (re.compile(r"^(RumbleBotSubmissionTest|RumbleSubmissionPrecheckTest|RumbleSubmissionProgressTest)$"), "bot-submission-and-progress"),
     (re.compile(r"^(RumbleProtocol\w*|Worker\w*Test|RumbleWorkerHostTest)$"), "battle-worker"),
