@@ -90,7 +90,7 @@ class RumbleAccountScreenTest {
         val broken = Port()
         val throwing = Screen(broken, via = object : AccountPort by broken { override fun open(): AccountOpened = throw IllegalStateException(token) })
         throwing.controller.open()
-        assertEquals(AccountState.SignedOut(AccountNotice.FAILED, "Something went wrong. Try again."), throwing.state)
+        assertEquals(AccountState.SignedOut(AccountNotice.FAILED, null), throwing.state, "a failure with nothing to say has no detail, and the screen says it in its own words")
 
         listOf(failed, none, throwing).forEach { screen -> assertFalse(screen.states.joinToString().contains(token)) }
     }
@@ -206,7 +206,7 @@ class RumbleAccountScreenTest {
     @Tag("Negative")
     fun testRCL053_UnitNegative_aSignOutThatCouldNotRemoveEverythingSaysSoAndAResultAfterCancellingIsThrownAway() {
         val failed = Screen().apply { port.removed = false; port.opened = AccountOpened.SignedIn("alice"); controller.open(); controller.signOut() }
-        assertEquals(AccountState.SignedOut(AccountNotice.FAILED, "The saved sign-in could not be removed."), failed.state)
+        assertEquals(AccountState.SignedOut(AccountNotice.SIGN_OUT_FAILED), failed.state)
 
         // A check that was on its way when the person cancelled must not bring the sign-in back.
         val late = Screen().apply { controller.open(); controller.signIn() }

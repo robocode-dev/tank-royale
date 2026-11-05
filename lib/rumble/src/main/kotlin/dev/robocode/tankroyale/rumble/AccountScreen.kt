@@ -4,7 +4,7 @@ import java.time.Instant
 import java.util.concurrent.Executor
 
 /** Why the account screen shows "signed out". The screen turns each one into a plain sentence of its own. */
-enum class AccountNotice { CODE_EXPIRED, CANCELLED, DENIED, SAVED_UNUSABLE, NOT_PRIVATE, NOT_SAVED, REVOKED, FAILED }
+enum class AccountNotice { CODE_EXPIRED, CANCELLED, DENIED, SAVED_UNUSABLE, NOT_PRIVATE, NOT_SAVED, REVOKED, FAILED, SIGN_OUT_FAILED }
 
 /** How registering the signed-in account with the Rumble stands. Never holds a token. */
 sealed interface AccountRegistration {
@@ -121,12 +121,12 @@ class AccountController(
         stopWaiting()
         show(AccountState.Starting)
         val mine = epoch
-        work({ port.open() }, { AccountOpened.Failed(PLAIN_FAILURE) }) { opened ->
+        work({ port.open() }, { AccountOpened.Failed(NO_DETAIL) }) { opened ->
             if (mine == epoch) when (opened) {
                 is AccountOpened.SignedIn -> signedIn(opened.account)
-                is AccountOpened.SignedOut -> show(AccountState.SignedOut(opened.notice, opened.detail))
+                is AccountOpened.SignedOut -> show(AccountState.SignedOut(opened.notice, opened.detail?.takeIf { it.isNotBlank() }))
                 is AccountOpened.Unavailable -> show(AccountState.Unavailable(opened.message))
-                is AccountOpened.Failed -> show(AccountState.SignedOut(AccountNotice.FAILED, opened.message))
+                is AccountOpened.Failed -> show(AccountState.SignedOut(AccountNotice.FAILED, opened.message.takeIf { it.isNotBlank() }))
             }
         }
     }
@@ -137,7 +137,7 @@ class AccountController(
         asking = true
         epoch++
         val mine = epoch
-        work({ port.begin() }, { AccountBegun.Failed(PLAIN_FAILURE) }) { begun ->
+        work({ port.begin() }, { AccountBegun.Failed(NO_DETAIL) }) { begun ->
             asking = false
             if (mine != epoch) return@work
             when (begun) {
@@ -147,8 +147,8 @@ class AccountController(
                 }
                 is AccountBegun.AlreadySignedIn -> signedIn(begun.account)
                 is AccountBegun.Unavailable -> show(AccountState.Unavailable(begun.message))
-                is AccountBegun.NotPrivate -> show(AccountState.SignedOut(AccountNotice.NOT_PRIVATE, begun.message))
-                is AccountBegun.Failed -> show(AccountState.SignedOut(AccountNotice.FAILED, begun.message))
+                is AccountBegun.NotPrivate -> show(AccountState.SignedOut(AccountNotice.NOT_PRIVATE, begun.message.takeIf { it.isNotBlank() }))
+                is AccountBegun.Failed -> show(AccountState.SignedOut(AccountNotice.FAILED, begun.message.takeIf { it.isNotBlank() }))
             }
         }
     }
@@ -173,7 +173,7 @@ class AccountController(
         stopWaiting()
         val mine = epoch
         work({ port.signOut() }, { false }) { removed ->
-            if (mine == epoch) show(if (removed) AccountState.SignedOut() else AccountState.SignedOut(AccountNotice.FAILED, "The saved sign-in could not be removed."))
+            if (mine == epoch) show(if (removed) AccountState.SignedOut() else AccountState.SignedOut(AccountNotice.SIGN_OUT_FAILED))
         }
     }
 
@@ -182,7 +182,7 @@ class AccountController(
         scheduled = scheduler.after(seconds.coerceAtLeast(0)) {
             post.execute {
                 if (mine != epoch) return@execute
-                work({ port.check() }, { AccountChecked.Failed(PLAIN_FAILURE, canRetry = false) }) { checked ->
+                work({ port.check() }, { AccountChecked.Failed(NO_DETAIL, canRetry = false) }) { checked ->
                     if (mine == epoch) applyCheck(checked, mine)
                 }
             }
@@ -199,11 +199,11 @@ class AccountController(
             AccountChecked.Expired -> show(AccountState.SignedOut(AccountNotice.CODE_EXPIRED))
             AccountChecked.Denied -> show(AccountState.SignedOut(AccountNotice.DENIED))
             AccountChecked.NoWaitingCode -> show(AccountState.SignedOut())
-            is AccountChecked.NotSaved -> show(AccountState.SignedOut(AccountNotice.NOT_SAVED, checked.reason))
+            is AccountChecked.NotSaved -> show(AccountState.SignedOut(AccountNotice.NOT_SAVED, checked.reason.takeIf { it.isNotBlank() }))
             is AccountChecked.Unavailable -> show(AccountState.Unavailable(checked.message))
             is AccountChecked.Failed ->
                 if (checked.canRetry && state is AccountState.WaitingForCode) checkAfter(checked.retryAfterSeconds, mine)
-                else show(AccountState.SignedOut(AccountNotice.FAILED, checked.message))
+                else show(AccountState.SignedOut(AccountNotice.FAILED, checked.message.takeIf { it.isNotBlank() }))
         }
     }
 
@@ -211,11 +211,11 @@ class AccountController(
     private fun signedIn(account: String?) {
         show(AccountState.SignedIn(account, AccountRegistration.Registering))
         val mine = epoch
-        work({ port.register() }, { AccountRegistration.Failed(PLAIN_FAILURE) }) { registration ->
+        work({ port.register() }, { AccountRegistration.Failed(NO_DETAIL) }) { registration ->
             if (mine != epoch) return@work
             val now = state
             when {
-                registration is AccountRegistration.SignInNeeded -> show(AccountState.SignedOut(AccountNotice.REVOKED, registration.message))
+                registration is AccountRegistration.SignInNeeded -> show(AccountState.SignedOut(AccountNotice.REVOKED, registration.message.takeIf { it.isNotBlank() }))
                 now is AccountState.SignedIn -> show(now.copy(registration = registration))
             }
         }
@@ -247,6 +247,7 @@ class AccountController(
     }
 
     private companion object {
-        const val PLAIN_FAILURE = "Something went wrong. Try again."
+        /** The detail of a failure that has none. The screen shows no detail line for it and says what happened in its own words. */
+        const val NO_DETAIL = ""
     }
 }

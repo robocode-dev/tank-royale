@@ -1,6 +1,6 @@
 # Coding Conventions
 
-<!-- KEYWORDS: style, conventions, naming, format, Java, Kotlin, Python, C#, PEP 8, immutability, type hints, modern -->
+<!-- KEYWORDS: style, conventions, naming, format, Java, Kotlin, Python, C#, PEP 8, immutability, type hints, modern, GUI text, resources, properties, i18n, localization -->
 
 ## Modern Language Features
 
@@ -16,6 +16,15 @@
 - Named constants over magic numbers
 - `@Nullable` / `@NotNull` annotations
 - Immutable objects and collections preferred
+
+## GUI Text
+
+- Every text a person sees in the GUI (labels, buttons, titles, menu items, messages, error texts, tooltips) is a **resource**, never a string literal in code. Use `Strings`, `Messages`, `MenuTitles`, `UiTitles`, `Hints` and `About` (`gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/ResourceBundles.kt`) with the files in `gui/src/main/resources`.
+- Choose the file by kind: `Menu` (menus and their items), `UI titles` (window and dialog titles), `Messages` (messages and dialog texts), `Strings` (labels), `Hints` (tooltips), `About`.
+- Every new key goes in the base file and in all language files (`_ca`, `_da`, `_es`); `PropertiesConsistencyTest` requires the same keys everywhere. Text that is not translated yet is written in English with the comment `(English until translated)`.
+- Logic outside Swing (behavior classes, libraries) returns codes or keys, never English sentences; the GUI turns them into resource texts. A sentence from a lower layer may be shown only as a labelled detail line.
+- Parameters in texts use `String.format` (`%s`, `%d`). Pure formats such as `m:ss` and markup are not text.
+- Some language files are ISO-8859-1 although `standards.md` says UTF-8 (Java reads both). Add plain ASCII only, or keep the file's encoding.
 
 ## Python Conventions
 

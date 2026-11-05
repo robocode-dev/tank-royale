@@ -338,7 +338,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
-          "sha256": "96c6cfee61e24b76c1ed6cbccc77cff466ebb81431106a5010aeaba118565121"
+          "sha256": "fc8fafa251c8e9439708e54dd7d6a949a68ee5e25b45827f843bb81cbb8abe83"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
@@ -432,7 +432,21 @@
         {
           "id": "RCL-056",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
+          "subject": "RumbleCliAccountTextsTest.testRCL056_UnitNegative_noEnglishSentenceIsWrittenInTheBehaviorClassOrTheDialog",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
           "subject": "RumbleCliAccountTextsTest.testRCL056_UnitNegative_noTextTalksAboutATokenAndPlaceholdersMatchWhatTheScreenGives",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
+          "subject": "RumbleCliAccountTextsTest.testRCL056_UnitNegative_theRuleFindsASentenceAndLeavesKeysAndFormatsAlone",
           "type": "Unit",
           "direction": "negative"
         },
@@ -1508,7 +1522,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
-          "sha256": "37dd7f36763362a343dfb3bd4e7ca2d226ee9400a95e734e08c37b3f76306e9a"
+          "sha256": "aef3c82b2ff9f36b2f41ce22e1856054a074c8de6145164acda3d76798fdc25a"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",

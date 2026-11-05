@@ -478,12 +478,13 @@ Feature: rumble-client — Local ranked and practice battle client
     When every text key that a state, a notice or a registration result needs is looked up
     Then each key is in the English file with a non-empty text, and the English menu file has the Rumble menu and its account item
     And no text says "token" or shows how to read the saved sign-in
+    And no English sentence is written in the behavior class or the dialog, so every text a person sees comes from the resource files, and a sentence that a lower layer said is shown only as a detail under a label from the resources
 
   @RCL-057
   Scenario: The desktop program shows the account screen and signs in to the test environment
     Test-type: Human
     Given the desktop program started with the menu switched on and the test environment chosen
     When the maintainer opens Rumble, GitHub account, signs in with the code, looks at the account and the client ID, closes and opens the screen again and signs out
-    Then the screen shows the code and the address and opens the page, shows the account and the client ID after approval, shows the same account after reopening, and shows signed out after signing out
+    Then the screen shows the code and the address and opens the page, the code can be selected with the mouse and copied with Ctrl+C or with a button, shows the account and the client ID after approval, shows the same account after reopening, and shows signed out after signing out
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
 ```
