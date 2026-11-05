@@ -13,6 +13,8 @@ import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onAbout
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onHelp
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleAccount
+import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onGuiConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartServer
@@ -37,6 +39,7 @@ object Menu : JMenuBar() {
         setupBattleMenu()
         setupServerMenu()
         setupConfigMenu()
+        setupRumbleMenu()
         setupHelpMenu()
 
         ServerEvents.apply {
@@ -119,6 +122,17 @@ object Menu : JMenuBar() {
 
             addNewMenuItem("item.sound_config", onSoundConfig).apply {
                 mnemonic = KeyEvent.VK_S
+            }
+        })
+    }
+
+    /** The Rumble menu is not whole yet, so it is shown only when a developer switches it on. */
+    private fun setupRumbleMenu() {
+        if (!RumbleMenuSwitch.menuShown(System.getProperty(RumbleMenuSwitch.MENU_PROPERTY), System.getenv(RumbleMenuSwitch.MENU_VARIABLE))) return
+        add(JMenu(MenuTitles.get("menu.rumble")).apply {
+            mnemonic = KeyEvent.VK_R
+            addNewMenuItem("item.rumble_account", onRumbleAccount).apply {
+                mnemonic = KeyEvent.VK_G
             }
         })
     }

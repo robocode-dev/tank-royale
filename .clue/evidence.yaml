@@ -262,7 +262,7 @@
         },
         {
           "path": "gui/build.gradle.kts",
-          "sha256": "885e11f2415956593cbb4c2a24050a3686ff272c5d8940ccd01c826c7fd69c62"
+          "sha256": "a450b0ce767d14046fd7f0c700976a2382bb0c7fbab222b3b8d37d6c26b898c6"
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
@@ -335,6 +335,10 @@
         {
           "path": "rumble-cli/build.gradle.kts",
           "sha256": "ffbb67141b03f908dae96fa71a0977765593a887f13ed00ff6f530bad336c340"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
+          "sha256": "96c6cfee61e24b76c1ed6cbccc77cff466ebb81431106a5010aeaba118565121"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
@@ -424,6 +428,27 @@
           "subject": "RumbleProtocolMessagesTest.testRBW002_UnitNegative_unknownVersionsAndInvalidLinesAreRefusedWholeInPlainWords",
           "type": "Unit",
           "direction": "negative"
+        },
+        {
+          "id": "RCL-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
+          "subject": "RumbleCliAccountTextsTest.testRCL056_UnitNegative_noTextTalksAboutATokenAndPlaceholdersMatchWhatTheScreenGives",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
+          "subject": "RumbleCliAccountTextsTest.testRCL056_UnitPositive_everyKeyTheAccountScreenCanAskForHasANonEmptyEnglishText",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
+          "subject": "RumbleCliAccountTextsTest.testRCL056_UnitPositive_theEnglishMenuFilesHaveTheRumbleMenuItsAccountItemAndTheDialogTitle",
+          "type": "Unit",
+          "direction": "positive"
         },
         {
           "id": "RCI-032",
@@ -1274,7 +1299,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "d5a8e5099f8bb9da1469b98c7a90772eb65203130cd764db38d639c58e919766"
+          "sha256": "2e02db1417e3d991142ba8d277b4e87e5ff6838c3a032d7616925029dd169e87"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1478,6 +1503,14 @@
           "sha256": "dfff45122260e29cfc2885e8d08d391ae9c74b6f6254ca53ad32fc85050022a4"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountPortTest.kt",
+          "sha256": "39549271123b1938385c14d90d4c682107d24b84f37a2dbad27d51f34d76cea2"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "sha256": "37dd7f36763362a343dfb3bd4e7ca2d226ee9400a95e734e08c37b3f76306e9a"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
           "sha256": "bb008e9c37d3f5908f79edbb7ff453b97f2c38b2ce0503ec2a86ece7637588e6"
         },
@@ -1512,6 +1545,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
           "sha256": "6cd2c697190f4f7b0130b7d30c6d043546fbac16588928249fbd46b5da34ff9e"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
+          "sha256": "e0b131f80cccb1e9f5d13178a1733373184aa6c4a1c66b642bfb1aabde1e275d"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
@@ -1567,6 +1604,76 @@
         }
       ],
       "references": [
+        {
+          "id": "RCL-054",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountPortTest.kt",
+          "subject": "RumbleAccountPortTest.testRCL054_UnitNegative_eachFailureIsThePlainMessageOfTheLibraryAndCancellingForgetsTheCodeOnly",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-054",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountPortTest.kt",
+          "subject": "RumbleAccountPortTest.testRCL054_UnitPositive_theWholeSignInRegistrationAndSignOutRunThroughTheScreensLibrary",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-051",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL051_UnitNegative_aLibraryThatFailsOrIsUnavailableIsShownWithItsPlainMessageAndNoTokenAppears",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-051",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL051_UnitPositive_openingShowsSignedInSignedOutAndWhyWhenThereIsAReason",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-052",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL052_UnitNegative_aCheckThatFailsButCanWorkIsTriedAgainAndARefusedRegistrationLeavesThePersonSignedIn",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-052",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL052_UnitNegative_everyWayTheSignInCanEndShowsWhatHappened",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-052",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL052_UnitPositive_signingInShowsTheCodeWaitsAtGitHubsPaceThenRegistersAndShowsTheClientId",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-053",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL053_UnitNegative_aSignOutThatCouldNotRemoveEverythingSaysSoAndAResultAfterCancellingIsThrownAway",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-053",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL053_UnitPositive_cancelForgetsTheCodeCloseKeepsItAndSignOutRemovesWhatIsSaved",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-053",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountScreenTest.kt",
+          "subject": "RumbleAccountScreenTest.testRCL053_UnitPositive_everyCallReturnsAtOnceWhileTheLibraryBlocksAndResultsComeThroughTheScreensQueue",
+          "type": "Unit",
+          "direction": "positive"
+        },
         {
           "id": "RCL-023",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotFetchTest.kt",
@@ -1970,6 +2077,34 @@
           "id": "RLI-010",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleLegacyImportTest.kt",
           "subject": "RumbleLegacyImportTest.testRLI010_UnitPositive_everyEndingIsATypedResultWithAPlainMessage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-055",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
+          "subject": "RumbleMenuSwitchTest.testRCL055_UnitNegative_anUnknownEnvironmentNameIsReportedAndNeverReplaced",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-055",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
+          "subject": "RumbleMenuSwitchTest.testRCL055_UnitNegative_anotherWordOrNothingKeepsTheMenuHidden",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-055",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
+          "subject": "RumbleMenuSwitchTest.testRCL055_UnitPositive_theEnvironmentIsTheNamedOneAndThePublicRumbleWhenNoneIsNamed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-055",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
+          "subject": "RumbleMenuSwitchTest.testRCL055_UnitPositive_theMenuIsShownForATrueWordInThePropertyOrTheVariable",
           "type": "Unit",
           "direction": "positive"
         },

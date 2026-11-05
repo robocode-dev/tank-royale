@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.ui.config.SoundConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.GuiConfigDialog
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.replay.ReplayFileChooser
+import dev.robocode.tankroyale.gui.ui.rumble.RumbleAccountDialog
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
@@ -62,6 +63,9 @@ object MenuEventHandlers {
             }
             onGuiConfig.on(this) {
                 GuiConfigDialog.isVisible = true
+            }
+            onRumbleAccount.on(this) {
+                RumbleAccountDialog.open()
             }
             onHelp.on(this) {
                 Browser.browse(HELP_URL)
