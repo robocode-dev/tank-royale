@@ -32,9 +32,10 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.JButton
-import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JTextArea
 import javax.swing.JTextField
+import javax.swing.UIManager
 import javax.swing.SwingUtilities
 import javax.swing.Timer
 
@@ -52,7 +53,7 @@ class RumbleAccountDialog private constructor(private val scheduling: ScheduledE
 
     init {
         contentPane.add(content)
-        setSize(480, 300)
+        setSize(480, 380)
         isResizable = false
         setLocationRelativeTo(owner)
         addWindowListener(object : WindowAdapter() {
@@ -72,23 +73,23 @@ class RumbleAccountDialog private constructor(private val scheduling: ScheduledE
         countdown?.stop()
         content.removeAll()
         when (state) {
-            AccountState.Starting -> content.add(JLabel(text(AccountTexts.forState(state))))
+            AccountState.Starting -> put(wrapped(text(AccountTexts.forState(state))))
             is AccountState.SignedOut -> {
-                content.add(heading(AccountTexts.forState(state)))
-                state.notice?.let { notice -> content.add(JLabel(html(text(AccountTexts.forNotice(notice))))) }
+                put(heading(AccountTexts.forState(state)))
+                state.notice?.let { notice -> put(wrapped(text(AccountTexts.forNotice(notice)))) }
                 detail(state.detail)
-                content.add(button("rumble.account.button.sign_in") { controller.signIn() })
+                put(button("rumble.account.button.sign_in") { controller.signIn() })
             }
             is AccountState.Unavailable -> {
-                content.add(heading(AccountTexts.forState(state)))
+                put(heading(AccountTexts.forState(state)))
             }
             is AccountState.WaitingForCode -> renderWaiting(state)
             is AccountState.SignedIn -> {
                 val line = state.account?.let { text(AccountTexts.forState(state), it) } ?: text("rumble.account.signed_in_unknown")
-                content.add(JLabel(line).apply { font = font.deriveFont(Font.BOLD) })
-                content.add(JLabel(html(registrationText(state.registration))))
+                put(wrapped(line, bold = true))
+                put(wrapped(registrationText(state.registration)))
                 detail(registrationDetail(state.registration))
-                content.add(button("rumble.account.button.sign_out") { controller.signOut() })
+                put(button("rumble.account.button.sign_out") { controller.signOut() })
             }
         }
         content.revalidate()
@@ -96,15 +97,15 @@ class RumbleAccountDialog private constructor(private val scheduling: ScheduledE
     }
 
     private fun renderWaiting(state: AccountState.WaitingForCode) {
-        content.add(heading(AccountTexts.forState(state)))
-        content.add(JLabel(text("rumble.account.step_open")))
-        content.add(button("rumble.account.button.open_page") {
+        put(heading(AccountTexts.forState(state)))
+        put(wrapped(text("rumble.account.step_open")))
+        put(button("rumble.account.button.open_page") {
             Clipboard.set(state.code)
             Browser.browse(state.address)
         })
-        content.add(JLabel(text("rumble.account.step_enter")))
+        put(wrapped(text("rumble.account.step_enter")))
         // A read-only field, so the code can be selected with the mouse and copied with Ctrl+C like any other text.
-        content.add(JTextField(state.code).apply {
+        put(JTextField(state.code).apply {
             isEditable = false
             border = null
             horizontalAlignment = JTextField.CENTER
@@ -113,16 +114,16 @@ class RumbleAccountDialog private constructor(private val scheduling: ScheduledE
                 override fun focusGained(e: FocusEvent) = selectAll()
             })
         })
-        content.add(button("rumble.account.button.copy_code") { Clipboard.set(state.code) })
-        val remaining = JLabel()
-        content.add(remaining)
+        put(button("rumble.account.button.copy_code") { Clipboard.set(state.code) })
+        val remaining = wrapped("")
+        put(remaining)
         fun update() {
             val left = Duration.between(Instant.now(), state.expiresAt).coerceAtLeast(Duration.ZERO)
             remaining.text = text("rumble.account.waiting_expires", "%d:%02d".format(left.toMinutes(), left.toSecondsPart()))
         }
         update()
         countdown = Timer(1000) { update() }.apply { start() }
-        content.add(button("rumble.account.button.cancel") { controller.cancel() })
+        put(button("rumble.account.button.cancel") { controller.cancel() })
     }
 
     private fun registrationText(registration: AccountRegistration): String {
@@ -143,16 +144,27 @@ class RumbleAccountDialog private constructor(private val scheduling: ScheduledE
 
     /** Adds what a lower layer said, under the label from the resources. The sentence itself is not ours. */
     private fun detail(said: String?) {
-        said?.takeIf { it.isNotBlank() }?.let { content.add(JLabel(html(text("rumble.account.details", it)))) }
+        said?.takeIf { it.isNotBlank() }?.let { put(wrapped(text("rumble.account.details", it))) }
     }
 
-    private fun html(text: String) = "<html>${escape(text)}</html>"
+    /** Adds a component that is as wide as the window and never wider, so nothing runs out over the edge. */
+    private fun put(component: java.awt.Component) {
+        content.add(component, "growx, wmin 10")
+    }
 
-    private fun heading(key: String) = JLabel(text(key)).apply { font = font.deriveFont(Font.BOLD) }
+    /** A text that wraps at the window's edge and can be selected and copied. */
+    private fun wrapped(text: String, bold: Boolean = false) = JTextArea(text).apply {
+        lineWrap = true
+        wrapStyleWord = true
+        isEditable = false
+        isOpaque = false
+        border = null
+        font = UIManager.getFont("Label.font").let { if (bold) it.deriveFont(Font.BOLD) else it }
+    }
+
+    private fun heading(key: String) = wrapped(text(key), bold = true)
 
     private fun button(key: String, action: () -> Unit) = JButton(text(key)).apply { addActionListener { action() } }
-
-    private fun escape(text: String) = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     companion object {
         /** Opens the screen for the environment the variable names. The screen never waits for GitHub. */
