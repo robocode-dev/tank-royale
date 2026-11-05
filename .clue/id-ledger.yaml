@@ -1082,6 +1082,9 @@ events:
     - {id: RCL-047, kind: numeric, state: live, prefix: RCL, component: "47"}
     - {id: RCL-048, kind: numeric, state: live, prefix: RCL, component: "48"}
     - {id: RCI-047, kind: numeric, state: live, prefix: RCI, component: "47"}
+    - {id: CH-087, kind: numeric, state: retired, prefix: CH, component: "87"}
+    - {id: CH-087-tasks, kind: opaque, state: retired}
+    - {id: CH-087-open-questions, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
