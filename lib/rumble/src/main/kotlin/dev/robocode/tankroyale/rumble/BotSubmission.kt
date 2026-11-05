@@ -103,10 +103,10 @@ class BotSubmission(
 
     private class Stop(val signInNeeded: Boolean, message: String) : Exception(message, null, false, false)
 
-    /** Checks, by reading only, whether the account can send a bot. */
     override fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission): LauncherState =
         LauncherCheck(environment, api).compare(tokens, submission)
 
+    /** Checks, by reading only, whether the account can send a bot. */
     override fun checkReadiness(tokens: GitHubTokens): SubmissionReadiness =
         try {
             readiness(tokens.accessToken)

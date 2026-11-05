@@ -36,20 +36,34 @@ class LauncherCheck(
 ) {
     private val repository = "/repos/${RumbleEnvironments.owner}/${environment.botsRepository}"
 
-    fun compare(tokens: GitHubTokens, staged: StagedSubmission): LauncherState {
-        val different = mutableListOf<String>()
-        for (suffix in SUFFIXES) {
+    /** Never throws: whatever goes wrong is [LauncherState.NotChecked] with a plain reason. */
+    fun compare(tokens: GitHubTokens, staged: StagedSubmission): LauncherState =
+        try {
+            compareOrThrow(tokens, staged)
+        } catch (e: RuntimeException) {
+            LauncherState.NotChecked("the launchers could not be compared (${e.javaClass.simpleName})")
+        }
+
+    private fun compareOrThrow(tokens: GitHubTokens, staged: StagedSubmission): LauncherState {
+        if (!LANGUAGE.matches(staged.language)) return LauncherState.NotChecked("the language ${staged.language} has no starter launcher folder")
+        // Both of the bot's own files are read first, so nothing is asked of GitHub when one of them cannot be read.
+        val own = SUFFIXES.associateWith { suffix ->
             val file = staged.name + suffix
-            val actual = try {
-                Files.readAllBytes(staged.botFolder.resolve(file)).toString(Charsets.UTF_8)
+            try {
+                Files.readAllBytes(staged.botFolder.resolve(file))
             } catch (e: IOException) {
                 return LauncherState.NotChecked("the launcher $file could not be read from the bot's copy")
             }
+        }
+        val different = mutableListOf<String>()
+        for ((suffix, bytes) in own) {
             val starter = when (val read = starter(tokens, staged.language, suffix)) {
                 is Read.Text -> read.text
                 is Read.Missing -> return LauncherState.NotChecked(read.reason)
             }
-            if (lines(starter.replace(STARTER, staged.name)) != lines(actual)) different += file
+            // A launcher that is not text in UTF-8 cannot equal the starter launcher.
+            val actual = strictText(bytes)
+            if (actual == null || lines(starter.replace(STARTER, staged.name)) != lines(actual)) different += staged.name + suffix
         }
         return if (different.isEmpty()) LauncherState.Same else LauncherState.Differs(different)
     }
@@ -64,6 +78,8 @@ class LauncherCheck(
             api.get("$repository/contents/templates/$language/$STARTER/$STARTER$suffix", tokens.accessToken)
         } catch (e: IOException) {
             return Read.Missing("GitHub could not be reached, so the starter launchers were not read")
+        } catch (e: RuntimeException) {
+            return Read.Missing("GitHub could not be asked for the starter launcher (${e.javaClass.simpleName})")
         }
         return when (answer.status) {
             200 -> Read.Text(decode(answer.body) ?: return Read.Missing("GitHub's answer about the starter launcher could not be understood"))
@@ -84,20 +100,23 @@ class LauncherCheck(
         } catch (e: IllegalArgumentException) {
             return null
         }
-        if (bytes.isEmpty()) return null
-        return try {
+        return if (bytes.isEmpty()) null else strictText(bytes)
+    }
+
+    private fun strictText(bytes: ByteArray): String? =
+        try {
             Charsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT)
                 .decode(java.nio.ByteBuffer.wrap(bytes)).toString()
         } catch (e: CharacterCodingException) {
             null
         }
-    }
 
     private fun lines(text: String) = text.replace("\r\n", "\n")
 
     companion object {
         private const val STARTER = "StarterBot"
         private val SUFFIXES = listOf(".sh", ".cmd")
+        private val LANGUAGE = Regex("[a-z]+")
 
         /** What the answer says a difference means. */
         const val DIFFERS_MESSAGE = "A moderator must look at this bot, because its launcher differs from the starter launcher."

@@ -126,6 +126,25 @@ class RumbleCliLauncherTest {
     @Test
     @Tag("RCI-044")
     @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI044_UnitNegative_anUnexpectedFailureIsNotCheckedAndALauncherThatIsNotTextDiffers(@TempDir dir: Path) {
+        val crashing = object : GitHubApi {
+            override fun get(path: String, token: String?): ApiResponse = throw IllegalStateException("boom")
+            override fun postJson(path: String, token: String, json: String): ApiResponse = error("Only reads are expected")
+            override fun patchJson(path: String, token: String, json: String): ApiResponse = error("Only reads are expected")
+        }
+        val bot = staged(dir.resolve("a"))
+        val state = LauncherCheck(RumbleEnvironments.TEST, crashing).compare(tokens, bot)
+        assertInstanceOf(LauncherState.NotChecked::class.java, state, state.toString())
+
+        val broken = staged(dir.resolve("b"))
+        Files.write(broken.botFolder.resolve("MyBot.sh"), byteArrayOf(0x23, 0x21, 0xFF.toByte(), 0x0A))
+        assertEquals(LauncherState.Differs(listOf("MyBot.sh")), compare(repository(), broken))
+    }
+
+    @Test
+    @Tag("RCI-044")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI044_UnitPositive_theStarterLaunchersAreReadFromTheDefaultBranchWithTheSignIn(@TempDir dir: Path) {
         val repository = repository()

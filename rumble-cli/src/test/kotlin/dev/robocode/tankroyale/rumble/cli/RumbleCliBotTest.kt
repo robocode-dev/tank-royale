@@ -95,10 +95,14 @@ class RumbleCliBotTest {
     private class Sending : BotSending {
         var readiness: SubmissionReadiness = SubmissionReadiness.Ready("alice", "alice/rumble-bots-test")
         var launchers: LauncherState = LauncherState.Same
+        var launcherAsks = 0
         var result: ((StagedSubmission) -> SubmissionResult) = { SubmissionResult.Submitted("https://github.com/x/y/pull/7", 7, "submit/MyBot-1.0.0", SubmissionOutcome.OPENED) }
         val sent = mutableListOf<Pair<StagedSubmission, Boolean>>()
         override fun checkReadiness(tokens: GitHubTokens) = readiness
-        override fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission) = launchers
+        override fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission): LauncherState {
+            launcherAsks++
+            return launchers
+        }
         override fun submit(tokens: GitHubTokens, submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult {
             sent += submission to authorCertifiesLicense
             return result(submission)
@@ -674,6 +678,21 @@ class RumbleCliBotTest {
             assertEquals("opened", answer.outcome)
         }
         assertEquals(2, world.sending.sent.size)
+    }
+
+    @Test
+    @Tag("RCI-044")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCI044_UnitNegative_aSendThatTheRulesRefuseNeverAsksGitHubForTheStarterLaunchers(@TempDir dir: Path) {
+        val world = World(dir.resolve("state"))
+        world.signedIn()
+        world.source.bansBody = """{"schemaVersion":1,"bannedOwners":[{"account":"alice"}],"disqualifiedBots":[]}"""
+
+        val answer = world.test("bot", "send", bot(dir.resolve("work")).toString(), "--dry-run")
+
+        assertEquals("precheck-failed", answer.outcome)
+        assertEquals(0, world.sending.launcherAsks)
     }
 
     // RCI-045

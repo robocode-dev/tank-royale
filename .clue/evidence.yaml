@@ -338,11 +338,11 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
-          "sha256": "68c880a0f020b78b63af5f09870fa512f10f599907fcd90b56b0918fd847c203"
+          "sha256": "1559c06ccfae9a45b53b9b7351c5d28676f396ba5c7a99890b273970b995b990"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
-          "sha256": "1897c0678ca208682aeb124873616ae75812ca98469b1159f2ec44f7f240594a"
+          "sha256": "57cf139e492e648f3a75c5cc2e775126948c4ff1004605b3eb279f5e43ba5cbd"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliProcessTest.kt",
@@ -560,6 +560,13 @@
         {
           "id": "RCI-044",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
+          "subject": "RumbleCliBotTest.testRCI044_UnitNegative_aSendThatTheRulesRefuseNeverAsksGitHubForTheStarterLaunchers",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
           "subject": "RumbleCliBotTest.testRCI044_UnitPositive_aDifferenceOrAnUnreadableTemplateDoesNotStopTheSend",
           "type": "Unit",
           "direction": "positive"
@@ -589,6 +596,13 @@
           "id": "RCI-044",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
           "subject": "RumbleCliLauncherTest.testRCI044_UnitNegative_anEditedLauncherDiffersAndNothingElseIsNormalised",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-044",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
+          "subject": "RumbleCliLauncherTest.testRCI044_UnitNegative_anUnexpectedFailureIsNotCheckedAndALauncherThatIsNotTextDiffers",
           "type": "Unit",
           "direction": "negative"
         },

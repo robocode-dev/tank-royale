@@ -96,7 +96,7 @@ internal class BotCheckCommand(io: Io, services: Services) : BotLeaf("check", io
             reply(
                 env, ExitCodes.REFUSED, "check-failed",
                 "The bot has ${report.findings.size} problem" + (if (report.findings.size == 1) "" else "s") + ":\n" + findingsText(report.findings) + "\n$LAUNCHER_NOTE",
-            ) { putFindings(report.findings); put("notes", buildJsonArray { add(JsonPrimitive(LAUNCHER_NOTE)) }) }
+            ) { putFindings(report.findings); put("notes", buildJsonArray { report.notes.forEach { add(JsonPrimitive(io.outside(it))) }; add(JsonPrimitive(LAUNCHER_NOTE)) }) }
         }
         answer(reply)
     }
@@ -181,7 +181,6 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
         val files = staged.files.map { it.path }
 
         val advice = advice(env, staged, ready.account)
-        val launchers = sending.compareLaunchers(tokens, staged)
         if (advice.report?.hasProblems == true) {
             val findings = advice.report.problems
             answer(
@@ -197,6 +196,7 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
             )
             return
         }
+        val launchers = sending.compareLaunchers(tokens, staged)
         val facts = factsText(staged, advice, files, launchers)
         if (dryRun) {
             answer(
