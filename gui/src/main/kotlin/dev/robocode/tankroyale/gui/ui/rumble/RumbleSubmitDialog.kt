@@ -15,6 +15,8 @@ import dev.robocode.tankroyale.rumble.SubmitController
 import dev.robocode.tankroyale.rumble.SubmitState
 import dev.robocode.tankroyale.rumble.SubmitTexts
 import net.miginfocom.swing.MigLayout
+import com.formdev.flatlaf.FlatLaf
+import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Font
@@ -79,7 +81,7 @@ class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog)
             is SubmitState.Problems -> renderProblems(state)
             is SubmitState.Checked -> {
                 put(wrapped(text("rumble.submit.step_check"), bold = true))
-                put(wrapped(text(SubmitTexts.forState(state))))
+                put(status(true, text(SubmitTexts.forState(state))))
                 put(wrapped(foundText(state.found)))
                 state.notes.forEach { put(wrapped(text("rumble.submit.notes", it))) }
                 put(button("rumble.submit.button.review") { controller.review() })
@@ -99,14 +101,14 @@ class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog)
         put(wrapped(text(SubmitTexts.forState(state)), bold = true))
         put(wrapped(text("rumble.submit.choose_help")))
         put(wrapped(state.folder?.toString() ?: text("rumble.submit.choose_none")))
-        state.found?.let { put(wrapped(foundText(it))) }
-        state.problem?.let { problem(it) }
         put(button("rumble.submit.button.choose") { chooseFolder() })
+        state.found?.let { put(status(true, foundText(it))) }
+        state.problem?.let { problem(it) }
         if (state.found != null) put(button("rumble.submit.button.check") { controller.check() })
     }
 
     private fun renderProblems(state: SubmitState.Problems) {
-        put(wrapped(text(SubmitTexts.forState(state)), bold = true))
+        put(status(false, text(SubmitTexts.forState(state))))
         state.findings.forEach { problem(it) }
         state.notes.forEach { put(wrapped(text("rumble.submit.notes", it))) }
         put(button("rumble.submit.button.check_again") { controller.check() })
@@ -131,10 +133,21 @@ class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog)
 
     /** One problem: what the code means from the resources, then the file and the library's own sentences as labelled details. */
     private fun problem(finding: Finding) {
-        put(wrapped(text(SubmitTexts.forCode(finding.code)), bold = true))
+        put(wrapped(text(SubmitTexts.forCode(finding.code)), bold = true).apply { foreground = statusColor(false) })
         if (finding.file.isNotBlank()) put(wrapped(text("rumble.submit.file", finding.file)))
         if (finding.message.isNotBlank()) put(wrapped(text("rumble.submit.details", finding.message)))
         if (finding.fix.isNotBlank() && finding.fix != finding.message) put(wrapped(text("rumble.submit.fix", finding.fix)))
+    }
+
+    /** A line that says at a glance whether it is good news or bad: green for success, red for failure, with the word in the text. */
+    private fun status(success: Boolean, message: String) =
+        wrapped(text(if (success) "rumble.submit.status_success" else "rumble.submit.status_failed", message), bold = true)
+            .apply { foreground = statusColor(success) }
+
+    /** Colors that can be read on both the light and the dark theme. */
+    private fun statusColor(success: Boolean): Color {
+        val dark = FlatLaf.isLafDark()
+        return if (success) (if (dark) Color(0x6FCF73) else Color(0x1B7F2A)) else (if (dark) Color(0xFF7B72) else Color(0xB3261E))
     }
 
     private fun foundText(found: FoundBot): String {

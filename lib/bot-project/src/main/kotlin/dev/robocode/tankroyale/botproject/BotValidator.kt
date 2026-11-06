@@ -130,7 +130,7 @@ object BotValidator {
                     "Add $launcher to the folder. The starter project for your language has an example.",
                 )
             } else if (suffix == ".sh") {
-                notes += "$launcher will be marked executable when the submission is staged; you do not need to set that."
+                notes += "$launcher will be marked executable when the submission is staged. You do not need to set that."
             }
         }
     }

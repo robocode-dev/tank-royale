@@ -25,7 +25,7 @@ object SubmitTexts {
     /** The keys that are not about a state or a code: step titles, lines of the review, the notice, the confirmations and the buttons. */
     val OTHER: List<String> = listOf(
         "rumble.submit.step_check", "rumble.submit.choose_help", "rumble.submit.choose_none", "rumble.submit.found", "rumble.submit.found_team",
-        "rumble.submit.unknown", "rumble.submit.file", "rumble.submit.details", "rumble.submit.fix", "rumble.submit.notes",
+        "rumble.submit.unknown", "rumble.submit.file", "rumble.submit.details", "rumble.submit.fix", "rumble.submit.notes", "rumble.submit.status_success", "rumble.submit.status_failed",
         "rumble.submit.review_intro", "rumble.submit.review_name", "rumble.submit.review_language", "rumble.submit.review_license",
         "rumble.submit.review_no_license", "rumble.submit.review_files", "rumble.submit.public_notice",
         "rumble.submit.confirm_public", "rumble.submit.confirm_author",
