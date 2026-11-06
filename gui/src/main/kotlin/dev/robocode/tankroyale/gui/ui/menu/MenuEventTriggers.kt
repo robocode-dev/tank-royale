@@ -17,6 +17,7 @@ object MenuEventTriggers {
     val onSoundConfig = MenuEvent()
     val onGuiConfig = MenuEvent()
     val onRumbleAccount = MenuEvent()
+    val onRumbleSubmit = MenuEvent()
     val onHelp = MenuEvent()
     val onAbout = MenuEvent()
 }

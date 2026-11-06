@@ -35,6 +35,7 @@ object AccountTexts {
         "rumble.account.button.sign_in", "rumble.account.button.cancel", "rumble.account.button.sign_out",
         "rumble.account.button.open_page", "rumble.account.button.close", "rumble.account.step_open", "rumble.account.step_enter",
         "rumble.account.unknown_environment", "rumble.account.details", "rumble.account.button.copy_code",
+        "rumble.account.no_account", "rumble.account.button.create_account",
     )
 
     /** The states, notices and registrations that the screen can show, for checking that each has a text. */

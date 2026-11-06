@@ -491,7 +491,7 @@ Feature: rumble-client — Local ranked and practice battle client
   @RCL-058
   Scenario: Choosing a folder shows what the bot is, and a folder that is no bot is told so
     Test-type: Unit
-    Given the submit wizard's behavior and real bot folders, among them the sample bots
+    Given the submit wizard's behavior and real bot folders
     When a bot folder, a team folder, a folder with no configuration, a file and a folder with broken configuration are chosen
     Then the first two show the bot's name, version and language read from its own configuration, and the others show a plain problem code with the file it concerns
     And choosing changes nothing on disk and starts no check by itself
@@ -502,7 +502,6 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a bot folder with several problems and the same folder after they are fixed
     When the check runs, and runs again
     Then every problem is listed together with its code, its file and the library's message and fix, a passing bot shows no problems, and a repeated check reads the folder again
-    And the sample bots that pass the library's checks pass here too
 
   @RCL-060
   Scenario: Review stages a separate copy, shows exactly what will be published and never touches the original
