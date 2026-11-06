@@ -74,6 +74,18 @@ class RumbleCliSubmitTextsTest {
         assertTrue(dialog.contains("state.publicConfirmed") && dialog.contains("state.authorConfirmed"), "the boxes show the state, never a fixed tick")
     }
 
+    @Test
+    @Tag("RCL-063")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL063_UnitPositive_theMenuItemIsInTheRumbleMenuAndNotInAnyOtherMenu() {
+        val menu = Files.readString(root.resolve("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/menu/Menu.kt"))
+        val rumbleMenu = menu.substringAfter("private fun setupRumbleMenu()").substringBefore("private fun setupHelpMenu()")
+
+        assertEquals(1, menu.split("item.rumble_submit").size - 1)
+        assertTrue(rumbleMenu.contains("item.rumble_submit"), "the item is in the Rumble menu")
+    }
+
     private fun code(path: String): String =
         Files.readString(root.resolve(path)).replace(Regex("/\\*.*?\\*/", RegexOption.DOT_MATCHES_ALL), "")
             .lines().joinToString("\n") { it.replace(Regex("(^|\\s)//.*$"), "$1") }

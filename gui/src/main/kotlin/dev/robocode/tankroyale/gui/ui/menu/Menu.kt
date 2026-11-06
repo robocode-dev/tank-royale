@@ -112,9 +112,6 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.gui_config", onGuiConfig).apply {
                 mnemonic = KeyEvent.VK_G
             }
-            addNewMenuItem("item.rumble_submit", onRumbleSubmit).apply {
-                mnemonic = KeyEvent.VK_S
-            }
 
             addNewMenuItem("item.server_config", onServerConfig).apply {
                 mnemonic = KeyEvent.VK_C
@@ -137,6 +134,9 @@ object Menu : JMenuBar() {
             mnemonic = KeyEvent.VK_R
             addNewMenuItem("item.rumble_account", onRumbleAccount).apply {
                 mnemonic = KeyEvent.VK_G
+            }
+            addNewMenuItem("item.rumble_submit", onRumbleSubmit).apply {
+                mnemonic = KeyEvent.VK_S
             }
         })
     }
