@@ -1123,6 +1123,9 @@ events:
     - {id: CH-090, kind: numeric, state: live, prefix: CH, component: "90"}
     - {id: CH-090-tasks, kind: opaque, state: live}
     - {id: CH-090-open-questions, kind: opaque, state: live}
+    - {id: CH-090, kind: numeric, state: retired, prefix: CH, component: "90"}
+    - {id: CH-090-tasks, kind: opaque, state: retired}
+    - {id: CH-090-open-questions, kind: opaque, state: retired}
     - {id: RCL-058, kind: numeric, state: reserved, prefix: RCL, component: "58"}
     - {id: RCL-059, kind: numeric, state: reserved, prefix: RCL, component: "59"}
     - {id: RCL-060, kind: numeric, state: reserved, prefix: RCL, component: "60"}
