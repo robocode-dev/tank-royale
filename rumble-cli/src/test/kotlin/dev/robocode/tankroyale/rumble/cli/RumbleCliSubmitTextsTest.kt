@@ -17,13 +17,13 @@ class RumbleCliSubmitTextsTest {
     private val root = Path.of(System.getProperty("repo.root") ?: error("System property 'repo.root' not set — run via :rumble-cli:test"))
 
     private fun properties(name: String): Properties =
-        Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources").resolve(name)).use { load(it) } }
+        Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources").resolve(name), Charsets.ISO_8859_1).use { load(it) } }
 
     /** Every problem code the project library can report, read from its sources. */
     private fun libraryCodes(): Set<String> =
         Files.walk(root.resolve("lib/bot-project/src/main/kotlin")).use { paths ->
             paths.filter { it.extension == "kt" }.collect(java.util.stream.Collectors.toList()).flatMap { file ->
-                Regex("Finding\\(\\s*\"([A-Z_]+)\"").findAll(Files.readString(file)).map { it.groupValues[1] }.toList()
+                Regex("(?:Finding|problem)\\(\\s*\"([A-Z_]+)\"").findAll(Files.readString(file)).map { it.groupValues[1] }.toList()
             }.toSet()
         }
 
