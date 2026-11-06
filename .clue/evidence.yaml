@@ -366,7 +366,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
-          "sha256": "da8f8d2b263fc89be8266699825f1386a1744357a1c26c6dbab7327c42936204"
+          "sha256": "c326470933cefbd70226ffec1eb1427e5e6357e6817f821fbb3168469f84db0d"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
@@ -1109,6 +1109,13 @@
           "id": "RCL-063",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
           "subject": "RumbleCliSubmitTextsTest.testRCL063_UnitPositive_everyProblemCodeAndEveryStateAndEveryOtherKeyHasANonEmptyEnglishText",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-063",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL063_UnitPositive_theMenuItemIsInTheRumbleMenuAndNotInAnyOtherMenu",
           "type": "Unit",
           "direction": "positive"
         },
