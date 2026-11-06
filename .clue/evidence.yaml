@@ -262,7 +262,7 @@
         },
         {
           "path": "gui/build.gradle.kts",
-          "sha256": "a450b0ce767d14046fd7f0c700976a2382bb0c7fbab222b3b8d37d6c26b898c6"
+          "sha256": "c18269a38dc7da9fd2dad7df4eb5134a8fd5614b037f2731c17b23e86d2ac730"
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
@@ -363,6 +363,10 @@
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
           "sha256": "d4fb0e9562f2a04defa818ab9f40c092898aa9a9d03cbc717ad780bccb38f2ab"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "sha256": "c326470933cefbd70226ffec1eb1427e5e6357e6817f821fbb3168469f84db0d"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
@@ -1095,6 +1099,55 @@
           "direction": "positive"
         },
         {
+          "id": "RCL-063",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL063_UnitNegative_noEnglishSentenceIsWrittenInTheWizardClassesOrTheDialog",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-063",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL063_UnitPositive_everyProblemCodeAndEveryStateAndEveryOtherKeyHasANonEmptyEnglishText",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-063",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL063_UnitPositive_theMenuItemIsInTheRumbleMenuAndNotInAnyOtherMenu",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-063",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL063_UnitPositive_theMenuItemTheDialogTitleAndAllWizardTextsAreInEveryLanguageFile",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-063",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL063_UnitPositive_thePublicNoticeAndTheTwoConfirmationsAreWrittenOutAndTheConfirmationsStartUnticked",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-064",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL064_UnitNegative_theButtonIsOnlyInTheSignedOutScreenAndOnlyOpensThePage",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-064",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL064_UnitPositive_theSignUpAddressIsGitHubsOwnHttpsPageAndTheTextsExist",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
           "id": "RCI-004",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
           "subject": "RumbleCliTest.testRCI004_UnitNegative_theCommandsThatOnlyReadWriteNothingAndCreateNoFolder",
@@ -1313,7 +1366,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "2e02db1417e3d991142ba8d277b4e87e5ff6838c3a032d7616925029dd169e87"
+          "sha256": "f4f30954f8e57e5ee289de2884f0d3b6dbab892b8e98c7da04fa73b7c94fceed"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1603,6 +1656,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
           "sha256": "76b91ea5e1b7e7b5451edb290eedad91ae406e7b2085d9399df26383732d2531"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "sha256": "46ca6ece1ef2b4646d741b2162128f11ce3e747c47aa6f6c3c539dbdfadb1041"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
@@ -2623,6 +2680,69 @@
           "id": "RBC-036",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
           "subject": "RumbleSubmissionProgressTest.testRBC036_UnitPositive_aMergedPullRequestWaitsForTheCatalogAndThenIsInIt",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-058",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL058_UnitNegative_aFolderThatIsNoBotShowsAPlainProblemCode",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-058",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL058_UnitPositive_choosingABotOrATeamShowsWhatItIsAndChangesNothing",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-059",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL059_UnitNegative_everyProblemIsListedAtOnceWithItsCodeFileMessageAndFix",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-059",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL059_UnitPositive_aFixedFolderPassesWhenCheckedAgain",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-060",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL060_UnitNegative_aCopyTheLibraryRejectsReturnsThePersonToTheProblems",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-060",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL060_UnitPositive_reviewStagesACopyShowsExactlyWhatWillBePublishedAndLeavesTheOriginalAlone",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-061",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL061_UnitNegative_goingBackAndReturningStartsWithBothConfirmationsUnticked",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-061",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL061_UnitPositive_thePersonCanGoOnOnlyWithBothConfirmationsAndNothingIsSent",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-062",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
+          "subject": "RumbleSubmitScreenTest.testRCL062_UnitPositive_everyCallReturnsAtOnceWhileTheDiskWorkBlocksAndResultsComeThroughTheScreensQueue",
           "type": "Unit",
           "direction": "positive"
         },

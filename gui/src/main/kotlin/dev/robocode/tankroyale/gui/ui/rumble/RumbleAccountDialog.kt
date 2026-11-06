@@ -16,6 +16,7 @@ import dev.robocode.tankroyale.rumble.GitHubSignIn
 import dev.robocode.tankroyale.rumble.HttpGitHubApi
 import dev.robocode.tankroyale.rumble.HttpGitHubAuthTransport
 import dev.robocode.tankroyale.rumble.LibraryAccountPort
+import dev.robocode.tankroyale.rumble.RumbleLinks
 import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.rumble.SignInFlow
 import dev.robocode.tankroyale.rumble.SignInStore
@@ -79,6 +80,8 @@ class RumbleAccountDialog private constructor(private val scheduling: ScheduledE
                 state.notice?.let { notice -> put(wrapped(text(AccountTexts.forNotice(notice)))) }
                 detail(state.detail)
                 put(button("rumble.account.button.sign_in") { controller.signIn() })
+                put(wrapped(text("rumble.account.no_account")))
+                put(button("rumble.account.button.create_account") { Browser.browse(RumbleLinks.CREATE_GITHUB_ACCOUNT) })
             }
             is AccountState.Unavailable -> {
                 put(heading(AccountTexts.forState(state)))

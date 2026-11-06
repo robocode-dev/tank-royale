@@ -487,4 +487,66 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer opens Rumble, GitHub account, signs in with the code, looks at the account and the client ID, closes and opens the screen again and signs out
     Then the screen shows the code and the address and opens the page, the code can be selected with the mouse and copied with Ctrl+C or with a button, shows the account and the client ID after approval, shows the same account after reopening, and shows signed out after signing out
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
+
+  @RCL-058
+  Scenario: Choosing a folder shows what the bot is, and a folder that is no bot is told so
+    Test-type: Unit
+    Given the submit wizard's behavior and real bot folders
+    When a bot folder, a team folder, a folder with no configuration, a file and a folder with broken configuration are chosen
+    Then the first two show the bot's name, version and language read from its own configuration, and the others show a plain problem code with the file it concerns
+    And choosing changes nothing on disk and starts no check by itself
+
+  @RCL-059
+  Scenario: Checking lists every problem at once and can be repeated after the person fixes the folder
+    Test-type: Unit
+    Given a bot folder with several problems and the same folder after they are fixed
+    When the check runs, and runs again
+    Then every problem is listed together with its code, its file and the library's message and fix, a passing bot shows no problems, and a repeated check reads the folder again
+
+  @RCL-060
+  Scenario: Review stages a separate copy, shows exactly what will be published and never touches the original
+    Test-type: Unit
+    Given a bot folder that passes the check and a state folder
+    When the person goes on to review
+    Then the folder is staged in the state folder, and the review shows the name, the version, the language, the license the bot declares and every file that will be published
+    And the original folder is byte for byte as it was, and a copy that the library rejects returns the person to the problems
+
+  @RCL-061
+  Scenario: The person cannot go on without both confirmations, and nothing ticks them
+    Test-type: Unit
+    Given the review of a staged bot
+    When neither, one and both of the confirmations are ticked, and when the person goes back and returns
+    Then the person can go on only with both ticked, the confirmations start unticked every time the review is shown, and nothing in the program ticks, presets or remembers them
+    And going on says that sending comes later, and nothing is sent or written beyond the staged copy
+
+  @RCL-062
+  Scenario: The wizard never blocks the screen and drops results that come too late
+    Test-type: Unit
+    Given the wizard's behavior with a library whose calls block until released
+    When the person chooses, checks, goes on, goes back and closes
+    Then every call returns at once, all disk work runs on a thread of its own, states are shown on the screen's own thread in order, and a result after the person went back or closed is thrown away
+
+  @RCL-063
+  Scenario: Every problem the library can find has a text of its own, and no English sentence is written in the wizard
+    Test-type: Unit
+    Given the problem codes written in the bot project library's sources and the English resource file
+    When each code, each step and each notice of the wizard is looked up
+    Then every code has a non-empty text and each step and notice has its text, including the notice that everything becomes public and the two confirmations
+    And no English sentence is written in the wizard's behavior class or its dialog, and the library's own sentence is shown only as a labelled detail
+
+  @RCL-064
+  Scenario: A person with no GitHub account can open GitHub's own sign-up page from the account screen
+    Test-type: Unit
+    Given the account screen's signed-out state and the library's address for creating an account
+    When the screen's texts and the address are looked at
+    Then the address is GitHub's sign-up page over HTTPS and nothing else, the screen offers it only when the person is signed out, and its texts are in the resource file
+    And the program opens the page and nothing more, creates no account and fills in nothing
+
+  @RCL-065
+  Scenario: The desktop program shows the first three steps of Submit or update bot
+    Test-type: Human
+    Given the desktop program started with the menu switched on
+    When the maintainer opens Rumble, Submit or update bot, chooses a bot, fixes a problem and checks again, reviews, and tries to go on with one and with both confirmations ticked
+    Then the folder chooser, the found bot, the list of problems, the review of what will be published and the notice are shown, going on is possible only with both confirmations ticked and then says that sending comes later, and every text wraps
+    And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
 ```
