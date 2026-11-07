@@ -517,7 +517,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the review of a staged bot
     When neither, one and both of the confirmations are ticked, and when the person goes back and returns
     Then the person can go on only with both ticked, the confirmations start unticked every time the review is shown, and nothing in the program ticks, presets or remembers them
-    And going on says that sending comes later, and nothing is sent or written beyond the staged copy
+    And going on leads to the check of the person's copy on GitHub, and nothing is sent or written beyond the staged copy by going on alone
 
   @RCL-062
   Scenario: The wizard never blocks the screen and drops results that come too late
@@ -547,6 +547,73 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Human
     Given the desktop program started with the menu switched on
     When the maintainer opens Rumble, Submit or update bot, chooses a bot, fixes a problem and checks again, reviews, and tries to go on with one and with both confirmations ticked
-    Then the folder chooser, the found bot, the list of problems, the review of what will be published and the notice are shown, going on is possible only with both confirmations ticked and then says that sending comes later, and every text wraps
+    Then the folder chooser, the found bot, the list of problems, the review of what will be published and the notice are shown, going on is possible only with both confirmations ticked, and every text wraps
+    And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
+
+  @RCL-066
+  Scenario: The wizard checks that the account has its own copy of the bot repository with the App installed, and waits for the person to make it
+    Test-type: Unit
+    Given the wizard's behavior with a fake of the readiness check that answers ready, no copy, App not installed, not the Rumble's repository, sign-in needed and failed
+    When the person goes on from the review and the fake answers each of these
+    Then ready goes on to sending at once, no copy and App not installed each show their own step with a button that opens only the page the library names, the other three show their own plain state, and while a copy or the App is missing the wizard checks again by itself and goes on when both are found
+    And the program never makes the copy and never installs the App
+
+  @RCL-067
+  Scenario: Waiting never blocks the screen, spends no more of GitHub's limits than the library's pace and stops when the person leaves
+    Test-type: Unit
+    Given the wizard's behavior with a fake whose calls block until released and a clock that is moved by the test
+    When the copy check and the following of a pull request wait, the person goes back or closes the dialog, and a result arrives afterwards
+    Then every call returns at once, every call to GitHub runs on a thread of its own, the repeated checks keep the library's pace, no check runs after going back or closing, and a result that arrives afterwards is thrown away
+
+  @RCL-068
+  Scenario: Only the reviewed copy is sent, and only with the author's confirmation the person ticked
+    Test-type: Unit
+    Given the wizard's behavior with a fake GitHub that records what it is asked to send
+    When the person goes through the review with both, one or neither of the confirmations ticked and then asks to send
+    Then nothing is sent unless both are ticked, the author's license confirmation handed to the library is the second box and never a default, the files handed over are exactly the staged copy that was reviewed and never the original folder, and no step of the wizard or its tests contacts a real GitHub
+    And a send that is asked twice for the same files does not open a second pull request
+
+  @RCL-069
+  Scenario: Every way sending can end has its own plain result and the launcher advice never blocks
+    Test-type: Unit
+    Given the wizard's behavior with a fake GitHub that ends a send as opened, resumed, unchanged, updated, set-up needed, refused, sign-in needed and failed, and answers the launcher comparison as same, differs and not checked
+    When the person sends
+    Then each ending shows its own state with a button that opens the pull request where there is one, a launcher that differs is shown as a note and the send still happens, and a failed or refused send shows what to do and leaves the staged copy and the confirmations as they were
+
+  @RCL-070
+  Scenario: The wizard shows where the pull request stands in one plain state and checks calmly while it is open
+    Test-type: Unit
+    Given the wizard's behavior with a fake that reads each state a pull request can be in: waiting for the checks, being checked, sent back with a reason, waiting for a moderator, accepted, merged, in the catalog, closed, sign-in needed and failed
+    When a bot has been sent and the screen is open, and when the person asks to check now
+    Then each state is shown in its own plain words with the reason where there is one, checks, review, publication and visibility in the rankings are not mixed into one word, the screen checks again by itself at a calm pace and on request, and it stops when the dialog is closed
+
+  @RCL-071
+  Scenario: A bot whose content is already in the Rumble is told so by its checksum, and nothing is sent
+    Test-type: Unit
+    Given a staged copy whose content hash is the one the catalog records for the same bot name and version, one that differs from it, and a name and version the catalog does not hold
+    When the person reaches the sending
+    Then the first is told that exactly this version is already in the Rumble and nothing is offered to send, the second is told that the version exists with other content and must have a new version, and the third goes on to send
+    And the hash comes from the staged copy and the catalog, and nothing is saved on the computer to remember it
+
+  @RCL-072
+  Scenario: A bot the account has already sent is found again through GitHub and shows where its pull request stands
+    Test-type: Unit
+    Given a fake GitHub that holds an open pull request of the signed-in account for the bot being sent, a closed one, and none
+    When the person reaches the sending
+    Then the open one is found and shows where it stands with the choice to update it with the new files, the closed one and none lead to a new send, and nothing about the sent bot is written to the computer
+
+  @RCL-073
+  Scenario: Every state and ending of the last steps has a text in the resources, and no text holds a token
+    Test-type: Unit
+    Given the resource files of the desktop program and the sources of the wizard and its dialog
+    When every readiness case, sending ending and progress state is listed from the library and compared with the resource keys
+    Then every one has a non-empty text in the base file and the same keys exist in every language file, no English sentence is written in the wizard classes or the dialog, no text mentions a token, and success and failure are marked in the same way as in the first steps
+
+  @RCL-074
+  Scenario: The desktop program sends a test bot to the test environment and follows it
+    Test-type: Human
+    Given the desktop program started with the menu switched on for the test environment, a signed-in test account and a test bot the maintainer has allowed to be sent
+    When the maintainer goes through the whole wizard with the copy and the App missing and then present, sends the bot, follows the pull request, tries to send the same files again and closes the pull request afterwards
+    Then the copy and App steps open the right pages and go on by themselves, the pull request appears on the test bot repository with exactly the reviewed files, the progress shows where it stands, sending the same files again opens nothing new, and every text wraps
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
 ```

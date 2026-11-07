@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.rumble.cli
 
 import dev.robocode.tankroyale.rumble.RumbleLinks
+import dev.robocode.tankroyale.rumble.SubmitState
 import dev.robocode.tankroyale.rumble.SubmitTexts
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -86,6 +87,70 @@ class RumbleCliSubmitTextsTest {
         assertTrue(rumbleMenu.contains("item.rumble_submit"), "the item is in the Rumble menu")
     }
 
+    @Test
+    @Tag("RCL-073")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL073_UnitPositive_everyReadinessCaseEndingProgressStateContentAndLauncherHasANonEmptyTextInEveryLanguageFile() {
+        val keys = SubmitTexts.ALL_READINESS.map { SubmitTexts.forReadiness(it) } + SubmitTexts.ALL_RESULTS.map { SubmitTexts.forResult(it) } +
+            SubmitTexts.ALL_PROGRESS.map { SubmitTexts.forProgress(it) } + dev.robocode.tankroyale.rumble.ContentState.entries.map { SubmitTexts.forContent(it) } +
+            SubmitTexts.ALL_LAUNCHERS.map { SubmitTexts.forLaunchers(it) } + SubmitTexts.ALL_STATES.map { SubmitTexts.forState(it) }
+
+        assertTrue(keys.toSet().size > 30)
+        listOf("", "_ca", "_da", "_es").forEach { suffix ->
+            val messages = properties("Messages$suffix.properties")
+            assertEquals(emptyList<String>(), keys.filter { messages.getProperty(it).isNullOrBlank() }, "language file $suffix")
+        }
+        assertTrue(SubmitState.Choose() in SubmitTexts.ALL_STATES)
+    }
+
+    @Test
+    @Tag("RCL-073")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL073_UnitNegative_noTextOfTheWizardMentionsATokenAndPlaceholdersMatchWhatTheScreenGives() {
+        val messages = properties("Messages.properties")
+        val wizard = messages.stringPropertyNames().filter { it.startsWith("rumble.submit.") }
+
+        assertEquals(emptyList<String>(), wizard.filter { messages.getProperty(it).contains("token", ignoreCase = true) })
+        // The screen formats these with one argument each; no other text has a placeholder.
+        val oneArgument = setOf(
+            "rumble.submit.file", "rumble.submit.details", "rumble.submit.fix", "rumble.submit.notes",
+            "rumble.submit.review_license", "rumble.submit.status_success", "rumble.submit.status_failed",
+            "rumble.submit.launchers_differ", "rumble.submit.existing", "rumble.submit.progress_sent_back", "rumble.submit.progress_in_catalog",
+        )
+        wizard.forEach { key ->
+            val count = Regex("%[sd]").findAll(messages.getProperty(key)).count()
+            val expected = when (key) {
+                in oneArgument -> 1
+                "rumble.submit.found" -> 3
+                "rumble.submit.found_team", "rumble.submit.review_name" -> 2
+                "rumble.submit.review_language", "rumble.submit.review_files" -> 1
+                else -> 0
+            }
+            assertEquals(expected, count, key)
+        }
+    }
+
+    @Test
+    @Tag("RCL-073")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL073_UnitNegative_theDialogOpensOnlyGitHubPagesAndGoodAndBadAreNotMixedUp() {
+        val dialog = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleSubmitDialog.kt")
+
+        assertEquals(1, dialog.split("Browser.browse(").size - 1, "one place opens a page, and it checks the address first")
+        assertTrue(dialog.contains("RumbleLinks.isGitHubPage(address)"))
+        val good = dev.robocode.tankroyale.rumble.Tone.GOOD
+        val bad = dev.robocode.tankroyale.rumble.Tone.BAD
+        SubmitTexts.ALL_RESULTS.forEach { assertEquals(if (it is dev.robocode.tankroyale.rumble.SubmissionResult.Submitted) good else bad, SubmitTexts.toneOf(it)) }
+        assertEquals(good, SubmitTexts.toneOf(dev.robocode.tankroyale.rumble.BotProgress.InCatalog("1")))
+        assertEquals(bad, SubmitTexts.toneOf(dev.robocode.tankroyale.rumble.BotProgress.SentBack("x")))
+        assertEquals(bad, SubmitTexts.toneOf(dev.robocode.tankroyale.rumble.BotProgress.Closed))
+        assertEquals(good, SubmitTexts.toneOf(dev.robocode.tankroyale.rumble.SubmissionReadiness.Ready("a", "b")))
+        assertEquals(bad, SubmitTexts.toneOf(dev.robocode.tankroyale.rumble.SubmissionReadiness.Failed("x")))
+    }
+
     private fun code(path: String): String =
         Files.readString(root.resolve(path)).replace(Regex("/\\*.*?\\*/", RegexOption.DOT_MATCHES_ALL), "")
             .lines().joinToString("\n") { it.replace(Regex("(^|\\s)//.*$"), "$1") }
@@ -102,6 +167,7 @@ class RumbleCliSubmitTextsTest {
         val files = listOf(
             "lib/rumble/src/main/kotlin/dev/robocode/tankroyale/rumble/SubmitScreen.kt",
             "lib/rumble/src/main/kotlin/dev/robocode/tankroyale/rumble/SubmitTexts.kt",
+            "lib/rumble/src/main/kotlin/dev/robocode/tankroyale/rumble/SubmitSend.kt",
             "gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleSubmitDialog.kt",
         )
 

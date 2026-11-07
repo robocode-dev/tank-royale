@@ -6,7 +6,21 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
+import dev.robocode.tankroyale.rumble.AccountScheduler
+import dev.robocode.tankroyale.rumble.BotProgress
 import dev.robocode.tankroyale.rumble.EnvironmentChoice
+import dev.robocode.tankroyale.rumble.GitHubSignIn
+import dev.robocode.tankroyale.rumble.HttpGitHubApi
+import dev.robocode.tankroyale.rumble.HttpGitHubAuthTransport
+import dev.robocode.tankroyale.rumble.LauncherState
+import dev.robocode.tankroyale.rumble.LibrarySendPort
+import dev.robocode.tankroyale.rumble.RumbleLinks
+import dev.robocode.tankroyale.rumble.SignInFlow
+import dev.robocode.tankroyale.rumble.SignInStore
+import dev.robocode.tankroyale.rumble.SubmissionReadiness
+import dev.robocode.tankroyale.rumble.SubmissionResult
+import dev.robocode.tankroyale.rumble.Tone
+import dev.robocode.tankroyale.gui.util.Browser
 import dev.robocode.tankroyale.rumble.FoundBot
 import dev.robocode.tankroyale.rumble.LibrarySubmitPort
 import dev.robocode.tankroyale.rumble.ReviewInfo
@@ -28,6 +42,8 @@ import java.awt.event.WindowEvent
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 import javax.swing.JButton
 import javax.swing.JCheckBox
 import javax.swing.JFileChooser
@@ -45,7 +61,7 @@ import javax.swing.UIManager
  * from the event thread. This class runs on the event thread and never waits for anything. Sending comes later, so
  * nothing is sent from here.
  */
-class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog) -> SubmitController) :
+class RumbleSubmitDialog private constructor(private val scheduling: ScheduledExecutorService, controllerFor: (RumbleSubmitDialog) -> SubmitController) :
     RcDialog(MainFrame, "rumble_submit_dialog") {
 
     /** A panel that is as wide as the window, so wrapped texts wrap at the window's edge and never run out over it. */
@@ -65,7 +81,11 @@ class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog)
         setSize(560, 520)
         setLocationRelativeTo(owner)
         addWindowListener(object : WindowAdapter() {
-            override fun windowClosed(e: WindowEvent) = controller.close()
+            override fun windowClosed(e: WindowEvent) {
+                controller.close()
+                // After the close has run on the event thread, so a result still queued there finds a working timer.
+                SwingUtilities.invokeLater { scheduling.shutdown() }
+            }
         })
         render(controller.state)
     }
@@ -88,10 +108,10 @@ class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog)
                 put(button("rumble.submit.button.back") { controller.back() })
             }
             is SubmitState.Review -> renderReview(state)
-            is SubmitState.SendingComesLater -> {
-                put(wrapped(text(SubmitTexts.forState(state)), bold = true))
-                put(button("rumble.submit.button.close") { dispose() })
-            }
+            is SubmitState.Copy -> renderCopy(state)
+            is SubmitState.SendReady -> renderSendReady(state)
+            is SubmitState.Sending -> put(wrapped(text(SubmitTexts.forState(state))))
+            is SubmitState.SendEnded -> renderEnded(state)
         }
         content.revalidate()
         content.repaint()
@@ -129,6 +149,103 @@ class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog)
         put(confirmation(text("rumble.submit.confirm_author"), state.authorConfirmed) { controller.setAuthorConfirmed(it) })
         put(button("rumble.submit.button.next") { controller.next() }.apply { isEnabled = state.canContinue })
         put(button("rumble.submit.button.back") { controller.back() })
+    }
+
+    private fun renderCopy(state: SubmitState.Copy) {
+        val readiness = state.readiness
+        put(wrapped(text(SubmitTexts.forState(state)), bold = true))
+        put(toned(text(SubmitTexts.forReadiness(readiness)), SubmitTexts.toneOf(readiness)))
+        when (readiness) {
+            is SubmissionReadiness.NoCopy -> put(pageButton("rumble.submit.button.open_fork", readiness.pageUrl))
+            is SubmissionReadiness.AppNotInstalled -> put(pageButton("rumble.submit.button.open_install", readiness.installUrl))
+            is SubmissionReadiness.NotRumblesRepository -> detail(readiness.repositoryUrl)
+            is SubmissionReadiness.SignInNeeded -> detail(readiness.message)
+            is SubmissionReadiness.Failed -> {
+                detail(readiness.message)
+                put(button("rumble.submit.button.check_now") { controller.checkNow() })
+            }
+            else -> Unit
+        }
+        put(button("rumble.submit.button.back") { controller.back() })
+    }
+
+    private fun renderSendReady(state: SubmitState.SendReady) {
+        val ready = state.ready
+        put(wrapped(text(SubmitTexts.forState(state)), bold = true))
+        put(wrapped(text("rumble.submit.send_intro")))
+        put(wrapped(text("rumble.submit.public_notice"), bold = true))
+        put(toned(text(SubmitTexts.forContent(ready.content)), SubmitTexts.toneOf(ready.content)))
+        put(wrapped(launchersText(ready.launchers)))
+        ready.existing?.let { existing ->
+            put(wrapped(text("rumble.submit.existing", existing.version)))
+            put(progress(existing.progress))
+        }
+        put(button(if (ready.existing != null) "rumble.submit.button.update" else "rumble.submit.button.send") { controller.send() }.apply { isEnabled = state.canSend })
+        if (ready.existing != null) put(button("rumble.submit.button.check_now") { controller.checkNow() })
+        put(button("rumble.submit.button.back") { controller.back() })
+    }
+
+    private fun renderEnded(state: SubmitState.SendEnded) {
+        val result = state.result
+        put(wrapped(text(SubmitTexts.forState(state)), bold = true))
+        put(toned(text(SubmitTexts.forResult(result)), SubmitTexts.toneOf(result)))
+        when (result) {
+            is SubmissionResult.Submitted -> {
+                put(wrapped(result.pullRequestUrl))
+                put(wrapped(launchersText(state.launchers)))
+                put(state.progress?.let { progress(it) } ?: wrapped(text("rumble.submit.progress_reading")))
+                put(pageButton("rumble.submit.button.open_pr", result.pullRequestUrl))
+                put(button("rumble.submit.button.check_now") { controller.checkNow() })
+                put(button("rumble.submit.button.close") { dispose() })
+            }
+            is SubmissionResult.SetupNeeded -> {
+                put(wrapped(text(SubmitTexts.forReadiness(result.readiness))))
+                put(button("rumble.submit.button.back") { controller.back() })
+            }
+            is SubmissionResult.Refused -> {
+                detail(result.message)
+                put(button("rumble.submit.button.back") { controller.back() })
+            }
+            is SubmissionResult.SignInNeeded -> {
+                detail(result.message)
+                put(button("rumble.submit.button.back") { controller.back() })
+            }
+            is SubmissionResult.Failed -> {
+                detail(result.message)
+                put(button("rumble.submit.button.back") { controller.back() })
+            }
+        }
+    }
+
+    /** Where the pull request stands, with the label and the colour of what it says. */
+    private fun progress(progress: BotProgress): Component {
+        val line = when (progress) {
+            is BotProgress.SentBack -> text(SubmitTexts.forProgress(progress), progress.reason)
+            is BotProgress.InCatalog -> text(SubmitTexts.forProgress(progress), progress.version)
+            else -> text(SubmitTexts.forProgress(progress))
+        }
+        return toned(text("rumble.submit.progress_label") + " " + line, SubmitTexts.toneOf(progress))
+    }
+
+    private fun launchersText(launchers: LauncherState): String = when (launchers) {
+        LauncherState.Same -> text(SubmitTexts.forLaunchers(launchers))
+        is LauncherState.Differs -> text(SubmitTexts.forLaunchers(launchers), launchers.files.joinToString(", "))
+        is LauncherState.NotChecked -> text(SubmitTexts.forLaunchers(launchers))
+    }
+
+    /** What a lower layer said, as a labelled detail and never as a sentence of the program's own. */
+    private fun detail(message: String) {
+        if (message.isNotBlank()) put(wrapped(text("rumble.submit.details", message)))
+    }
+
+    /** A button that opens a page of GitHub's own in the browser, and never any other address. */
+    private fun pageButton(key: String, address: String) =
+        button(key) { if (RumbleLinks.isGitHubPage(address)) Browser.browse(address) }
+
+    private fun toned(message: String, tone: Tone): Component = when (tone) {
+        Tone.GOOD -> status(true, message)
+        Tone.BAD -> status(false, message)
+        Tone.NEUTRAL -> wrapped(message)
     }
 
     /** One problem: what the code means from the resources, then the file and the library's own sentences as labelled details. */
@@ -206,10 +323,20 @@ class RumbleSubmitDialog private constructor(controllerFor: (RumbleSubmitDialog)
         }
 
         private fun show(choice: EnvironmentChoice.Chosen) {
-            val staging = choice.environment.stateRoot(UserDataDirectory.get().toPath()).resolve("staging")
+            val environment = choice.environment
+            val staging = environment.stateRoot(UserDataDirectory.get().toPath()).resolve("staging")
             val background = Executors.newCachedThreadPool { runnable -> Thread(runnable, "rumble-submit").apply { isDaemon = true } }
+            val scheduling = Executors.newSingleThreadScheduledExecutor { runnable -> Thread(runnable, "rumble-submit-timer").apply { isDaemon = true } }
+            val api = HttpGitHubApi()
+            val flow = SignInFlow(environment, GitHubSignIn(environment, HttpGitHubAuthTransport()), SignInStore(environment, UserDataDirectory.get().toPath()), api)
+            val scheduler = AccountScheduler { seconds, task ->
+                val future = scheduling.schedule(task, seconds, TimeUnit.SECONDS)
+                AutoCloseable { future.cancel(false) }
+            }
             val post = Executor { SwingUtilities.invokeLater(it) }
-            RumbleSubmitDialog { self -> SubmitController(LibrarySubmitPort(staging), background, post) { state -> self.render(state) } }.isVisible = true
+            RumbleSubmitDialog(scheduling) { self ->
+                SubmitController(LibrarySubmitPort(staging), LibrarySendPort(environment, flow, api), background, post, scheduler) { state -> self.render(state) }
+            }.isVisible = true
         }
     }
 }
