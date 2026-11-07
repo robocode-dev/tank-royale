@@ -23,7 +23,7 @@ class RumbleSubmitScreenTest {
     private class Screen(dir: Path, port: SubmitPort? = null, background: Executor, post: Executor) {
         val staging: Path = dir.resolve("state").resolve("staging")
         val states = mutableListOf<SubmitState>()
-        val controller = SubmitController(port ?: LibrarySubmitPort(staging), background, post) { states += it }
+        val controller = SubmitController(port ?: LibrarySubmitPort(staging), FakeSendPort(), background, post, ManualScheduler()) { states += it }
         val state get() = controller.state
     }
 
@@ -206,7 +206,7 @@ class RumbleSubmitScreenTest {
         screen.controller.setPublicConfirmed(true)
         screen.controller.next()
 
-        assertEquals(SubmitState.SendingComesLater(folder, "MyBot"), screen.state)
+        assertInstanceOf(SubmitState.SendReady::class.java, screen.state, "going on leads to the copy check, which a ready account passes")
         assertEquals(tree(dir).filterKeys { !it.startsWith("state") }, before.filterKeys { !it.startsWith("state") }, "nothing is written beyond the staged copy")
     }
 
@@ -256,7 +256,7 @@ class RumbleSubmitScreenTest {
         val seenOn = mutableSetOf<Thread>()
         val caller = Thread.currentThread()
         val folder = bot(dir.resolve("work"))
-        val controller = SubmitController(blocking, background, { queue.add(it) }) { seenOn += Thread.currentThread() }
+        val controller = SubmitController(blocking, FakeSendPort(), background, { queue.add(it) }, ManualScheduler()) { seenOn += Thread.currentThread() }
         try {
             val started = System.nanoTime()
             controller.choose(folder)
