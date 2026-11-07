@@ -429,19 +429,28 @@ class RumbleSubmitSendTest {
         var readiness: SubmissionReadiness = SubmissionReadiness.Ready("alice", "alice/rumble-bots-test")
         val submitted = mutableListOf<Boolean>()
         override fun checkReadiness(tokens: GitHubTokens) = readiness
-        override fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission): LauncherState = LauncherState.Same
+        var refuseFirstLook = false
+        val lookTokens = mutableListOf<String>()
+        override fun compareLaunchers(tokens: GitHubTokens, submission: StagedSubmission): LauncherState {
+            lookTokens += tokens.accessToken
+            if (refuseFirstLook && lookTokens.size == 1) throw SignInRefused()
+            return LauncherState.Same
+        }
         override fun submit(tokens: GitHubTokens, submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult {
             submitted += authorCertifiesLicense
             return SubmissionResult.Submitted("https://github.com/x/y/pull/9", 9, "submit/MyBot-1.0.0", SubmissionOutcome.OPENED)
         }
     }
 
-    private class Reading(var sent: SentBot? = null, var progress: BotProgress = BotProgress.WaitingForModerator, var findFails: Boolean = false) : BotProgressReading {
+    private class Reading(var sent: SentBot? = null, var progress: BotProgress = BotProgress.WaitingForModerator, var findFails: Boolean = false, var readFails: Boolean = false) : BotProgressReading {
         override fun find(tokens: GitHubTokens, account: String, name: String): SentBot? {
             if (findFails) throw java.io.IOException("GitHub cannot be reached.")
             return sent
         }
-        override fun read(tokens: GitHubTokens, pullRequestNumber: Int, name: String, version: String, catalog: Catalog?): BotProgress = progress
+        override fun read(tokens: GitHubTokens, pullRequestNumber: Int, name: String, version: String, catalog: Catalog?): BotProgress {
+            if (readFails) throw java.io.IOException("GitHub cannot be reached.")
+            return progress
+        }
     }
 
     private class Catalogs(val text: String?) : CatalogSource {
@@ -555,5 +564,79 @@ class RumbleSubmitSendTest {
         port.send(submission(dir), authorCertifiesLicense = true)
 
         assertEquals(listOf(false, true), sending.submitted)
+    }
+
+    // Found by the review of the change
+
+    /** A send port that lets the test act while a call is running, on the same thread as the screen. */
+    private class Hooked(val inner: FakeSendPort = FakeSendPort(), var onSend: () -> Unit = {}, var progressFails: Boolean = false) : SendPort {
+        override fun readiness() = inner.readiness()
+        override fun prepare(submission: StagedSubmission, account: String) = inner.prepare(submission, account)
+        override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult {
+            onSend()
+            return inner.send(submission, authorCertifiesLicense)
+        }
+        override fun progress(number: Int, name: String, version: String): BotProgress {
+            if (progressFails) throw IllegalStateException("one look failed")
+            return inner.progress(number, name, version)
+        }
+    }
+
+    @Test
+    @Tag("RCL-067")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL067_UnitNegative_goingBackDuringASendOrAfterASentPullRequestChangesNothingAndLosesNothing(@TempDir dir: Path) {
+        val hooked = Hooked()
+        val screen = Screen(dir, hooked, direct, direct)
+        hooked.onSend = { screen.controller.back() }
+        screen.toSendReady()
+
+        screen.controller.send()
+
+        val ended = screen.state as SubmitState.SendEnded
+        assertInstanceOf(SubmissionResult.Submitted::class.java, ended.result, "the result of the send was not thrown away")
+        assertEquals(BotProgress.WaitingForChecks, ended.progress)
+        assertEquals(1, screen.clock.open.size, "the sent pull request is still followed")
+        screen.controller.back()
+        assertEquals(1, screen.clock.open.size, "going back from a sent pull request does not stop the following")
+        assertInstanceOf(SubmitState.SendEnded::class.java, screen.state)
+    }
+
+    @Test
+    @Tag("RCL-070")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL070_UnitNegative_oneFailedReadOfAnOpenPullRequestDoesNotEndTheReading(@TempDir dir: Path) {
+        val hooked = Hooked(FakeSendPort().apply { prepared = SendPrepared.Ready(LauncherState.Same, ContentState.NEW, ExistingPullRequest(5, "1.0.0", BotProgress.WaitingForChecks)) })
+        val screen = Screen(dir, hooked, direct, direct)
+        screen.toSendReady()
+        assertEquals(1, screen.clock.open.size)
+
+        hooked.progressFails = true
+        screen.clock.fire()
+        assertEquals(1, screen.clock.open.size, "it looks again after a failed look")
+
+        hooked.progressFails = false
+        hooked.inner.progress = BotProgress.Closed
+        screen.clock.fire()
+        assertEquals(BotProgress.Closed, ((screen.state) as SubmitState.SendReady).ready.existing?.progress)
+        assertEquals(emptyList<ManualScheduler.Task>(), screen.clock.open, "and stops when it cannot change any more")
+    }
+
+    @Test
+    @Tag("RCL-072")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL072_UnitNegative_aFailedReadOfTheOpenPullRequestStopsNothingAndAnExpiredKeptSignInIsRenewedOnce(@TempDir dir: Path) {
+        val reading = Reading(sent = SentBot(9, "1.0.0"), readFails = true)
+        val prepared = port(dir.resolve("read"), reading = reading).prepare(submission(dir), "alice")
+        assertEquals(null, (prepared as SendPrepared.Ready).existing, "the send is still possible")
+
+        val sending = Sending().apply { refuseFirstLook = true }
+        val renewed = port(dir.resolve("renew"), sending).prepare(submission(dir), "alice")
+        assertInstanceOf(SendPrepared.Ready::class.java, renewed, "the saved sign-in was renewed instead of asking the person")
+        assertEquals(2, sending.lookTokens.size)
+        assertNotEquals(sending.lookTokens[0], sending.lookTokens[1])
     }
 }

@@ -1684,7 +1684,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
-          "sha256": "966a0ecee69c14abe3a8e4b89c0ca4a2213f5e5af3866e2240027b3b193fe82f"
+          "sha256": "d3375dec396b6d9051a1e9fecd01d49d5278b724a8433b31760108fe229cbcc0"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
@@ -2795,6 +2795,13 @@
         {
           "id": "RCL-067",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL067_UnitNegative_goingBackDuringASendOrAfterASentPullRequestChangesNothingAndLosesNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-067",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
           "subject": "RumbleSubmitSendTest.testRCL067_UnitNegative_noLookRunsAfterGoingBackOrClosingAndALateResultIsThrownAway",
           "type": "Unit",
           "direction": "negative"
@@ -2858,6 +2865,13 @@
         {
           "id": "RCL-070",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL070_UnitNegative_oneFailedReadOfAnOpenPullRequestDoesNotEndTheReading",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-070",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
           "subject": "RumbleSubmitSendTest.testRCL070_UnitPositive_everyProgressStateIsShownAndOpenOnesAreReadAgainCalmly",
           "type": "Unit",
           "direction": "positive"
@@ -2880,6 +2894,13 @@
           "id": "RCL-072",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
           "subject": "RumbleSubmitSendTest.testRCL072_UnitNegative_aClosedOrMergedPullRequestOrNoneLeadsToANewSendAndAFailedLookStopsNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-072",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL072_UnitNegative_aFailedReadOfTheOpenPullRequestStopsNothingAndAnExpiredKeptSignInIsRenewedOnce",
           "type": "Unit",
           "direction": "negative"
         },

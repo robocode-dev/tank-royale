@@ -92,11 +92,12 @@ class LibrarySendPort(
 
     override fun prepare(submission: StagedSubmission, account: String): SendPrepared =
         try {
-            val tokens = tokens()
-            val launchers = sending.compareLaunchers(tokens, submission)
-            val catalog = readCatalog()
-            val content = content(submission, catalog)
-            SendPrepared.Ready(launchers, content, existing(tokens, account, submission.name, catalog))
+            try {
+                look(tokens(), submission, account)
+            } catch (e: SignInRefused) {
+                // The kept token may have run out since the copy check: renew once, like the other calls do.
+                look(tokens(renew = true), submission, account)
+            }
         } catch (e: NoSignIn) {
             if (e.failed) SendPrepared.Failed(e.reason) else SendPrepared.SignInNeeded(e.reason)
         } catch (e: SignInRefused) {
@@ -105,6 +106,13 @@ class LibrarySendPort(
         } catch (e: IOException) {
             SendPrepared.Failed(e.message.orEmpty())
         }
+
+    private fun look(tokens: GitHubTokens, submission: StagedSubmission, account: String): SendPrepared {
+        val launchers = sending.compareLaunchers(tokens, submission)
+        val catalog = readCatalog()
+        val content = content(submission, catalog)
+        return SendPrepared.Ready(launchers, content, existing(tokens, account, submission.name, catalog))
+    }
 
     override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult =
         try {
@@ -152,7 +160,13 @@ class LibrarySendPort(
             // Advice only: a Rumble that cannot be looked at does not stop the send.
         }
         if (sent == null) return null
-        val progress = reading.read(tokens, sent.pullRequestNumber, name, sent.version, catalog)
+        val progress = try {
+            reading.read(tokens, sent.pullRequestNumber, name, sent.version, catalog)
+        } catch (e: SignInRefused) {
+            throw e
+        } catch (e: IOException) {
+            return null
+        }
         return if (progress.isOpen) ExistingPullRequest(sent.pullRequestNumber, sent.version, progress) else null
     }
 }

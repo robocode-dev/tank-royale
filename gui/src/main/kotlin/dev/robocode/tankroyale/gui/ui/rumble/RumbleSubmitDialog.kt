@@ -83,7 +83,8 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
         addWindowListener(object : WindowAdapter() {
             override fun windowClosed(e: WindowEvent) {
                 controller.close()
-                scheduling.shutdown()
+                // After the close has run on the event thread, so a result still queued there finds a working timer.
+                SwingUtilities.invokeLater { scheduling.shutdown() }
             }
         })
         render(controller.state)

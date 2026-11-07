@@ -279,7 +279,7 @@ class SubmitController(
     }
 
     private fun prepare(mine: Int, folder: Path, review: ReviewInfo, account: String) {
-        val submission = staged ?: return
+        val submission = staged ?: return show(SubmitState.Copy(folder, review, SubmissionReadiness.Failed("")))
         work({ sendPort.prepare(submission, account) }, then = { prepared ->
             if (mine != epoch) return@work
             val next = when (prepared) {
@@ -305,7 +305,10 @@ class SubmitController(
             val now = state as? SubmitState.SendReady ?: return@work
             show(now.copy(ready = now.ready.copy(existing = existing.copy(progress = progress))))
             if (progress.isOpen) scheduleRefresh(mine)
-        }, onThrow = {})
+        }, onThrow = {
+            // One failed look does not end the looking: try again calmly.
+            if (mine == epoch) scheduleRefresh(mine)
+        })
     }
 
     private fun scheduleRefresh(mine: Int) {
@@ -316,7 +319,7 @@ class SubmitController(
 
     /** Reads where the sent pull request stands, and keeps reading, calmly, until it cannot change any more or the person leaves. */
     private fun follow(ended: SubmitState.SendEnded, number: Int) {
-        val version = ended.review.version ?: return
+        val version = ended.review.version ?: return show(ended.copy(progress = BotProgress.Failed("")))
         scheduled?.close()
         scheduled = null
         val mine = epoch
@@ -338,6 +341,8 @@ class SubmitController(
     fun back() = post.execute {
         val now = state
         val folder = folderOf(now) ?: return@execute
+        // Nothing leaves a send that is going on, and a sent pull request stays followed: leave them as they are.
+        if (now is SubmitState.Sending || (now is SubmitState.SendEnded && now.result is SubmissionResult.Submitted)) return@execute
         newEpoch()
         when (now) {
             is SubmitState.Review -> show(SubmitState.Checked(folder, foundOf(now.review), emptyList()))
