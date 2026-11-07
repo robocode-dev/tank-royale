@@ -17,8 +17,8 @@ Reading other people's bots is the quickest way to learn what works in the Rumbl
 ## What changes
 
 - **A Download bots item in the Rumble menu** and a dialog for it, behind the same developer switch and with the same environment shown in the title as the other screens.
-- **Choose.** The dialog reads the pinned catalog and lists the active bots with name, version, platform and declared license. The person picks all active bots or selected bots, can narrow by platform, and chooses the target folder. The default is a folder called `rumble-bots` beside the person's normal bots folder.
-- **A state for every bot.** Each row says whether the bot is new, an update of an earlier download, up to date, or no longer active. A retired, withdrawn or disqualified bot that was downloaded earlier stays in the folder and is marked; a new download never offers an inactive bot.
+- **Choose.** The dialog reads the pinned catalog and lists the active bots with name, version, platform and declared license, with a link to the official text of that license. The person picks all active bots or selected bots, can narrow by platform, and chooses the target folder. The default is a folder called `rumble-bots` beside the person's normal bots folder.
+- **A state for every bot.** Each row says whether the bot is new, an update of an earlier download, up to date, or no longer active. A retired, withdrawn or disqualified bot that was downloaded earlier stays in the folder and is marked; a new download never offers an inactive bot. The screen knows its earlier downloads by an empty marker file it puts in each bot folder it placed; the version comes from the bot's own configuration file and the content check from the same checksum the catalog records. A folder without the marker is never touched, and a downloaded bot the person has changed is shown as changed and is not overwritten unless the person asks.
 - **Download and result.** Pressing Download fetches the chosen bots on a background thread and then shows one result line per bot: placed (new or updated), hash differs and skipped, not in the archive, or kept because a folder with that name already exists. One failing bot never stops the others. An interrupted download can be continued, and every bot that was placed is shown as placed.
 - **Never overwrites the person's own bots.** A downloaded bot is placed only inside the chosen download folder and never replaces a bot of the person's own, even when the names match; an update replaces only an earlier download of the same bot.
 - **A plain answer for every failure.** The catalog cannot be read or is of an unsupported version, the folder cannot be written (told before anything is fetched), the network fails, an archive entry tries to leave the folder: each has its own text and a way on.
@@ -33,13 +33,13 @@ Reading other people's bots is the quickest way to learn what works in the Rumbl
 
 **Nothing is fetched in silence or from the wrong place.** Bots are fetched only after the person presses Download, only from the pinned catalog commit and only into the chosen folder. All tests use a fake catalog and fake archive; nothing in the tests or the build contacts the real Rumble. The hand trial reads the real public catalog of the test environment and downloads a few bots into a temporary folder that is deleted afterwards.
 
-**The license is a reading aid and not legal advice.** The screen shows the license each bot declares and keeps it with the bot's files. The three-level reading aid (free to copy, copy with conditions, do not copy) is in the mockups; this change shows the declared license and the level only if the maintainer wants it now (see the open questions).
+**The license text is the author's and the official list's, never the program's.** The screen shows the license each bot declares and a link to its official text, built only from a plain license identifier and only to the official SPDX list over https, and opened only when the person presses it. The program copies and retypes no license text, and it is not legal advice. The three-level reading aid in the mockups is left to the change that adds the License rows to Bot Info.
 
 **Things the proof cannot reach.** One real download of many bots from the public environment, other operating systems than Windows, and how a very large catalog behaves in the list.
 
 ## Not in this change
 
-Adding the download folder to the New Battle bot directories and showing it as a collapsed group, the License and Team members rows in Bot Info, the other Rumble menu items (Get started, My bots, Contribute battles, Results and queue, Rankings, Help), fetching the command line's worker, and the public sign-in App. The Rumble menu stays behind its developer switch until it is whole.
+Adding the download folder to the New Battle bot directories and showing it as a collapsed group (the person adds the folder by hand in the existing settings), the three-level license reading aid, the License and Team members rows in Bot Info, the other Rumble menu items (Get started, My bots, Contribute battles, Results and queue, Rankings, Help), fetching the command line's worker, and the public sign-in App. The Rumble menu stays behind its developer switch until it is whole.
 
 ## Publication and acceptance
 
