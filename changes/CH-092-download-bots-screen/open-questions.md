@@ -1,7 +1,7 @@
 ---
 id: CH-092-open-questions
 type: open-questions
-status: resolved
+status: open
 links: [CH-092]
 title: The slice, the license level and the folder in New Battle
 ---
@@ -23,3 +23,9 @@ Settled by the maintainer, with a better idea than the recommendation: no levels
 The library fetches and verifies bots and leaves an existing folder untouched. The screen's states (new, update, up to date, retired) need to tell which folders in the download folder were downloaded by the screen and which version they hold.
 
 Settled by the maintainer: a small marker file, as a touch file. The proposal goes one step simpler than recording names and versions: an empty marker file in each bot folder the screen placed says only that the screen downloaded that folder. Everything else is read from the folder itself: the name and version from the bot's own configuration file, and whether the content is unchanged by computing the same checksum the catalog records and comparing it with the catalog. A folder without the marker is never touched, so the person's own bots are safe even when the names match. A downloaded bot whose files the person has changed shows as changed here and is never overwritten by an update unless the person asks. Nothing is recorded outside the download folder, and deleting the folder forgets everything.
+
+## Where does the screen read each bot's license from?
+
+Found while writing the criteria: the catalog entry of a bot holds its name, version, platform, path, checksum, owner, authors, status and team members, but not its license. The license is in the bot's own configuration file in the bot repository. To show the license before the download, as the mockups do, the screen has to read each bot's configuration file at the catalog's commit, one small public file per bot.
+
+Recommendation: read the configuration files one by one on a background thread after the list is shown, a few at a time, so the list appears at once and each license fills in as it is read. A file that cannot be read shows "not read" and never stops the list or the download, and the license is still in the downloaded files. No sign-in is needed. The other choice is to show the license only after the download, which is simpler and calls GitHub less, but the person then cannot see the license before choosing.
