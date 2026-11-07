@@ -6,8 +6,8 @@ links: [CH-091]
 title: Add the copy check, sending and following to Submit or update bot
 ---
 
-- [ ] Settle with the maintainer: the slice (all three steps or two), how the real trial is done, and whether a sent bot is found again through GitHub.
-- [ ] Reserve identities and write the acceptance criteria for the copy check, the license confirmation that is sent, the reviewed copy that is sent, the progress states, the thread and waiting rules and the texts, before any code, each with its test type.
+- [x] Settle with the maintainer: the slice (all three steps or two), how the real trial is done, and whether a sent bot is found again through GitHub.
+- [x] Reserve identities and write the acceptance criteria for the copy check, the license confirmation that is sent, the reviewed copy that is sent, the progress states, the thread and waiting rules and the texts, before any code, each with its test type.
 - [ ] Extend the wizard class with the copy check and its waiting, with a port for the readiness check, and prove it against a fake that answers each readiness case.
 - [ ] Extend it with the sending, the launcher advice and the result texts, and prove that nothing is sent without the second confirmation and that the reviewed copy is the one sent.
 - [ ] Extend it with the following of the pull request and the finding of an open pull request for a bot already sent, and prove that no check runs after closing and that late results are dropped.
