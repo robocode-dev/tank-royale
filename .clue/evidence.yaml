@@ -366,7 +366,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
-          "sha256": "c326470933cefbd70226ffec1eb1427e5e6357e6817f821fbb3168469f84db0d"
+          "sha256": "26f22c48d4386ba1c4374189cc31e31e18efbf7dc37d95d2fbad37068b14e2ec"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
@@ -1148,6 +1148,27 @@
           "direction": "positive"
         },
         {
+          "id": "RCL-073",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL073_UnitNegative_noTextOfTheWizardMentionsATokenAndPlaceholdersMatchWhatTheScreenGives",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-073",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL073_UnitNegative_theDialogOpensOnlyGitHubPagesAndGoodAndBadAreNotMixedUp",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-073",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
+          "subject": "RumbleCliSubmitTextsTest.testRCL073_UnitPositive_everyReadinessCaseEndingProgressStateContentAndLauncherHasANonEmptyTextInEveryLanguageFile",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
           "id": "RCI-004",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
           "subject": "RumbleCliTest.testRCI004_UnitNegative_theCommandsThatOnlyReadWriteNothingAndCreateNoFolder",
@@ -1659,7 +1680,11 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
-          "sha256": "46ca6ece1ef2b4646d741b2162128f11ce3e747c47aa6f6c3c539dbdfadb1041"
+          "sha256": "933978625d371e812087e05393bb539ba63099122eb8e5491e850cfe2813b16b"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "sha256": "966a0ecee69c14abe3a8e4b89c0ca4a2213f5e5af3866e2240027b3b193fe82f"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
@@ -2743,6 +2768,125 @@
           "id": "RCL-062",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
           "subject": "RumbleSubmitScreenTest.testRCL062_UnitPositive_everyCallReturnsAtOnceWhileTheDiskWorkBlocksAndResultsComeThroughTheScreensQueue",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-066",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL066_UnitNegative_onlyGitHubsOwnPagesCanBeOpened",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-066",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL066_UnitNegative_otherAnswersAreShownOnceWithoutLookingAgainAndNothingIsMadeOrInstalled",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-066",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL066_UnitPositive_aReadyAccountGoesStraightOnAndAMissingCopyOrAppIsWaitedFor",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-067",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL067_UnitNegative_noLookRunsAfterGoingBackOrClosingAndALateResultIsThrownAway",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-067",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL067_UnitPositive_aBlockedLookReturnsAtOnceRunsAwayFromTheScreenAndItsResultIsShownInOrder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-068",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL068_UnitNegative_aSecondPressOfSendOpensNothingNew",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-068",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL068_UnitNegative_nothingIsSentWithoutBothConfirmationsOrWhenSendingIsNotOffered",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-068",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL068_UnitNegative_theLibraryPassesTheAuthorsConfirmationOnAndNeverMakesOneUp",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-068",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL068_UnitPositive_theReviewedCopyIsSentWithTheAuthorsConfirmationAndNeverTheOriginalFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-069",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL069_UnitNegative_aFailedOrRefusedSendLeavesTheReviewedCopyAndShowsTheReviewAgainWithBoxesUnticked",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-069",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL069_UnitPositive_everyEndingOfASendHasItsOwnStateAndALauncherDifferenceNeverBlocks",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-070",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL070_UnitNegative_checkNowReadsAtOnceAndClosingStopsTheReading",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-070",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL070_UnitPositive_everyProgressStateIsShownAndOpenOnesAreReadAgainCalmly",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-071",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL071_UnitNegative_anUnreadableCatalogComparesNothingAndNothingIsSavedOnTheComputer",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-071",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL071_UnitPositive_theChecksumTellsAVersionThatIsAlreadyInTheRumbleFromOneWithOtherContentAndFromANewOne",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-072",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL072_UnitNegative_aClosedOrMergedPullRequestOrNoneLeadsToANewSendAndAFailedLookStopsNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-072",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL072_UnitPositive_anOpenPullRequestOfTheAccountIsFoundAgainAndShowsWhereItStands",
           "type": "Unit",
           "direction": "positive"
         },

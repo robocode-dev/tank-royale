@@ -110,7 +110,7 @@ object SubmitTexts {
         "rumble.submit.unknown", "rumble.submit.file", "rumble.submit.details", "rumble.submit.fix", "rumble.submit.notes", "rumble.submit.status_success", "rumble.submit.status_failed",
         "rumble.submit.review_intro", "rumble.submit.review_name", "rumble.submit.review_language", "rumble.submit.review_license",
         "rumble.submit.review_no_license", "rumble.submit.review_files", "rumble.submit.public_notice",
-        "rumble.submit.confirm_public", "rumble.submit.confirm_author", "rumble.submit.send_intro", "rumble.submit.existing", "rumble.submit.progress_label",
+        "rumble.submit.confirm_public", "rumble.submit.confirm_author", "rumble.submit.send_intro", "rumble.submit.existing", "rumble.submit.progress_label", "rumble.submit.progress_reading",
         "rumble.submit.button.choose", "rumble.submit.button.check", "rumble.submit.button.check_again", "rumble.submit.button.review",
         "rumble.submit.button.back", "rumble.submit.button.next", "rumble.submit.button.close", "rumble.submit.button.open_fork",
         "rumble.submit.button.open_install", "rumble.submit.button.check_now", "rumble.submit.button.send", "rumble.submit.button.update",
