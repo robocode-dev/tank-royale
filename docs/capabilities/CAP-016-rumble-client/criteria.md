@@ -623,7 +623,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a fake catalog with active, superseded, retired and disqualified bots on several platforms
     When the person opens the screen and narrows the list by platform
     Then only active bots are offered, each with name, version and platform, and the platform filter keeps only the chosen platforms
-    And a list box holds the licenses the Rumble allows, and choosing one shows in short what a person may do, what they must do when they share the code and what is not promised, with a link to the official text and a link to a fuller explanation, and says that this is not legal advice and that reading a bot or practising against it asks nothing of the person
+    And a list box holds the licenses the Rumble allows, and choosing one shows in short what the license means for the author of a bot and what it means for a person who uses or copies the bot, with what that person may do, what they must do when they share the code and what is not promised, with a link to the official text and a link to a fuller explanation, and says that this is not legal advice and that reading a bot or practising against it asks nothing of the person
     And no license text is held by the program, no bot's configuration file is fetched before the download, and a bot that is already in the download folder shows the license its own configuration file declares
 
   @RCL-076
@@ -632,6 +632,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a download folder with a bot folder that holds the marker file and the catalog's content, one with the marker and an older version, one with the marker whose files the person changed, one without the marker that has the same name as a catalog bot, one with the marker for a bot the catalog now lists as retired, and a catalog bot with no folder
     When the screen works out the state of each bot
     Then they are shown as up to date, an update, changed here, kept apart and untouched, no longer active, and new, in that order
+    And what a program leaves in a bot folder when the bot is run, in the folders and with the file endings the bot repository never accepts, does not count as a change
     And the version is read from the bot's own configuration file and the content check is the same tree checksum the catalog records, and nothing is recorded outside the download folder
 
   @RCL-077
@@ -641,7 +642,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When the person presses Download for all the bots
     Then each matching bot is placed with an empty marker file and the others are reported by name and version as hash differs or not in the archive, and one failing bot never stops the others
     And the folder without the marker is left exactly as it was, the unchanged earlier download is replaced by the new version, and a download the person changed is replaced only when the person asks for that bot
-    And the result shows the license each placed bot's own configuration file declares, with its links when it is one of the licenses the Rumble allows, and as written with no link when it is not
+    And the result shows the license each placed bot's own configuration file declares, as written, and the list box with the explanations and the links of the licenses the Rumble allows is on the result screen too
     And nothing the screen placed is run, built or added to any list of bots to start, and the files of each bot are exactly the files of the catalog's source, including any license file in them
 
   @RCL-078
@@ -675,7 +676,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the Rumble menu switch off and on
     When the menu bar is built
     Then the item is in the Rumble menu only, only when the switch is on, and the menu holds no other new item
-    And the dialog's title shows the environment it talks to, as the other screens do
+    And the dialog's title shows the environment it talks to
 
   @RCL-082
   Scenario: The maintainer downloads bots from the test environment with the desktop program
