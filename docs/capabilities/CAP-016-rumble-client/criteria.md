@@ -623,7 +623,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a fake catalog with active, superseded, retired and disqualified bots on several platforms
     When the person opens the screen and narrows the list by platform
     Then only active bots are offered, each with name, version and platform, and the platform filter keeps only the chosen platforms
-    And a list box holds the licenses the Rumble allows, and choosing one shows in short what the license means for the author of a bot and what it means for a person who uses or copies the bot, with what that person may do, what they must do when they share the code and what is not promised, with a link to the official text and a link to a fuller explanation, and says that this is not legal advice and that reading a bot or practising against it asks nothing of the person
+    And one button opens a small window of its own with a list box of the licenses the Rumble allows, and choosing one replaces what is shown, without moving the text, with in short what the license means for the author of a bot and what it means for a person who uses or copies the bot, with what that person may do, what they must do when they share the code and what is not promised, with a link to the official text and a link to a fuller explanation, and says that this is not legal advice and that reading a bot or practising against it asks nothing of the person
     And no license text is held by the program, no bot's configuration file is fetched before the download, and a bot that is already in the download folder shows the license its own configuration file declares
 
   @RCL-076
@@ -642,7 +642,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When the person presses Download for all the bots
     Then each matching bot is placed with an empty marker file and the others are reported by name and version as hash differs or not in the archive, and one failing bot never stops the others
     And the folder without the marker is left exactly as it was, the unchanged earlier download is replaced by the new version, and a download the person changed is replaced only when the person asks for that bot
-    And the result shows the license each placed bot's own configuration file declares, as written, and the list box with the explanations and the links of the licenses the Rumble allows is on the result screen too
+    And the result shows the license each placed bot's own configuration file declares, as written, and the same button opens the explanations and the links of the licenses the Rumble allows from the result screen too
     And nothing the screen placed is run, built or added to any list of bots to start, and the files of each bot are exactly the files of the catalog's source, including any license file in them
 
   @RCL-078
@@ -683,6 +683,6 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Human
     Given the desktop program started with the menu switched on for the test environment and an empty temporary folder chosen as the download folder
     When the maintainer opens Download bots, reads the explanation of each license and opens its links, picks a few bots and downloads them, changes one of the downloaded bots and opens the screen again
-    Then the explanations can be read and the links open the right pages, the bots are placed with their own files and the result lists each with its declared license, the states say up to date and changed here, nothing outside the folder is touched, and every text wraps
+    Then the explanations can be read and the links open the right pages, the bots are placed with their own files and the result lists each with its declared license, the states say up to date and changed here, nothing outside the folder is touched, every text wraps, choosing a license replaces the explanation without moving the text, and the buttons at the bottom stay in view however long the list is
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, the temporary folder is removed afterwards, and no human observation is invented
 ```

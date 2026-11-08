@@ -27,6 +27,7 @@ class RumbleCliDownloadTextsTest {
             .lines().joinToString("\n") { it.replace(Regex("(^|\\s)//.*$"), "$1") }
 
     private val dialogFile = "gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleDownloadDialog.kt"
+    private val licensePanelFile = "gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleLicensePanel.kt"
 
     private val keys: List<String> =
         DownloadedState.entries.map { DownloadTexts.forState(it) } + DownloadFailure.entries.map { DownloadTexts.forFailure(it) } +
@@ -46,6 +47,7 @@ class RumbleCliDownloadTextsTest {
             assertEquals(expected, messages.stringPropertyNames().filter { it.startsWith("rumble.download.") }.toSet(), "language file $suffix")
             assertTrue(properties("Menu$suffix.properties").getProperty("item.rumble_download").isNotBlank(), "menu $suffix")
             assertTrue(properties("UI titles$suffix.properties").getProperty("rumble_download_dialog").isNotBlank(), "title $suffix")
+            assertTrue(properties("UI titles$suffix.properties").getProperty("rumble_licenses_dialog").isNotBlank(), "licenses title $suffix")
         }
     }
 
@@ -75,6 +77,7 @@ class RumbleCliDownloadTextsTest {
             "lib/rumble/src/main/kotlin/dev/robocode/tankroyale/rumble/BotDownloads.kt",
             "lib/rumble/src/main/kotlin/dev/robocode/tankroyale/rumble/RumbleLicenses.kt",
             dialogFile,
+            licensePanelFile,
         ).forEach { file ->
             val strings = Regex("\"((?:[^\"\\\\]|\\\\.)*)\"").findAll(code(file)).map { it.groupValues[1] }
             assertEquals(emptyList<String>(), strings.filter { sentence.containsMatchIn(it) }.toList(), file)
@@ -90,10 +93,12 @@ class RumbleCliDownloadTextsTest {
 
         assertEquals(1, dialog.split("Browser.browse(").size - 1, "one place opens a page")
         assertTrue(dialog.contains("if (RumbleLicenses.isFixedPage(address)) Browser.browse(address)"), "and it checks the address first")
+        assertTrue(!code(licensePanelFile).contains("Browser."), "the panel of the licenses opens nothing by itself")
         val choosing = dialog.substringAfter("private fun renderChoosing").substringBefore("private fun row(")
         assertTrue(choosing.contains("rumble.download.warning"))
         assertTrue(choosing.indexOf("rumble.download.warning") < choosing.indexOf("rumble.download.button.download"), "the warning comes before the button")
-        assertTrue(dialog.substringAfter("private fun renderEnded").substringBefore("private fun resultText").contains("licenses()"), "the licenses are on the result screen too")
+        assertTrue(dialog.substringAfter("private fun renderEnded").substringBefore("private fun resultText").contains("showLicenses()"), "the licenses can be reached from the result screen too")
+        assertTrue(choosing.contains("showLicenses()"), "and from the screen that offers the download")
     }
 
     @Test

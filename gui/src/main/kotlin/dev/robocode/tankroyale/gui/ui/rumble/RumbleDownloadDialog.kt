@@ -16,18 +16,16 @@ import dev.robocode.tankroyale.rumble.DownloadedState
 import dev.robocode.tankroyale.rumble.EnvironmentChoice
 import dev.robocode.tankroyale.rumble.HttpGitHubApi
 import dev.robocode.tankroyale.rumble.LibraryDownloadPort
-import dev.robocode.tankroyale.rumble.RumbleLicense
 import dev.robocode.tankroyale.rumble.RumbleLicenses
 import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.rumble.Tone
 import net.miginfocom.swing.MigLayout
+import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
 import java.awt.Desktop
-import java.awt.Dimension
-import java.awt.Font
+import java.awt.GridLayout
 import java.awt.Point
-import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.WindowAdapter
@@ -40,16 +38,13 @@ import javax.swing.AbstractButton
 import javax.swing.ButtonGroup
 import javax.swing.JButton
 import javax.swing.JCheckBox
-import javax.swing.JComboBox
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JRadioButton
 import javax.swing.JScrollPane
-import javax.swing.JTextArea
-import javax.swing.Scrollable
 import javax.swing.SwingUtilities
-import javax.swing.UIManager
+import javax.swing.border.EmptyBorder
 
 /**
  * The Download bots screen. It only shows the state of a [DownloadController], which holds all the behavior and does
@@ -59,23 +54,15 @@ import javax.swing.UIManager
 class RumbleDownloadDialog private constructor(environmentName: String, controllerFor: (RumbleDownloadDialog) -> DownloadController) :
     RcDialog(MainFrame, "rumble_download_dialog") {
 
-    /** A panel that is as wide as the window, so wrapped texts wrap at the window's edge and never run out over it. */
-    private class TrackingPanel : JPanel(MigLayout("insets 12, wrap 1, fillx", "[grow, fill]")), Scrollable {
-        override fun getPreferredScrollableViewportSize(): Dimension = preferredSize
-        override fun getScrollableUnitIncrement(visibleRect: Rectangle, orientation: Int, direction: Int) = 16
-        override fun getScrollableBlockIncrement(visibleRect: Rectangle, orientation: Int, direction: Int) = 64
-        override fun getScrollableTracksViewportWidth() = true
-        override fun getScrollableTracksViewportHeight() = false
-    }
-
-    private val content = TrackingPanel()
+    private val content = WindowWidthPanel()
     private val scroll = JScrollPane(content, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER).apply { border = null }
+    private val actions = JPanel(GridLayout(1, 0, 8, 0)).apply { border = EmptyBorder(6, 12, 12, 12) }
     private val controller: DownloadController = controllerFor(this)
-    private var shownLicense: RumbleLicense = RumbleLicenses.ALL.first()
 
     init {
         title = text("rumble.download.title", title, environmentName)
-        contentPane.add(scroll)
+        contentPane.add(scroll, BorderLayout.CENTER)
+        contentPane.add(actions, BorderLayout.SOUTH)
         setSize(620, 640)
         setLocationRelativeTo(owner)
         addWindowListener(object : WindowAdapter() {
@@ -91,6 +78,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
     private fun render(state: DownloadState) {
         val position: Point = scroll.viewport.viewPosition
         content.removeAll()
+        actions.removeAll()
         when (state) {
             is DownloadState.Reading -> put(wrapped(text("rumble.download.reading")))
             is DownloadState.Choosing -> renderChoosing(state)
@@ -100,6 +88,8 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         }
         content.revalidate()
         content.repaint()
+        actions.revalidate()
+        actions.repaint()
         SwingUtilities.invokeLater { scroll.viewport.viewPosition = if (state is DownloadState.Choosing) position else Point(0, 0) }
     }
 
@@ -107,19 +97,25 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(wrapped(text("rumble.download.intro")))
         put(wrapped(text("rumble.download.warning"), bold = true))
         folderLine(state.folder)
-        licenses()
         put(wrapped(text("rumble.download.which"), bold = true))
         val group = ButtonGroup()
         put(choice(JRadioButton().also { group.add(it) }, text("rumble.download.all"), state.all, true) { if (it) controller.setAll(true) })
         put(choice(JRadioButton().also { group.add(it) }, text("rumble.download.selected"), !state.all, true) { if (it) controller.setAll(false) })
-        if (state.allPlatforms.isNotEmpty()) put(wrapped(text("rumble.download.platforms"), bold = true))
-        state.allPlatforms.forEach { platform ->
-            put(choice(JCheckBox(), platform, platform in state.platforms, true) { controller.setPlatform(platform, it) })
+        if (state.allPlatforms.isNotEmpty()) {
+            put(wrapped(text("rumble.download.platforms"), bold = true))
+            put(JPanel(MigLayout("insets 0")).apply {
+                state.allPlatforms.forEach { platform ->
+                    add(JCheckBox(platform, platform in state.platforms).apply { addActionListener { controller.setPlatform(platform, isSelected) } })
+                }
+            })
         }
         if (state.shown.isEmpty()) put(wrapped(text("rumble.download.none")))
         state.shown.forEach { put(row(it, state)) }
-        put(button("rumble.download.button.download") { controller.download() }.apply { isEnabled = state.toDownload.isNotEmpty() })
-        put(button("rumble.download.button.close") { dispose() })
+        act(
+            button("rumble.download.licenses") { showLicenses() },
+            button("rumble.download.button.download") { controller.download() }.apply { isEnabled = state.toDownload.isNotEmpty() },
+            button("rumble.download.button.close") { dispose() },
+        )
     }
 
     /** One bot: a box when there is a choice to make for it, and only its line when there is not. */
@@ -147,9 +143,11 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(wrapped(state.folder.toString()))
         put(button("rumble.download.button.show_folder") { showFolder(state.folder) })
         put(wrapped(text("rumble.download.add_folder_hint")))
-        licenses()
-        put(button("rumble.download.button.back") { controller.start() })
-        put(button("rumble.download.button.close") { dispose() })
+        act(
+            button("rumble.download.licenses") { showLicenses() },
+            button("rumble.download.button.back") { controller.start() },
+            button("rumble.download.button.close") { dispose() },
+        )
     }
 
     private fun resultText(result: DownloadResult): String {
@@ -165,8 +163,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(status(false, text(DownloadTexts.forFailure(state.failure))))
         if (state.details.isNotBlank()) put(wrapped(text("rumble.download.details", state.details)))
         folderLine(state.folder)
-        put(button("rumble.download.button.try_again") { controller.start() })
-        put(button("rumble.download.button.close") { dispose() })
+        act(button("rumble.download.button.try_again") { controller.start() }, button("rumble.download.button.close") { dispose() })
     }
 
     private fun folderLine(folder: Path) {
@@ -174,40 +171,19 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(button("rumble.download.button.change_folder") { chooseFolder(folder) })
     }
 
-    /** The list box of the licenses the Rumble allows, and the short explanation of the one that is chosen. */
-    private fun licenses() {
-        put(wrapped(text("rumble.download.licenses"), bold = true))
-        put(wrapped(text("rumble.download.licenses_intro")))
-        val explanation = JPanel(MigLayout("insets 0, wrap 1, fillx", "[grow, fill]"))
-        val box = JComboBox(RumbleLicenses.ALL.map { it.id }.toTypedArray()).apply { selectedItem = shownLicense.id }
-        box.addActionListener {
-            shownLicense = RumbleLicenses.ALL.first { it.id == box.selectedItem }
-            fillExplanation(explanation)
-            explanation.revalidate()
-            explanation.repaint()
-        }
-        put(JPanel(MigLayout("insets 0", "[][grow, fill]")).apply {
-            add(wrapped(text("rumble.download.licenses_label")), "wmin 10")
-            add(box)
-        })
-        fillExplanation(explanation)
-        put(explanation)
-    }
-
-    private fun fillExplanation(panel: JPanel) {
-        val license = shownLicense
-        fun line(component: Component) = panel.add(component, "growx, wmin 10")
-        fun part(name: String) = text(DownloadTexts.forLicense(license, name))
-        line(wrapped(text("rumble.download.for_author"), bold = true))
-        line(wrapped(part("author")))
-        line(wrapped(text("rumble.download.author_later")))
-        line(wrapped(text("rumble.download.for_user"), bold = true))
-        line(wrapped(text("rumble.download.may", part("may"))))
-        line(wrapped(text("rumble.download.must", part("must"))))
-        line(wrapped(text("rumble.download.note", part("note"))))
-        line(button("rumble.download.button.official") { open(license.officialPage) })
-        line(button("rumble.download.button.explanation") { open(license.explanationPage(ConfigSettings.language.lowercase())) })
-        line(wrapped(text("rumble.download.credit")))
+    /** The licenses in a small window of their own, so they are there when wanted and take no room on the screen. */
+    private fun showLicenses() {
+        val window = RcDialog(this, "rumble_licenses_dialog")
+        val inside = WindowWidthPanel().apply { add(RumbleLicensePanel { open(it) }, "growx, wmin 10") }
+        window.contentPane.add(JScrollPane(inside, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER).apply { border = null }, BorderLayout.CENTER)
+        window.contentPane.add(JPanel(GridLayout(1, 0)).apply {
+            border = EmptyBorder(6, 12, 12, 12)
+            add(button("rumble.download.button.close") { window.dispose() })
+        }, BorderLayout.SOUTH)
+        window.setSize(580, 560)
+        window.setLocationRelativeTo(this)
+        window.isModal = true
+        window.isVisible = true
     }
 
     /** Opens one of the fixed pages about the licenses in the browser, and never any other address. */
@@ -268,20 +244,15 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         }
     }
 
+    /** The buttons at the bottom of the window, always in view however long the list is. */
+    private fun act(vararg buttons: JButton) = buttons.forEach { actions.add(it) }
+
     /** Adds a component that is as wide as the window and never wider, so nothing runs out over the edge. */
     private fun put(component: Component) {
         content.add(component, "growx, wmin 10")
     }
 
-    /** A text that wraps at the window's edge and can be selected and copied. */
-    private fun wrapped(text: String, bold: Boolean = false) = JTextArea(text).apply {
-        lineWrap = true
-        wrapStyleWord = true
-        isEditable = false
-        isOpaque = false
-        border = null
-        font = UIManager.getFont("Label.font").let { if (bold) it.deriveFont(Font.BOLD) else it }
-    }
+    private fun wrapped(text: String, bold: Boolean = false) = wrappedText(text, bold)
 
     private fun button(key: String, action: () -> Unit) = JButton(text(key)).apply { addActionListener { action() } }
 
