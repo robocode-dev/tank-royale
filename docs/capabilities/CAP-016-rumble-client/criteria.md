@@ -618,13 +618,13 @@ Feature: rumble-client — Local ranked and practice battle client
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
 
   @RCL-075
-  Scenario: The Download bots screen lists the active bots of the pinned catalog with their declared license and a link to its official text
+  Scenario: The Download bots screen lists the active bots of the pinned catalog and explains the Rumble's licenses in short
     Test-type: Unit
-    Given a fake catalog with active, superseded, retired and disqualified bots on several platforms, and the configuration file of each bot at the catalog's commit
+    Given a fake catalog with active, superseded, retired and disqualified bots on several platforms
     When the person opens the screen and narrows the list by platform
-    Then only active bots are offered, each with name, version, platform and the license its own configuration file declares, and the platform filter keeps only the chosen platforms
-    And a license written as a plain license identifier has a link to the official SPDX license list over https and every other license has no link and is shown as written
-    And a configuration file that cannot be read shows the license as not read, and does not stop the list
+    Then only active bots are offered, each with name, version and platform, and the platform filter keeps only the chosen platforms
+    And a list box holds the licenses the Rumble allows, and choosing one shows in short what a person may do, what they must do when they share the code and what is not promised, with a link to the official text and a link to a fuller explanation, and says that this is not legal advice and that reading a bot or practising against it asks nothing of the person
+    And no license text is held by the program, no bot's configuration file is fetched before the download, and a bot that is already in the download folder shows the license its own configuration file declares
 
   @RCL-076
   Scenario: Each bot shows whether it is new, an update, up to date, changed here or no longer active, from a marker file and the catalog's checksum
@@ -641,6 +641,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When the person presses Download for all the bots
     Then each matching bot is placed with an empty marker file and the others are reported by name and version as hash differs or not in the archive, and one failing bot never stops the others
     And the folder without the marker is left exactly as it was, the unchanged earlier download is replaced by the new version, and a download the person changed is replaced only when the person asks for that bot
+    And the result shows the license each placed bot's own configuration file declares, with its links when it is one of the licenses the Rumble allows, and as written with no link when it is not
     And nothing the screen placed is run, built or added to any list of bots to start, and the files of each bot are exactly the files of the catalog's source, including any license file in them
 
   @RCL-078
@@ -660,12 +661,13 @@ Feature: rumble-client — Local ranked and practice battle client
     And a second press of Download while one runs starts nothing new
 
   @RCL-080
-  Scenario: Every state, result and failure of the screen has a text in the resources, only a page of the official license list can be opened, and the warning about other people's code is shown before the download
+  Scenario: Every state, result, failure and allowed license of the screen has a text in the resources, only the fixed license pages can be opened, and the warning about other people's code is shown before the download
     Test-type: Unit
     Given the resource files of the desktop program and the sources of the screen and its dialog
-    When every state, result and failure is listed from the library and compared with the resource keys
+    When every state, result, failure and license the Rumble allows is listed from the library and compared with the resource keys
     Then every one has a non-empty text in the base file and the same keys exist in every language file, no English sentence is written in the screen classes or the dialog, and success and failure are marked in the same way as in the other Rumble screens
-    And the dialog opens a page in the browser from one place only, after checking that the address is an https page of the official license list, and the warning that downloaded bots are other people's code and not made safe by review is on the screen that offers the download
+    And every license in the Rumble's allowed list has an explanation and both links, so a newly allowed license without them fails a test, and the fuller explanation opens in the screen's language where that page exists and in English otherwise
+    And the dialog opens a page in the browser from one place only, after checking that the address is one of the library's fixed license addresses, and the warning that downloaded bots are other people's code and not made safe by review is on the screen that offers the download
 
   @RCL-081
   Scenario: The Download bots item is in the Rumble menu and is shown only when the Rumble menu is switched on
@@ -679,7 +681,7 @@ Feature: rumble-client — Local ranked and practice battle client
   Scenario: The maintainer downloads bots from the test environment with the desktop program
     Test-type: Human
     Given the desktop program started with the menu switched on for the test environment and an empty temporary folder chosen as the download folder
-    When the maintainer opens Download bots, picks a few bots and downloads them, changes one of the downloaded bots, opens the screen again, and opens a license link
-    Then the list shows the declared licenses with working links to the official texts, the bots are placed with their own files and the result lists each, the states say up to date and changed here, nothing outside the folder is touched, and every text wraps
+    When the maintainer opens Download bots, reads the explanation of each license and opens its links, picks a few bots and downloads them, changes one of the downloaded bots and opens the screen again
+    Then the explanations can be read and the links open the right pages, the bots are placed with their own files and the result lists each with its declared license, the states say up to date and changed here, nothing outside the folder is touched, and every text wraps
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, the temporary folder is removed afterwards, and no human observation is invented
 ```

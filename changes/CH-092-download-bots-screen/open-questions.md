@@ -1,7 +1,7 @@
 ---
 id: CH-092-open-questions
 type: open-questions
-status: open
+status: resolved
 links: [CH-092]
 title: The slice, the license level and the folder in New Battle
 ---
@@ -28,4 +28,4 @@ Settled by the maintainer: a small marker file, as a touch file. The proposal go
 
 Found while writing the criteria: the catalog entry of a bot holds its name, version, platform, path, checksum, owner, authors, status and team members, but not its license. The license is in the bot's own configuration file in the bot repository. To show the license before the download, as the mockups do, the screen has to read each bot's configuration file at the catalog's commit, one small public file per bot.
 
-Recommendation: read the configuration files one by one on a background thread after the list is shown, a few at a time, so the list appears at once and each license fills in as it is read. A file that cannot be read shows "not read" and never stops the list or the download, and the license is still in the downloaded files. No sign-in is needed. The other choice is to show the license only after the download, which is simpler and calls GitHub less, but the person then cannot see the license before choosing.
+Settled by the maintainer: no reading before the download. The screen has a list box with the four licenses the Rumble allows, and choosing one shows a short explanation of the person's rights in plain words with links to the official text and to a fuller explanation. Each bot's own license is shown in the result, and for a bot already in the folder, read from its file on the disk. A `LICENSES/` folder in the bot repositories is noted as a later possibility and is not in this change.
