@@ -5,7 +5,12 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
 /** Raised when a catalog cannot be read, with a message the person can act on. */
-class CatalogUnreadable(message: String, cause: Throwable? = null) : Exception(message, cause)
+class CatalogUnreadable(
+    message: String,
+    cause: Throwable? = null,
+    /** True when the catalog is of a schema version this program does not know, so updating the program is the way on. */
+    val unsupported: Boolean = false,
+) : Exception(message, cause)
 
 /** One bot entry of the catalog's `bots/index.json`. */
 @Serializable
@@ -60,7 +65,8 @@ data class Catalog(
             if (catalog.schemaVersion != SUPPORTED_SCHEMA_VERSION) {
                 throw CatalogUnreadable(
                     "The Rumble catalog uses schema version ${catalog.schemaVersion}, " +
-                        "but this program understands version $SUPPORTED_SCHEMA_VERSION. Update the program."
+                        "but this program understands version $SUPPORTED_SCHEMA_VERSION. Update the program.",
+                    unsupported = true,
                 )
             }
             return catalog

@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.gui.ui.config.GuiConfigDialog
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.replay.ReplayFileChooser
 import dev.robocode.tankroyale.gui.ui.rumble.RumbleAccountDialog
+import dev.robocode.tankroyale.gui.ui.rumble.RumbleDownloadDialog
 import dev.robocode.tankroyale.gui.ui.rumble.RumbleSubmitDialog
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.ui.server.Server
@@ -70,6 +71,9 @@ object MenuEventHandlers {
             }
             onRumbleSubmit.on(this) {
                 RumbleSubmitDialog.open()
+            }
+            onRumbleDownload.on(this) {
+                RumbleDownloadDialog.open()
             }
             onHelp.on(this) {
                 Browser.browse(HELP_URL)

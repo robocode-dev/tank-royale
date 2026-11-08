@@ -21,10 +21,10 @@ The Robocoder wants to read how other entries work or to practise against them w
 ## Main flow
 
 1. Choose Download bots under Rumble. No account is needed, because the catalog is public.
-2. Choose all active bots or a selection, optionally filtered by platform, and see each bot's version and declared license.
+2. Choose all active bots or a selection, optionally filtered by platform, and see each bot's version. Read in short what each license the Rumble allows means for the author of a bot and for a person who uses or copies it, with links to the official text.
 3. Accept the destination folder or choose another. By default it is a separate `rumble-bots` folder beside the Robocoder's normal bots directory.
 4. Start the download. Each bot's source is fetched from the pinned catalog and checked against its recorded hash before it is placed in the folder.
-5. Read the result list, then find the downloaded bots in New Battle under a collapsed, labelled group placed after the Robocoder's own bots. Run, read or practise against them. Come back later to refresh or clear the folder.
+5. Read the result list, which shows each bot's own license. Add the folder under Config, Bot Root Directories, and find the downloaded bots in New Battle; a collapsed, labelled group placed after the Robocoder's own bots is planned. Run, read or practise against them. Come back later to refresh or clear the folder.
 
 The [Rumble menu mockups](../design/rumble/gui-mockups.md) show the Download bots screen and the New Battle group as a planned design.
 

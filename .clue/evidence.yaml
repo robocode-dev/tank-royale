@@ -349,6 +349,10 @@
           "sha256": "a240b5daa77c7353fc35532935aab911709c4c38a389ffdee29195ef32e1a01d"
         },
         {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "sha256": "158503e6bbe3a64306ae3418b4b181b91eff843c584daae19f82a87b7fe7d13f"
+        },
+        {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
           "sha256": "57cf139e492e648f3a75c5cc2e775126948c4ff1004605b3eb279f5e43ba5cbd"
         },
@@ -647,6 +651,55 @@
           "id": "RCL-049",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
           "subject": "RumbleCliDependencyRulesTest.testRCL049_UnitPositive_theDesktopProgramDependsOnAndNamesNeitherTheCommandLineNorTheWorker",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-080",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL080_UnitNegative_goodAndBadAreNotMixedUpAndNoTextHoldsAToken",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-080",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL080_UnitNegative_noEnglishSentenceIsWrittenInTheScreenClassesOrTheDialog",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-080",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL080_UnitNegative_theDialogOpensOnlyTheFixedLicensePagesAndTheWarningIsOnTheScreenThatOffersTheDownload",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-080",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL080_UnitPositive_everyLicenseIsExplainedForTheAuthorAndForTheUserAndTheGuideSaysItIsNotLegalAdvice",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-080",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL080_UnitPositive_everyStateResultFailureAndLicenseHasATextInEveryLanguageFileWithTheSameKeys",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-081",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL081_UnitNegative_theRumbleMenuHoldsOnlyTheThreeBuiltItems",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-081",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL081_UnitPositive_theItemIsInTheRumbleMenuBehindTheSwitchAndTheTitleShowsTheEnvironment",
           "type": "Unit",
           "direction": "positive"
         },
@@ -1387,7 +1440,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "f4f30954f8e57e5ee289de2884f0d3b6dbab892b8e98c7da04fa73b7c94fceed"
+          "sha256": "b976c02cafcf9cf82f6b37e09b7cdc959448d51ebaa62315632aee9e2665e708"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1621,6 +1674,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
           "sha256": "39ec27461a9534db6fb9dffb72ca4e35e16db224cd9b7b34f877dfba9c8ad89f"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "sha256": "d038012d6e41e37404ae54cf200e0a88c6351ec6924391d75110ea830ed9c91e"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
@@ -1984,6 +2041,153 @@
           "id": "RCL-020",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
           "subject": "RumbleDependencyRulesTest.testRCL020_UnitPositive_theLibrarySourcesImportNoDesktopOrRunnerCode",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-075",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL075_UnitNegative_noBotsConfigurationFileIsFetchedBeforeTheDownloadAndABotInTheFolderShowsItsOwnLicense",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-075",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL075_UnitNegative_noOtherAddressCountsAsALicensePage",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-075",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL075_UnitPositive_everyLicenseTheRumbleAllowsHasItsFixedPages",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-075",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL075_UnitPositive_onlyActiveBotsAreListedAndThePlatformChoiceKeepsTheChosenOnes",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-076",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL076_UnitNegative_aMarkedFolderWithAnUnreadableConfigurationOrAVersionTheCatalogDoesNotKnowIsTreatedAsChanged",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-076",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL076_UnitPositive_eachBotShowsItsStateFromTheMarkerAndTheCatalogsChecksum",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-076",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL076_UnitPositive_theDefaultFolderIsBesideTheFirstBotFolderOrInTheHomeFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-076",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL076_UnitPositive_whatRunningABotLeavesBehindIsNotAChangeButAnEditIs",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitNegative_aFolderWithoutTheMarkerIsNeverTouchedEvenWhenTheNamesMatchOrItIsAskedFor",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitNegative_theScreenOnlyPlacesFilesAndStartsNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitPositive_anUnchangedEarlierDownloadIsReplacedAndAChangedOneOnlyWhenAsked",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitPositive_matchingBotsArePlacedWithAnEmptyMarkerAndExactlyTheirOwnFilesAndEachResultIsTold",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitPositive_theLauncherScriptCanBeRunAfterTheDownloadWhereFilesHaveThatRight",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-078",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL078_UnitNegative_aCatalogThatCannotBeReadOrIsNewerHasItsOwnFailure",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-078",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL078_UnitNegative_aFolderThatCannotBeWrittenIsToldBeforeAnythingIsFetched",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-078",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL078_UnitNegative_aNetworkFailureKeepsWhatWasPlacedAndCanBeContinued",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-078",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL078_UnitNegative_anArchiveThatTriesToEscapeWritesNothingAndAnOrdinaryOneStillWorks",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-079",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL079_UnitNegative_aCallThatThrowsIsAPlainFailureWithAWayOn",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-079",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL079_UnitNegative_aChoiceThatLeavesNothingToDownloadOffersNothingAndChoicesReachThePort",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-079",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL079_UnitNegative_aResultAfterClosingIsThrownAwayAndASecondPressStartsNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-079",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL079_UnitPositive_nothingIsFetchedBeforeDownloadAndAllWorkRunsAwayFromTheScreenAndInOrder",
           "type": "Unit",
           "direction": "positive"
         },
