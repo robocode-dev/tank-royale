@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.botproject.Inspection
 import dev.robocode.tankroyale.botproject.TreeHash
 import dev.robocode.tankroyale.botproject.ValidationRules
 import java.io.IOException
+import java.io.UncheckedIOException
 import java.nio.file.Files
 import java.nio.file.LinkOption
 import java.nio.file.Path
@@ -110,7 +111,13 @@ object BotDownloads {
         Files.createDirectories(target)
         val results = HashMap<String, DownloadResult>()
         val wanted = bots.filter { bot ->
-            val stays = leftAsItIs(bot, catalog, replaceChanged, target)
+            val stays = try {
+                leftAsItIs(bot, catalog, replaceChanged, target)
+            } catch (e: IOException) {
+                DownloadResult.NotPlaced(bot, e.message.orEmpty())
+            } catch (e: UncheckedIOException) {
+                DownloadResult.NotPlaced(bot, e.message.orEmpty())
+            }
             if (stays != null) results[bot.path] = stays
             stays == null
         }
@@ -128,7 +135,7 @@ object BotDownloads {
                         cleanUp(work)
                     } catch (e: IOException) {
                         // Left for the person or a later download to see; it holds no marker, so it is never listed.
-                    } catch (e: java.io.UncheckedIOException) {
+                    } catch (e: UncheckedIOException) {
                         // The same, from a stream over the folder.
                     }
                 }
@@ -153,9 +160,10 @@ object BotDownloads {
             is FetchResult.NotInArchive -> DownloadResult.NotInArchive(bot)
             is FetchResult.AlreadyExists -> DownloadResult.KeptOwn(bot)
             is FetchResult.Placed -> {
-                // Looked at again now, because the person may have changed the folder while the archive was on its way.
-                leftAsItIs(bot, catalog, replaceChanged, target)?.let { return it }
+                // Everything here is about this one bot, so a folder that cannot be read or moved never stops the others.
                 try {
+                    // Looked at again now, because the person may have changed the folder while the archive was on its way.
+                    leftAsItIs(bot, catalog, replaceChanged, target)?.let { return it }
                     Files.createFile(fetched.directory.resolve(MARKER))
                     makeLaunchersRunnable(fetched.directory)
                     val updated = moveIntoPlace(fetched.directory, target.resolve(folderName(bot)), work, move)
@@ -164,13 +172,15 @@ object BotDownloads {
                     DownloadResult.KeptAside(bot, e.keptAt)
                 } catch (e: IOException) {
                     DownloadResult.NotPlaced(bot, e.message.orEmpty())
+                } catch (e: UncheckedIOException) {
+                    DownloadResult.NotPlaced(bot, e.message.orEmpty())
                 }
             }
         }
     }
 
     /** The earlier folder was moved away and could not be put back. It is whole at [keptAt]. */
-    private class NotPutBack(val keptAt: Path, cause: IOException) : IOException(cause)
+    private class NotPutBack(val keptAt: Path, cause: Exception) : IOException(cause)
 
     /** Moves the new folder in. An old folder is moved away first and is put back when the new one cannot be moved in. */
     private fun moveIntoPlace(new: Path, destination: Path, work: Path, move: (Path, Path) -> Unit): Boolean {
@@ -182,10 +192,10 @@ object BotDownloads {
         move(destination, old)
         try {
             move(new, destination)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             try {
                 move(old, destination)
-            } catch (back: IOException) {
+            } catch (back: Exception) {
                 throw NotPutBack(old, back)
             }
             throw e

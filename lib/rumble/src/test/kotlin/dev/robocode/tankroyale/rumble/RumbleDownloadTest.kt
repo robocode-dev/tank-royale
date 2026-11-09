@@ -344,6 +344,24 @@ class RumbleDownloadTest {
     @Tag("RCL-077")
     @Tag("Unit")
     @Tag("Negative")
+    fun testRCL077_UnitNegative_aBotWhoseFolderCannotBeReadOrMovedNeverStopsTheOthers(@TempDir dir: Path) {
+        val catalog = catalog(bot("Locked"), bot("Walls"))
+        val source = Source(trees = mapOf("Locked" to files("Locked"), "Walls" to files("Walls")))
+        val failsForLocked: (Path, Path) -> Unit = { from, to ->
+            if (to.fileName.toString() == "Locked") throw java.io.UncheckedIOException(IOException("A file is in use."))
+            Files.move(from, to)
+        }
+
+        val results = BotDownloads.download(source, catalog, catalog.bots, emptySet(), dir, failsForLocked) {}
+
+        assertEquals("A file is in use.", (results[0] as DownloadResult.NotPlaced).message.substringAfterLast(": "))
+        assertInstanceOf(DownloadResult.Placed::class.java, results[1], "the next bot is still placed")
+    }
+
+    @Test
+    @Tag("RCL-077")
+    @Tag("Unit")
+    @Tag("Negative")
     fun testRCL077_UnitNegative_aWorkFolderThatCannotBeRemovedDoesNotHideTheBotsThatWerePlaced(@TempDir dir: Path) {
         val catalog = catalog(bot("Walls"))
         val source = Source(trees = mapOf("Walls" to files("Walls")))

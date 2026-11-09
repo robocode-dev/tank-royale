@@ -1447,7 +1447,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "b976c02cafcf9cf82f6b37e09b7cdc959448d51ebaa62315632aee9e2665e708"
+          "sha256": "e2e49eeb921a3835025c58c379705db00690ca784cf5c2184d78b8d2acf6f9c7"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1684,7 +1684,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
-          "sha256": "672882d212f0d59ca59e9a8fc143a07473f731f752f3fd4673ae7a82c2ba5da3"
+          "sha256": "caeda8b64e3b80b5d0fb6525bfabfb124a735128f0aac58735693dd8e7fb80e1"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
@@ -2113,6 +2113,13 @@
           "subject": "RumbleDownloadTest.testRCL076_UnitPositive_whatRunningABotLeavesBehindIsNotAChangeButAnEditIs",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitNegative_aBotWhoseFolderCannotBeReadOrMovedNeverStopsTheOthers",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-077",

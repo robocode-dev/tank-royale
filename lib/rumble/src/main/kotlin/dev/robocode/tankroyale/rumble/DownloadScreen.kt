@@ -86,6 +86,8 @@ class LibraryDownloadPort(
             DownloadRead.Listed(catalog, BotDownloads.rows(catalog, folder))
         } catch (e: IOException) {
             DownloadRead.Failed(DownloadFailure.FOLDER_NOT_WRITABLE, e.message.orEmpty())
+        } catch (e: java.io.UncheckedIOException) {
+            DownloadRead.Failed(DownloadFailure.FOLDER_NOT_WRITABLE, e.message.orEmpty())
         }
     }
 

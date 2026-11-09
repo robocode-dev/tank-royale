@@ -276,9 +276,10 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             RumbleDownloadDialog(environment.displayName) { self ->
                 DownloadController(LibraryDownloadPort(environment, HttpGitHubApi()), folder, background, post) { state -> self.render(state) }
             }.apply {
-                // A download that is running is let finish; nothing new is started after the screen is closed.
+                // A download that is running is let finish; nothing new is started after the screen is closed. The pool
+                // is shut down after the events already waiting, which may still hand it work, the same as the other screens.
                 addWindowListener(object : WindowAdapter() {
-                    override fun windowClosed(e: WindowEvent) = background.shutdown()
+                    override fun windowClosed(e: WindowEvent) = SwingUtilities.invokeLater { background.shutdown() }
                 })
             }.isVisible = true
         }

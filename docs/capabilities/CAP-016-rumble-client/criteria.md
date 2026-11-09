@@ -645,7 +645,7 @@ Feature: rumble-client — Local ranked and practice battle client
     And the folder without the marker is left exactly as it was, the unchanged earlier download is replaced by the new version, and a download the person changed is replaced only when the person asks for that bot
     And the result shows the license each placed bot's own configuration file declares, as written, and the same button opens the explanations and the links of the licenses the Rumble allows from the result screen too
     And nothing the screen placed is run, built or added to any list of bots to start, and the files of each bot are exactly the files of the catalog's source, including any license file in them
-    And an earlier folder that was moved aside and cannot be put back is never deleted: it is kept whole inside the download folder and the result says where, a work folder that cannot be removed does not hide the bots that were placed, and only one download runs at a time, so a screen opened again while a download is still running never moves the same folders at once
+    And an earlier folder that was moved aside and cannot be put back is never deleted: it is kept whole inside the download folder and the result says where, a work folder that cannot be removed does not hide the bots that were placed, a bot whose folder cannot be read or moved is reported on its own while the others are still placed, and only one download runs at a time, so a screen opened again while a download is still running never moves the same folders at once
 
   @RCL-078
   Scenario: Every way a download can fail has its own plain answer and a way on
