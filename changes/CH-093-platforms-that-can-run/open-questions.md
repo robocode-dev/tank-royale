@@ -18,7 +18,9 @@ Recommendation: in the download folder, as a hidden folder of its own. It is the
 
 ## Which minimum versions are checked?
 
-Recommendation: the bot repository's own prerequisites, which are Java 25, .NET SDK 10, Node.js 24 with npm, and Python 3.11. The program's own Python Bot API accepts Python 3.10, but the Rumble's templates ask for 3.11.
+The maintainer pointed out that Rumble bots need Java 11 or 17, not 25. Checked: the Java Bot API is compiled for Java 11 (`options.release.set(11)` in the build, class files of version 55 in the 1.1.0 jar the launchers fetch). The launchers run the bot's source with `java -cp <api jar> <Bot>.java`, which works from Java 11. Of the test catalog's Java bots, nine declare Java 17, five declare Java 25 and two declare nothing, and the template declares Java 25, as does the bot repository's prerequisite table.
+
+Recommendation: Java 17, because most bots declare it and a bot written for 17 can fail to compile on 11. Java 11 is the floor of the Bot API itself and would tick the platform on more computers. .NET SDK 10, Node.js 24 with npm and Python 3.11 follow the bot repository's prerequisites. The program's own Python Bot API accepts Python 3.10, but the Rumble's templates ask for 3.11. The bot repository's prerequisite of Java 25 is stricter than the bots need. Correcting it there is outside this change.
 
 ## May the desktop program start bots in that folder with the environment first on their path?
 
