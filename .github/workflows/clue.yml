@@ -4,7 +4,7 @@
 #
 # This file is a thin caller. The validation logic — checkout, changed-surface
 # detection, route-aware checksum verification, binary staging,
-# `clue validate --forbid-changes`, and the tracked-change acceptance-brief gate — lives in
+# and `clue validate --forbid-changes` — lives in
 # Cliewen's reusable workflow, so upstream fixes arrive by updating one
 # reference instead of by re-copying steps. Only the triggers below and the
 # five inputs are ours to choose.
@@ -22,8 +22,8 @@
 # here.
 #
 # The `edited` and `ready_for_review` triggers and the upstream unit's fetch-depth
-# 0 are load-bearing: the acceptance-brief gate must re-run when a pull-request
-# body changes or a draft becomes a merge candidate, and change detection needs
+# 0 are load-bearing: validation must re-run when a draft becomes a merge
+# candidate, and change detection needs
 # the base commit. With those triggers in place, `draft-aware` lets unfinished
 # drafts retain their transient change workspace without weakening the ready or
 # main-branch gate.
@@ -42,10 +42,10 @@ permissions:
 jobs:
   validate:
     name: validate
-    uses: cliewen/cliewen/.github/workflows/clue-validation.yml@v0.32.0
+    uses: cliewen/cliewen/.github/workflows/clue-validation.yml@v0.33.0
     with:
       runner: '["ubuntu-latest"]'
-      clue-version: 0.32.0
+      clue-version: 0.33.0
       clue-source: release
       clue-install-directory: ''
       draft-aware: true
