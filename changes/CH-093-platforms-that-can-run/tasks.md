@@ -6,8 +6,8 @@ links: [CH-093]
 title: Offer the platforms this computer can run and set up Python when asked
 ---
 
-- [ ] Settle the open questions with the maintainer.
-- [ ] Reserve identities and write the acceptance criteria for the checks, the ticks, the dialogs, the Python setup, the start of bots with the environment, and the texts.
+- [x] Settle the open questions with the maintainer.
+- [x] Reserve identities and write the acceptance criteria for the checks, the ticks, the dialogs, the Python setup, the start of bots with the environment, and the texts.
 - [ ] Build the checks of Java, .NET, Node.js with npm and Python in the shared library, with fakes of the tools in tests.
 - [ ] Build the Python setup: make the environment in the download folder and install the program's Python Bot API with that environment's `python -m pip`, showing the commands first.
 - [ ] Start bots in a folder with the environment using it, in the desktop program's starting of bots, and leave every other bot unchanged.
