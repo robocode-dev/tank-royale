@@ -9,7 +9,16 @@ enum class DownloadFailure { CATALOG_UNREADABLE, CATALOG_UNSUPPORTED, FOLDER_NOT
 
 /** What reading the catalog and the folder gave. */
 sealed interface DownloadRead {
-    data class Listed(val catalog: Catalog, val rows: List<DownloadRow>) : DownloadRead
+    /**
+     * [checks] says for each platform of the rows whether this computer can run it. [versionsKnown] is false when the
+     * Rumble's list of supported versions could not be read, so a platform passed only because its tool is there.
+     */
+    data class Listed(
+        val catalog: Catalog,
+        val rows: List<DownloadRow>,
+        val checks: Map<BotPlatform, PlatformCheck> = emptyMap(),
+        val versionsKnown: Boolean = true,
+    ) : DownloadRead
     data class Failed(val failure: DownloadFailure, val details: String = "") : DownloadRead
 }
 
@@ -35,7 +44,15 @@ sealed interface DownloadState {
         val chosen: Set<String> = emptySet(),
         /** The changed earlier downloads the person asked to replace. */
         val replaceChanged: Set<String> = emptySet(),
+        /** Whether this computer can run each platform. A platform with no check, unknown to the rules, is treated as runnable. */
+        val checks: Map<BotPlatform, PlatformCheck> = emptyMap(),
+        val versionsKnown: Boolean = true,
+        /** How the last setup of Python ended, shown once on the list that follows it. */
+        val setup: PythonSetupResult? = null,
     ) : DownloadState {
+        /** The check of a platform as the catalog names it, or null when there is none. */
+        fun checkOf(platform: String): PlatformCheck? = BotPlatform.of(platform)?.let { checks[it] }
+
         val allPlatforms: List<String> get() = rows.mapNotNull { it.platform }.distinct().sorted()
 
         /** The rows the platform choice shows. A bot with no known platform is always shown. */
@@ -54,6 +71,8 @@ sealed interface DownloadState {
 
     data class Downloading(override val folder: Path, val count: Int) : DownloadState
 
+    data class SettingUpPython(override val folder: Path) : DownloadState
+
     data class Ended(override val folder: Path, val results: List<DownloadResult>) : DownloadState {
         val placed: Int get() = results.count { it is DownloadResult.Placed }
     }
@@ -65,6 +84,11 @@ sealed interface DownloadState {
 interface DownloadPort {
     fun read(folder: Path): DownloadRead
     fun download(catalog: Catalog, bots: List<CatalogBot>, replaceChanged: Set<String>, folder: Path): DownloadEnded
+
+    /** The commands that setting up Python for [folder] runs, so the screen can show them first. */
+    fun pythonSetupCommands(folder: Path): List<List<String>> = emptyList()
+
+    fun setUpPython(folder: Path): PythonSetupResult = PythonSetupResult.Failed(PythonSetupStep.MAKE_ENVIRONMENT, "")
 }
 
 /** The real port. The catalog and the sources are public, so no sign-in is asked for or sent. */
@@ -72,6 +96,11 @@ class LibraryDownloadPort(
     private val environment: RumbleEnvironment,
     private val api: GitHubApi,
     private val source: CatalogSource = GitHubCatalogSource(environment),
+    private val runtimeList: RuntimeListSource = GitHubRuntimeListSource(api),
+    private val runner: ToolRunner = ProcessToolRunner(),
+    /** Where the program's own Python Bot API is put for installing, and how it is put there. */
+    private val pythonBotApi: Path? = null,
+    private val writePythonBotApi: (Path) -> Unit = {},
 ) : DownloadPort {
 
     override fun read(folder: Path): DownloadRead {
@@ -82,8 +111,21 @@ class LibraryDownloadPort(
         } catch (e: IOException) {
             return DownloadRead.Failed(DownloadFailure.CATALOG_UNREADABLE, e.message.orEmpty())
         }
+        val rows = try {
+            BotDownloads.rows(catalog, folder)
+        } catch (e: IOException) {
+            return DownloadRead.Failed(DownloadFailure.FOLDER_NOT_WRITABLE, e.message.orEmpty())
+        } catch (e: java.io.UncheckedIOException) {
+            return DownloadRead.Failed(DownloadFailure.FOLDER_NOT_WRITABLE, e.message.orEmpty())
+        }
+        val versions = try {
+            SupportedVersions.parse(runtimeList.text())
+        } catch (e: IOException) {
+            null
+        }
+        val platforms = rows.mapNotNull { row -> row.platform?.let { BotPlatform.of(it) } }
         return try {
-            DownloadRead.Listed(catalog, BotDownloads.rows(catalog, folder))
+            DownloadRead.Listed(catalog, rows, PlatformChecker(runner).check(platforms, versions, folder), versions != null)
         } catch (e: IOException) {
             DownloadRead.Failed(DownloadFailure.FOLDER_NOT_WRITABLE, e.message.orEmpty())
         } catch (e: java.io.UncheckedIOException) {
@@ -101,6 +143,23 @@ class LibraryDownloadPort(
             DownloadEnded.Failed(DownloadFailure.NETWORK, e.message.orEmpty())
         } catch (e: IOException) {
             DownloadEnded.Failed(DownloadFailure.NETWORK, e.message.orEmpty())
+        }
+    }
+
+    override fun pythonSetupCommands(folder: Path): List<List<String>> =
+        pythonBotApi?.let { PythonSetup(runner).commands(folder, it) }.orEmpty()
+
+    override fun setUpPython(folder: Path): PythonSetupResult {
+        val botApi = pythonBotApi ?: return PythonSetupResult.Failed(PythonSetupStep.INSTALL_BOT_API, "")
+        try {
+            writePythonBotApi(botApi)
+        } catch (e: IOException) {
+            return PythonSetupResult.Failed(PythonSetupStep.INSTALL_BOT_API, e.message.orEmpty())
+        }
+        return try {
+            PythonSetup(runner).run(folder, botApi)
+        } catch (e: IOException) {
+            PythonSetupResult.Failed(PythonSetupStep.MAKE_ENVIRONMENT, e.message.orEmpty())
         }
     }
 }
@@ -121,20 +180,40 @@ class DownloadController(
     // Everything below is touched only on [post].
     private var epoch = 0
     private var catalog: Catalog? = null
+    private var setupEnded: PythonSetupResult? = null
 
     @Volatile
     var state: DownloadState = DownloadState.Reading(firstFolder)
         private set
 
-    /** Reads the catalog and the folder. Used for the first look and for trying again after a failure or a download. */
+    /** Reads the catalog, the folder and what this computer can run. Used for the first look and for trying again. */
     fun start() = post.execute {
-        if (state !is DownloadState.Downloading) read(state.folder)
+        if (!busy()) read(state.folder)
     }
 
     /** The person chose another folder. Nothing is created or written there yet. */
     fun chooseFolder(folder: Path) = post.execute {
-        if (state !is DownloadState.Downloading) read(folder)
+        if (!busy()) read(folder)
     }
+
+    /**
+     * The person asked to set up Python for the bots in the folder. Only from the list, and only once at a time. When it
+     * ends, the list is read again, so the checks show the new environment, and the result is shown on it.
+     */
+    fun setUpPython() = post.execute {
+        val choosing = state as? DownloadState.Choosing ?: return@execute
+        val mine = ++epoch
+        show(DownloadState.SettingUpPython(choosing.folder))
+        work(mine, choosing.folder, { port.setUpPython(choosing.folder) }) { ended ->
+            setupEnded = ended
+            read(choosing.folder)
+        }
+    }
+
+    /** The commands that setting up Python runs for the folder shown, so the screen can show them first. Reads nothing. */
+    fun pythonSetupCommands(): List<List<String>> = port.pythonSetupCommands(state.folder)
+
+    private fun busy() = state is DownloadState.Downloading || state is DownloadState.SettingUpPython
 
     fun setPlatform(platform: String, shown: Boolean) = changeChoosing {
         it.copy(platforms = if (shown) it.platforms + platform else it.platforms - platform)
@@ -180,7 +259,12 @@ class DownloadController(
                 when (read) {
                     is DownloadRead.Listed -> {
                         catalog = read.catalog
-                        DownloadState.Choosing(folder, read.rows, read.rows.mapNotNull { it.platform }.toSet())
+                        val setup = setupEnded.also { setupEnded = null }
+                        // Only the platforms this computer can run are ticked; the person may tick the others.
+                        val runnable = read.rows.mapNotNull { it.platform }.filter { platform ->
+                            BotPlatform.of(platform)?.let { read.checks[it]?.ready } ?: true
+                        }.toSet()
+                        DownloadState.Choosing(folder, read.rows, runnable, checks = read.checks, versionsKnown = read.versionsKnown, setup = setup)
                     }
                     is DownloadRead.Failed -> DownloadState.Failed(folder, read.failure, read.details)
                 },

@@ -36,6 +36,8 @@ def collect(root, files):
                 and Path(name).name.endswith("Test.kt"))
             or (name.startswith("rumble-cli/src/test/") and Path(name).name.startswith("RumbleCli")
                 and Path(name).name.endswith("Test.kt"))
+            or (name.startswith("booter/src/test/") and Path(name).name.startswith("Rumble")
+                and Path(name).name.endswith("Test.kt"))
         ):
             continue
         source = (root / name).read_text(encoding="utf-8")

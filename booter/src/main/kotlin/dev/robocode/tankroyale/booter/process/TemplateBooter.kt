@@ -34,6 +34,7 @@ internal class TemplateBooter(
             pb.directory(botDir.toFile())
             pb.redirectOutput(ProcessBuilder.Redirect.DISCARD)
             setupEnvironment(pb.environment(), botEntry, team)
+            DownloadedBotsPython.apply(pb.environment(), botDir)
             pb.start()
         } catch (ex: Exception) {
             Log.error(ex, botDir)

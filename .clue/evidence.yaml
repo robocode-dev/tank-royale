@@ -21,11 +21,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
+          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
+          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -250,11 +250,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
+          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
+          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -310,11 +310,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
+          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
+          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "6fb3a9c9acf5874709adfe3480c1e94923f6890b536df505eec813241e449320"
+          "sha256": "e7f1c921117fda936fffef6d46d9ae3dc71254de167450bbe019a6a9bf8d396c"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -707,6 +707,20 @@
           "id": "RCL-081",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
           "subject": "RumbleCliDownloadTextsTest.testRCL081_UnitPositive_theItemIsInTheRumbleMenuBehindTheSwitchAndTheTitleShowsTheEnvironment",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-084",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL084_UnitNegative_tickingAPlatformThatCannotRunOpensTheDialogInsteadOfTickingIt",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-087",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL087_UnitPositive_everyReasonOfferAndResultOfThePlatformChecksHasATextInEveryLanguageFile",
           "type": "Unit",
           "direction": "positive"
         },
@@ -1439,7 +1453,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
+          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
         },
         {
           "path": ".clue/evidence/python_unittest_producer.py",
@@ -1625,6 +1639,7 @@
         ".clue/evidence/junit_scoring_producer.py",
         ".clue/evidence/producers.json",
         ".clue/evidence/test_junit_producer.py",
+        "booter/src/test/kotlin/**/Rumble*Test.kt",
         "lib/rumble/build.gradle.kts",
         "lib/rumble/src/test/kotlin/**/Rumble*Test.kt"
       ],
@@ -1636,15 +1651,19 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
+          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
+          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
           "sha256": "30d1feb473a94383bc3f2f95f1211eece816a9010e8adcf580075e26c6f78d84"
+        },
+        {
+          "path": "booter/src/test/kotlin/dev/robocode/tankroyale/booter/process/RumbleDownloadBotStartTest.kt",
+          "sha256": "38571455e51bffc6412b45fbea2912ad8b6c6bf0dcdd0da176f543cf5e79912e"
         },
         {
           "path": "lib/rumble/build.gradle.kts",
@@ -1681,6 +1700,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
           "sha256": "39ec27461a9534db6fb9dffb72ca4e35e16db224cd9b7b34f877dfba9c8ad89f"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "sha256": "bfb9c0f22e08707b940616ea8cd61318ef981b8eb236bf71e8ecc54f9421ca24"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
@@ -1764,6 +1787,27 @@
         }
       ],
       "references": [
+        {
+          "id": "RCL-085",
+          "path": "booter/src/test/kotlin/dev/robocode/tankroyale/booter/process/RumbleDownloadBotStartTest.kt",
+          "subject": "RumbleDownloadBotStartTest.testRCL085_UnitNegative_theEnvironmentFolderIsNeverListedAsABot",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-086",
+          "path": "booter/src/test/kotlin/dev/robocode/tankroyale/booter/process/RumbleDownloadBotStartTest.kt",
+          "subject": "RumbleDownloadBotStartTest.testRCL086_UnitNegative_aBotInAnyOtherFolderStartsWithItsEnvironmentUnchanged",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-086",
+          "path": "booter/src/test/kotlin/dev/robocode/tankroyale/booter/process/RumbleDownloadBotStartTest.kt",
+          "subject": "RumbleDownloadBotStartTest.testRCL086_UnitPositive_aBotInAFolderWithTheEnvironmentStartsWithItFirstOnItsPath",
+          "type": "Unit",
+          "direction": "positive"
+        },
         {
           "id": "RCL-054",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountPortTest.kt",
@@ -2048,6 +2092,83 @@
           "id": "RCL-020",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
           "subject": "RumbleDependencyRulesTest.testRCL020_UnitPositive_theLibrarySourcesImportNoDesktopOrRunnerCode",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-083",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL083_UnitNegative_aMissingOlderUnreadableOrSilentToolFailsOnlyItsOwnPlatform",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-083",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL083_UnitNegative_checkingInstallsNothingAndAnUnreadableListOnlyAsksWhetherEachToolIsThere",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-083",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL083_UnitNegative_pythonPassesOnlyWithTheFoldersOwnWorkingEnvironment",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-083",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL083_UnitPositive_eachPlatformPassesWithAtLeastTheVersionTheRumblesListNames",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-083",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL083_UnitPositive_theVersionsAreReadFromTheRumbleClientsLatestRelease",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-084",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL084_UnitNegative_onlyTheFixedDownloadPagesCanBeOpened",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-084",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL084_UnitPositive_onlyPlatformsThatCanRunAreTickedAndThePersonMayTickTheOthers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitNegative_aFailedStepKeepsItsDetailsAndLeavesNoHalfMadeEnvironment",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitNegative_setupIsOfferedOnlyFromTheListAndOnceAtATime",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitPositive_setupMakesTheFoldersOwnEnvironmentAndInstallsTheProgramsBotApiWithItsOwnPip",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitPositive_theListIsReadAgainAfterTheSetupAndShowsItsResultOnce",
           "type": "Unit",
           "direction": "positive"
         },
@@ -3304,11 +3425,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "eea445c7741b24e3cecc80459b1de75fdf14c537a186d616aaf8aa1635e82b5d"
+          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "f0f0779215eaf83fd3149b17665a5a6d6090ade4fbaa8d7d2865231a4fae74e4"
+          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
         },
         {
           "path": "server/build.gradle.kts",

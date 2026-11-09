@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.rumble
 
 import com.formdev.flatlaf.FlatLaf
+import dev.robocode.tankroyale.gui.botapi.BotApiPlatform
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
@@ -16,6 +17,8 @@ import dev.robocode.tankroyale.rumble.DownloadedState
 import dev.robocode.tankroyale.rumble.EnvironmentChoice
 import dev.robocode.tankroyale.rumble.HttpGitHubApi
 import dev.robocode.tankroyale.rumble.LibraryDownloadPort
+import dev.robocode.tankroyale.rumble.PlatformDownloads
+import dev.robocode.tankroyale.rumble.PythonSetupResult
 import dev.robocode.tankroyale.rumble.RumbleLicenses
 import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.rumble.Tone
@@ -31,6 +34,9 @@ import java.awt.event.MouseEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.nio.file.Path
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -83,6 +89,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             is DownloadState.Reading -> put(wrapped(text("rumble.download.reading")))
             is DownloadState.Choosing -> renderChoosing(state)
             is DownloadState.Downloading -> put(wrapped(text("rumble.download.downloading", state.count)))
+            is DownloadState.SettingUpPython -> put(wrapped(text("rumble.download.setup.running")))
             is DownloadState.Ended -> renderEnded(state)
             is DownloadState.Failed -> renderFailed(state)
         }
@@ -97,17 +104,24 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(wrapped(text("rumble.download.intro")))
         put(wrapped(text("rumble.download.warning"), bold = true))
         folderLine(state.folder)
+        when (val setup = state.setup) {
+            null -> {}
+            is PythonSetupResult.Done -> put(status(true, text("rumble.download.setup.done")))
+            is PythonSetupResult.Failed -> {
+                put(status(false, text(DownloadTexts.forSetupFailure(setup.step))))
+                if (setup.details.isNotBlank()) put(wrapped(text("rumble.download.details", setup.details)))
+            }
+        }
         put(wrapped(text("rumble.download.which"), bold = true))
         val group = ButtonGroup()
         put(choice(JRadioButton().also { group.add(it) }, text("rumble.download.all"), state.all, true) { if (it) controller.setAll(true) })
         put(choice(JRadioButton().also { group.add(it) }, text("rumble.download.selected"), !state.all, true) { if (it) controller.setAll(false) })
         if (state.allPlatforms.isNotEmpty()) {
             put(wrapped(text("rumble.download.platforms"), bold = true))
-            put(JPanel(MigLayout("insets 0")).apply {
-                state.allPlatforms.forEach { platform ->
-                    add(JCheckBox(platform, platform in state.platforms).apply { addActionListener { controller.setPlatform(platform, isSelected) } })
-                }
+            put(JPanel(MigLayout("insets 0, wrap 2", "[][]")).apply {
+                state.allPlatforms.forEach { platform -> add(platformBox(platform, state)) }
             })
+            if (!state.versionsKnown) put(wrapped(text("rumble.download.platform.versions_unknown")))
         }
         if (state.shown.isEmpty()) put(wrapped(text("rumble.download.none")))
         state.shown.forEach { put(row(it, state)) }
@@ -116,6 +130,30 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             button("rumble.download.button.download") { controller.download() }.apply { isEnabled = state.toDownload.isNotEmpty() },
             button("rumble.download.button.close") { dispose() },
         )
+    }
+
+    /**
+     * The box of one platform. A platform this computer cannot run says why in a few words, and ticking it opens a dialog
+     * that says what is missing and what can be done, instead of ticking it at once.
+     */
+    private fun platformBox(platform: String, state: DownloadState.Choosing): JCheckBox {
+        val check = state.checkOf(platform)?.takeIf { !it.ready }
+        val label = check?.let { text("rumble.download.platform.label", platform, text(DownloadTexts.forPlatformShort(it.reason))) } ?: platform
+        return JCheckBox(label, platform in state.platforms).apply {
+            addActionListener {
+                if (isSelected && check != null) {
+                    isSelected = false
+                    RumblePlatformDialog(
+                        this@RumbleDownloadDialog, check, controller.pythonSetupCommands(),
+                        open = { open(it) },
+                        setUp = { controller.setUpPython() },
+                        showAnyway = { controller.setPlatform(platform, true) },
+                    ).isVisible = true
+                } else {
+                    controller.setPlatform(platform, isSelected)
+                }
+            }
+        }
     }
 
     /** One bot: a box when there is a choice to make for it, and only its line when there is not. */
@@ -190,7 +228,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
 
     /** Opens one of the fixed pages about the licenses in the browser, and never any other address. */
     private fun open(address: String) {
-        if (RumbleLicenses.isFixedPage(address)) Browser.browse(address)
+        if (RumbleLicenses.isFixedPage(address) || PlatformDownloads.isFixedPage(address)) Browser.browse(address)
     }
 
     private fun showFolder(folder: Path) {
@@ -267,6 +305,14 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             }
         }
 
+        /** Puts the program's own Python Bot API where pip can install it from, under the name pip requires. */
+        private fun writePythonBotApi(target: Path) {
+            val resource = RumbleDownloadDialog::class.java.classLoader.getResourceAsStream(BotApiPlatform.PYTHON.resourceName)
+                ?: throw IOException(BotApiPlatform.PYTHON.resourceName)
+            Files.createDirectories(target.parent)
+            resource.use { Files.copy(it, target, StandardCopyOption.REPLACE_EXISTING) }
+        }
+
         private fun show(choice: EnvironmentChoice.Chosen) {
             val environment = choice.environment
             val background = Executors.newCachedThreadPool { runnable -> Thread(runnable, "rumble-download").apply { isDaemon = true } }
@@ -274,7 +320,12 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             val botFolders = ConfigSettings.botDirectories.filter { it.enabled }.map { Path.of(it.path) }
             val folder = BotDownloads.defaultFolder(botFolders, Path.of(System.getProperty("user.home")))
             RumbleDownloadDialog(environment.displayName) { self ->
-                DownloadController(LibraryDownloadPort(environment, HttpGitHubApi()), folder, background, post) { state -> self.render(state) }
+                val port = LibraryDownloadPort(
+                    environment, HttpGitHubApi(),
+                    pythonBotApi = Path.of(System.getProperty("java.io.tmpdir"), "robocode-rumble-python", BotApiPlatform.PYTHON.newFileName()),
+                    writePythonBotApi = ::writePythonBotApi,
+                )
+                DownloadController(port, folder, background, post) { state -> self.render(state) }
             }.apply {
                 // A download that is running is let finish; nothing new is started after the screen is closed. The pool
                 // is shut down after the events already waiting, which may still hand it work, the same as the other screens.
