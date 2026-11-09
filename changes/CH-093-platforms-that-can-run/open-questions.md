@@ -12,6 +12,8 @@ The bots in the test environment name no version. The bot repository's templates
 
 Recommendation: install the copy the program ships. It matches the server the bots play on, it needs no choice per bot, and the program already carries it. A bot that needs another version can be handled when one appears.
 
+Decided by the maintainer: install the copy the program ships. Checked: the desktop program's jar carries the Python Bot API as a wheel of the program's own version, which needs Python 3.10 or newer.
+
 ## Where does the Python environment live?
 
 Recommendation: in the download folder, as a hidden folder of its own. It is then removed together with the downloaded bots, and it never touches the person's own Python or their own bots. The alternative is a folder in the person's home, shared by every download folder, which saves disk but outlives the bots.
@@ -19,6 +21,8 @@ Recommendation: in the download folder, as a hidden folder of its own. It is the
 ## Which minimum versions are checked?
 
 The maintainer pointed out that Rumble bots need Java 11 or 17, not 25, and that the supported versions must be stated in one central place, not spread out, so an upgrade changes one place. Checked: the Java Bot API is compiled for Java 11, and the launchers run a bot's source with `java` directly, which works from Java 11. But the Rumble already has one list: the Rumble client's runtime file, from which its container image is built and its README block is refreshed. Moderation runs every submitted bot in that image, so the bots in the catalog have run on exactly those versions, today Java 25, .NET 10, Python 3.14 and Node.js 24, and on nothing older. A bot's `programmingLang` field is free text that nothing checks.
+
+Decided by the maintainer: the Rumble follows the newest LTS of each platform, and players must upgrade when the Rumble moves to a new LTS, because otherwise nobody can promise that the bots run on their computer. The copies spread over the other repositories are cleaned up to point to the Rumble client's list.
 
 Recommendation: the screen reads that file and checks at least its major versions, and this program names no version itself. Whether the Rumble should promise a lower floor instead, so that players need not upgrade every time the image does, is a decision for the Rumble's own policy and its moderation, outside this change. The copies of the versions that are spread over the bot repository's checks, its templates and the client's own build checks are cleaned up separately in those repositories.
 
