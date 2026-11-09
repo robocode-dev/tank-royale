@@ -13,5 +13,5 @@ title: Offer the platforms this computer can run and set up Python when asked
 - [x] Start bots in a folder with the environment using it, in the desktop program's starting of bots, and leave every other bot unchanged.
 - [x] Add the ticks, the dialogs and Show anyway to the screen, with every text in the resources.
 - [x] Update the documents: participation design, mockups, use case and plan.
-- [ ] Run the tests, the fixture check, evidence and validation, and build the jar.
-- [ ] Hand the maintainer the manual check: a Python bot started through the set-up environment, a Java bot started, and the dialogs for a missing tool.
+- [x] Run the tests, the fixture check, evidence and validation, and build the jar.
+- [x] Hand the maintainer the manual check: a Python bot started through the set-up environment, a Java bot started, and the dialogs for a missing tool.

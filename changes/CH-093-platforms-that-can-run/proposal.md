@@ -42,3 +42,14 @@ Putting an environment first on the path of some bots changes how the desktop pr
 - Choosing a Python Bot API version per bot.
 - The New Battle group for the download folder, and adding the folder to the bot directories automatically.
 - Translations.
+
+## Human evidence
+
+For the scenario where the maintainer sets up Python for downloaded bots and starts them in a battle.
+
+- **Observer:** the maintainer, with the author of this change.
+- **Conditions:** the desktop program built from this branch, with the jar shrunk, was started with the Rumble menu switched on for the test environment. The download folder was an empty temporary folder that was also added as a bot directory. The computer had Java 25, and at first only Python 3.13 first on the path. The maintainer then put the already installed Python 3.14.2 first on the user path, and the program was started again.
+- **Observation, first part:** with Python 3.13 the screen ticked JVM and showed Python as too old, with its bots hidden. Ticking Python opened the dialog. It said that the computer has Python 3.13 and that the Rumble supports Python 3.14 or newer. Its download button opened python.org, and after Close the Python box was still unticked.
+- **Observation, second part:** with Python 3.14 the screen showed Python as needing setting up. The dialog showed the two commands and offered the setup. The screen showed the setup running. It ended with a green "Success: Python is set up for the bots in this folder", and Python was ticked. The environment held the program's Python Bot API 1.4.0 and its dependencies, about 86 MB, mostly the type checker mypy. Downloading all 18 active bots succeeded, each with its license. The Java bot Corners and the Python bot Orbit then played a battle together.
+- **Also seen:** the default download folder moves when the temporary folder becomes the first bot directory. Long command lines in the dialog break inside words and are shown without quotes. The dialog has a fixed size with empty space, and its text has a darker background with a visible caret.
+- **Not observed:** which Python actually ran Orbit was not looked at while the battle ran. A separate check outside the battle, with the environment first on the path as the program sets it, showed that a launcher calling `python` gets the environment's Python with the Python Bot API 1.4.0. The computer's own Python 3.14 also has an older Python Bot API, 1.1.0, in its user folder. A computer without Java, .NET or Node.js, a Debian system without python3-venv, and a failed setup were only proved by tests.
