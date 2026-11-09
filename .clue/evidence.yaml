@@ -1703,7 +1703,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
-          "sha256": "e9dde31658a7c82dd1dec4adb10949d56dfc37a2691db71a8f66a718a9f5c941"
+          "sha256": "a5303364c6a013c3f700ef1d34e7d4ff50361334ba7e52f95a7d47945d6200f9"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",

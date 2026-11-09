@@ -429,9 +429,15 @@ class RumbleDownloadPlatformTest {
         assertEquals(1, reads.get(), "a fresh look on the same screen asks GitHub for the list only once")
 
         val first = one.pythonSetupCommands(dir).last().last()
-        assertEquals(first, one.pythonSetupCommands(dir.resolve("other")).last().last(), "the same file for the whole screen")
         val second = port().pythonSetupCommands(dir).last().last()
-        assertTrue(first != second && Path.of(first).parent.fileName.toString().startsWith("robocode-rumble-python-"), "a new private folder for each screen")
-        assertTrue(Files.isDirectory(Path.of(first).parent))
+        try {
+            assertEquals(first, one.pythonSetupCommands(dir.resolve("other")).last().last(), "the same file for the whole screen")
+            assertTrue(first != second && Path.of(first).parent.fileName.toString().startsWith("robocode-rumble-python-"), "a new private folder for each screen")
+            assertTrue(Files.isDirectory(Path.of(first).parent))
+        } finally {
+            // The private folders are made in the computer's temp folder, and a test run does not reach the program's own
+            // removal at exit, so the test removes what it made.
+            listOf(first, second).forEach { Files.deleteIfExists(Path.of(it).parent) }
+        }
     }
 }
