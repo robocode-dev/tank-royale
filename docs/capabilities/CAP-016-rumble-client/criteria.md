@@ -645,6 +645,7 @@ Feature: rumble-client — Local ranked and practice battle client
     And the folder without the marker is left exactly as it was, the unchanged earlier download is replaced by the new version, and a download the person changed is replaced only when the person asks for that bot
     And the result shows the license each placed bot's own configuration file declares, as written, and the same button opens the explanations and the links of the licenses the Rumble allows from the result screen too
     And nothing the screen placed is run, built or added to any list of bots to start, and the files of each bot are exactly the files of the catalog's source, including any license file in them
+    And an earlier folder that was moved aside and cannot be put back is never deleted: it is kept whole inside the download folder and the result says where, a work folder that cannot be removed does not hide the bots that were placed, and only one download runs at a time, so a screen opened again while a download is still running never moves the same folders at once
 
   @RCL-078
   Scenario: Every way a download can fail has its own plain answer and a way on
@@ -661,6 +662,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When the screen opens, the person presses Download, goes back or closes the dialog while a call is running
     Then nothing is fetched before Download is pressed, every call to the catalog, the archive and the disk runs away from the screen's event thread and results arrive in order, and the held-back result of a call that was left is thrown away without changing the screen
     And a second press of Download while one runs starts nothing new
+    And whatever a call throws, even an error that is not an exception, ends the waiting as a failure with its message shown as details
 
   @RCL-080
   Scenario: Every state, result, failure and allowed license of the screen has a text in the resources, only the fixed license pages can be opened, and the warning about other people's code is shown before the download

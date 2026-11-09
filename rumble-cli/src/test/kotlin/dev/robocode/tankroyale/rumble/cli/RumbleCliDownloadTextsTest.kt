@@ -120,7 +120,7 @@ class RumbleCliDownloadTextsTest {
         DownloadTexts.ALL_RESULTS.forEach {
             val expected = when (it) {
                 is DownloadResult.Placed -> Tone.GOOD
-                is DownloadResult.HashDiffers, is DownloadResult.NotInArchive, is DownloadResult.NotPlaced -> Tone.BAD
+                is DownloadResult.HashDiffers, is DownloadResult.NotInArchive, is DownloadResult.NotPlaced, is DownloadResult.KeptAside -> Tone.BAD
                 else -> Tone.NEUTRAL
             }
             assertEquals(expected, DownloadTexts.toneOf(it), it.toString())

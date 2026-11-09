@@ -18,11 +18,12 @@ object DownloadTexts {
         is DownloadResult.KeptOwn -> "rumble.download.result.kept_own"
         is DownloadResult.KeptChanged -> "rumble.download.result.kept_changed"
         is DownloadResult.NotPlaced -> "rumble.download.result.not_placed"
+        is DownloadResult.KeptAside -> "rumble.download.result.kept_aside"
     }
 
     fun toneOf(result: DownloadResult): Tone = when (result) {
         is DownloadResult.Placed -> Tone.GOOD
-        is DownloadResult.HashDiffers, is DownloadResult.NotInArchive, is DownloadResult.NotPlaced -> Tone.BAD
+        is DownloadResult.HashDiffers, is DownloadResult.NotInArchive, is DownloadResult.NotPlaced, is DownloadResult.KeptAside -> Tone.BAD
         is DownloadResult.UpToDate, is DownloadResult.KeptOwn, is DownloadResult.KeptChanged -> Tone.NEUTRAL
     }
 
@@ -41,7 +42,7 @@ object DownloadTexts {
         "rumble.download.which", "rumble.download.all", "rumble.download.selected", "rumble.download.platforms", "rumble.download.row",
         "rumble.download.row_license", "rumble.download.row_here", "rumble.download.replace_changed", "rumble.download.none", "rumble.download.downloading",
         "rumble.download.ended", "rumble.download.result_line", "rumble.download.license_of", "rumble.download.no_license",
-        "rumble.download.add_folder_hint", "rumble.download.details", "rumble.download.status_success", "rumble.download.status_failed",
+        "rumble.download.add_folder_hint", "rumble.download.kept_at", "rumble.download.details", "rumble.download.status_success", "rumble.download.status_failed",
         "rumble.download.unknown", "rumble.download.licenses", "rumble.download.licenses_intro", "rumble.download.licenses_label",
         "rumble.download.for_author", "rumble.download.for_user", "rumble.download.may", "rumble.download.must", "rumble.download.note",
         "rumble.download.author_later", "rumble.download.credit",
@@ -56,6 +57,6 @@ object DownloadTexts {
     val ALL_RESULTS: List<DownloadResult> = listOf(
         DownloadResult.Placed(bot, updated = false, license = null), DownloadResult.Placed(bot, updated = true, license = null),
         DownloadResult.UpToDate(bot), DownloadResult.HashDiffers(bot), DownloadResult.NotInArchive(bot),
-        DownloadResult.KeptOwn(bot), DownloadResult.KeptChanged(bot), DownloadResult.NotPlaced(bot, ""),
+        DownloadResult.KeptOwn(bot), DownloadResult.KeptChanged(bot), DownloadResult.NotPlaced(bot, ""), DownloadResult.KeptAside(bot, java.nio.file.Path.of("kept")),
     )
 }

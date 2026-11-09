@@ -156,6 +156,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         return when (result) {
             is DownloadResult.Placed -> line + " " + (result.license?.let { text("rumble.download.license_of", it) } ?: text("rumble.download.no_license"))
             is DownloadResult.NotPlaced -> if (result.message.isBlank()) line else line + " " + text("rumble.download.details", result.message)
+            is DownloadResult.KeptAside -> line + " " + text("rumble.download.kept_at", result.keptAt.toString())
             else -> line
         }
     }
@@ -274,6 +275,11 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             val folder = BotDownloads.defaultFolder(botFolders, Path.of(System.getProperty("user.home")))
             RumbleDownloadDialog(environment.displayName) { self ->
                 DownloadController(LibraryDownloadPort(environment, HttpGitHubApi()), folder, background, post) { state -> self.render(state) }
+            }.apply {
+                // A download that is running is let finish; nothing new is started after the screen is closed.
+                addWindowListener(object : WindowAdapter() {
+                    override fun windowClosed(e: WindowEvent) = background.shutdown()
+                })
             }.isVisible = true
         }
     }

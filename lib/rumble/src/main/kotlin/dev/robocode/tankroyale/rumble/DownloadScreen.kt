@@ -190,17 +190,23 @@ class DownloadController(
         (state as? DownloadState.Choosing)?.let { show(change(it)) }
     }
 
-    /** Runs [call] on [background] and its result on [post], unless the person has left since. A call that throws is a plain failure. */
+    /**
+     * Runs [call] on [background] and its result on [post], unless the person has left since. Whatever a call throws,
+     * even an error such as running out of memory, ends as a plain failure with its message as details, so the screen
+     * never stays waiting.
+     */
     private fun <T : Any> work(mine: Int, folder: Path, call: () -> T, then: (T) -> Unit) {
         background.execute {
+            var failure: Throwable? = null
             val result = try {
                 call()
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
+                failure = e
                 null
             }
             post.execute {
                 if (mine != epoch) return@execute
-                if (result != null) then(result) else show(DownloadState.Failed(folder, DownloadFailure.OTHER))
+                if (result != null) then(result) else show(DownloadState.Failed(folder, DownloadFailure.OTHER, failure?.message.orEmpty()))
             }
         }
     }

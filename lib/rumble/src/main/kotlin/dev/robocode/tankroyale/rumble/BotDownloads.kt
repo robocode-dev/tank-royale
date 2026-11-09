@@ -46,6 +46,9 @@ sealed interface DownloadResult {
 
     /** The bot was fetched and checked, but could not be put in the folder. What was there before is still there. */
     data class NotPlaced(override val bot: CatalogBot, val message: String) : DownloadResult
+
+    /** The bot could not be put in the folder, and the earlier folder could not be put back either. It is kept, whole, at [keptAt]. */
+    data class KeptAside(override val bot: CatalogBot, val keptAt: Path) : DownloadResult
 }
 
 /**
@@ -92,7 +95,18 @@ object BotDownloads {
      * the catalog. One failing bot never stops the others. An unchanged earlier download is replaced by a newer version,
      * a changed one only when its name is in [replaceChanged], and a folder without the marker never.
      */
-    fun download(source: CatalogSource, catalog: Catalog, bots: List<CatalogBot>, replaceChanged: Set<String>, target: Path): List<DownloadResult> {
+    fun download(source: CatalogSource, catalog: Catalog, bots: List<CatalogBot>, replaceChanged: Set<String>, target: Path): List<DownloadResult> =
+        download(source, catalog, bots, replaceChanged, target, { from, to -> Files.move(from, to) }, ::deleteRecursively)
+
+    /**
+     * The same, with the moving and the cleaning up given, so a test can make them fail. Only one download runs at a
+     * time in this program, so a screen that was closed during a download and opened again never moves the same folders
+     * at once with the download that is still running.
+     */
+    internal fun download(
+        source: CatalogSource, catalog: Catalog, bots: List<CatalogBot>, replaceChanged: Set<String>, target: Path,
+        move: (Path, Path) -> Unit, cleanUp: (Path) -> Unit,
+    ): List<DownloadResult> = synchronized(this) {
         Files.createDirectories(target)
         val results = HashMap<String, DownloadResult>()
         val wanted = bots.filter { bot ->
@@ -104,13 +118,23 @@ object BotDownloads {
             val work = Files.createTempDirectory(target, ".rumble-download-")
             try {
                 BotFetcher.fetch(source, catalog.commit, wanted, work.resolve("new")).forEach { fetched ->
-                    results[fetched.bot.path] = place(fetched, catalog, replaceChanged, target, work)
+                    results[fetched.bot.path] = place(fetched, catalog, replaceChanged, target, work, move)
                 }
             } finally {
-                deleteRecursively(work)
+                // A folder that could not be put back is kept in the work folder, so the work folder is kept too.
+                // Cleaning up is only tidying: when it fails, the bots that were placed are still reported as placed.
+                if (results.values.none { it is DownloadResult.KeptAside }) {
+                    try {
+                        cleanUp(work)
+                    } catch (e: IOException) {
+                        // Left for the person or a later download to see; it holds no marker, so it is never listed.
+                    } catch (e: java.io.UncheckedIOException) {
+                        // The same, from a stream over the folder.
+                    }
+                }
             }
         }
-        return bots.map { results.getValue(it.path) }
+        bots.map { results.getValue(it.path) }
     }
 
     /** The answer for a bot that is not to be fetched or replaced, or null when it is. */
@@ -122,7 +146,7 @@ object BotDownloads {
             DownloadedState.NEW, DownloadedState.UPDATE, DownloadedState.NO_LONGER_ACTIVE -> null
         }
 
-    private fun place(fetched: FetchResult, catalog: Catalog, replaceChanged: Set<String>, target: Path, work: Path): DownloadResult {
+    private fun place(fetched: FetchResult, catalog: Catalog, replaceChanged: Set<String>, target: Path, work: Path, move: (Path, Path) -> Unit): DownloadResult {
         val bot = fetched.bot
         return when (fetched) {
             is FetchResult.HashMismatch -> DownloadResult.HashDiffers(bot)
@@ -134,8 +158,10 @@ object BotDownloads {
                 try {
                     Files.createFile(fetched.directory.resolve(MARKER))
                     makeLaunchersRunnable(fetched.directory)
-                    val updated = moveIntoPlace(fetched.directory, target.resolve(folderName(bot)), work)
+                    val updated = moveIntoPlace(fetched.directory, target.resolve(folderName(bot)), work, move)
                     DownloadResult.Placed(bot, updated, project(target.resolve(folderName(bot)))?.license)
+                } catch (e: NotPutBack) {
+                    DownloadResult.KeptAside(bot, e.keptAt)
                 } catch (e: IOException) {
                     DownloadResult.NotPlaced(bot, e.message.orEmpty())
                 }
@@ -143,18 +169,25 @@ object BotDownloads {
         }
     }
 
+    /** The earlier folder was moved away and could not be put back. It is whole at [keptAt]. */
+    private class NotPutBack(val keptAt: Path, cause: IOException) : IOException(cause)
+
     /** Moves the new folder in. An old folder is moved away first and is put back when the new one cannot be moved in. */
-    private fun moveIntoPlace(new: Path, destination: Path, work: Path): Boolean {
+    private fun moveIntoPlace(new: Path, destination: Path, work: Path, move: (Path, Path) -> Unit): Boolean {
         if (!exists(destination)) {
-            Files.move(new, destination)
+            move(new, destination)
             return false
         }
         val old = Files.createDirectories(work.resolve("old")).resolve(destination.fileName)
-        Files.move(destination, old)
+        move(destination, old)
         try {
-            Files.move(new, destination)
+            move(new, destination)
         } catch (e: IOException) {
-            Files.move(old, destination)
+            try {
+                move(old, destination)
+            } catch (back: IOException) {
+                throw NotPutBack(old, back)
+            }
             throw e
         }
         return true
@@ -182,10 +215,16 @@ object BotDownloads {
         }
     }
 
-    /** True when the folder holds what the catalog records, not counting the marker or what running the bot leaves behind. */
+    /**
+     * True when the folder holds what the catalog records, not counting the marker or what running the bot leaves behind.
+     * Those files are never read: the bot repository refuses them in a bot's source, so they cannot be part of the
+     * checksum, and a folder full of build output costs no memory.
+     */
     private fun unchanged(folder: Path, known: CatalogBot): Boolean {
-        val found = files(folder).associate { folder.relativize(it).joinToString("/") to Files.readAllBytes(it) } - MARKER
-        return TreeHash.of(found) == known.sourceHash || TreeHash.of(found.filterKeys { !leftByRunning(it) }) == known.sourceHash
+        val found = files(folder).map { folder.relativize(it).joinToString("/") to it }
+            .filter { (path, _) -> path != MARKER && !leftByRunning(path) }
+            .associate { (path, file) -> path to Files.readAllBytes(file) }
+        return TreeHash.of(found) == known.sourceHash
     }
 
     /** The folders and file endings the bot repository never accepts, so they cannot be part of a bot's source. */

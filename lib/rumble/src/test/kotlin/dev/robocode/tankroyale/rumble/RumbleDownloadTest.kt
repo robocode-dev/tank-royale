@@ -317,6 +317,79 @@ class RumbleDownloadTest {
     @Tag("RCL-077")
     @Tag("Unit")
     @Tag("Negative")
+    fun testRCL077_UnitNegative_anEarlierFolderThatCannotBePutBackIsKeptWholeAndToldWhere(@TempDir dir: Path) {
+        val newer = files("Edited", "2.0.0")
+        val catalog = catalog(bot("Edited", "2.0.0", content = newer), bot("Edited", "1.0.0", status = "superseded"))
+        val changed = files("Edited", "1.0.0") + ("src/Edited.java" to "class Mine {}\n".toByteArray())
+        write(dir.resolve("Edited"), changed)
+        val mine = tree(dir.resolve("Edited"))
+        var moves = 0
+        val firstMoveOnly: (Path, Path) -> Unit = { from, to ->
+            if (++moves > 1) throw IOException("A file is in use.")
+            Files.move(from, to)
+        }
+
+        val result = BotDownloads.download(Source(trees = mapOf("Edited" to newer)), catalog, catalog.activeBots, setOf("Edited"), dir, firstMoveOnly) {
+            throw AssertionError("the work folder that holds the earlier folder is never removed")
+        }.single()
+
+        val kept = (result as DownloadResult.KeptAside).keptAt
+        assertEquals(mine, tree(kept), "the person's changed bot is whole where the screen says")
+        assertTrue(kept.startsWith(dir), "and it is inside the download folder")
+        assertTrue(!Files.exists(dir.resolve("Edited")))
+        assertEquals(Tone.BAD, DownloadTexts.toneOf(result))
+    }
+
+    @Test
+    @Tag("RCL-077")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL077_UnitNegative_aWorkFolderThatCannotBeRemovedDoesNotHideTheBotsThatWerePlaced(@TempDir dir: Path) {
+        val catalog = catalog(bot("Walls"))
+        val source = Source(trees = mapOf("Walls" to files("Walls")))
+
+        val results = BotDownloads.download(source, catalog, catalog.bots, emptySet(), dir, { from, to -> Files.move(from, to) }) {
+            throw IOException("Another program holds a file.")
+        }
+
+        assertInstanceOf(DownloadResult.Placed::class.java, results.single())
+        assertEquals(DownloadedState.UP_TO_DATE, BotDownloads.rows(catalog, dir).single().state, "and the work folder is not taken for a bot")
+    }
+
+    @Test
+    @Tag("RCL-077")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL077_UnitNegative_aSecondDownloadWaitsForTheOneThatIsRunning(@TempDir dir: Path) {
+        val catalog = catalog(bot("Walls"))
+        val source = Source(trees = mapOf("Walls" to files("Walls")))
+        val inside = java.util.concurrent.CountDownLatch(1)
+        val letGo = java.util.concurrent.CountDownLatch(1)
+        val held: (Path, Path) -> Unit = { from, to ->
+            inside.countDown()
+            letGo.await()
+            Files.move(from, to)
+        }
+        val first = Thread { BotDownloads.download(source, catalog, catalog.bots, emptySet(), dir, held) {} }
+        var second: List<DownloadResult>? = null
+        val later = Thread { second = BotDownloads.download(source, catalog, catalog.bots, emptySet(), dir) }
+
+        first.start()
+        inside.await()
+        later.start()
+        later.join(300)
+        assertTrue(later.isAlive, "the second waits while the first is moving folders")
+        letGo.countDown()
+        first.join()
+        later.join()
+
+        assertInstanceOf(DownloadResult.UpToDate::class.java, second!!.single(), "and then sees what the first placed")
+    }
+
+    @Test
+    @Tag("RCL-077")
+    @Tag("Unit")
+    @Tag("Negative")
     fun testRCL077_UnitNegative_aFolderWithoutTheMarkerIsNeverTouchedEvenWhenTheNamesMatchOrItIsAskedFor(@TempDir dir: Path) {
         val mine = write(dir.resolve("Walls"), mapOf("Walls.json" to "my own bot".toByteArray()), marked = false)
         val before = tree(mine)
@@ -552,9 +625,27 @@ class RumbleDownloadTest {
 
         controller.start()
         assertEquals(DownloadFailure.OTHER, (controller.state as DownloadState.Failed).failure)
+        assertEquals("kaboom", (controller.state as DownloadState.Failed).details, "the message is kept as details")
 
         port.fail = false
         controller.start()
         assertInstanceOf(DownloadState.Choosing::class.java, controller.state, "trying again works")
+    }
+
+    @Test
+    @Tag("RCL-079")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL079_UnitNegative_anErrorThatIsNotAnExceptionStillEndsTheWaiting(@TempDir dir: Path) {
+        val port = object : DownloadPort {
+            override fun read(folder: Path): DownloadRead = throw OutOfMemoryError("too much")
+            override fun download(catalog: Catalog, bots: List<CatalogBot>, replaceChanged: Set<String>, folder: Path): DownloadEnded = error("not used")
+        }
+        val controller = DownloadController(port, dir, direct, direct) {}
+
+        controller.start()
+
+        val failed = controller.state as DownloadState.Failed
+        assertEquals(DownloadFailure.OTHER to "too much", failed.failure to failed.details)
     }
 }

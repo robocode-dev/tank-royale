@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "ca02e1718f911937b388410a2b907ebbf14db66f4a10dd14f667d013147d770f"
+          "sha256": "6fb3a9c9acf5874709adfe3480c1e94923f6890b536df505eec813241e449320"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1684,7 +1684,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
-          "sha256": "57fc13537079bb6f2deec079a38356e0b3eed7435c724f963bcb80a0b889fd60"
+          "sha256": "672882d212f0d59ca59e9a8fc143a07473f731f752f3fd4673ae7a82c2ba5da3"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
@@ -2124,6 +2124,27 @@
         {
           "id": "RCL-077",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitNegative_aSecondDownloadWaitsForTheOneThatIsRunning",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitNegative_aWorkFolderThatCannotBeRemovedDoesNotHideTheBotsThatWerePlaced",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL077_UnitNegative_anEarlierFolderThatCannotBePutBackIsKeptWholeAndToldWhere",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-077",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
           "subject": "RumbleDownloadTest.testRCL077_UnitNegative_theScreenOnlyPlacesFilesAndStartsNothing",
           "type": "Unit",
           "direction": "negative"
@@ -2195,6 +2216,13 @@
           "id": "RCL-079",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
           "subject": "RumbleDownloadTest.testRCL079_UnitNegative_aResultAfterClosingIsThrownAwayAndASecondPressStartsNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-079",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL079_UnitNegative_anErrorThatIsNotAnExceptionStillEndsTheWaiting",
           "type": "Unit",
           "direction": "negative"
         },
