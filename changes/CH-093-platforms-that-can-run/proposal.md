@@ -2,7 +2,7 @@
 id: CH-093
 type: change
 status: open
-links: [P-007, CAP-016, UC-005, G-004, CH-092]
+links: [P-007, CAP-016, UC-005, G-004]
 title: The Download bots screen offers the platforms this computer can run and sets up Python when asked
 ---
 
