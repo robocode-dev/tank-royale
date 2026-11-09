@@ -18,13 +18,16 @@ import javax.swing.Scrollable
 import javax.swing.UIManager
 import javax.swing.text.DefaultCaret
 
-/** A panel that is as wide as the window, so wrapped texts wrap at the window's edge and never run out over it. */
+/**
+ * A panel that is as wide as the window, so wrapped texts wrap at the window's edge and never run out over it. When its
+ * content is shorter than the window it still fills it, so no strip of another background shows below the text.
+ */
 internal class WindowWidthPanel : JPanel(MigLayout("insets 12, wrap 1, fillx", "[grow, fill]")), Scrollable {
     override fun getPreferredScrollableViewportSize(): Dimension = preferredSize
     override fun getScrollableUnitIncrement(visibleRect: Rectangle, orientation: Int, direction: Int) = 16
     override fun getScrollableBlockIncrement(visibleRect: Rectangle, orientation: Int, direction: Int) = 64
     override fun getScrollableTracksViewportWidth() = true
-    override fun getScrollableTracksViewportHeight() = false
+    override fun getScrollableTracksViewportHeight() = (parent as? javax.swing.JViewport)?.let { it.height > preferredSize.height } ?: false
 }
 
 /**
