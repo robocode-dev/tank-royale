@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "e7f1c921117fda936fffef6d46d9ae3dc71254de167450bbe019a6a9bf8d396c"
+          "sha256": "fe964bc1a612f1c7ac0d8b0c4d571f01dbb5b6b4b4a202756fe9eeda2fd4af80"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1663,7 +1663,7 @@
         },
         {
           "path": "booter/src/test/kotlin/dev/robocode/tankroyale/booter/process/RumbleDownloadBotStartTest.kt",
-          "sha256": "38571455e51bffc6412b45fbea2912ad8b6c6bf0dcdd0da176f543cf5e79912e"
+          "sha256": "371a519575d5fc4180f9e81a16a514453a4d85008b78425c4c67aeb95ac18ac1"
         },
         {
           "path": "lib/rumble/build.gradle.kts",
@@ -1703,7 +1703,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
-          "sha256": "bfb9c0f22e08707b940616ea8cd61318ef981b8eb236bf71e8ecc54f9421ca24"
+          "sha256": "e9dde31658a7c82dd1dec4adb10949d56dfc37a2691db71a8f66a718a9f5c941"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
@@ -2154,7 +2154,28 @@
         {
           "id": "RCL-085",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitNegative_aSetupResultIsNeverShownOnALaterListAfterAFailedRead",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitNegative_anOldEnvironmentThatCannotBeRemovedIsToldAndNothingIsRun",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
           "subject": "RumbleDownloadPlatformTest.testRCL085_UnitNegative_setupIsOfferedOnlyFromTheListAndOnceAtATime",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitNegative_theBotApiFileLivesInAPrivateFolderOfItsOwnAndTheListIsReadOnce",
           "type": "Unit",
           "direction": "negative"
         },
@@ -2169,6 +2190,13 @@
           "id": "RCL-085",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
           "subject": "RumbleDownloadPlatformTest.testRCL085_UnitPositive_theListIsReadAgainAfterTheSetupAndShowsItsResultOnce",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-085",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
+          "subject": "RumbleDownloadPlatformTest.testRCL085_UnitPositive_thePersonsChoicesOnTheListAreKeptAcrossTheSetup",
           "type": "Unit",
           "direction": "positive"
         },

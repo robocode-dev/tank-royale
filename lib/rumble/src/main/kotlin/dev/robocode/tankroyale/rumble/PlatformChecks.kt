@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.rumble
 
 import dev.robocode.tankroyale.common.RUMBLE_PYTHON_ENVIRONMENT
+import dev.robocode.tankroyale.common.RumblePythonEnvironment
 import dev.robocode.tankroyale.common.util.Platform
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -14,6 +15,7 @@ import java.util.Base64
 import java.util.Comparator
 import java.util.Properties
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
 /** A platform of the catalog, named as the bot repository's rules name it. */
 enum class BotPlatform(val catalogName: String) {
@@ -68,7 +70,11 @@ data class SupportedVersions(val java: Int, val dotnet: Int, val python: List<In
     companion object {
         /** Reads the runtime file, or refuses one without the four versions. */
         fun parse(text: String): SupportedVersions {
-            val properties = Properties().apply { load(text.reader()) }
+            val properties = try {
+                Properties().apply { load(text.reader()) }
+            } catch (e: IllegalArgumentException) {
+                throw IOException("The Rumble's runtime list could not be read.", e)
+            }
             fun major(name: String) = properties.getProperty(name)?.trim()?.toIntOrNull()
                 ?: throw IOException("The Rumble's runtime list has no version for $name.")
             val python = properties.getProperty("python")?.trim()?.split('.')?.map { it.toIntOrNull() }
@@ -93,7 +99,11 @@ class GitHubRuntimeListSource(private val api: GitHubApi) : RuntimeListSource {
         val file = api.get("$repository/contents/$RUNTIME_FILE?ref=$tag", null)
         if (file.status != 200) throw IOException("GitHub gave an unexpected answer (HTTP ${file.status}) about the Rumble's runtime list.")
         val content = field(file.body, "content") ?: throw IOException("GitHub's answer about the Rumble's runtime list could not be understood.")
-        return String(Base64.getMimeDecoder().decode(content), Charsets.UTF_8)
+        return try {
+            String(Base64.getMimeDecoder().decode(content), Charsets.UTF_8)
+        } catch (e: IllegalArgumentException) {
+            throw IOException("GitHub's answer about the Rumble's runtime list could not be understood.", e)
+        }
     }
 
     private fun field(json: String, name: String): String? =
@@ -126,10 +136,11 @@ class ProcessToolRunner : ToolRunner {
             return null
         }
         process.outputStream.close()
-        val output = StringBuilder()
+        // The reader hands its whole text over in one step, so nothing is read while it is still being written.
+        val output = AtomicReference("")
         val reader = Thread {
             try {
-                process.inputStream.bufferedReader().use { output.append(it.readText()) }
+                output.set(process.inputStream.bufferedReader().use { it.readText() })
             } catch (e: IOException) {
                 // The process was stopped while it was being read.
             }
@@ -140,18 +151,17 @@ class ProcessToolRunner : ToolRunner {
             return null
         }
         reader.join(TimeUnit.SECONDS.toMillis(5))
-        return ToolOutput(process.exitValue(), synchronized(output) { output.toString() })
+        return ToolOutput(process.exitValue(), output.get())
     }
 }
 
-/** The private Python environment of a download folder, as the booter starts the bots in it. */
+/** The private Python environment of a download folder, laid out as the booter starts the bots in it. */
 object PythonEnvironment {
     const val FOLDER = RUMBLE_PYTHON_ENVIRONMENT
 
-    fun home(downloadFolder: Path): Path = downloadFolder.resolve(FOLDER)
+    fun home(downloadFolder: Path): Path = RumblePythonEnvironment.home(downloadFolder)
 
-    fun python(downloadFolder: Path, windows: Boolean): Path =
-        home(downloadFolder).resolve(if (windows) "Scripts" else "bin").resolve(if (windows) "python.exe" else "python")
+    fun python(downloadFolder: Path, windows: Boolean): Path = RumblePythonEnvironment.python(downloadFolder, windows)
 
     /** The Python the launchers call when no environment is given. */
     fun systemPython(windows: Boolean): String = if (windows) "python" else "python3"
@@ -200,7 +210,8 @@ class PlatformChecker(private val runner: ToolRunner, private val windows: Boole
 
     private fun python(needed: String?, downloadFolder: Path): PlatformCheck {
         val own = PythonEnvironment.python(downloadFolder, windows)
-        if (Files.exists(own, LinkOption.NOFOLLOW_LINKS) || Files.exists(own)) {
+        // Only an environment whose setup finished counts; one stopped half-way is set up again.
+        if (RumblePythonEnvironment.isReady(downloadFolder, windows)) {
             val answer = ask(listOf(own.toString(), "-c", "import robocode_tank_royale, sys; print('Python %d.%d.%d' % sys.version_info[:3])"))
             val found = answer?.let { PYTHON.find(it.text) }?.let { versionOf(it) }
             if (found != null && (needed == null || atLeast(found, needed))) return PlatformCheck(BotPlatform.PYTHON, PlatformReason.READY, needed, found.joinToString("."))
@@ -243,11 +254,12 @@ class PlatformChecker(private val runner: ToolRunner, private val windows: Boole
 sealed interface PythonSetupResult {
     data object Done : PythonSetupResult
 
-    data class Failed(val step: PythonSetupStep, val details: String) : PythonSetupResult
+    /** [leftBehind] is true when part of an environment could not be removed and is still in the folder. */
+    data class Failed(val step: PythonSetupStep, val details: String, val leftBehind: Boolean = false) : PythonSetupResult
 }
 
 /** The steps of setting up Python, in order. */
-enum class PythonSetupStep { MAKE_ENVIRONMENT, INSTALL_BOT_API }
+enum class PythonSetupStep { REMOVE_OLD_ENVIRONMENT, MAKE_ENVIRONMENT, INSTALL_BOT_API }
 
 /**
  * Sets up the private Python environment of a download folder: makes it with the Python the launchers call, then
@@ -255,7 +267,12 @@ enum class PythonSetupStep { MAKE_ENVIRONMENT, INSTALL_BOT_API }
  * environment's folder is created or changed, and no other Python is installed into. A failed setup leaves no
  * half-made environment behind.
  */
-class PythonSetup(private val runner: ToolRunner, private val windows: Boolean = Platform.isWindows) {
+class PythonSetup(
+    private val runner: ToolRunner,
+    private val windows: Boolean = Platform.isWindows,
+    /** Removes a folder and everything in it; a test can make it fail. */
+    private val remove: (Path) -> Unit = ::removeTree,
+) {
 
     /** The commands, in order, so they can be shown before they run. */
     fun commands(downloadFolder: Path, botApi: Path): List<List<String>> = listOf(
@@ -265,30 +282,50 @@ class PythonSetup(private val runner: ToolRunner, private val windows: Boolean =
 
     fun run(downloadFolder: Path, botApi: Path): PythonSetupResult {
         val home = PythonEnvironment.home(downloadFolder)
-        // An environment that no longer starts is replaced as a whole.
-        remove(home)
+        // An environment that no longer starts is replaced as a whole. When it cannot be removed, for example because a
+        // bot that uses it is still running, nothing is made, and the person is told that part of it is still there.
+        removed(home)?.let { return PythonSetupResult.Failed(PythonSetupStep.REMOVE_OLD_ENVIRONMENT, it, leftBehind = exists(home)) }
         Files.createDirectories(downloadFolder)
         val (make, install) = commands(downloadFolder, botApi)
         listOf(PythonSetupStep.MAKE_ENVIRONMENT to (make to MAKE_TIMEOUT), PythonSetupStep.INSTALL_BOT_API to (install to INSTALL_TIMEOUT))
             .forEach { (step, run) ->
                 val output = runner.run(run.first, run.second)
                 if (output == null || output.exitCode != 0) {
-                    remove(home)
-                    return PythonSetupResult.Failed(step, output?.text?.trim()?.lines()?.takeLast(DETAIL_LINES)?.joinToString("\n").orEmpty())
+                    val details = output?.text?.trim()?.lines()?.takeLast(DETAIL_LINES)?.joinToString("\n").orEmpty()
+                    // The step's own output is kept; a failed clean-up only adds that something is left behind.
+                    return PythonSetupResult.Failed(step, details, leftBehind = removed(home) != null)
                 }
             }
+        try {
+            // The very last step: only now does the environment count, for the checks and for starting bots.
+            Files.createFile(home.resolve(RumblePythonEnvironment.READY))
+        } catch (e: IOException) {
+            return PythonSetupResult.Failed(PythonSetupStep.INSTALL_BOT_API, e.message.orEmpty(), leftBehind = removed(home) != null)
+        }
         return PythonSetupResult.Done
     }
 
-    private fun remove(home: Path) {
-        if (!Files.exists(home, LinkOption.NOFOLLOW_LINKS)) return
-        Files.walk(home).use { paths -> paths.sorted(Comparator.reverseOrder()).forEach { Files.deleteIfExists(it) } }
-    }
+    /** Removes [home], and gives null when that worked or why it did not. */
+    private fun removed(home: Path): String? =
+        try {
+            if (exists(home)) remove(home)
+            null
+        } catch (e: IOException) {
+            e.message ?: e.javaClass.simpleName
+        } catch (e: java.io.UncheckedIOException) {
+            e.cause?.message ?: e.message ?: e.javaClass.simpleName
+        }
+
+    private fun exists(path: Path) = Files.exists(path, LinkOption.NOFOLLOW_LINKS)
 
     companion object {
         private val MAKE_TIMEOUT: Duration = Duration.ofMinutes(2)
         private val INSTALL_TIMEOUT: Duration = Duration.ofMinutes(10)
         private const val DETAIL_LINES = 5
+
+        private fun removeTree(home: Path) {
+            Files.walk(home).use { paths -> paths.sorted(Comparator.reverseOrder()).forEach { Files.deleteIfExists(it) } }
+        }
     }
 }
 

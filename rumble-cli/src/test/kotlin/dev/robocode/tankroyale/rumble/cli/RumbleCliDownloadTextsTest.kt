@@ -166,13 +166,16 @@ class RumbleCliDownloadTextsTest {
     @Tag("Positive")
     fun testRCL087_UnitPositive_everyReasonOfferAndResultOfThePlatformChecksHasATextInEveryLanguageFile() {
         val expected = dev.robocode.tankroyale.rumble.PlatformReason.entries.size - 1
-        assertEquals(expected * 2 + dev.robocode.tankroyale.rumble.BotPlatform.entries.size + dev.robocode.tankroyale.rumble.PythonSetupStep.entries.size + 9,
+        assertEquals(expected * 2 + dev.robocode.tankroyale.rumble.BotPlatform.entries.size + dev.robocode.tankroyale.rumble.PythonSetupStep.entries.size + 13,
             DownloadTexts.ALL_PLATFORM_KEYS.toSet().size, "every reason but ready has a short text and an explanation")
         languages.forEach { suffix ->
             val messages = properties("Messages$suffix.properties")
             assertEquals(emptyList<String>(), DownloadTexts.ALL_PLATFORM_KEYS.filter { messages.getProperty(it).isNullOrBlank() }, "language file $suffix")
         }
         assertTrue(properties("Messages.properties").getProperty("rumble.download.platform.venv_package").contains("python3-venv"))
+        listOf("missing", "npm_missing").forEach {
+            assertTrue(properties("Messages.properties").getProperty("rumble.download.platform.explain.$it").contains("%4\$s"), "a missing tool is named with the version needed: $it")
+        }
     }
 
     @Test

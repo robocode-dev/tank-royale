@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.rumble
 
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.Executor
 
@@ -98,10 +99,24 @@ class LibraryDownloadPort(
     private val source: CatalogSource = GitHubCatalogSource(environment),
     private val runtimeList: RuntimeListSource = GitHubRuntimeListSource(api),
     private val runner: ToolRunner = ProcessToolRunner(),
-    /** Where the program's own Python Bot API is put for installing, and how it is put there. */
-    private val pythonBotApi: Path? = null,
+    /** The file name pip needs for the program's own Python Bot API, and how that file is written to a given place. */
+    private val pythonBotApiName: String? = null,
     private val writePythonBotApi: (Path) -> Unit = {},
 ) : DownloadPort {
+
+    /**
+     * The program's own Python Bot API is written to a folder of its own that only this person can use, made once for
+     * this screen, so nobody else on the computer can put a file there for pip to install.
+     */
+    private val pythonBotApi: Path? by lazy {
+        pythonBotApiName?.let { name ->
+            Files.createTempDirectory("robocode-rumble-python-").also { it.toFile().deleteOnExit() }.resolve(name)
+        }
+    }
+
+    /** The Rumble's list of supported versions, read once for this screen, so a fresh look costs no extra request to GitHub. */
+    @Volatile
+    private var versions: SupportedVersions? = null
 
     override fun read(folder: Path): DownloadRead {
         val catalog = try {
@@ -118,8 +133,8 @@ class LibraryDownloadPort(
         } catch (e: java.io.UncheckedIOException) {
             return DownloadRead.Failed(DownloadFailure.FOLDER_NOT_WRITABLE, e.message.orEmpty())
         }
-        val versions = try {
-            SupportedVersions.parse(runtimeList.text())
+        val versions = versions ?: try {
+            SupportedVersions.parse(runtimeList.text()).also { versions = it }
         } catch (e: IOException) {
             null
         }
@@ -153,6 +168,7 @@ class LibraryDownloadPort(
         val botApi = pythonBotApi ?: return PythonSetupResult.Failed(PythonSetupStep.INSTALL_BOT_API, "")
         try {
             writePythonBotApi(botApi)
+            botApi.toFile().deleteOnExit()
         } catch (e: IOException) {
             return PythonSetupResult.Failed(PythonSetupStep.INSTALL_BOT_API, e.message.orEmpty())
         }
@@ -180,7 +196,6 @@ class DownloadController(
     // Everything below is touched only on [post].
     private var epoch = 0
     private var catalog: Catalog? = null
-    private var setupEnded: PythonSetupResult? = null
 
     @Volatile
     var state: DownloadState = DownloadState.Reading(firstFolder)
@@ -205,8 +220,8 @@ class DownloadController(
         val mine = ++epoch
         show(DownloadState.SettingUpPython(choosing.folder))
         work(mine, choosing.folder, { port.setUpPython(choosing.folder) }) { ended ->
-            setupEnded = ended
-            read(choosing.folder)
+            // The list is read again with the person's choices kept, and the result shown on that list only.
+            read(choosing.folder, ended, choosing)
         }
     }
 
@@ -251,7 +266,8 @@ class DownloadController(
     /** The person closes the screen: results still on their way are thrown away. */
     fun close() = post.execute { epoch++ }
 
-    private fun read(folder: Path) {
+    /** [setup] is the result to show on the list read now, and [kept] the choices to keep from the list before. */
+    private fun read(folder: Path, setup: PythonSetupResult? = null, kept: DownloadState.Choosing? = null) {
         val mine = ++epoch
         show(DownloadState.Reading(folder))
         work(mine, folder, { port.read(folder) }) { read ->
@@ -259,12 +275,19 @@ class DownloadController(
                 when (read) {
                     is DownloadRead.Listed -> {
                         catalog = read.catalog
-                        val setup = setupEnded.also { setupEnded = null }
                         // Only the platforms this computer can run are ticked; the person may tick the others.
-                        val runnable = read.rows.mapNotNull { it.platform }.filter { platform ->
-                            BotPlatform.of(platform)?.let { read.checks[it]?.ready } ?: true
-                        }.toSet()
-                        DownloadState.Choosing(folder, read.rows, runnable, checks = read.checks, versionsKnown = read.versionsKnown, setup = setup)
+                        val platforms = read.rows.mapNotNull { it.platform }.toSet()
+                        val runnable = platforms.filter { platform -> BotPlatform.of(platform)?.let { read.checks[it]?.ready } ?: true }.toSet()
+                        val fresh = DownloadState.Choosing(folder, read.rows, runnable, checks = read.checks, versionsKnown = read.versionsKnown, setup = setup)
+                        val names = read.rows.map { it.name }.toSet()
+                        // The person's own ticks stay; only a platform that could not run before and can now is ticked anew.
+                        val before = platforms.filter { platform -> kept?.checkOf(platform)?.ready ?: true }.toSet()
+                        if (kept == null || kept.folder != folder) fresh else fresh.copy(
+                            platforms = (kept.platforms intersect platforms) + (runnable - before),
+                            all = kept.all,
+                            chosen = kept.chosen intersect names,
+                            replaceChanged = kept.replaceChanged intersect names,
+                        )
                     }
                     is DownloadRead.Failed -> DownloadState.Failed(folder, read.failure, read.details)
                 },

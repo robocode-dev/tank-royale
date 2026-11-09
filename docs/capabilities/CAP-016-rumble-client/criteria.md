@@ -694,9 +694,9 @@ Feature: rumble-client — Local ranked and practice battle client
     Given fake answers from the Rumble client's latest release for its runtime list, and fake answers from java, dotnet, node with npm, and python for their versions, including a missing tool, an older version, output that cannot be read and a tool that does not answer in time
     When the screen opens on a download folder
     Then each platform passes only when its tool reports at least the major version the list names, and a missing, older, unreadable or silent tool fails only its own platform with its own reason
-    And Python passes only when the download folder's own Python environment starts and holds the Python Bot API, and an environment that no longer starts, because Python was upgraded or the folder was moved, counts as missing
+    And Python passes only when the download folder's own Python environment finished its setup, starts and holds the Python Bot API, and an environment that no longer starts, because Python was upgraded or the folder was moved, or whose setup was stopped half-way, counts as missing
     And no version is written in the program, the checks run away from the screen's event thread, and checking installs or changes nothing
-    And when the runtime list cannot be read, each platform passes when its tool is present at all, and the screen says that the Rumble's supported versions could not be read
+    And when the runtime list cannot be read or understood, each platform passes when its tool is present at all, and the screen says that the Rumble's supported versions could not be read; the list is read once for each opening of the screen
 
   @RCL-084
   Scenario: Only platforms that can run are ticked, and ticking another one says what is missing
@@ -714,16 +714,17 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a download folder, a Python that passes its check, the program's own Python Bot API, and fake commands that succeed or fail at each step
     When the person asks to set up Python for the bots in that folder
     Then the screen shows the commands before running them, makes the environment in a hidden folder of the download folder with that Python, and installs the program's own Python Bot API into it with the environment's own python -m pip
-    And progress and the result are shown, a failure keeps its details and leaves no half-made environment behind, and a second setup replaces an environment that no longer starts
+    And progress and the result are shown, a failure keeps the failing step and its own details, a half-made environment is removed or, when it cannot be removed, the person is told that part of it is left and it is never used, an old environment that cannot be removed stops the setup before anything is made, and a second setup replaces an environment that no longer starts
+    And the environment counts only once its setup marked it finished as the last step, the program's Python Bot API file is written to a private folder of its own for each opening of the screen, and the person's choices on the list are kept across the setup
     And nothing outside that hidden folder is created or changed, no other Python is installed into, and the hidden folder is never listed as a bot, neither on the screen nor among the bots the desktop program can start
 
   @RCL-086
   Scenario: Bots in a folder with that environment start with it, and every other bot starts as before
     Test-type: Unit
-    Given a bot in a download folder that holds the environment, and a bot in a folder that does not
+    Given a bot in a download folder that holds a finished environment, a bot in a folder whose environment's setup was stopped half-way, and a bot in a folder that holds none
     When the desktop program starts each bot
     Then the first bot's process has the environment's scripts folder first on its path and RUMBLE_PYTHON set to the environment's Python, so launchers that call python and launchers that use RUMBLE_PYTHON both use it
-    And the second bot's process environment is exactly what it is today
+    And the other bots' process environments are exactly what they are today
 
   @RCL-087
   Scenario: Every reason, offer and result of the platform checks has a text in every language file

@@ -109,6 +109,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             is PythonSetupResult.Done -> put(status(true, text("rumble.download.setup.done")))
             is PythonSetupResult.Failed -> {
                 put(status(false, text(DownloadTexts.forSetupFailure(setup.step))))
+                put(wrapped(text(if (setup.leftBehind) "rumble.download.setup.left_behind" else "rumble.download.setup.nothing_left")))
                 if (setup.details.isNotBlank()) put(wrapped(text("rumble.download.details", setup.details)))
             }
         }
@@ -322,7 +323,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             RumbleDownloadDialog(environment.displayName) { self ->
                 val port = LibraryDownloadPort(
                     environment, HttpGitHubApi(),
-                    pythonBotApi = Path.of(System.getProperty("java.io.tmpdir"), "robocode-rumble-python", BotApiPlatform.PYTHON.newFileName()),
+                    pythonBotApiName = BotApiPlatform.PYTHON.newFileName(),
                     writePythonBotApi = ::writePythonBotApi,
                 )
                 DownloadController(port, folder, background, post) { state -> self.render(state) }

@@ -43,9 +43,11 @@ class RumbleDownloadPlatformTest {
         ),
     )
 
-    private fun environment(folder: Path, windows: Boolean = true): Path {
+    /** An environment as a finished setup leaves it, or, with [ready] false, as one stopped half-way. */
+    private fun environment(folder: Path, windows: Boolean = true, ready: Boolean = true): Path {
         val python = PythonEnvironment.python(folder, windows)
         Files.createDirectories(python.parent)
+        if (ready) Files.write(PythonEnvironment.home(folder).resolve(dev.robocode.tankroyale.common.RumblePythonEnvironment.READY), ByteArray(0))
         return Files.write(python, ByteArray(0))
     }
 
@@ -143,6 +145,13 @@ class RumbleDownloadPlatformTest {
         assertEquals(PlatformReason.NO_ENVIRONMENT, checker.check(listOf(BotPlatform.PYTHON), versions, dir).getValue(BotPlatform.PYTHON).reason,
             "an environment that no longer starts, after an upgrade of Python or a move of the folder, counts as missing")
 
+        val own = PythonEnvironment.python(dir, false).toString() + " -c import robocode_tank_royale, sys; print('Python %d.%d.%d' % sys.version_info[:3])"
+        tools.answers[own] = ok("Python 3.14.0")
+        assertEquals(PlatformReason.READY, checker.check(listOf(BotPlatform.PYTHON), versions, dir).getValue(BotPlatform.PYTHON).reason)
+        Files.delete(PythonEnvironment.home(dir).resolve(dev.robocode.tankroyale.common.RumblePythonEnvironment.READY))
+        assertEquals(PlatformReason.NO_ENVIRONMENT, checker.check(listOf(BotPlatform.PYTHON), versions, dir).getValue(BotPlatform.PYTHON).reason,
+            "an environment whose setup was stopped half-way never counts, even when its Python answers")
+
         tools.answers.remove("python3 -c import venv, ensurepip")
         assertEquals(PlatformReason.NO_VENV, checker.check(listOf(BotPlatform.PYTHON), versions, dir).getValue(BotPlatform.PYTHON).reason, "as on Debian without python3-venv")
 
@@ -166,6 +175,14 @@ class RumbleDownloadPlatformTest {
         assertTrue(tools.asked.none { it.contains("pip") || it.contains("venv") && it.contains("-m") }, "nothing is installed")
         assertThrows(IOException::class.java) { SupportedVersions.parse("java=25\ndotnet=10\nnode=24\n") }
         assertThrows(IOException::class.java) { SupportedVersions.parse("java=x\ndotnet=10\npython=3.14\nnode=24\n") }
+        assertThrows(IOException::class.java) { SupportedVersions.parse("java=\\uZZZZ\n") }
+        val garbled = object : GitHubApi {
+            override fun get(path: String, token: String?) =
+                if (path.endsWith("/releases/latest")) ApiResponse(200, """{"tag_name":"v1"}""") else ApiResponse(200, """{"content":"%%% not base64 %%%"}""")
+            override fun postJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
+            override fun patchJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
+        }
+        assertThrows(IOException::class.java) { GitHubRuntimeListSource(garbled).text() }
     }
 
     // RCL-084
@@ -232,13 +249,14 @@ class RumbleDownloadPlatformTest {
     fun testRCL085_UnitPositive_setupMakesTheFoldersOwnEnvironmentAndInstallsTheProgramsBotApiWithItsOwnPip(@TempDir dir: Path) {
         val folder = dir.resolve("downloads")
         val botApi = dir.resolve("robocode_tank_royale-1.4.0-py3-none-any.whl")
-        val tools = Tools(onRun = { command -> if ("venv" in command) environment(folder, windows = false) })
+        val tools = Tools(onRun = { command -> if ("venv" in command) environment(folder, windows = false, ready = false) })
         val setup = PythonSetup(tools, windows = false)
         setup.commands(folder, botApi).forEach { tools.answers[it.joinToString(" ")] = ok("done") }
 
         val result = setup.run(folder, botApi)
 
         assertEquals(PythonSetupResult.Done, result)
+        assertTrue(dev.robocode.tankroyale.common.RumblePythonEnvironment.isReady(folder, false), "marked as finished, as its very last step")
         assertEquals(setup.commands(folder, botApi), tools.asked, "exactly the commands that were shown, in order")
         assertEquals(listOf("python3", "-m", "venv", folder.resolve(".rumble-python").toString()), tools.asked[0])
         assertEquals(listOf(PythonEnvironment.python(folder, false).toString(), "-m", "pip", "install", botApi.toString()), tools.asked[1])
@@ -257,7 +275,7 @@ class RumbleDownloadPlatformTest {
             environment(folder, windows = true)
             Files.writeString(PythonEnvironment.home(folder).resolve("old.txt"), "old")
             Files.writeString(folder.resolve("Walls.txt"), "a bot's file")
-            val tools = Tools(onRun = { command -> if ("venv" in command) environment(folder, windows = true) })
+            val tools = Tools(onRun = { command -> if ("venv" in command) environment(folder, windows = true, ready = false) })
             val setup = PythonSetup(tools, windows = true)
             val (make, install) = setup.commands(folder, botApi)
             tools.answers[make.joinToString(" ")] = if (failing == PythonSetupStep.MAKE_ENVIRONMENT) ToolOutput(1, "line\nError: no ensurepip") else ok("")
@@ -314,5 +332,106 @@ class RumbleDownloadPlatformTest {
         while (held.isNotEmpty()) held.removeFirst().run()
 
         assertEquals(1, port.setups, "a second press or a fresh look while it runs starts nothing new")
+    }
+
+    @Test
+    @Tag("RCL-085")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL085_UnitNegative_anOldEnvironmentThatCannotBeRemovedIsToldAndNothingIsRun(@TempDir dir: Path) {
+        environment(dir, windows = true)
+        val tools = Tools()
+        val stuck = PythonSetup(tools, windows = true) { throw java.nio.file.AccessDeniedException("python.exe") }
+
+        val result = stuck.run(dir, dir.resolve("api.whl"))
+
+        assertEquals(PythonSetupResult.Failed(PythonSetupStep.REMOVE_OLD_ENVIRONMENT, "python.exe", leftBehind = true), result)
+        assertEquals(emptyList<List<String>>(), tools.asked, "nothing is made over a half-removed environment")
+
+        val tools2 = Tools(onRun = { command -> if ("venv" in command) environment(dir, windows = true, ready = false) })
+        var calls = 0
+        val failsSecondTime = PythonSetup(tools2, windows = true) { home ->
+            if (++calls > 1) throw java.io.UncheckedIOException(IOException("locked"))
+            Files.walk(home).use { p -> p.sorted(Comparator.reverseOrder()).forEach { Files.deleteIfExists(it) } }
+        }
+        val (make, install) = failsSecondTime.commands(dir, dir.resolve("api.whl"))
+        tools2.answers[make.joinToString(" ")] = ok("")
+        tools2.answers[install.joinToString(" ")] = ToolOutput(1, "ERROR: no network")
+
+        val second = failsSecondTime.run(dir, dir.resolve("api.whl"))
+
+        assertEquals(PythonSetupResult.Failed(PythonSetupStep.INSTALL_BOT_API, "ERROR: no network", leftBehind = true), second,
+            "the failing step and its own output are kept, and what is left behind is told")
+        assertFalse(dev.robocode.tankroyale.common.RumblePythonEnvironment.isReady(dir, true), "and what is left never counts")
+    }
+
+    @Test
+    @Tag("RCL-085")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL085_UnitPositive_thePersonsChoicesOnTheListAreKeptAcrossTheSetup(@TempDir dir: Path) {
+        val port = Port(listed(dir, mapOf(BotPlatform.JVM to check(BotPlatform.JVM, PlatformReason.READY), BotPlatform.PYTHON to check(BotPlatform.PYTHON, PlatformReason.NO_ENVIRONMENT))))
+        val controller = DownloadController(port, dir, direct, direct) {}
+        controller.start()
+        controller.setPlatform("Rust", false)
+        controller.setAll(false)
+        controller.setChosen("Walls", true)
+        port.read = listed(dir, mapOf(BotPlatform.JVM to check(BotPlatform.JVM, PlatformReason.READY), BotPlatform.PYTHON to check(BotPlatform.PYTHON, PlatformReason.READY)))
+
+        controller.setUpPython()
+
+        val after = controller.state as DownloadState.Choosing
+        assertEquals(PythonSetupResult.Done, after.setup)
+        assertEquals(setOf("JVM", "Python"), after.platforms, "Python is ticked now, and Rust stays unticked as the person left it")
+        assertEquals(false to setOf("Walls"), after.all to after.chosen)
+    }
+
+    @Test
+    @Tag("RCL-085")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL085_UnitNegative_aSetupResultIsNeverShownOnALaterListAfterAFailedRead(@TempDir dir: Path) {
+        val port = Port(listed(dir, emptyMap()))
+        val controller = DownloadController(port, dir, direct, direct) {}
+        controller.start()
+        val good = port.read
+        port.read = DownloadRead.Failed(DownloadFailure.CATALOG_UNREADABLE)
+
+        controller.setUpPython()
+        assertInstanceOf(DownloadState.Failed::class.java, controller.state)
+        port.read = good
+        controller.start()
+
+        assertEquals(null, (controller.state as DownloadState.Choosing).setup)
+    }
+
+    @Test
+    @Tag("RCL-085")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL085_UnitNegative_theBotApiFileLivesInAPrivateFolderOfItsOwnAndTheListIsReadOnce(@TempDir dir: Path) {
+        val reads = java.util.concurrent.atomic.AtomicInteger()
+        val list = RuntimeListSource { reads.incrementAndGet(); "java=25\ndotnet=10\npython=3.14\nnode=24\n" }
+        val catalog = object : CatalogSource {
+            override fun catalogText(commit: String) = "{\"schemaVersion\":1,\"generatedAt\":\"x\",\"commit\":\"$commit\",\"bots\":[]}"
+            override fun archive(commit: String): java.io.InputStream = throw IOException("not used")
+        }
+        val head = object : GitHubApi {
+            override fun get(path: String, token: String?) = ApiResponse(200, "{\"sha\":\"" + "a".repeat(40) + "\"}")
+            override fun postJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
+            override fun patchJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
+        }
+        fun port() = LibraryDownloadPort(RumbleEnvironments.TEST, head, catalog, list, Tools(), "robocode_tank_royale-1.4.0-py3-none-any.whl")
+        val one = port()
+
+        one.read(dir)
+        one.read(dir.resolve("other"))
+        assertEquals(1, reads.get(), "a fresh look on the same screen asks GitHub for the list only once")
+
+        val first = one.pythonSetupCommands(dir).last().last()
+        assertEquals(first, one.pythonSetupCommands(dir.resolve("other")).last().last(), "the same file for the whole screen")
+        val second = port().pythonSetupCommands(dir).last().last()
+        assertTrue(first != second && Path.of(first).parent.fileName.toString().startsWith("robocode-rumble-python-"), "a new private folder for each screen")
+        assertTrue(Files.isDirectory(Path.of(first).parent))
     }
 }

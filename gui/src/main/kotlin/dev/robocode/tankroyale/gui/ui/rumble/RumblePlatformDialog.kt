@@ -40,7 +40,7 @@ internal class RumblePlatformDialog(
         val content = WindowWidthPanel()
         fun put(component: Component) = content.add(component, "growx, wmin 10")
         val unknown = text("rumble.download.unknown")
-        put(wrappedText(text(DownloadTexts.forPlatformExplanation(check.reason), text(DownloadTexts.forPlatformTool(check.platform)),
+        put(wrappedText(text(DownloadTexts.forPlatformExplanation(check.reason, check.needed != null), text(DownloadTexts.forPlatformTool(check.platform)),
             check.platform.catalogName, check.found ?: unknown, check.needed ?: unknown)))
         if (check.reason == PlatformReason.NO_VENV) put(wrappedText(text("rumble.download.platform.venv_package")))
         val offerSetUp = check.reason == PlatformReason.NO_ENVIRONMENT && commands.isNotEmpty()

@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.booter.process
 
 import dev.robocode.tankroyale.booter.commands.DirCommand
 import dev.robocode.tankroyale.common.RUMBLE_PYTHON_ENVIRONMENT
+import dev.robocode.tankroyale.common.RumblePythonEnvironment
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -15,8 +16,9 @@ class RumbleDownloadBotStartTest {
     @TempDir
     lateinit var dir: Path
 
-    private fun environment(folder: Path, windows: Boolean): Path {
+    private fun environment(folder: Path, windows: Boolean, ready: Boolean = true): Path {
         val scripts = Files.createDirectories(folder.resolve(RUMBLE_PYTHON_ENVIRONMENT).resolve(if (windows) "Scripts" else "bin"))
+        if (ready) Files.write(folder.resolve(RUMBLE_PYTHON_ENVIRONMENT).resolve(RumblePythonEnvironment.READY), ByteArray(0))
         return Files.write(scripts.resolve(if (windows) "python.exe" else "python"), ByteArray(0))
     }
 
@@ -57,6 +59,9 @@ class RumbleDownloadBotStartTest {
         val before = env.toMap()
 
         DownloadedBotsPython.apply(env, bot(mine, "Walls"), windows = false)
+        val halfWay = Files.createDirectories(dir.resolve("half-way"))
+        environment(halfWay, windows = false, ready = false)
+        DownloadedBotsPython.apply(env, bot(halfWay, "Orbit"), windows = false)
         DownloadedBotsPython.apply(env, bot(Files.createDirectories(dir.resolve("other")), "Walls"), windows = true)
 
         assertThat(env).isEqualTo(before)
