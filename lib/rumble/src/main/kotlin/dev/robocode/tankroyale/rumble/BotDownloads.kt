@@ -24,6 +24,8 @@ data class DownloadRow(
     /** The license the bot's own configuration file declares, known only for a bot that is already in the folder. */
     val license: String?,
     val bot: CatalogBot?,
+    /** The version the bot's own configuration file in the folder declares, known only for a bot the screen placed there. */
+    val versionHere: String? = null,
 )
 
 /** How the download of one bot ended. */
@@ -68,7 +70,7 @@ object BotDownloads {
         val gone = markedFolders(target).filter { it.fileName.toString() !in activeFolders }.map { folder ->
             val project = project(folder)
             val name = folder.fileName.toString()
-            DownloadRow(project?.name ?: name, project?.version, project?.platform, DownloadedState.NO_LONGER_ACTIVE, project?.license, null)
+            DownloadRow(project?.name ?: name, project?.version, project?.platform, DownloadedState.NO_LONGER_ACTIVE, project?.license, null, project?.version)
         }.sortedBy { it.name.lowercase() }
         return current + gone
     }
@@ -168,15 +170,15 @@ object BotDownloads {
 
     private fun row(bot: CatalogBot, catalog: Catalog, target: Path): DownloadRow {
         val folder = target.resolve(folderName(bot))
-        fun answer(state: DownloadedState, license: String? = null) = DownloadRow(bot.name, bot.version, bot.platform, state, license, bot)
-        if (!exists(folder)) return answer(DownloadedState.NEW)
-        if (!isMarked(folder)) return answer(DownloadedState.KEPT_APART)
+        if (!exists(folder)) return DownloadRow(bot.name, bot.version, bot.platform, DownloadedState.NEW, null, bot)
+        if (!isMarked(folder)) return DownloadRow(bot.name, bot.version, bot.platform, DownloadedState.KEPT_APART, null, bot)
         val project = project(folder)
+        fun answer(state: DownloadedState) = DownloadRow(bot.name, bot.version, bot.platform, state, project?.license, bot, project?.version)
         val known = catalog.bots.firstOrNull { folderName(it) == folderName(bot) && it.version == project?.version }
         return when {
-            known == null || !unchanged(folder, known) -> answer(DownloadedState.CHANGED_HERE, project?.license)
-            known.version == bot.version -> answer(DownloadedState.UP_TO_DATE, project?.license)
-            else -> answer(DownloadedState.UPDATE, project?.license)
+            known == null || !unchanged(folder, known) -> answer(DownloadedState.CHANGED_HERE)
+            known.version == bot.version -> answer(DownloadedState.UP_TO_DATE)
+            else -> answer(DownloadedState.UPDATE)
         }
     }
 

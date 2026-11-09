@@ -39,7 +39,7 @@ object DownloadTexts {
     val OTHER: List<String> = listOf(
         "rumble.download.title", "rumble.download.reading", "rumble.download.intro", "rumble.download.warning", "rumble.download.folder",
         "rumble.download.which", "rumble.download.all", "rumble.download.selected", "rumble.download.platforms", "rumble.download.row",
-        "rumble.download.row_license", "rumble.download.replace_changed", "rumble.download.none", "rumble.download.downloading",
+        "rumble.download.row_license", "rumble.download.row_here", "rumble.download.replace_changed", "rumble.download.none", "rumble.download.downloading",
         "rumble.download.ended", "rumble.download.result_line", "rumble.download.license_of", "rumble.download.no_license",
         "rumble.download.add_folder_hint", "rumble.download.details", "rumble.download.status_success", "rumble.download.status_failed",
         "rumble.download.unknown", "rumble.download.licenses", "rumble.download.licenses_intro", "rumble.download.licenses_label",

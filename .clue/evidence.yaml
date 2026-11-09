@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "ee5a065971f7b41cc49146a7aa35546b42a70b66151dcbf9b5a1e7205b4040c3"
+          "sha256": "ca02e1718f911937b388410a2b907ebbf14db66f4a10dd14f667d013147d770f"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -674,6 +674,13 @@
           "subject": "RumbleCliDownloadTextsTest.testRCL080_UnitNegative_theDialogOpensOnlyTheFixedLicensePagesAndTheWarningIsOnTheScreenThatOffersTheDownload",
           "type": "Unit",
           "direction": "negative"
+        },
+        {
+          "id": "RCL-080",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL080_UnitPositive_aRowShowsTheVersionInTheFolderOnlyWhenItDiffersFromTheCatalog",
+          "type": "Unit",
+          "direction": "positive"
         },
         {
           "id": "RCL-080",
@@ -1677,7 +1684,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
-          "sha256": "d038012d6e41e37404ae54cf200e0a88c6351ec6924391d75110ea830ed9c91e"
+          "sha256": "57fc13537079bb6f2deec079a38356e0b3eed7435c724f963bcb80a0b889fd60"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
@@ -2078,6 +2085,13 @@
           "subject": "RumbleDownloadTest.testRCL076_UnitNegative_aMarkedFolderWithAnUnreadableConfigurationOrAVersionTheCatalogDoesNotKnowIsTreatedAsChanged",
           "type": "Unit",
           "direction": "negative"
+        },
+        {
+          "id": "RCL-076",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL076_UnitPositive_aBotInTheFolderShowsTheVersionItsOwnConfigurationDeclares",
+          "type": "Unit",
+          "direction": "positive"
         },
         {
           "id": "RCL-076",

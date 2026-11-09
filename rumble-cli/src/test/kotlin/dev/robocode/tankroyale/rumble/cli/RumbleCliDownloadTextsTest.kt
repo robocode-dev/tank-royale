@@ -104,6 +104,16 @@ class RumbleCliDownloadTextsTest {
     @Test
     @Tag("RCL-080")
     @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL080_UnitPositive_aRowShowsTheVersionInTheFolderOnlyWhenItDiffersFromTheCatalog() {
+        val rowText = code(dialogFile).substringAfter("private fun rowText").substringBefore("private fun renderEnded")
+
+        assertTrue(rowText.contains("row.versionHere?.takeIf { it != row.version }") && rowText.contains("rumble.download.row_here"))
+    }
+
+    @Test
+    @Tag("RCL-080")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL080_UnitNegative_goodAndBadAreNotMixedUpAndNoTextHoldsAToken() {
         val messages = properties("Messages.properties")

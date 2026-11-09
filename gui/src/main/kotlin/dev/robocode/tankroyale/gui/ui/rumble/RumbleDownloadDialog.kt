@@ -133,7 +133,8 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
     private fun rowText(row: DownloadRow): String {
         val unknown = text("rumble.download.unknown")
         val line = text("rumble.download.row", row.name, row.version ?: unknown, row.platform ?: unknown, text(DownloadTexts.forState(row.state)))
-        return row.license?.let { line + " " + text("rumble.download.row_license", it) } ?: line
+        val here = row.versionHere?.takeIf { it != row.version }?.let { " " + text("rumble.download.row_here", it) }.orEmpty()
+        return line + here + row.license?.let { " " + text("rumble.download.row_license", it) }.orEmpty()
     }
 
     private fun renderEnded(state: DownloadState.Ended) {

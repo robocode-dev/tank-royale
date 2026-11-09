@@ -210,6 +210,30 @@ class RumbleDownloadTest {
     @Test
     @Tag("RCL-076")
     @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL076_UnitPositive_aBotInTheFolderShowsTheVersionItsOwnConfigurationDeclares(@TempDir dir: Path) {
+        val catalog = catalog(
+            bot("Older", version = "1.1.0"), bot("Older", version = "1.0.0", status = "superseded"),
+            bot("Edited"), bot("Placed"), bot("Fresh"), bot("Own"),
+        )
+        write(dir.resolve("Older"), files("Older", "1.0.0"))
+        write(dir.resolve("Edited"), files("Edited", "1.0.1"))
+        write(dir.resolve("Placed"), files("Placed"))
+        write(dir.resolve("Own"), files("Own", "9.9.9"), marked = false)
+
+        val rows = BotDownloads.rows(catalog, dir).associateBy { it.name }
+
+        assertEquals("1.1.0" to "1.0.0", rows.getValue("Older").version to rows.getValue("Older").versionHere, "an update shows both")
+        assertEquals("1.0.0" to "1.0.1", rows.getValue("Edited").version to rows.getValue("Edited").versionHere, "the person's own number is shown")
+        assertEquals(DownloadedState.CHANGED_HERE, rows.getValue("Edited").state)
+        assertEquals("1.0.0", rows.getValue("Placed").versionHere)
+        assertEquals(null, rows.getValue("Fresh").versionHere, "nothing is in the folder yet")
+        assertEquals(null, rows.getValue("Own").versionHere, "a folder the screen did not place is not read")
+    }
+
+    @Test
+    @Tag("RCL-076")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL076_UnitNegative_aMarkedFolderWithAnUnreadableConfigurationOrAVersionTheCatalogDoesNotKnowIsTreatedAsChanged(@TempDir dir: Path) {
         val catalog = catalog(bot("Broken"), bot("Unknown", version = "2.0.0"))

@@ -634,6 +634,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Then they are shown as up to date, an update, changed here, kept apart and untouched, no longer active, and new, in that order
     And what a program leaves in a bot folder when the bot is run, in the folders and with the file endings the bot repository never accepts, does not count as a change
     And the version is read from the bot's own configuration file and the content check is the same tree checksum the catalog records, and nothing is recorded outside the download folder
+    And a row shows the catalog's version, and also the version in the bot's own configuration file in the folder when the two differ, so a bot the person changed and an earlier download with a newer version in the catalog both show what is in the folder
 
   @RCL-077
   Scenario: Downloading places verified bots with the marker, tells the result of each, and never replaces anything that is not an unchanged earlier download
