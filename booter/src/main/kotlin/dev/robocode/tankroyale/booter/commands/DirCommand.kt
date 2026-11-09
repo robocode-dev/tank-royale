@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.DirBootEntry
+import dev.robocode.tankroyale.common.RUMBLE_PYTHON_ENVIRONMENT
 import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.process.PlatformDetector
 import dev.robocode.tankroyale.booter.process.ScriptFinder
@@ -142,6 +143,8 @@ internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
     private fun isBotDirectory(dirPath: Path): Boolean {
         val botName = dirPath.fileName.toString()
+        // The private Python environment of downloaded Rumble bots is never a bot.
+        if (botName == RUMBLE_PYTHON_ENVIRONMENT) return false
         val jsonPath = dirPath.resolve("$botName.json")
         if (exists(jsonPath)) {
             return true

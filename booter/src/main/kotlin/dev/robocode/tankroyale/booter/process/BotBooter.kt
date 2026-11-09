@@ -146,6 +146,7 @@ internal class BotBooter(
             // The GUI already receives bot stdout via WebSocket (BotIntent.stdOut), so the raw pipe is redundant.
             processBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD)
             setupEnvironment(processBuilder.environment(), botEntry, team)
+            DownloadedBotsPython.apply(processBuilder.environment(), botDir)
             processBuilder.start()
         } catch (ex: Exception) {
             Log.error(ex, botDir)

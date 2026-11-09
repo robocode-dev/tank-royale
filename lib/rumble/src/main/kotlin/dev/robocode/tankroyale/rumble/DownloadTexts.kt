@@ -27,6 +27,34 @@ object DownloadTexts {
         is DownloadResult.UpToDate, is DownloadResult.KeptOwn, is DownloadResult.KeptChanged -> Tone.NEUTRAL
     }
 
+    /** The few words beside a platform this computer cannot run. */
+    fun forPlatformShort(reason: PlatformReason): String = "rumble.download.platform.short." + reason.name.lowercase()
+
+    /**
+     * What the dialog says about a platform this computer cannot run. A missing tool is named with the version the
+     * Rumble supports, unless the Rumble's list could not be read.
+     */
+    fun forPlatformExplanation(reason: PlatformReason, versionKnown: Boolean = true): String =
+        "rumble.download.platform.explain." + reason.name.lowercase() +
+            if (!versionKnown && reason in WITH_VERSION) "_no_version" else ""
+
+    private val WITH_VERSION = setOf(PlatformReason.MISSING, PlatformReason.NPM_MISSING)
+
+    /** The name of the tool a platform's bots need. */
+    fun forPlatformTool(platform: BotPlatform): String = "rumble.download.platform.tool." + platform.name.lowercase()
+
+    fun forSetupFailure(step: PythonSetupStep): String = "rumble.download.setup.failed." + step.name.lowercase()
+
+    /** Every key about the platforms and the setup of Python. */
+    val ALL_PLATFORM_KEYS: List<String> =
+        PlatformReason.entries.filter { it != PlatformReason.READY }.flatMap { listOf(forPlatformShort(it), forPlatformExplanation(it)) } +
+            BotPlatform.entries.map { forPlatformTool(it) } + PythonSetupStep.entries.map { forSetupFailure(it) } + listOf(
+                "rumble.download.platform.label", "rumble.download.platform.versions_unknown", "rumble.download.platform.venv_package",
+                "rumble.download.platform.commands", "rumble.download.setup.running", "rumble.download.setup.done",
+                "rumble.download.button.set_up", "rumble.download.button.show_anyway", "rumble.download.button.download_page",
+                "rumble.download.setup.left_behind", "rumble.download.setup.nothing_left",
+            ) + WITH_VERSION.map { forPlatformExplanation(it, versionKnown = false) }
+
     /** The parts of the short explanation of a license, in the order the screen shows them. */
     val LICENSE_PARTS: List<String> = listOf("author", "may", "must", "note")
 

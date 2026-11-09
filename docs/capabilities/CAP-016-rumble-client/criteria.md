@@ -688,4 +688,56 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer opens Download bots, reads the explanation of each license and opens its links, picks a few bots and downloads them, changes one of the downloaded bots and opens the screen again
     Then the explanations can be read and the links open the right pages, the bots are placed with their own files and the result lists each with its declared license, the states say up to date and changed here, nothing outside the folder is touched, every text wraps, choosing a license replaces the explanation without moving the text, and the buttons at the bottom stay in view however long the list is
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, the temporary folder is removed afterwards, and no human observation is invented
+  @RCL-083
+  Scenario: The Download bots screen checks each platform against the Rumble's one list of supported versions
+    Test-type: Unit
+    Given fake answers from the Rumble client's latest release for its runtime list, and fake answers from java, dotnet, node with npm, and python for their versions, including a missing tool, an older version, output that cannot be read and a tool that does not answer in time
+    When the screen opens on a download folder
+    Then each platform passes only when its tool reports at least the major version the list names, and a missing, older, unreadable or silent tool fails only its own platform with its own reason
+    And Python passes only when the download folder's own Python environment finished its setup, starts and holds the Python Bot API, and an environment that no longer starts, because Python was upgraded or the folder was moved, or whose setup was stopped half-way, counts as missing
+    And no version is written in the program, the checks run away from the screen's event thread, and checking installs or changes nothing
+    And when the runtime list cannot be read or understood, each platform passes when its tool is present at all, and the screen says that the Rumble's supported versions could not be read; the list is read once for each opening of the screen
+
+  @RCL-084
+  Scenario: Only platforms that can run are ticked, and ticking another one says what is missing
+    Test-type: Unit
+    Given checks where some platforms pass and others fail for each kind of reason
+    When the screen shows the platforms and the person ticks a platform that failed
+    Then only the passing platforms are ticked to begin with, so the bots of the others are not downloaded unless the person asks
+    And ticking a failed platform opens a dialog with the reason in plain words: for Python with no environment it offers to set one up, for Python that is missing, too old or cannot make an environment it links to the official download and on Debian and Ubuntu names the python3-venv package, and for Java, .NET or Node.js it names the version needed and links to the official download
+    And every dialog has Show anyway, which ticks the platform and installs nothing, and closing the dialog leaves the platform unticked
+    And the dialog opens a page only after checking that it is one of the library's fixed download pages
+
+  @RCL-085
+  Scenario: Setting up Python for a download folder uses only that folder's own environment
+    Test-type: Unit
+    Given a download folder, a Python that passes its check, the program's own Python Bot API, and fake commands that succeed or fail at each step
+    When the person asks to set up Python for the bots in that folder
+    Then the screen shows the commands before running them, makes the environment in a hidden folder of the download folder with that Python, and installs the program's own Python Bot API into it with the environment's own python -m pip
+    And progress and the result are shown, a failure keeps the failing step and its own details, a half-made environment is removed or, when it cannot be removed, the person is told that part of it is left and it is never used, an old environment that cannot be removed stops the setup before anything is made, and a second setup replaces an environment that no longer starts
+    And the environment counts only once its setup marked it finished as the last step, the program's Python Bot API file is written to a private folder of its own for each opening of the screen, and the person's choices on the list are kept across the setup
+    And nothing outside that hidden folder is created or changed, no other Python is installed into, and the hidden folder is never listed as a bot, neither on the screen nor among the bots the desktop program can start
+
+  @RCL-086
+  Scenario: Bots in a folder with that environment start with it, and every other bot starts as before
+    Test-type: Unit
+    Given a bot in a download folder that holds a finished environment, a bot in a folder whose environment's setup was stopped half-way, and a bot in a folder that holds none
+    When the desktop program starts each bot
+    Then the first bot's process has the environment's scripts folder first on its path and RUMBLE_PYTHON set to the environment's Python, so launchers that call python and launchers that use RUMBLE_PYTHON both use it
+    And the other bots' process environments are exactly what they are today
+
+  @RCL-087
+  Scenario: Every reason, offer and result of the platform checks has a text in every language file
+    Test-type: Unit
+    Given the resource files of the desktop program and the sources of the checks, the setup and the dialogs
+    When every platform, reason and setup result is listed from the library and compared with the resource keys
+    Then every one has a non-empty text in the base file and the same keys exist in every language file, no English sentence is written in the sources, and success and failure are shown in the same way as on the other Rumble screens
+
+  @RCL-088
+  Scenario: The maintainer sets up Python for downloaded bots and starts them in a battle
+    Test-type: Human
+    Given the desktop program started with the menu switched on for the test environment, an empty temporary folder chosen as the download folder and added as a bot directory, and a computer whose Python has no Python Bot API
+    When the maintainer opens Download bots, sees which platforms are ticked, ticks Python, sets it up, downloads the bots and starts a downloaded Python bot and a downloaded Java bot in a battle
+    Then the ticks match what the computer has, the dialog says what was missing, the setup ends with success, and both bots start and play
+    And the observer, the conditions, the observation and what was not observed are recorded in the merge commit, the temporary folder is removed afterwards, and no human observation is invented
 ```
