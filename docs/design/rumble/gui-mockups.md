@@ -10,7 +10,7 @@ reversal-cost: low
 
 # Rumble menu mockups and participant journeys
 
-These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request) are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
+These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request) and **Download bots** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
 
 The menu bar gains one entry between Config and Help:
 
@@ -184,7 +184,7 @@ The list reads from the Rumble and from the local projects, and shows each bot's
 
 ## Download bots
 
-This screen copies competitor bots from the Rumble into a folder of their own so the person can read them and practise against them. It needs no GitHub account, because the catalog is public. It is planned for a later milestone than the other screens.
+This screen copies competitor bots from the Rumble into a folder of their own so the person can read them and practise against them. It needs no GitHub account, because the catalog is public. It is built, with these differences from the first drawing: the list shows no license per bot, because the catalog does not hold it; a button opens a small window where a list box explains the licenses the Rumble allows instead; the buttons stay in view at the bottom of the window; a bot's own license is shown in the result and for a bot already in the folder, with its version too when that differs from the catalog; and the person adds the folder under Config, Bot Root Directories for now.
 
 ```text
 Choose bots                                  Result
@@ -226,7 +226,8 @@ Only bots that are active in the catalog are offered for a new download; a retir
 | A bot's hash does not match | The bot is skipped and listed as failed with its name and version | [Download again] |
 | The folder cannot be written | "This folder cannot be written. Nothing was downloaded." before anything is fetched | [Change] |
 | A downloaded bot has the same name as one of the person's own | "Kept in the download folder only. Your own bot is unchanged." | [Show folder] |
-| A downloaded bot is no longer active | It stays, marked "no longer active" | [Remove] |
+| A downloaded bot the person changed | "Changed here", kept as it is, with a box to replace it | Tick the box |
+| A downloaded bot is no longer active | It stays, marked "no longer active"; the person removes it by hand for now | |
 | The catalog is unreachable or unsupported | "The Rumble catalog cannot be read." | [Try again] |
 
 ## Bot info in New Battle

@@ -1167,6 +1167,29 @@ events:
     - {id: RCL-073, kind: numeric, state: live, prefix: RCL, component: "73"}
     - {id: RCL-074, kind: numeric, state: reserved, prefix: RCL, component: "74"}
     - {id: RCL-074, kind: numeric, state: live, prefix: RCL, component: "74"}
+    - {id: CH-092, kind: numeric, state: reserved, prefix: CH, component: "92"}
+    - {id: CH-092, kind: numeric, state: live, prefix: CH, component: "92"}
+    - {id: CH-092-tasks, kind: opaque, state: live}
+    - {id: CH-092-open-questions, kind: opaque, state: live}
+    - {id: CH-092, kind: numeric, state: retired, prefix: CH, component: "92"}
+    - {id: CH-092-tasks, kind: opaque, state: retired}
+    - {id: CH-092-open-questions, kind: opaque, state: retired}
+    - {id: RCL-075, kind: numeric, state: reserved, prefix: RCL, component: "75"}
+    - {id: RCL-075, kind: numeric, state: live, prefix: RCL, component: "75"}
+    - {id: RCL-076, kind: numeric, state: reserved, prefix: RCL, component: "76"}
+    - {id: RCL-076, kind: numeric, state: live, prefix: RCL, component: "76"}
+    - {id: RCL-077, kind: numeric, state: reserved, prefix: RCL, component: "77"}
+    - {id: RCL-077, kind: numeric, state: live, prefix: RCL, component: "77"}
+    - {id: RCL-078, kind: numeric, state: reserved, prefix: RCL, component: "78"}
+    - {id: RCL-078, kind: numeric, state: live, prefix: RCL, component: "78"}
+    - {id: RCL-079, kind: numeric, state: reserved, prefix: RCL, component: "79"}
+    - {id: RCL-079, kind: numeric, state: live, prefix: RCL, component: "79"}
+    - {id: RCL-080, kind: numeric, state: reserved, prefix: RCL, component: "80"}
+    - {id: RCL-080, kind: numeric, state: live, prefix: RCL, component: "80"}
+    - {id: RCL-081, kind: numeric, state: reserved, prefix: RCL, component: "81"}
+    - {id: RCL-081, kind: numeric, state: live, prefix: RCL, component: "81"}
+    - {id: RCL-082, kind: numeric, state: reserved, prefix: RCL, component: "82"}
+    - {id: RCL-082, kind: numeric, state: live, prefix: RCL, component: "82"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

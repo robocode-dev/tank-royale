@@ -616,4 +616,76 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer goes through the whole wizard with the copy and the App missing and then present, sends the bot, follows the pull request, tries to send the same files again and closes the pull request afterwards
     Then the copy and App steps open the right pages and go on by themselves, the pull request appears on the test bot repository with exactly the reviewed files, the progress shows where it stands, sending the same files again opens nothing new, and every text wraps
     And the observer, the conditions, the observation and the result are recorded in the acceptance brief, and no human observation is invented
+
+  @RCL-075
+  Scenario: The Download bots screen lists the active bots of the pinned catalog and explains the Rumble's licenses in short
+    Test-type: Unit
+    Given a fake catalog with active, superseded, retired and disqualified bots on several platforms
+    When the person opens the screen and narrows the list by platform
+    Then only active bots are offered, each with name, version and platform, and the platform filter keeps only the chosen platforms
+    And one button opens a small window of its own with a list box of the licenses the Rumble allows, and choosing one replaces what is shown, without moving the text, with in short what the license means for the author of a bot and what it means for a person who uses or copies the bot, with what that person may do, what they must do when they share the code and what is not promised, with a link to the official text and a link to a fuller explanation, and says that this is not legal advice and that reading a bot or practising against it asks nothing of the person
+    And no license text is held by the program, no bot's configuration file is fetched before the download, and a bot that is already in the download folder shows the license its own configuration file declares
+
+  @RCL-076
+  Scenario: Each bot shows whether it is new, an update, up to date, changed here or no longer active, from a marker file and the catalog's checksum
+    Test-type: Unit
+    Given a download folder with a bot folder that holds the marker file and the catalog's content, one with the marker and an older version, one with the marker whose files the person changed, one without the marker that has the same name as a catalog bot, one with the marker for a bot the catalog now lists as retired, and a catalog bot with no folder
+    When the screen works out the state of each bot
+    Then they are shown as up to date, an update, changed here, kept apart and untouched, no longer active, and new, in that order
+    And what a program leaves in a bot folder when the bot is run, in the folders and with the file endings the bot repository never accepts, does not count as a change
+    And the version is read from the bot's own configuration file and the content check is the same tree checksum the catalog records, and nothing is recorded outside the download folder
+    And a row shows the catalog's version, and also the version in the bot's own configuration file in the folder when the two differ, so a bot the person changed and an earlier download with a newer version in the catalog both show what is in the folder
+
+  @RCL-077
+  Scenario: Downloading places verified bots with the marker, tells the result of each, and never replaces anything that is not an unchanged earlier download
+    Test-type: Unit
+    Given a fake catalog and archive with several bots, one whose content does not match its checksum, one missing from the archive, and a download folder that holds a folder without the marker with the same name as a chosen bot and an earlier unchanged download of another
+    When the person presses Download for all the bots
+    Then each matching bot is placed with an empty marker file and the others are reported by name and version as hash differs or not in the archive, and one failing bot never stops the others
+    And the folder without the marker is left exactly as it was, the unchanged earlier download is replaced by the new version, and a download the person changed is replaced only when the person asks for that bot
+    And the result shows the license each placed bot's own configuration file declares, as written, and the same button opens the explanations and the links of the licenses the Rumble allows from the result screen too
+    And nothing the screen placed is run, built or added to any list of bots to start, and the files of each bot are exactly the files of the catalog's source, including any license file in them
+    And an earlier folder that was moved aside and cannot be put back is never deleted: it is kept whole inside the download folder and the result says where, a work folder that cannot be removed does not hide the bots that were placed, a bot whose folder cannot be read or moved is reported on its own while the others are still placed, and only one download runs at a time, so a screen opened again while a download is still running never moves the same folders at once
+
+  @RCL-078
+  Scenario: Every way a download can fail has its own plain answer and a way on
+    Test-type: Unit
+    Given a catalog that cannot be read, a catalog of a schema version the program does not know, a folder that cannot be written, a network that fails halfway, and an archive with an entry that leaves its folder
+    When the person opens the screen or presses Download
+    Then each is told in its own plain text with a way on, a folder that cannot be written is told before anything is fetched, an interrupted download keeps the bots that were placed and can be continued, and an escaping archive writes nothing outside the chosen folder
+    And an ordinary archive in the same folder is still downloaded normally
+
+  @RCL-079
+  Scenario: The screen never fetches in silence, keeps the window free, and drops a result that arrives after the person has left
+    Test-type: Unit
+    Given a fake catalog and archive whose answers are held back
+    When the screen opens, the person presses Download, goes back or closes the dialog while a call is running
+    Then nothing is fetched before Download is pressed, every call to the catalog, the archive and the disk runs away from the screen's event thread and results arrive in order, and the held-back result of a call that was left is thrown away without changing the screen
+    And a second press of Download while one runs starts nothing new
+    And whatever a call throws, even an error that is not an exception, ends the waiting as a failure with its message shown as details
+
+  @RCL-080
+  Scenario: Every state, result, failure and allowed license of the screen has a text in the resources, only the fixed license pages can be opened, and the warning about other people's code is shown before the download
+    Test-type: Unit
+    Given the resource files of the desktop program and the sources of the screen and its dialog
+    When every state, result, failure and license the Rumble allows is listed from the library and compared with the resource keys
+    Then every one has a non-empty text in the base file and the same keys exist in every language file, no English sentence is written in the screen classes or the dialog, and success and failure are marked in the same way as in the other Rumble screens
+    And every license in the Rumble's allowed list has an explanation and both links, so a newly allowed license without them fails a test, and the fuller explanation opens in the screen's language where that page exists and in English otherwise
+    And the dialog opens a page in the browser from one place only, after checking that the address is one of the library's fixed license addresses, and the warning that downloaded bots are other people's code and not made safe by review is on the screen that offers the download
+
+  @RCL-081
+  Scenario: The Download bots item is in the Rumble menu and is shown only when the Rumble menu is switched on
+    Test-type: Unit
+    Given the Rumble menu switch off and on
+    When the menu bar is built
+    Then the item is in the Rumble menu only, only when the switch is on, and the menu holds no other new item
+    And the dialog's title shows the environment it talks to
+
+  @RCL-082
+  Scenario: The maintainer downloads bots from the test environment with the desktop program
+    Test-type: Human
+    Given the desktop program started with the menu switched on for the test environment and an empty temporary folder chosen as the download folder
+    When the maintainer opens Download bots, reads the explanation of each license and opens its links, picks a few bots and downloads them, changes one of the downloaded bots and opens the screen again
+    Then the explanations can be read and the links open the right pages, the bots are placed with their own files and the result lists each with its declared license, the states say up to date and changed here, nothing outside the folder is touched, every text wraps, choosing a license replaces the explanation without moving the text, and the buttons at the bottom stay in view however long the list is
+    And the observer, the conditions, the observation and the result are recorded in the acceptance brief, the temporary folder is removed afterwards, and no human observation is invented
 ```
