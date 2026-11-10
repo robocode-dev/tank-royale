@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.common.event.Event
+import dev.robocode.tankroyale.gui.booter.BootEntry
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
@@ -20,12 +21,12 @@ import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.EDT.enqueue
-import dev.robocode.tankroyale.gui.util.RefreshWhenShown
 import dev.robocode.tankroyale.rumble.BotIdentity
 import dev.robocode.tankroyale.rumble.DownloadFolders
 import dev.robocode.tankroyale.rumble.KnownLicenses
 import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
+import java.util.concurrent.Executors
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
@@ -85,10 +86,15 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     // The licenses of every bot in the bot directories for the game type, whatever the filter shows, for bots that join on their own.
     private var knownLicenses = KnownLicenses(emptyList())
 
-    // A change of the settings made while New Battle is closed, such as a download adding its folder, is read when New
-    // Battle opens, so the download screen never waits for the bot directories to be read. While New Battle is open,
-    // it is read once the screen that saved has been drawn.
-    private val refreshDirectories = RefreshWhenShown({ isShowing }) { enqueue { updateBotsDirectoryEntries() } }
+    // The bot directories are read each time New Battle opens, so it never shows an older list than the folders hold,
+    // and while it is open again after the settings are saved or a download places bots; while it is closed, such a
+    // change costs nothing. Reading them starts the booter and waits for it, so it happens away from the event thread,
+    // and the screen stays usable meanwhile. Any number of reasons while a reading runs lead to one more reading after
+    // it. The filter is applied to the last reading, so changing it reads nothing.
+    private val directoryReader = Executors.newSingleThreadExecutor { Thread(it, "bot-directory-reader").apply { isDaemon = true } }
+    private var readingDirectories = false
+    private var readDirectoriesAgain = false
+    private var lastEntries: List<BootEntry> = emptyList()
     private var downloadedOpen = false
     private val downloadedHeader = JButton().apply {
         isBorderPainted = false
@@ -177,7 +183,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BootProcess.onBootBot.on(this) { addBootingBot(it) }
         BootProcess.onUnbootBot.on(this) { removeUnbootingBot(it) }
 
-        ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }
+        ConfigSettings.onSaved.on(this) { readBotDirectoriesIfShowing() }
+        BotSelectionEvents.onBotsPlaced.on(this) { readBotDirectoriesIfShowing() }
 
         ServerEvents.onStopped.on(this) { reset() }
     }
@@ -234,7 +241,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
 
     private fun handleFilterChanged() {
-        updateBotsDirectoryEntries()
+        showBotDirectoryEntries(lastEntries)
 
         filterDropdown.model.selectedItem
     }
@@ -253,12 +260,16 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     /**
-     * A bot that joined the battle on its own brings no license, so it is taken from the bot of the same name, version and
-     * authors in the bot directories. When there is none, or several that disagree, the license stays not known.
+     * A bot that joined the battle on its own brings no license and no team members, so they are taken from the bot of
+     * the same name, version and authors in the bot directories. When there is none, or several that disagree, they
+     * stay not known.
      */
     private fun withKnownLicense(botInfo: BotInfo): BotInfo {
-        if (botInfo.license != null) return botInfo
-        return knownLicenses.of(BotIdentity(botInfo.name, botInfo.version, botInfo.authors))?.let { botInfo.copy(license = it) } ?: botInfo
+        val identity = BotIdentity(botInfo.name, botInfo.version, botInfo.authors)
+        return botInfo.copy(
+            license = botInfo.license ?: knownLicenses.of(identity),
+            teamMembers = botInfo.teamMembers ?: knownLicenses.teamMembersOf(identity),
+        )
     }
 
     private fun handleBootBots() {
@@ -435,9 +446,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         // Do nothing
     }
 
+    /** Brings the running and joined bots up to date; the bot directories are read when New Battle opens. */
     fun update() {
         enqueue {
-            updateBotsDirectoryEntries()
             updateRunningBots()
             updateJoinedBots()
 
@@ -445,12 +456,51 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
     }
 
-    private fun updateBotsDirectoryEntries() {
+    /** Reads the bot directories again when New Battle is showing. */
+    private fun readBotDirectoriesIfShowing() {
+        EventQueue.invokeLater { if (isShowing) readBotDirectories() }
+    }
+
+    /** Reads the bot directories away from the event thread and lists their bots. Called on the event thread. */
+    private fun readBotDirectories() {
+        if (readingDirectories) {
+            readDirectoriesAgain = true
+            return
+        }
+        val dirs = BootProcess.botDirs
+        if (dirs.isEmpty()) {
+            showBotDirectoryEntries(emptyList())
+            showNoNotDirectoriesFoundErrorAndShowBotRootDirectoriesConfig()
+            return
+        }
+        readingDirectories = true
+        val gameType = ConfigSettings.gameType.displayName
+        directoryReader.execute {
+            // A reading that fails keeps the lists as they were.
+            val entries = try {
+                BootProcess.info(gameType = gameType, dirs = dirs)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+            EventQueue.invokeLater {
+                readingDirectories = false
+                entries?.let { showBotDirectoryEntries(it) }
+                if (readDirectoriesAgain) {
+                    readDirectoriesAgain = false
+                    readBotDirectories()
+                }
+            }
+        }
+    }
+
+    /** Lists the bots of [entries] that the filter shows, the downloaded ones in their own group. */
+    private fun showBotDirectoryEntries(entries: List<BootEntry>) {
+        lastEntries = entries
         botsDirectoryList.clearSelection()
         botsDirectoryListModel.clear()
         downloadedList.clearSelection()
         downloadedListModel.clear()
-        knownLicenses = KnownLicenses(emptyList())
         val labels = ConfigSettings.botDirectoryLabels
 
         val (botsOnly: Boolean, teamsOnly: Boolean) = when (filterDropdown.selectedItem) {
@@ -459,25 +509,12 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             else -> Pair(false, false)
         }
 
-        // The group's header follows the lists however this ends, also when there are no bot directories left.
-        try {
-            fillBotsDirectoryLists(labels, botsOnly, teamsOnly)
-        } finally {
-            downloadedNames = DownloadFolders.shownNames(downloadedListModel.list().map { it.host })
-            showDownloaded(downloadedOpen)
-        }
-    }
-
-    private fun fillBotsDirectoryLists(labels: Map<String, String>, botsOnly: Boolean, teamsOnly: Boolean) {
-        if (BootProcess.botDirs.isEmpty()) {
-            showNoNotDirectoriesFoundErrorAndShowBotRootDirectoriesConfig()
-            return
-        }
-
-        // Every bot for the game type is read, so the licenses are known whatever the filter shows; the filter is applied
-        // here the same way the booter applies it.
-        val entries = BootProcess.info()
-        knownLicenses = KnownLicenses(entries.map { BotIdentity(it.name, it.version, it.authors) to it.license })
+        // Every bot for the game type is read, so the licenses and team members are known whatever the filter shows; the
+        // filter is applied here the same way the booter applies it.
+        knownLicenses = KnownLicenses(
+            entries.map { BotIdentity(it.name, it.version, it.authors) to it.license },
+            entries.map { BotIdentity(it.name, it.version, it.authors) to (it.teamMembers ?: emptyList()) },
+        )
         entries.filter { !(botsOnly && it.isTeam) && !(teamsOnly && !it.isTeam) }.forEach { botEntry ->
             val model = if (DownloadFolders.isDownloaded(botEntry.dir, labels)) downloadedListModel else botsDirectoryListModel
             botEntry.apply {
@@ -494,24 +531,27 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                         programmingLang,
                         host = botEntry.dir, // host serves as filename here
                         license = license ?: "",
+                        teamMembers = teamMembers ?: emptyList(),
                     )
                 )
             }
-            EventQueue.invokeLater {
-                botsDirectoryScrollPane.horizontalScrollBar.apply {
-                    value = maximum
-                }
+        }
+        EventQueue.invokeLater {
+            botsDirectoryScrollPane.horizontalScrollBar.apply {
+                value = maximum
             }
         }
+        downloadedNames = DownloadFolders.shownNames(downloadedListModel.list().map { it.host })
+        showDownloaded(downloadedOpen)
     }
 
     /**
      * New Battle is opening: the group of downloaded bots is closed, so the person's own bots come first, and the bot
-     * directories are read again when the settings changed while New Battle was closed.
+     * directories are read again, so bots placed while New Battle was closed are listed.
      */
     fun opened() {
         showDownloaded(false)
-        refreshDirectories.shown()
+        readBotDirectories()
     }
 
     private fun enforceBotDirIsConfigured() {

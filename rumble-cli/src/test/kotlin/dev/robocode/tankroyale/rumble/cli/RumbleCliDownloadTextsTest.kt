@@ -221,7 +221,7 @@ class RumbleCliDownloadTextsTest {
         val dialog = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/NewBattleDialog.kt")
         assertTrue(dialog.contains("if (visible && !isVisible) BotSelectionPanel.opened()"), "closed each time New Battle opens")
         val opened = panel.substringAfter("fun opened() {").substringBefore("}")
-        assertTrue(opened.contains("showDownloaded(false)") && opened.contains("refreshDirectories.shown()"), "closed, and read again when the settings changed while New Battle was closed")
+        assertTrue(opened.contains("showDownloaded(false)") && opened.contains("readBotDirectories()"), "closed, and the bot directories read again each time New Battle opens")
     }
 
     @Test
@@ -237,8 +237,14 @@ class RumbleCliDownloadTextsTest {
         assertTrue(download.contains("DownloadFolders.rememberAfterDownload("), "a folder that cannot be looked into or saved leaves the screen showing what the download did")
         assertTrue(download.contains("FolderOutcome.NOT_LISTED, null -> text(\"rumble.download.add_folder_hint\")"), "a folder not in the bot directories when nothing was placed gets the hint to add it by hand")
         val panel = code(newBattleFile)
-        assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }") && panel.contains("RefreshWhenShown({ isShowing })"),
-            "New Battle reads the bot directories after a download only when it is open, so the download screen never waits for it")
+        assertTrue(download.contains("if (placed) SwingUtilities.invokeLater { BotSelectionEvents.onBotsPlaced(Unit) }") && panel.contains("BotSelectionEvents.onBotsPlaced.on(this) { readBotDirectoriesIfShowing() }"),
+            "a download that places bots in a folder already listed, which changes no setting, still brings an open New Battle up to date, also when saving failed")
+        assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { readBotDirectoriesIfShowing() }") && panel.contains("EventQueue.invokeLater { if (isShowing) readBotDirectories() }"),
+            "New Battle reads the bot directories after a change only when it is open, so the download screen never waits for it")
+        assertTrue(panel.contains("directoryReader.execute {") && panel.contains("BootProcess.info(gameType = gameType, dirs = dirs)"),
+            "the booter is started away from the event thread, with the settings read on it")
+        assertTrue(panel.contains("readDirectoriesAgain = true") && panel.contains("showBotDirectoryEntries(lastEntries)"),
+            "several reasons while a reading runs lead to one more reading, and changing the filter reads nothing")
         listOf("ADDED", "ADDED_AS_OWN", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF", "NOT_REMEMBERED", "COMMA_IN_PATH").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
         assertTrue(download.contains("DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)"), "the suggestion skips download folders")
         val settings = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/config/BotRootDirectoriesConfigDialog.kt")
@@ -268,12 +274,53 @@ class RumbleCliDownloadTextsTest {
         assertTrue(panel.contains("BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it))") && panel.contains("BotSelectionEvents.onBotSelected(withKnownLicense(it))"),
             "a joined bot shows the same license in Joined Bots and in Selected Bots")
         assertTrue(panel.contains("license = license ?: \"\""), "a bot in the bot directories with no license says so; null is kept for not known")
-        assertTrue(panel.contains("knownLicenses.of(BotIdentity(botInfo.name, botInfo.version, botInfo.authors))"), "the license of the bot with the same name, version and authors")
-        assertTrue(panel.contains("val entries = BootProcess.info()") && panel.contains("knownLicenses = KnownLicenses(entries.map"), "taken from every bot, whatever the filter shows")
+        assertTrue(panel.contains("license = botInfo.license ?: knownLicenses.of(identity)") && panel.contains("teamMembers = botInfo.teamMembers ?: knownLicenses.teamMembersOf(identity)"),
+            "the license and team members of the bot with the same name, version and authors")
+        assertTrue(panel.contains("knownLicenses = KnownLicenses(\n            entries.map"), "taken from every bot, whatever the filter shows")
         val strings = listOf("bot_info.license", "bot_info.no_license", "bot_info.license_unknown", "rumble_downloads_label", "rumble_downloads_group", "bot_root_dirs.labelled", "bot_info.show_license")
         languages.forEach { suffix ->
             val file = Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings$suffix.properties"), Charsets.UTF_8).use { load(it) } }
             assertEquals(emptyList<String>(), strings.filter { file.getProperty(it).isNullOrBlank() }, "Strings$suffix")
         }
+    }
+
+    @Test
+    @Tag("RCL-095")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL095_UnitPositive_botInfoShowsTheCopyLevelAsAShapeAndWordsAndATeamsMembers() {
+        val info = code(botInfoFile)
+        assertTrue(info.contains("val level = CopyLevels.of(botInfo?.license)"), "the level is worked out by the shared library from the declared license")
+        assertTrue(info.contains("copyLevelLabel.text = level?.let { CopyLevelTexts.words(it) }.orEmpty()") && info.contains("copyLevelLabel.icon = level?.let { CopyLevelIcon(it) }"),
+            "shown as words and a shape, never as colour alone")
+        assertTrue(info.contains("copyLevelLabel.isVisible = level != null"), "no level when the license is not known")
+        assertTrue(info.contains("toolTipText = Strings.get(\"bot_info.copy_level.tooltip\")"), "the tooltip says it is a reading aid and not legal advice")
+        assertTrue(info.contains("addLabel(\"bot_info.team_members\"") && info.contains("members.joinToString(\", \")"), "a team's members in order, as its file names them")
+        assertTrue(info.contains("Strings.get(\"bot_info.not_a_team\")") && info.contains("Strings.get(\"bot_info.team_members_unknown\")"))
+        val texts = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/CopyLevelTexts.kt")
+        listOf("FREE_TO_COPY -> g2.fillOval", "COPY_WITH_CONDITIONS -> g2.fillPolygon", "DO_NOT_COPY -> g2.fillRect").forEach { assertTrue(texts.contains(it), "a shape for $it") }
+        assertTrue(code(newBattleFile).contains("teamMembers = teamMembers ?: emptyList()"), "a bot in the bot directories that is not a team says so; null is kept for not known")
+        val download = code(dialogFile)
+        assertTrue(download.contains("text(\"rumble.download.row_license\", it, CopyLevelTexts.wordsOf(it))") && download.contains("text(\"rumble.download.license_of\", it, CopyLevelTexts.wordsOf(it))"),
+            "the Download bots screen shows the same level beside each bot's license")
+    }
+
+    @Test
+    @Tag("RCL-095")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL095_UnitNegative_noTextOfTheLevelOrTheTeamRowIsMissingFromAnyLanguageFile() {
+        val strings = listOf("bot_info.team_members", "bot_info.not_a_team", "bot_info.team_members_unknown", "bot_info.copy_level.free_to_copy",
+            "bot_info.copy_level.copy_with_conditions", "bot_info.copy_level.do_not_copy", "bot_info.copy_level.tooltip")
+        languages.forEach { suffix ->
+            val file = Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings$suffix.properties"), Charsets.UTF_8).use { load(it) } }
+            assertEquals(emptyList<String>(), strings.filter { file.getProperty(it).isNullOrBlank() }, "Strings$suffix")
+            val messages = Properties().apply { Files.newInputStream(root.resolve("gui/src/main/resources/Messages$suffix.properties")).use { load(it) } }
+            listOf("rumble.download.row_license", "rumble.download.license_of").forEach {
+                assertEquals(2, Regex("%s").findAll(messages.getProperty(it).orEmpty()).count(), "Messages$suffix $it holds the license and its level")
+            }
+        }
+        assertTrue(Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings.properties"), Charsets.UTF_8).use { load(it) } }
+            .getProperty("bot_info.copy_level.tooltip").contains("not legal advice"), "the tooltip says the level is not legal advice")
     }
 }

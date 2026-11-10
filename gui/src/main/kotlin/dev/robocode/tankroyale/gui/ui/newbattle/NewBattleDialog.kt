@@ -42,7 +42,7 @@ object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
 
     /**
      * Each time New Battle opens, the group of downloaded bots starts closed, so the person's own bots come first, and
-     * the bot directories are read again if they changed while it was closed.
+     * the bot directories are read again.
      */
     override fun setVisible(visible: Boolean) {
         if (visible && !isVisible) BotSelectionPanel.opened()
