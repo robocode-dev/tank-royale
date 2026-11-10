@@ -6,8 +6,8 @@ links: [CH-094]
 title: Add downloaded bots to the bot directories with a label and show them as a group in New Battle
 ---
 
-- [ ] Settle the open questions with the maintainer.
-- [ ] Reserve identities and write the acceptance criteria for adding the folder, keeping the labels beside the existing setting, the group in New Battle, the default folder, and the texts.
+- [x] Settle the open questions with the maintainer.
+- [x] Reserve identities and write the acceptance criteria for adding the folder, keeping the labels beside the existing setting, the group in New Battle, the default folder, and the texts.
 - [ ] Keep labels of bot directories in a setting of their own, read and written without changing the existing setting.
 - [ ] Add the folder to the bot directories with its label when the screen places a bot there, and say so on the result screen.
 - [ ] Show the label in the Bot Root Directories dialog.

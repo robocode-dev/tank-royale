@@ -740,4 +740,47 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer opens Download bots, sees which platforms are ticked, ticks Python, sets it up, downloads the bots and starts a downloaded Python bot and a downloaded Java bot in a battle
     Then the ticks match what the computer has, the dialog says what was missing, the setup ends with success, and both bots start and play
     And the observer, the conditions, the observation and what was not observed are recorded in the merge commit, the temporary folder is removed afterwards, and no human observation is invented
+  @RCL-089
+  Scenario: Labels of bot directories are kept beside the existing setting, which is read and written as before
+    Test-type: Unit
+    Given a setting of bot directories, each switched on or off, and labels for some of them
+    When the labels are written and read again, and the same folder is written with other slashes, a trailing slash or, on Windows, other letter case
+    Then the setting of bot directories is exactly what it was, every directory and its switch kept, so an older version of the program reads the same bot directories
+    And each label comes back for its folder, the same folder written another way has the same label, and text that is not a pair of path and label is ignored without losing the others
+    And a label whose folder was removed from the bot directories is dropped when the bot directories are saved
+
+  @RCL-090
+  Scenario: The download folder is added to the bot directories with its label once a bot is placed there, and never moves the suggested folder
+    Test-type: Unit
+    Given bot directories of the person's own, and a download that placed bots in a folder
+    When the folder is remembered after the download
+    Then a folder not yet in the bot directories is added at the end, switched on and labelled as downloaded from the Rumble, a folder already there keeps its place and its switch and gets the label, and the result says which of the two happened in one line
+    And nothing is added when the download placed no bot
+    And the suggested download folder is worked out from the first of the person's own switched-on bot directories, skipping labelled download folders, so it stays where it was when a download folder is added
+
+  @RCL-091
+  Scenario: New Battle shows the bots of labelled download folders as their own group after the person's own bots
+    Test-type: Unit
+    Given bot entries from the person's own bot directories and from a labelled download folder
+    When New Battle lists them
+    Then the person's own bots are listed first as before, and the downloaded bots follow under a header row with the label and their number, each shown by its own folder name
+    And the header row sits outside the list of the person's own bots, so it is in view however that list is scrolled, the group is closed each time New Battle opens and opens or closes when the header is clicked, and its bots can be booted like any other
+    And without a labelled folder there is no header row and the list is exactly as before
+
+  @RCL-092
+  Scenario: Bot Info shows the license a bot declares, and links a standard license to its official text
+    Test-type: Unit
+    Given bots from the bot directories that declare a standard license, another license text or none, and a bot that joined the battle on its own
+    When the person selects each in New Battle
+    Then Bot Info shows the declared license as written, or that no license is declared, and a standard SPDX license identifier links to its page on the SPDX license list, which is the only address the field opens
+    And a bot that joined on its own shows the license of the bot of the same name and version in the bot directories, or that its license is not known
+    And every text of the field and of the group is in every language file
+
+  @RCL-093
+  Scenario: The maintainer finds downloaded bots in New Battle and reads their license
+    Test-type: Human
+    Given the desktop program started with the menu switched on for the test environment
+    When the maintainer downloads bots into a new folder, opens New Battle, opens the group of downloaded bots, selects a bot, boots it, and closes and opens New Battle again
+    Then the result says that the folder was added, the group shows the downloaded bots by name after the person's own bots, Bot Info shows the bot's license, the bot boots, and the group is closed again
+    And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
 ```
