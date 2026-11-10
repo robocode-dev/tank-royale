@@ -494,6 +494,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                         programmingLang,
                         host = botEntry.dir, // host serves as filename here
                         license = license ?: "",
+                        teamMembers = teamMembers ?: emptyList(),
                     )
                 )
             }

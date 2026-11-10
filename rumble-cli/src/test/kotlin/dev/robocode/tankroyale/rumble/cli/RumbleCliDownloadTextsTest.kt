@@ -276,4 +276,44 @@ class RumbleCliDownloadTextsTest {
             assertEquals(emptyList<String>(), strings.filter { file.getProperty(it).isNullOrBlank() }, "Strings$suffix")
         }
     }
+
+    @Test
+    @Tag("RCL-095")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL095_UnitPositive_botInfoShowsTheCopyLevelAsAShapeAndWordsAndATeamsMembers() {
+        val info = code(botInfoFile)
+        assertTrue(info.contains("val level = CopyLevels.of(botInfo?.license)"), "the level is worked out by the shared library from the declared license")
+        assertTrue(info.contains("copyLevelLabel.text = level?.let { CopyLevelTexts.words(it) }.orEmpty()") && info.contains("copyLevelLabel.icon = level?.let { CopyLevelIcon(it) }"),
+            "shown as words and a shape, never as colour alone")
+        assertTrue(info.contains("copyLevelLabel.isVisible = level != null"), "no level when the license is not known")
+        assertTrue(info.contains("toolTipText = Strings.get(\"bot_info.copy_level.tooltip\")"), "the tooltip says it is a reading aid and not legal advice")
+        assertTrue(info.contains("addLabel(\"bot_info.team_members\"") && info.contains("members.joinToString(\", \")"), "a team's members in order, as its file names them")
+        assertTrue(info.contains("Strings.get(\"bot_info.not_a_team\")") && info.contains("Strings.get(\"bot_info.team_members_unknown\")"))
+        val texts = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/CopyLevelTexts.kt")
+        listOf("FREE_TO_COPY -> g2.fillOval", "COPY_WITH_CONDITIONS -> g2.fillPolygon", "DO_NOT_COPY -> g2.fillRect").forEach { assertTrue(texts.contains(it), "a shape for $it") }
+        assertTrue(code(newBattleFile).contains("teamMembers = teamMembers ?: emptyList()"), "a bot in the bot directories that is not a team says so; null is kept for not known")
+        val download = code(dialogFile)
+        assertTrue(download.contains("text(\"rumble.download.row_license\", it, CopyLevelTexts.wordsOf(it))") && download.contains("text(\"rumble.download.license_of\", it, CopyLevelTexts.wordsOf(it))"),
+            "the Download bots screen shows the same level beside each bot's license")
+    }
+
+    @Test
+    @Tag("RCL-095")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL095_UnitNegative_noTextOfTheLevelOrTheTeamRowIsMissingFromAnyLanguageFile() {
+        val strings = listOf("bot_info.team_members", "bot_info.not_a_team", "bot_info.team_members_unknown", "bot_info.copy_level.free_to_copy",
+            "bot_info.copy_level.copy_with_conditions", "bot_info.copy_level.do_not_copy", "bot_info.copy_level.tooltip")
+        languages.forEach { suffix ->
+            val file = Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings$suffix.properties"), Charsets.UTF_8).use { load(it) } }
+            assertEquals(emptyList<String>(), strings.filter { file.getProperty(it).isNullOrBlank() }, "Strings$suffix")
+            val messages = Properties().apply { Files.newInputStream(root.resolve("gui/src/main/resources/Messages$suffix.properties")).use { load(it) } }
+            listOf("rumble.download.row_license", "rumble.download.license_of").forEach {
+                assertEquals(2, Regex("%s").findAll(messages.getProperty(it).orEmpty()).count(), "Messages$suffix $it holds the license and its level")
+            }
+        }
+        assertTrue(Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings.properties"), Charsets.UTF_8).use { load(it) } }
+            .getProperty("bot_info.copy_level.tooltip").contains("not legal advice"), "the tooltip says the level is not legal advice")
+    }
 }

@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.util.Browser
+import dev.robocode.tankroyale.rumble.CopyLevels
 import dev.robocode.tankroyale.rumble.LicenseLinks
 import dev.robocode.tankroyale.gui.ui.components.RcHtmlPane
 import dev.robocode.tankroyale.gui.ui.components.RcNonEditableTextArea
@@ -26,6 +27,11 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     private val platformTextField = RcNonEditableTextField()
     private val programmingLangTextField = RcNonEditableTextField()
     private val licenseTextField = RcNonEditableTextField()
+    private val teamMembersTextField = RcNonEditableTextField()
+
+    // The copy level beside the license, as a shape and words, never as colour alone. It is a reading aid for what the
+    // bot declares, which its tooltip says.
+    private val copyLevelLabel = JLabel().apply { toolTipText = Strings.get("bot_info.copy_level.tooltip") }
 
     // The official text of the license opens from a button people can see, not from a hidden link in a read-only field.
     // It is active only when the license is an identifier on the SPDX License List, whose official page it opens; the
@@ -53,8 +59,9 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         add(homepageTextPane, "cell 1 3, growx")
 
         addLabel("bot_info.license", "cell 0 4")
-        add(JPanel(MigLayout("insets 0, fillx", "[grow, fill][]")).apply {
+        add(JPanel(MigLayout("insets 0, fillx", "[grow, fill][][]")).apply {
             add(licenseTextField, "growx")
+            add(copyLevelLabel)
             add(showLicenseButton)
         }, "cell 1 4, growx")
 
@@ -73,6 +80,9 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
         addLabel("bot_info.country_codes", "cell 3 3")
         add(countryCodesTextPane, "cell 4 3, growx")
+
+        addLabel("bot_info.team_members", "cell 3 4")
+        add(teamMembersTextField, "cell 4 4, growx")
 
         homepageTextPane.addHyperlinkListener {
             if (it.eventType == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
@@ -102,6 +112,17 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         licenseTextField.text = licenseText(botInfo)
         licensePage = LicenseLinks.spdxPage(botInfo?.license)
         showLicenseButton.isEnabled = licensePage != null
+        val level = CopyLevels.of(botInfo?.license)
+        copyLevelLabel.text = level?.let { CopyLevelTexts.words(it) }.orEmpty()
+        copyLevelLabel.icon = level?.let { CopyLevelIcon(it) }
+        copyLevelLabel.isVisible = level != null
+        teamMembersTextField.text = teamMembersText(botInfo)
+    }
+
+    /** A team's members by name, in order, as its configuration file names them, or that it is not a team or not known. */
+    private fun teamMembersText(botInfo: BotInfo?): String {
+        val members = botInfo?.teamMembers ?: return if (botInfo == null) "" else Strings.get("bot_info.team_members_unknown")
+        return if (members.isEmpty()) Strings.get("bot_info.not_a_team") else members.joinToString(", ")
     }
 
     /** The license as the bot declares it, or that it declares none, or that it is not known for a bot that joined on its own. */

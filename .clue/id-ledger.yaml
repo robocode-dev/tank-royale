@@ -1233,6 +1233,9 @@ events:
     - {id: CH-095, kind: numeric, state: live, prefix: CH, component: "95"}
     - {id: CH-095-tasks, kind: opaque, state: live}
     - {id: CH-095-open-questions, kind: opaque, state: live}
+    - {id: RCL-094, kind: numeric, state: live, prefix: RCL, component: "94"}
+    - {id: RCL-095, kind: numeric, state: live, prefix: RCL, component: "95"}
+    - {id: RCL-096, kind: numeric, state: live, prefix: RCL, component: "96"}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

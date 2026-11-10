@@ -787,4 +787,30 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer downloads bots into a new folder, opens New Battle, opens the group of downloaded bots, selects a bot, boots it, and closes and opens New Battle again
     Then the result says that the folder was added, the group shows the downloaded bots by name after the person's own bots, Bot Info shows the bot's license, the bot boots, and the group is closed again
     And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
+
+  @RCL-094
+  Scenario: The copy level is worked out from the license a bot declares
+    Test-type: Unit
+    Given licenses as bots declare them: permissive and copyleft licenses on the Blue Oak Council's lists, permissive licenses the council rates Lead, Creative Commons licenses, deprecated SPDX identifiers, expressions, unknown licenses and none
+    When the shared library works out their copy level
+    Then a permissive license rated Model, Gold, Silver or Bronze is free to copy, in any letter case; a copyleft license, a permissive license rated Lead and a Creative Commons attribution or share-alike license are copy with conditions; and a deprecated identifier gets the level of the identifier it stands for
+    And an OR expression is at the level of its most permissive choice, an AND expression at the level of its most careful part, and a WITH expression at the level of its license
+    And no license, an empty license, a license on neither list, a Creative Commons non-commercial or no-derivatives license and an expression with parentheses are do not copy, and a license that is not known has no level
+
+  @RCL-095
+  Scenario: Bot Info shows the copy level and a team's members, and the Download bots screen shows the level
+    Test-type: Unit
+    Given bots from the bot directories with different licenses, a team and a bot that joined the battle on its own
+    When the person selects each in New Battle, and the Download bots screen lists bots and their results
+    Then Bot Info shows the copy level after the license as a shape and words, never as colour alone, with a tooltip saying that the level reads only what the bot declares and is not legal advice, and no level when the license is not known
+    And a Team members row lists a team's members by name in order as its configuration file names them, a repeated member each time, or says that the bot is not a team, or that its members are not known
+    And the Download bots screen shows the same level beside each bot's license in its list and results, and every text is in every language file
+
+  @RCL-096
+  Scenario: The maintainer reads the copy levels and a team's members
+    Test-type: Human
+    Given the desktop program started with the menu switched on for the test environment
+    When the maintainer selects a downloaded bot and bots of their own with different licenses, and a team such as MyFirstTeam, in New Battle, and opens the Download bots screen
+    Then Bot Info shows each bot's copy level as a shape and words with its tooltip, the team's members, and the Download bots screen shows the level beside each license
+    And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
 ```

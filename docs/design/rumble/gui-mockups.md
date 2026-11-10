@@ -253,6 +253,8 @@ License levels, always shown as an icon and words, never colour alone:
                         no-derivatives or non-commercial license: all rights are reserved
 ```
 
+As built, the levels come from the Blue Oak Council's lists of permissive licenses (Model to Bronze are free to copy, Lead is copy with conditions) and copyleft licenses (copy with conditions); Creative Commons attribution licenses are copy with conditions and their non-commercial and no-derivatives forms do not copy. The shape is drawn in the text colour beside the words, and the Show button beside it opens the license's SPDX page. The Team members row lists the names as the team's configuration file gives them, in order, a repeated member each time, as the original Robocode's `team.members` does; the Folder row and the link to the full description are not built yet.
+
 The level is a reading aid for the license the bot itself declares; the panel cannot check that the declaration is true, and it is not legal advice. The tooltip says so and links to the license text. A bot with no `license` field shows "No license declared" at the do-not-copy level, because the law's default is that nobody may copy it. Bots accepted into the Rumble always carry an allowed license, so a downloaded bot is never at the do-not-copy level; a local bot can be. The Download bots screen uses the same levels beside each bot's license. A team's members are listed by name and version. The folder row tells the person whether a bot is their own or downloaded, which also separates two bots with the same name. The description stays cut to three lines in the panel, with a link that opens the full text.
 
 ## Contribute battles
