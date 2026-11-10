@@ -21,11 +21,11 @@
 
 - Every text a person sees in the GUI (labels, buttons, titles, menu items, messages, error texts, tooltips) is a **resource**, never a string literal in code. Use `Strings`, `Messages`, `MenuTitles`, `UiTitles`, `Hints` and `About` (`gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/ResourceBundles.kt`) with the files in `gui/src/main/resources`.
 - Choose the file by kind: `Menu` (menus and their items), `UI titles` (window and dialog titles), `Messages` (messages and dialog texts), `Strings` (labels), `Hints` (tooltips), `About`.
-- Every new key goes in the base file and in all language files (`_ca`, `_da`, `_es`); `PropertiesConsistencyTest` requires the same keys everywhere. Text that is not translated yet is written in English with the comment `(English until translated)`.
+- Every new key goes in the base file and in all language files (`_ca`, `_da`, `_es`); `PropertiesConsistencyTest` requires the same keys everywhere. **Write the translation yourself** in the same change: Catalan, Danish and Spanish, in plain everyday language, keeping every placeholder (`%s`, `%d`, `%1$s`) and every piece of markup. Never leave English text as a placeholder for a later translation. English is only the program's fallback when a key is missing, and a key is never missing. Use the names the GUI already uses in each language for menus and windows (for example New Battle and Config, Bot Root Directories), and keep product names such as Rumble, GitHub, Bot API and pull request as they are.
 - Logic outside Swing (behavior classes, libraries) returns codes or keys, never English sentences; the GUI turns them into resource texts. A sentence from a lower layer may be shown only as a labelled detail line.
 - Parameters in texts use `String.format` (`%s`, `%d`). Pure formats such as `m:ss` and markup are not text.
 - **Texts must wrap.** A sentence in a window must wrap at the window's edge and never run out over it, because translations are longer than English and any line may become too long. Use a wrapping component (a read-only, transparent `JTextArea` with `lineWrap` and `wrapStyleWord`, or an HTML label with a width) and give each component the width of the window and no more (in MigLayout, `growx, wmin 10`). Never rely on a single-line `JLabel` for a sentence. Check a new window with a long text before handing it over.
-- Some language files are ISO-8859-1 although `standards.md` says UTF-8 (Java reads both). Add plain ASCII only, or keep the file's encoding.
+- All language files are UTF-8, as `standards.md` says. Java reads a `.properties` file as UTF-8 and falls back to ISO-8859-1 only for a whole file that is not valid UTF-8, so a file must never mix the two.
 
 ## Python Conventions
 
