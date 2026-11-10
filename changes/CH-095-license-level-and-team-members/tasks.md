@@ -12,4 +12,4 @@ title: Show a copy level beside every bot's license and a team's members in Bot 
 - [x] Show the level with its tooltip and the Team members row in Bot Info, and the level on the Download bots screen.
 - [x] Update the participation design, the mockups and the plan.
 - [x] Run the tests, the fixture check, evidence and validation, and build the jar.
-- [ ] Hand the maintainer the manual check.
+- [x] Hand the maintainer the manual check.
