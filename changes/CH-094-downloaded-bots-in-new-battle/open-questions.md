@@ -3,16 +3,16 @@ id: CH-094-open-questions
 type: open-questions
 status: open
 links: [CH-094]
-title: Adding the folder by itself, the Bot Info slice, and how the group remembers being open
+title: Adding the folder by itself, the copy-permission level, and how the group remembers being open
 ---
 
 ## Is the folder added by itself, or only when the person ticks a box?
 
 Recommendation: by itself, with one line on the result screen saying that the folder was added and where to switch it off. The plan and the mockups promise it, and the person never has to visit the settings to practise. The alternative is a ticked box "Use these bots in New Battle" on the result screen.
 
-## Is the Bot Info panel part of this change?
+## Does Bot Info show only the license, or also its copy-permission level and a team's members?
 
-The plan item also asks for the license with a copy-permission level and a team's members in New Battle's Bot Info panel. Recommendation: a change of its own right after this one. It concerns every bot, not only downloaded ones, it needs its own reading of licenses, and two smaller changes are easier to try and review than one large one.
+The maintainer asked for a field in Bot Info that shows which license applies, and it is part of this change. The plan item also asks for a copy-permission level beside it (free to copy, copy with conditions, do not copy) and a team's members. Recommendation: the license as written now, and the level and the team's members in a change of their own. The level needs its own reading of licenses beyond the four the Rumble allows, and a license field alone already answers the question of which license applies.
 
 ## Does the group remember whether it was open?
 
