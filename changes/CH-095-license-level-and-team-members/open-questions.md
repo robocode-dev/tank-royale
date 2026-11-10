@@ -6,9 +6,11 @@ links: [CH-095]
 title: The licenses on each level, the Download bots screen, and how team members are written
 ---
 
-## Are the licenses on the two lists the right ones?
+## Which licenses are on each level?
 
-Recommendation: the lists in the proposal. Free to copy: MIT, MIT-0, BSD-2-Clause, BSD-3-Clause, Apache-2.0, ISC, Zlib, BSL-1.0, Unlicense, 0BSD, CC0-1.0. Copy with conditions: GPL-2.0, GPL-3.0, LGPL-2.1, LGPL-3.0 and AGPL-3.0 in their `-only` and `-or-later` forms and the deprecated forms without a suffix, MPL-2.0, EPL-2.0, EUPL-1.2, CC-BY-4.0 and CC-BY-SA-4.0. Everything else is at the do-not-copy level. The lists cover the licenses the Rumble allows and the ones bot authors commonly use; a license missing from them only shows a more careful level.
+The maintainer asked for the lists to be checked online rather than written from the best-known licenses. The Blue Oak Council, a council of licensing lawyers, publishes a list of 225 permissive licenses rated Model, Gold, Silver, Bronze and Lead (version 16) and a guide to 61 copyleft licenses in four kinds, weak, strong, network and maximal (version 11), both as data under SPDX identifiers. The proposal now takes its levels from those lists.
+
+Still open: the level of the 72 permissive licenses the council rates Lead, which "lack one or more essential elements of permissive open software licenses or impose unusually burdensome requirements", such as WTFPL, Beerware and the Artistic License 1.0. Recommendation: copy with conditions, because the reader must read them before copying. The alternatives are free to copy, which hides their odd terms, and do not copy, which is wrong for licenses meant to let people copy.
 
 ## Does the Download bots screen show the level too?
 
@@ -16,4 +18,4 @@ Recommendation: yes, beside each bot's license in the list and the results, as t
 
 ## How are a team's members written?
 
-Recommendation: the names the team's configuration file gives, in order, with a repeated member written once with its count: `MyFirstLeader, MyFirstDroid (4)`. The mockups say "by name and version", but the configuration file names members only by their bot folder, so the version would have to be looked up in each member's own folder. The alternative is every name as written, `MyFirstLeader, MyFirstDroid, MyFirstDroid, MyFirstDroid, MyFirstDroid`.
+Decided by the maintainer: names in order, after checking how the original Robocode does it. The original Robocode keeps a team's members in its `team.members` setting as a comma-separated list of names, each repeated member written each time, such as `sampleteam.MyFirstLeader,sampleteam.MyFirstDroid,sampleteam.MyFirstDroid,sampleteam.MyFirstDroid,sampleteam.MyFirstDroid`, and its robot description panel does not show the members. Bot Info therefore lists the names exactly as the team's configuration file gives them, in order, a repeated member each time. The recommendation was to write a repeated member once with its count.
