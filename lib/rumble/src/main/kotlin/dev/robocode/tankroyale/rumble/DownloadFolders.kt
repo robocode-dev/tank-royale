@@ -29,8 +29,11 @@ enum class FolderOutcome {
     /** Nothing was placed, and the folder is not among the bot directories; nothing was changed. */
     NOT_LISTED,
 
-    /** A bot was placed, but the folder could not be looked into or the settings could not be read or written. */
+    /** A bot was placed, but the settings could not be read or written. */
     NOT_REMEMBERED,
+
+    /** A bot was placed, but the folder's path holds a comma, which the setting of bot directories cannot hold; nothing was changed. */
+    COMMA_IN_PATH,
 }
 
 /** The bot directories and their labels after a download folder was remembered, and what that did. */
@@ -100,6 +103,7 @@ object DownloadFolders {
         if (existing == null) {
             return when {
                 !placed -> RememberedFolder(folders, labels, FolderOutcome.NOT_LISTED)
+                ',' in folder.toString() -> RememberedFolder(folders, labels, FolderOutcome.COMMA_IN_PATH)
                 onlyDownloads -> RememberedFolder(folders + BotFolderSetting(folder.toString(), true), labels + (key to LABEL), FolderOutcome.ADDED)
                 else -> RememberedFolder(folders + BotFolderSetting(folder.toString(), true), labels - key, FolderOutcome.ADDED_AS_OWN)
             }
@@ -113,9 +117,10 @@ object DownloadFolders {
 
     /**
      * Remembers [folder] after a download as [remember] does, reading the settings with [read] and writing them with
-     * [save]. When the folder cannot be looked into or the settings cannot be read or written, nothing is remembered,
-     * [onFailure] is told why, so it can be logged, and the result is null, so the screen still shows what the download
-     * did and asks the person to add the folder by hand.
+     * [save] only when a bot was [placed]. The folder is looked into with [onlyDownloads] only when that decides
+     * anything, that is when a bot was placed and the folder is not labelled already; a folder that cannot be looked
+     * into is taken to hold bots of the person's own, so it never gets the label. When the settings cannot be read or
+     * written, nothing is remembered and the result is null. Every failure is told to [onFailure], so it can be logged.
      */
     fun rememberAfterDownload(
         folder: Path, onlyDownloads: () -> Boolean,
@@ -126,11 +131,14 @@ object DownloadFolders {
         placed: Boolean = true,
     ): FolderOutcome? = try {
         val (folders, labels) = read()
-        if (placed) {
-            remember(folders, labels, folder, onlyDownloads(), ignoreCase).also(save).outcome
-        } else {
-            remember(folders, labels, folder, ignoreCase = ignoreCase, placed = false).outcome
+        val lookInto = placed && !isLabelled(folder.toString(), labels, ignoreCase)
+        val only = lookInto && try {
+            onlyDownloads()
+        } catch (e: Exception) {
+            onFailure(e)
+            false
         }
+        remember(folders, labels, folder, only, ignoreCase, placed).also { if (placed) save(it) }.outcome
     } catch (e: Exception) {
         onFailure(e)
         null

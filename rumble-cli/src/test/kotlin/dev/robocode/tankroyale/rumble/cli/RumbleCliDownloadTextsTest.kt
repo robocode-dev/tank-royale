@@ -239,7 +239,7 @@ class RumbleCliDownloadTextsTest {
         val panel = code(newBattleFile)
         assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }") && panel.contains("RefreshWhenShown({ isShowing })"),
             "New Battle reads the bot directories after a download only when it is open, so the download screen never waits for it")
-        listOf("ADDED", "ADDED_AS_OWN", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF", "NOT_REMEMBERED").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
+        listOf("ADDED", "ADDED_AS_OWN", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF", "NOT_REMEMBERED", "COMMA_IN_PATH").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
         assertTrue(download.contains("DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)"), "the suggestion skips download folders")
         val settings = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/config/BotRootDirectoriesConfigDialog.kt")
         assertTrue(settings.contains("if (visible && !isVisible) BotDirectoryConfigPanel.reload()"), "the dialog reads the bot directories again each time it opens")

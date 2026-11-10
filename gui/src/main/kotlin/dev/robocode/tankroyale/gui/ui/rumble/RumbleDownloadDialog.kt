@@ -194,6 +194,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             FolderOutcome.OWN_FOLDER_SWITCHED_OFF -> text("rumble.download.folder_own_switched_off")
             FolderOutcome.ADDED_AS_OWN -> text("rumble.download.folder_added_own")
             FolderOutcome.NOT_REMEMBERED -> text("rumble.download.folder_not_remembered")
+            FolderOutcome.COMMA_IN_PATH -> text("rumble.download.folder_comma")
             FolderOutcome.NOT_LISTED, null -> text("rumble.download.add_folder_hint")
         }))
         act(

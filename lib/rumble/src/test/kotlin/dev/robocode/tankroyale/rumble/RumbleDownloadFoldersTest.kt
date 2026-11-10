@@ -76,6 +76,10 @@ class RumbleDownloadFoldersTest {
         assertEquals(FolderOutcome.NOT_LISTED, notListed.outcome)
         assertEquals(own to emptyMap<String, String>(), notListed.folders to notListed.labels, "nothing placed, nothing added")
 
+        val comma = DownloadFolders.remember(own, emptyMap(), Path.of("D:/Bots, Rumble"), onlyDownloads = true, ignoreCase = true)
+        assertEquals(FolderOutcome.COMMA_IN_PATH, comma.outcome, "the setting of bot directories cannot hold a comma, so the folder is not added")
+        assertEquals(own to emptyMap<String, String>(), comma.folders to comma.labels)
+
         val labels = mapOf(DownloadFolders.key("C:/Code/bots/java", ignoreCase = true) to DownloadFolders.LABEL)
         val there = DownloadFolders.remember(own, labels, Path.of("C:/Code/bots/java"), ignoreCase = true, placed = false)
         assertEquals(FolderOutcome.LABELLED, there.outcome, "a labelled folder is said to be in New Battle again")
@@ -152,8 +156,17 @@ class RumbleDownloadFoldersTest {
         assertEquals(FolderOutcome.ADDED, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { saved = it }, ignoreCase = true))
         assertEquals(own + BotFolderSetting(folder.toString(), true), saved?.folders, "what was worked out is what is saved")
 
-        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { throw java.io.UncheckedIOException(java.io.IOException("no access")) }, settings, {}, ignoreCase = true),
-            "a folder that cannot be listed")
+        val lookedInto = mutableListOf<Exception>()
+        val failing = { throw java.io.UncheckedIOException(java.io.IOException("no access")) }
+        assertEquals(FolderOutcome.ADDED_AS_OWN, DownloadFolders.rememberAfterDownload(folder, failing, settings, {}, { lookedInto += it }, ignoreCase = true),
+            "a folder that cannot be looked into is taken to hold the person's own bots, so it never gets the label")
+        assertEquals(1, lookedInto.size, "and the reason is told")
+        val labelled = { (own + BotFolderSetting(folder.toString(), true)) to mapOf(DownloadFolders.key(folder.toString(), ignoreCase = true) to DownloadFolders.LABEL) }
+        assertEquals(FolderOutcome.LABELLED, DownloadFolders.rememberAfterDownload(folder, failing, labelled, {}, ignoreCase = true),
+            "a folder labelled already is not looked into, so a folder that cannot be listed does not matter")
+        var savedWhenNothingPlaced = false
+        DownloadFolders.rememberAfterDownload(folder, failing, settings, { savedWhenNothingPlaced = true }, ignoreCase = true, placed = false)
+        assertFalse(savedWhenNothingPlaced, "nothing is saved when nothing was placed")
         val told = mutableListOf<Exception>()
         assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { throw java.io.IOException("read-only settings") }, { told += it }, ignoreCase = true),
             "settings that cannot be written")
