@@ -221,7 +221,7 @@ class RumbleCliDownloadTextsTest {
         val dialog = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/NewBattleDialog.kt")
         assertTrue(dialog.contains("if (visible && !isVisible) BotSelectionPanel.opened()"), "closed each time New Battle opens")
         val opened = panel.substringAfter("fun opened() {").substringBefore("}")
-        assertTrue(opened.contains("showDownloaded(false)") && opened.contains("refreshDirectories.shown()"), "closed, and the bot directories read again each time New Battle opens")
+        assertTrue(opened.contains("showDownloaded(false)") && opened.contains("readBotDirectories()"), "closed, and the bot directories read again each time New Battle opens")
     }
 
     @Test
@@ -237,11 +237,14 @@ class RumbleCliDownloadTextsTest {
         assertTrue(download.contains("DownloadFolders.rememberAfterDownload("), "a folder that cannot be looked into or saved leaves the screen showing what the download did")
         assertTrue(download.contains("FolderOutcome.NOT_LISTED, null -> text(\"rumble.download.add_folder_hint\")"), "a folder not in the bot directories when nothing was placed gets the hint to add it by hand")
         val panel = code(newBattleFile)
-        assertTrue(download.contains("if (placed) BotSelectionEvents.onBotsPlaced(Unit)") && panel.contains("BotSelectionEvents.onBotsPlaced.on(this) { refreshDirectories.changed() }"),
-            "a download that places bots in a folder already listed, which changes no setting, still brings an open New Battle up to date")
-        assertTrue(panel.contains("if (!directoriesQueued) {"), "several reasons in a row read the bot directories once")
-        assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }") && panel.contains("RefreshWhenShown({ isShowing })"),
-            "New Battle reads the bot directories after a download only when it is open, so the download screen never waits for it")
+        assertTrue(download.contains("if (placed) SwingUtilities.invokeLater { BotSelectionEvents.onBotsPlaced(Unit) }") && panel.contains("BotSelectionEvents.onBotsPlaced.on(this) { readBotDirectoriesIfShowing() }"),
+            "a download that places bots in a folder already listed, which changes no setting, still brings an open New Battle up to date, also when saving failed")
+        assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { readBotDirectoriesIfShowing() }") && panel.contains("EventQueue.invokeLater { if (isShowing) readBotDirectories() }"),
+            "New Battle reads the bot directories after a change only when it is open, so the download screen never waits for it")
+        assertTrue(panel.contains("directoryReader.execute {") && panel.contains("BootProcess.info(gameType = gameType, dirs = dirs)"),
+            "the booter is started away from the event thread, with the settings read on it")
+        assertTrue(panel.contains("readDirectoriesAgain = true") && panel.contains("showBotDirectoryEntries(lastEntries)"),
+            "several reasons while a reading runs lead to one more reading, and changing the filter reads nothing")
         listOf("ADDED", "ADDED_AS_OWN", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF", "NOT_REMEMBERED", "COMMA_IN_PATH").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
         assertTrue(download.contains("DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)"), "the suggestion skips download folders")
         val settings = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/config/BotRootDirectoriesConfigDialog.kt")
@@ -271,8 +274,9 @@ class RumbleCliDownloadTextsTest {
         assertTrue(panel.contains("BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it))") && panel.contains("BotSelectionEvents.onBotSelected(withKnownLicense(it))"),
             "a joined bot shows the same license in Joined Bots and in Selected Bots")
         assertTrue(panel.contains("license = license ?: \"\""), "a bot in the bot directories with no license says so; null is kept for not known")
-        assertTrue(panel.contains("knownLicenses.of(BotIdentity(botInfo.name, botInfo.version, botInfo.authors))"), "the license of the bot with the same name, version and authors")
-        assertTrue(panel.contains("val entries = BootProcess.info()") && panel.contains("knownLicenses = KnownLicenses(entries.map"), "taken from every bot, whatever the filter shows")
+        assertTrue(panel.contains("license = botInfo.license ?: knownLicenses.of(identity)") && panel.contains("teamMembers = botInfo.teamMembers ?: knownLicenses.teamMembersOf(identity)"),
+            "the license and team members of the bot with the same name, version and authors")
+        assertTrue(panel.contains("knownLicenses = KnownLicenses(\n            entries.map"), "taken from every bot, whatever the filter shows")
         val strings = listOf("bot_info.license", "bot_info.no_license", "bot_info.license_unknown", "rumble_downloads_label", "rumble_downloads_group", "bot_root_dirs.labelled", "bot_info.show_license")
         languages.forEach { suffix ->
             val file = Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings$suffix.properties"), Charsets.UTF_8).use { load(it) } }

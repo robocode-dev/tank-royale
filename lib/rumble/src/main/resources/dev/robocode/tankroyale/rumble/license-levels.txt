@@ -295,3 +295,20 @@ XSkat
 Zed
 Zend-2.0
 ZPL-1.1
+
+[deprecated]
+# Deprecated SPDX identifiers (SPDX License List 3.29.0) that are on neither list, and the identifier or expression that
+# replaces each; the level is that of the replacement. The GNU forms without -only, and every identifier ending in +, are
+# followed by rule instead.
+GPL-2.0-with-autoconf-exception GPL-2.0-only WITH Autoconf-exception-2.0
+GPL-2.0-with-bison-exception GPL-2.0-or-later WITH Bison-exception-2.2
+GPL-2.0-with-classpath-exception GPL-2.0-only WITH Classpath-exception-2.0
+GPL-2.0-with-font-exception GPL-2.0-only WITH Font-exception-2.0
+GPL-2.0-with-GCC-exception GPL-2.0-or-later WITH GCC-exception-2.0
+GPL-3.0-with-autoconf-exception GPL-3.0-only WITH Autoconf-exception-3.0
+GPL-3.0-with-GCC-exception GPL-3.0-only WITH GCC-exception-3.1
+eCos-2.0 GPL-2.0-or-later WITH eCos-exception-2.0
+wxWindows LGPL-2.0-or-later WITH WxWindows-exception-3.1
+StandardML-NJ SMLNJ
+Nunit zlib-acknowledgement
+bzip2-1.0.5 bzip2-1.0.6

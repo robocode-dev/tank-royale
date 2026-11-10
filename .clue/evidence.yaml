@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "3ca2cb8b93ea8967c052bd90347dfecb9a6108e6366a6681be07132e0351362b"
+          "sha256": "53c190589ffdf7f93a4da86c54ec45fd961a917ba100f881e4a9f93c39fd3ef8"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1738,7 +1738,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadCopyLevelsTest.kt",
-          "sha256": "a4c7ac5a44f8b435919cb5b3a0d3b6ef9cae49acf240ab8b501013078ef33cd1"
+          "sha256": "8d2f0fe4325690a00b7e352b3aca11c7dbab53784f7fe49b3f979ef1e3a3c8b9"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
@@ -2158,6 +2158,13 @@
           "subject": "RumbleDownloadCopyLevelsTest.testRCL094_UnitPositive_licensesOnTheBlueOakListsGetTheirLevelInAnyLetterCase",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-095",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadCopyLevelsTest.kt",
+          "subject": "RumbleDownloadCopyLevelsTest.testRCL095_UnitNegative_aJoinedBotTakesTheTeamMembersOnlyOfTheBotWithItsNameVersionAndAuthors",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-089",

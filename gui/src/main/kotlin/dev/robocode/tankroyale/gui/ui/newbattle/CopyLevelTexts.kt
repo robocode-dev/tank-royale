@@ -21,7 +21,7 @@ object CopyLevelTexts {
     )
 
     /** The words of the level of a declared [license]. */
-    fun wordsOf(license: String): String = words(CopyLevels.of(license) ?: CopyLevel.DO_NOT_COPY)
+    fun wordsOf(license: String): String = words(CopyLevels.ofDeclared(license))
 }
 
 /**

@@ -6,12 +6,20 @@ data class BotIdentity(val name: String, val version: String, val authors: List<
 }
 
 /**
- * The licenses the bots in the bot directories declare, so a bot that joined a battle on its own, which brings no license,
- * can be shown the license of its own folder. Nothing here touches Swing or the disk.
+ * The licenses and team members the bots in the bot directories declare, so a bot that joined a battle on its own, which
+ * brings neither, can be shown those of its own folder. Nothing here touches Swing or the disk.
  */
-class KnownLicenses(bots: List<Pair<BotIdentity, String?>>) {
+class KnownLicenses(bots: List<Pair<BotIdentity, String?>>, teamMembers: List<Pair<BotIdentity, List<String>?>> = emptyList()) {
     private val licenses: Map<Triple<String, String, Set<String>>, Set<String?>> =
         bots.groupBy({ it.first.key }, { it.second?.trim() }).mapValues { it.value.toSet() }
+    private val members: Map<Triple<String, String, Set<String>>, Set<List<String>>> =
+        teamMembers.groupBy({ it.first.key }, { it.second.orEmpty() }).mapValues { it.value.toSet() }
+
+    /**
+     * The team members of the bot in the bot directories with the same name, version and authors as [bot]: empty when it
+     * is not a team, and null when there is no such bot, or several that disagree.
+     */
+    fun teamMembersOf(bot: BotIdentity): List<String>? = members[bot.key]?.singleOrNull()
 
     /**
      * The license of the bot in the bot directories with the same name, version and authors as [bot]: empty when that bot

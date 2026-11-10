@@ -178,7 +178,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         val unknown = text("rumble.download.unknown")
         val line = text("rumble.download.row", row.name, row.version ?: unknown, row.platform ?: unknown, text(DownloadTexts.forState(row.state)))
         val here = row.versionHere?.takeIf { it != row.version }?.let { " " + text("rumble.download.row_here", it) }.orEmpty()
-        return line + here + row.license?.let { " " + text("rumble.download.row_license", it, CopyLevelTexts.wordsOf(it)) }.orEmpty()
+        return line + here + row.license?.takeIf { it.isNotBlank() }?.let { " " + text("rumble.download.row_license", it, CopyLevelTexts.wordsOf(it)) }.orEmpty()
     }
 
     private fun renderEnded(state: DownloadState.Ended) {
@@ -209,7 +209,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
     private fun resultText(result: DownloadResult): String {
         val line = text("rumble.download.result_line", result.bot.name, result.bot.version, text(DownloadTexts.forResult(result)))
         return when (result) {
-            is DownloadResult.Placed -> line + " " + (result.license?.let { text("rumble.download.license_of", it, CopyLevelTexts.wordsOf(it)) } ?: text("rumble.download.no_license"))
+            is DownloadResult.Placed -> line + " " + (result.license?.takeIf { it.isNotBlank() }?.let { text("rumble.download.license_of", it, CopyLevelTexts.wordsOf(it)) } ?: text("rumble.download.no_license"))
             is DownloadResult.NotPlaced -> if (result.message.isBlank()) line else line + " " + text("rumble.download.details", result.message)
             is DownloadResult.KeptAside -> line + " " + text("rumble.download.kept_at", result.keptAt.toString())
             else -> line
@@ -352,15 +352,16 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
                         onFailure = { it.printStackTrace() },
                         placed = placed,
                     )
-                    // New Battle lists the new bots also when the folder was already among the bot directories, so
-                    // the settings did not change.
-                    if (placed) BotSelectionEvents.onBotsPlaced(Unit)
                 }
             } catch (e: InterruptedException) {
                 Thread.currentThread().interrupt()
                 e.printStackTrace()
             } catch (e: java.lang.reflect.InvocationTargetException) {
                 e.printStackTrace()
+            } finally {
+                // New Battle lists the new bots also when the folder was already among the bot directories, so the
+                // settings did not change, and when they could not be saved.
+                if (placed) SwingUtilities.invokeLater { BotSelectionEvents.onBotsPlaced(Unit) }
             }
             return outcome
         }

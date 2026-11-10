@@ -47,7 +47,14 @@ object BootProcess {
 
     private var pingExecutor: ScheduledExecutorService? = null
 
-    fun info(botsOnly: Boolean? = false, teamsOnly: Boolean? = false): List<BootEntry> {
+    /**
+     * Lists the bots of [dirs] for [gameType] by starting the booter and waiting for its answer. Pass the game type and
+     * directories read on the event thread when calling this away from it, as the settings are read there.
+     */
+    fun info(
+        botsOnly: Boolean? = false, teamsOnly: Boolean? = false,
+        gameType: String = ConfigSettings.gameType.displayName, dirs: List<String> = botDirs,
+    ): List<BootEntry> {
         val args = mutableListOf(
             JavaExec.java(),
             "-Dapp.processName=RobocodeTankRoyale-Booter",
@@ -55,7 +62,7 @@ object BootProcess {
             "-jar",
             getBooterJar(),
             "info",
-            "--game-types=${ConfigSettings.gameType.displayName}"
+            "--game-types=$gameType"
         )
         if (botsOnly == true) {
             args += "--bots-only"
@@ -63,7 +70,7 @@ object BootProcess {
         if (teamsOnly == true) {
             args += "--teams-only"
         }
-        botDirs.forEach { args += it }
+        dirs.forEach { args += it }
 
         val process = ProcessBuilder(args).start()
         startThread(process, false)
