@@ -162,8 +162,10 @@ class RumbleDownloadFoldersTest {
             "a folder that cannot be looked into is taken to hold the person's own bots, so it never gets the label")
         assertEquals(1, lookedInto.size, "and the reason is told")
         val labelled = { (own + BotFolderSetting(folder.toString(), true)) to mapOf(DownloadFolders.key(folder.toString(), ignoreCase = true) to DownloadFolders.LABEL) }
-        assertEquals(FolderOutcome.LABELLED, DownloadFolders.rememberAfterDownload(folder, failing, labelled, {}, ignoreCase = true),
-            "a folder labelled already is not looked into, so a folder that cannot be listed does not matter")
+        var looked = 0
+        assertEquals(FolderOutcome.LABELLED, DownloadFolders.rememberAfterDownload(folder, { looked++; failing() }, labelled, {}, ignoreCase = true),
+            "a folder labelled already keeps its label")
+        assertEquals(0, looked, "and is not looked into, so a folder that cannot be listed does not matter")
         var savedWhenNothingPlaced = false
         DownloadFolders.rememberAfterDownload(folder, failing, settings, { savedWhenNothingPlaced = true }, ignoreCase = true, placed = false)
         assertFalse(savedWhenNothingPlaced, "nothing is saved when nothing was placed")
