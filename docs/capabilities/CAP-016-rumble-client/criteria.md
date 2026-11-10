@@ -744,7 +744,7 @@ Feature: rumble-client — Local ranked and practice battle client
   Scenario: Labels of bot directories are kept beside the existing setting, which is read and written as before
     Test-type: Unit
     Given a setting of bot directories, each switched on or off, and labels for some of them
-    When the labels are written and read again, and the same folder is written with other slashes, a trailing slash or, on Windows, other letter case
+    When the labels are written and read again, and the same folder is written with other slashes, a trailing slash or, on Windows and macOS, other letter case
     Then the setting of bot directories is exactly what it was, every directory and its switch kept, so an older version of the program reads the same bot directories
     And each label comes back for its folder, the same folder written another way has the same label, a comma, a semicolon or a percent sign in a path keeps every pair in place, and an entry that is not a pair of path and label is left out on its own without shifting or losing the others
     And a label whose folder was removed from the bot directories is dropped when the bot directories are saved
@@ -755,7 +755,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Given bot directories of the person's own, and a download that placed bots in a folder
     When the folder is remembered after the download
     Then a folder not yet in the bot directories is added at the end, switched on and labelled as downloaded from the Rumble, and a folder already there keeps its place and its switch and gets the label only when it is labelled already or holds nothing but bot folders the screen placed, so one of the person's own bot directories never has their own bots moved into the group
-    And the result says in one line whether the folder was added, was there already, is switched off so its bots are not in New Battle, or is one of the person's own bot directories, and the bot directories and labels are saved in one write
+    And the result says in one line whether the folder was added, was there already, is switched off so its bots are not in New Battle, or is one of the person's own bot directories, switched on or switched off, and the bot directories and labels are saved in one write
+    And the folder is remembered once per download, by the download itself away from the screen's thread, so the screen never waits for the disk and showing the result again changes nothing, and a reason it could not be remembered is logged
     And nothing is added when the download placed no bot, and when the folder cannot be looked into or the settings cannot be read or written nothing is added, and the result still shows what the download did and asks the person to add the folder by hand
     And New Battle reads the bot directories again after a download only while it is open, and otherwise when it opens next, so the download screen never waits for it, and the Bot Root Directories dialog, when open, reads them again, so it never writes back an old list
     And the suggested download folder is worked out from the first of the person's own switched-on bot directories, skipping labelled download folders, so it stays where it was when a download folder is added

@@ -230,19 +230,21 @@ class RumbleCliDownloadTextsTest {
     @Tag("Negative")
     fun testRCL090_UnitNegative_theScreenAddsOnlyAfterPlacingAndTheSettingsDialogNeverWritesBackAnOldList() {
         val download = code(dialogFile)
-        assertTrue(download.contains("folderOutcome = if (state.placed > 0) rememberFolder(state.folder) else null"), "nothing is added when nothing was placed")
-        assertTrue(download.contains("onlyDownloads = { BotDownloads.holdsOnlyDownloads(folder) }") && download.contains("save = { ConfigSettings.saveBotFolders(it.folders, it.labels) }"),
+        assertTrue(download.contains("rememberFolder = ::rememberFolder") && download.contains("when (state.folderOutcome)"),
+            "the folder is remembered by the download, away from the screen's thread, and the result only shows what that did")
+        assertTrue(download.contains("runCatching { BotDownloads.holdsOnlyDownloads(folder) }") && download.contains("save = { ConfigSettings.saveBotFolders(it.folders, it.labels) }"),
             "an own folder is never labelled, and the folders and labels are saved in one write")
         assertTrue(download.contains("DownloadFolders.rememberAfterDownload("), "a folder that cannot be looked into or saved leaves the screen showing what the download did")
         assertTrue(download.contains("null -> text(\"rumble.download.add_folder_hint\")"), "and asks the person to add the folder by hand")
         val panel = code(newBattleFile)
         assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }") && panel.contains("RefreshWhenShown({ isShowing })"),
             "New Battle reads the bot directories after a download only when it is open, so the download screen never waits for it")
-        listOf("ADDED", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
+        listOf("ADDED", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
         assertTrue(download.contains("DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)"), "the suggestion skips download folders")
         val settings = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/config/BotRootDirectoriesConfigDialog.kt")
         assertTrue(settings.contains("if (visible && !isVisible) BotDirectoryConfigPanel.reload()"), "the dialog reads the bot directories again each time it opens")
         assertTrue(settings.contains("if (!saving && BotRootDirectoriesConfigDialog.isVisible) reload()"), "and when a download saves them while it is open")
+        assertTrue(settings.contains("DownloadFolders.key(it.label) == key"), "a folder added by hand that is there already, however its path is written, is not added twice")
         assertTrue(settings.contains("DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)"), "a removed folder leaves no label behind")
         assertTrue(settings.contains("DownloadFolders.isLabelled(path, labels)"), "the rows are painted from the labels read with the list, not from the disk")
         val config = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/settings/ConfigSettings.kt")
@@ -256,7 +258,8 @@ class RumbleCliDownloadTextsTest {
     @Tag("Negative")
     fun testRCL092_UnitNegative_botInfoLinksOnlyTheSpdxPageAndAJoinedBotTakesItsLicenseFromItsFolder() {
         val info = code(botInfoFile)
-        assertTrue(info.contains("LicenseLinks.spdxPage(botInfo?.license)") && info.contains("LicenseLinks.isSpdxPage(it)"), "the page is made and checked by the library")
+        assertTrue(info.contains("licensePage = LicenseLinks.spdxPage(botInfo?.license)") && info.contains("licensePage?.let { Browser.browse(it) }"),
+            "the only page opened is the one the library made from an identifier on the list")
         assertTrue(info.contains("showLicenseButton.isEnabled = licensePage != null"), "a visible button opens it, and only when there is a page")
         assertTrue(info.contains("Browser.browse(it)") && !info.contains("Desktop.getDesktop().browse(java.net.URI"), "through the program's own browser helper, which tells the person when it cannot")
         assertTrue(info.contains("Strings.get(\"bot_info.show_license\")"), "the button's text is a resource")

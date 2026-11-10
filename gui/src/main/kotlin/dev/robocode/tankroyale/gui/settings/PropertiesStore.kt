@@ -136,14 +136,15 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
 
     companion object {
         /**
-         * The settings as they are written to the file: sorted, one per line, in UTF-8, so a path with letters outside
-         * ASCII, such as a home folder named Jørgen, is read back as it was written.
+         * The settings as they are written to the file: sorted, one per line, with every letter outside ASCII written as
+         * a Unicode escape, so a path such as a home folder named Jørgen is read back as it was written, by this version
+         * and by older ones, which read the file as ISO-8859-1.
          */
         internal fun write(properties: Properties, title: String): ByteArray {
             val sortedProperties = object : Properties() {
                 override fun store(writer: Writer, comments: String) {
                     keys.stream().map { k -> k }.sorted().forEach { k ->
-                        val value = "${get(k)}"
+                        val value = asciiOnly("${get(k)}")
                         writer.append("${k}=${value}\n")
                     }
                 }
@@ -154,9 +155,14 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             return writer.toString().toByteArray(StandardCharsets.UTF_8)
         }
 
+        /** Writes each character outside ASCII as a Unicode escape, which every reader of a properties file understands. */
+        private fun asciiOnly(text: String): String = buildString {
+            text.forEach { c -> if (c.code < 0x80) append(c) else append("\\u%04x".format(c.code)) }
+        }
+
         /**
-         * Reads the settings from the bytes of the file. The file is UTF-8, as written by [write] and by earlier versions
-         * on Java 18 and later; a file an older version wrote in a single-byte charset is read as ISO-8859-1, as before.
+         * Reads the settings from the bytes of the file. [write] writes only ASCII, but a file some earlier versions
+         * wrote may hold UTF-8, and one written by still older versions a single-byte charset, read as ISO-8859-1 as before.
          */
         internal fun read(bytes: ByteArray): Properties {
             val text = try {

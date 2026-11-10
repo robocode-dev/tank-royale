@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "7a40635d30b338c0d2c7730bcfa0991780fb8624ace0db9291755e24778138ae"
+          "sha256": "c705eeea2ea27a970e6476363c8bc677866c5a21d47465400c272a0dd567ab0c"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1724,7 +1724,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
-          "sha256": "d3fd499c04cdd9670f218ec4e268eb546233ffded9aef95b735cb60df83d012c"
+          "sha256": "6c79d612f619af08079cd79d384513be5d6512a1d2545bdd78e1adab5e39de30"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
@@ -1732,7 +1732,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
-          "sha256": "caeda8b64e3b80b5d0fb6525bfabfb124a735128f0aac58735693dd8e7fb80e1"
+          "sha256": "3836bf8be8460044b74aed7c73acd9c8547c1847ab6dacfb92d543c58fa510d8"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
@@ -2495,6 +2495,13 @@
           "id": "RCL-079",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
           "subject": "RumbleDownloadTest.testRCL079_UnitPositive_nothingIsFetchedBeforeDownloadAndAllWorkRunsAwayFromTheScreenAndInOrder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL090_UnitPositive_theFolderIsRememberedOnceAwayFromTheScreenOnlyWhenABotWasPlaced",
           "type": "Unit",
           "direction": "positive"
         },

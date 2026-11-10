@@ -93,10 +93,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             is DownloadState.Choosing -> renderChoosing(state)
             is DownloadState.Downloading -> put(wrapped(text("rumble.download.downloading", state.count)))
             is DownloadState.SettingUpPython -> put(wrapped(text("rumble.download.setup.running")))
-            is DownloadState.Ended -> {
-                folderOutcome = if (state.placed > 0) rememberFolder(state.folder) else null
-                renderEnded(state)
-            }
+            is DownloadState.Ended -> renderEnded(state)
             is DownloadState.Failed -> renderFailed(state)
         }
         content.revalidate()
@@ -189,11 +186,12 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(wrapped(state.folder.toString()))
         put(button("rumble.download.button.show_folder") { showFolder(state.folder) })
         val label = Strings.get("rumble_downloads_label")
-        put(wrapped(when (folderOutcome) {
+        put(wrapped(when (state.folderOutcome) {
             FolderOutcome.ADDED -> text("rumble.download.folder_added", label)
             FolderOutcome.LABELLED -> text("rumble.download.folder_in_new_battle", label)
             FolderOutcome.SWITCHED_OFF -> text("rumble.download.folder_switched_off", label)
             FolderOutcome.OWN_FOLDER -> text("rumble.download.folder_own")
+            FolderOutcome.OWN_FOLDER_SWITCHED_OFF -> text("rumble.download.folder_own_switched_off")
             null -> text("rumble.download.add_folder_hint")
         }))
         act(
@@ -225,21 +223,6 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(button("rumble.download.button.change_folder") { chooseFolder(folder) })
     }
 
-    /** What the last download did with its folder among the bot directories; null when it placed nothing or could not remember the folder. */
-    private var folderOutcome: FolderOutcome? = null
-
-    /**
-     * Adds the download folder to the bot directories, switched on and labelled, so its bots are in New Battle, unless it
-     * is there already, and saves the folders and labels in one write. When the folder cannot be looked into or the
-     * settings cannot be saved, nothing is remembered and the result asks the person to add the folder by hand, so the
-     * screen still shows what the download did.
-     */
-    private fun rememberFolder(folder: Path): FolderOutcome? = DownloadFolders.rememberAfterDownload(
-        folder,
-        onlyDownloads = { BotDownloads.holdsOnlyDownloads(folder) },
-        read = { ConfigSettings.botFolders to ConfigSettings.botDirectoryLabels },
-        save = { ConfigSettings.saveBotFolders(it.folders, it.labels) },
-    )
 
     /** The licenses in a small window of their own, so they are there when wanted and take no room on the screen. */
     private fun showLicenses() {
@@ -343,6 +326,29 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             resource.use { Files.copy(it, target, StandardCopyOption.REPLACE_EXISTING) }
         }
 
+        /**
+         * Adds the download folder to the bot directories, switched on and labelled, so its bots are in New Battle, unless
+         * it is there already, and saves the folders and labels in one write. Called away from the event thread: the
+         * folder is looked into there, and the settings are read and saved on the event thread, where every other part
+         * of the program reads them and listens for them being saved. When the folder cannot be looked into or the
+         * settings cannot be saved, nothing is remembered, the reason is logged, and the result asks the person to add
+         * the folder by hand.
+         */
+        private fun rememberFolder(folder: Path): FolderOutcome? {
+            val onlyDownloads = runCatching { BotDownloads.holdsOnlyDownloads(folder) }
+            var outcome: FolderOutcome? = null
+            SwingUtilities.invokeAndWait {
+                outcome = DownloadFolders.rememberAfterDownload(
+                    folder,
+                    onlyDownloads = { onlyDownloads.getOrThrow() },
+                    read = { ConfigSettings.botFolders to ConfigSettings.botDirectoryLabels },
+                    save = { ConfigSettings.saveBotFolders(it.folders, it.labels) },
+                    onFailure = { it.printStackTrace() },
+                )
+            }
+            return outcome
+        }
+
         private fun show(choice: EnvironmentChoice.Chosen) {
             val environment = choice.environment
             val background = Executors.newCachedThreadPool { runnable -> Thread(runnable, "rumble-download").apply { isDaemon = true } }
@@ -355,6 +361,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
                     environment, HttpGitHubApi(),
                     pythonBotApiName = BotApiPlatform.PYTHON.newFileName(),
                     writePythonBotApi = ::writePythonBotApi,
+                    rememberFolder = ::rememberFolder,
                 )
                 DownloadController(port, folder, background, post) { state -> self.render(state) }
             }.apply {

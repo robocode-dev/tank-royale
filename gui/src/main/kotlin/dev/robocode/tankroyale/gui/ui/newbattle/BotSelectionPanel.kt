@@ -458,6 +458,16 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             else -> Pair(false, false)
         }
 
+        // The group's header follows the lists however this ends, also when there are no bot directories left.
+        try {
+            fillBotsDirectoryLists(labels, botsOnly, teamsOnly)
+        } finally {
+            downloadedNames = DownloadFolders.shownNames(downloadedListModel.list().map { it.host })
+            showDownloaded(downloadedOpen)
+        }
+    }
+
+    private fun fillBotsDirectoryLists(labels: Map<String, String>, botsOnly: Boolean, teamsOnly: Boolean) {
         if (BootProcess.botDirs.isEmpty()) {
             showNoNotDirectoriesFoundErrorAndShowBotRootDirectoriesConfig()
             return
@@ -467,10 +477,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         // here the same way the booter applies it.
         val entries = BootProcess.info()
         knownLicenses = KnownLicenses(entries.map { BotIdentity(it.name, it.version, it.authors) to it.license })
-        entries.filter { entry ->
-            val isTeam = entry.teamMembers?.isNotEmpty() == true
-            !(botsOnly && isTeam) && !(teamsOnly && !isTeam)
-        }.forEach { botEntry ->
+        entries.filter { !(botsOnly && it.isTeam) && !(teamsOnly && !it.isTeam) }.forEach { botEntry ->
             val model = if (DownloadFolders.isDownloaded(botEntry.dir, labels)) downloadedListModel else botsDirectoryListModel
             botEntry.apply {
                 model.addElement(
@@ -495,8 +502,6 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                 }
             }
         }
-        downloadedNames = DownloadFolders.shownNames(downloadedListModel.list().map { it.host })
-        showDownloaded(downloadedOpen)
     }
 
     /**

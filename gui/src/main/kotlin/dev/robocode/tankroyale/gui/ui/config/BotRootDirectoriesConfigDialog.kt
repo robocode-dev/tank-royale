@@ -121,20 +121,13 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             selectedFiles.forEach { file ->
                 val selectedPath = file.toPath()
 
-                // If the directory has already been added, make sure to enable it
-                var found = false
-                listModel.elements().iterator().forEach {
-                    if (it.label == selectedPath.toString()) {
-                        it.isActive = true
-                        found = true
-                    }
-                }
+                // If the directory has already been added, however its path is written, make sure to enable it
+                val key = DownloadFolders.key(selectedPath.toString())
+                val existing = listModel.elements().toList().filter { DownloadFolders.key(it.label) == key }
+                existing.forEach { it.isActive = true }
                 // Else, we just add the directory
-                if (!found) {
-                    val existingEntries = listModel.elements().toList().map { it.label }
-                    if (!existingEntries.contains(selectedPath.toString())) {
-                        listModel.addElement(CheckListEntity(selectedPath.toString(), true))
-                    }
+                if (existing.isEmpty()) {
+                    listModel.addElement(CheckListEntity(selectedPath.toString(), true))
                 }
             }
             EDT.enqueue { list.repaint() }

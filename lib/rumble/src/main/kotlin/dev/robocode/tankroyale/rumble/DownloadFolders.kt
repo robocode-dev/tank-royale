@@ -19,6 +19,9 @@ enum class FolderOutcome {
 
     /** One of the person's own bot directories, which also holds bots of their own; left as it was, without a label. */
     OWN_FOLDER,
+
+    /** One of the person's own bot directories, left as it was, without a label, and switched off, so its bots are not in New Battle. */
+    OWN_FOLDER_SWITCHED_OFF,
 }
 
 /** The bot directories and their labels after a download folder was remembered, and what that did. */
@@ -37,10 +40,16 @@ object DownloadFolders {
     private const val ENTRY_SEPARATOR = ','
     private const val PAIR_SEPARATOR = ';'
 
-    /** A folder's path in one form: forward slashes, no trailing slash, and on Windows in lower case. */
-    fun key(path: String, windows: Boolean = Platform.isWindows): String {
+    /** True where the file system usually ignores letter case in names: on Windows and macOS. */
+    val IGNORE_CASE: Boolean = Platform.isWindows || Platform.operatingSystemType == Platform.PlatformType.Mac
+
+    /**
+     * A folder's path in one form: forward slashes, as the setting of bot directories has always stored it, no trailing
+     * slash, and in lower case where the file system usually ignores letter case.
+     */
+    fun key(path: String, ignoreCase: Boolean = IGNORE_CASE): String {
         val key = path.trim().replace('\\', '/').trimEnd('/')
-        return if (windows) key.lowercase() else key
+        return if (ignoreCase) key.lowercase() else key
     }
 
     /**
@@ -48,10 +57,10 @@ object DownloadFolders {
      * or a percent sign inside a path or a label is written escaped, so a folder whose name holds one keeps its label. An
      * entry that is not such a pair is left out on its own, so it never shifts the entries after it.
      */
-    fun parseLabels(text: String, windows: Boolean = Platform.isWindows): Map<String, String> =
+    fun parseLabels(text: String, ignoreCase: Boolean = IGNORE_CASE): Map<String, String> =
         text.split(ENTRY_SEPARATOR).map { it.split(PAIR_SEPARATOR) }
             .filter { it.size == 2 && it[0].isNotBlank() && it[1].isNotBlank() }
-            .associate { key(unescape(it[0]), windows) to unescape(it[1]).trim() }
+            .associate { key(unescape(it[0]), ignoreCase) to unescape(it[1]).trim() }
 
     fun formatLabels(labels: Map<String, String>): String =
         labels.entries.joinToString(ENTRY_SEPARATOR.toString()) { escape(it.key) + PAIR_SEPARATOR + escape(it.value) }
@@ -61,8 +70,8 @@ object DownloadFolders {
     private fun unescape(text: String) = text.replace("%2C", ",", ignoreCase = true).replace("%3B", ";", ignoreCase = true).replace("%25", "%")
 
     /** The labels of only the folders still among [folders], so a removed folder leaves no label behind. */
-    fun keepLabelsOf(folders: List<BotFolderSetting>, labels: Map<String, String>, windows: Boolean = Platform.isWindows): Map<String, String> {
-        val present = folders.map { key(it.path, windows) }.toSet()
+    fun keepLabelsOf(folders: List<BotFolderSetting>, labels: Map<String, String>, ignoreCase: Boolean = IGNORE_CASE): Map<String, String> {
+        val present = folders.map { key(it.path, ignoreCase) }.toSet()
         return labels.filterKeys { it in present }
     }
 
@@ -74,38 +83,43 @@ object DownloadFolders {
      */
     fun remember(
         folders: List<BotFolderSetting>, labels: Map<String, String>, folder: Path,
-        onlyDownloads: Boolean = false, windows: Boolean = Platform.isWindows,
+        onlyDownloads: Boolean = false, ignoreCase: Boolean = IGNORE_CASE,
     ): RememberedFolder {
-        val key = key(folder.toString(), windows)
-        val existing = folders.firstOrNull { key(it.path, windows) == key }
+        val key = key(folder.toString(), ignoreCase)
+        val existing = folders.firstOrNull { key(it.path, ignoreCase) == key }
             ?: return RememberedFolder(folders + BotFolderSetting(folder.toString(), true), labels + (key to LABEL), FolderOutcome.ADDED)
-        if (labels[key] != LABEL && !onlyDownloads) return RememberedFolder(folders, labels, FolderOutcome.OWN_FOLDER)
+        if (labels[key] != LABEL && !onlyDownloads) {
+            return RememberedFolder(folders, labels, if (existing.enabled) FolderOutcome.OWN_FOLDER else FolderOutcome.OWN_FOLDER_SWITCHED_OFF)
+        }
         return RememberedFolder(folders, labels + (key to LABEL), if (existing.enabled) FolderOutcome.LABELLED else FolderOutcome.SWITCHED_OFF)
     }
 
     /**
      * Remembers [folder] after a download as [remember] does, reading the settings with [read] and writing them with
-     * [save]. When the folder cannot be looked into or the settings cannot be read or written, nothing is remembered and
-     * the result is null, so the screen still shows what the download did and asks the person to add the folder by hand.
+     * [save]. When the folder cannot be looked into or the settings cannot be read or written, nothing is remembered,
+     * [onFailure] is told why, so it can be logged, and the result is null, so the screen still shows what the download
+     * did and asks the person to add the folder by hand.
      */
     fun rememberAfterDownload(
         folder: Path, onlyDownloads: () -> Boolean,
         read: () -> Pair<List<BotFolderSetting>, Map<String, String>>,
         save: (RememberedFolder) -> Unit,
-        windows: Boolean = Platform.isWindows,
+        onFailure: (Exception) -> Unit = {},
+        ignoreCase: Boolean = IGNORE_CASE,
     ): FolderOutcome? = try {
         val (folders, labels) = read()
-        remember(folders, labels, folder, onlyDownloads(), windows).also(save).outcome
+        remember(folders, labels, folder, onlyDownloads(), ignoreCase).also(save).outcome
     } catch (e: Exception) {
+        onFailure(e)
         null
     }
 
     /** The person's own switched-on bot directories, which the suggested download folder is worked out from. */
-    fun ownFolders(folders: List<BotFolderSetting>, labels: Map<String, String>, windows: Boolean = Platform.isWindows): List<Path> =
-        folders.filter { it.enabled && labels[key(it.path, windows)] != LABEL }.map { Path.of(it.path) }
+    fun ownFolders(folders: List<BotFolderSetting>, labels: Map<String, String>, ignoreCase: Boolean = IGNORE_CASE): List<Path> =
+        folders.filter { it.enabled && labels[key(it.path, ignoreCase)] != LABEL }.map { Path.of(it.path) }
 
     /** True when the folder at [path] is labelled as a download folder. */
-    fun isLabelled(path: String, labels: Map<String, String>, windows: Boolean = Platform.isWindows): Boolean = labels[key(path, windows)] == LABEL
+    fun isLabelled(path: String, labels: Map<String, String>, ignoreCase: Boolean = IGNORE_CASE): Boolean = labels[key(path, ignoreCase)] == LABEL
 
     /**
      * The text each bot of the group of downloaded bots is shown by, for the bot folders [botDirs]: the bot's own folder
@@ -118,9 +132,9 @@ object DownloadFolders {
     }
 
     /** True when the bot in [botDir] lies in a labelled download folder. */
-    fun isDownloaded(botDir: String, labels: Map<String, String>, windows: Boolean = Platform.isWindows): Boolean {
+    fun isDownloaded(botDir: String, labels: Map<String, String>, ignoreCase: Boolean = IGNORE_CASE): Boolean {
         val parent = Path.of(botDir).parent ?: return false
-        return labels[key(parent.toString(), windows)] == LABEL
+        return labels[key(parent.toString(), ignoreCase)] == LABEL
     }
 }
 
@@ -140,11 +154,7 @@ object LicenseLinks {
     /**
      * The SPDX page of [license], or null when it is not an identifier on the SPDX License List, such as a license
      * of the bot's own, a LicenseRef or an expression of several licenses. Letter case does not matter, as on the list.
+     * The page is made only from an identifier on the list, so no other address can come from here.
      */
     fun spdxPage(license: String?): String? = license?.trim()?.lowercase()?.let { IDENTIFIERS[it] }?.let { "$SPDX_PAGES$it.html" }
-
-    /** True only for the page of an identifier on the list, so nothing else is opened from Bot Info. */
-    fun isSpdxPage(address: String): Boolean =
-        address.startsWith(SPDX_PAGES) && address.endsWith(".html") &&
-            IDENTIFIERS[address.removePrefix(SPDX_PAGES).removeSuffix(".html").lowercase()] == address.removePrefix(SPDX_PAGES).removeSuffix(".html")
 }

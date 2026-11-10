@@ -17,18 +17,18 @@ class RumbleDownloadFoldersTest {
     @Tag("Unit")
     @Tag("Positive")
     fun testRCL089_UnitPositive_labelsComeBackForTheirFolderHoweverItIsWritten() {
-        val labels = mapOf(DownloadFolders.key("C:\\Users\\me\\rumble-bots\\", windows = true) to DownloadFolders.LABEL)
+        val labels = mapOf(DownloadFolders.key("C:\\Users\\me\\rumble-bots\\", ignoreCase = true) to DownloadFolders.LABEL)
 
-        val read = DownloadFolders.parseLabels(DownloadFolders.formatLabels(labels), windows = true)
+        val read = DownloadFolders.parseLabels(DownloadFolders.formatLabels(labels), ignoreCase = true)
 
         assertEquals(labels, read)
         listOf("C:/Users/me/rumble-bots", "c:\\users\\ME\\rumble-bots", "C:/Users/me/rumble-bots/").forEach {
-            assertTrue(DownloadFolders.isLabelled(it, read, windows = true), it)
+            assertTrue(DownloadFolders.isLabelled(it, read, ignoreCase = true), it)
         }
-        assertFalse(DownloadFolders.isLabelled("/home/me/Rumble-Bots", mapOf("/home/me/rumble-bots" to DownloadFolders.LABEL), windows = false),
+        assertFalse(DownloadFolders.isLabelled("/home/me/Rumble-Bots", mapOf("/home/me/rumble-bots" to DownloadFolders.LABEL), ignoreCase = false),
             "letter case counts where the file system tells it apart")
         val comma = mapOf("/home/me/bots, rumble" to DownloadFolders.LABEL, "/home/me/100%" to DownloadFolders.LABEL, "/home/me/a;b%2C" to DownloadFolders.LABEL, "/x" to DownloadFolders.LABEL)
-        assertEquals(comma, DownloadFolders.parseLabels(DownloadFolders.formatLabels(comma), windows = false), "a comma, a semicolon or a percent sign in a path keeps every pair in place")
+        assertEquals(comma, DownloadFolders.parseLabels(DownloadFolders.formatLabels(comma), ignoreCase = false), "a comma, a semicolon or a percent sign in a path keeps every pair in place")
     }
 
     @Test
@@ -36,14 +36,14 @@ class RumbleDownloadFoldersTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCL089_UnitNegative_brokenTextIsLeftOutAndARemovedFolderLeavesNoLabel() {
-        val read = DownloadFolders.parseLabels("/a/b;rumble-downloads,,x,/c/d;,;rumble-downloads,/e/f;rumble-downloads", windows = false)
+        val read = DownloadFolders.parseLabels("/a/b;rumble-downloads,,x,/c/d;,;rumble-downloads,/e/f;rumble-downloads", ignoreCase = false)
         assertEquals(mapOf("/a/b" to DownloadFolders.LABEL, "/e/f" to DownloadFolders.LABEL), read, "a half entry or an empty path is left out on its own, the rest is kept")
-        assertEquals(mapOf("/c/b" to DownloadFolders.LABEL), DownloadFolders.parseLabels("/c/a,/c/b;rumble-downloads", windows = false),
+        assertEquals(mapOf("/c/b" to DownloadFolders.LABEL), DownloadFolders.parseLabels("/c/a,/c/b;rumble-downloads", ignoreCase = false),
             "an entry without its label does not shift the entries after it")
-        assertEquals(emptyMap<String, String>(), DownloadFolders.parseLabels("", windows = false))
+        assertEquals(emptyMap<String, String>(), DownloadFolders.parseLabels("", ignoreCase = false))
 
         val labels = mapOf("/a/b" to DownloadFolders.LABEL, "/gone" to DownloadFolders.LABEL)
-        assertEquals(mapOf("/a/b" to DownloadFolders.LABEL), DownloadFolders.keepLabelsOf(listOf(BotFolderSetting("/a/b/", false)), labels, windows = false))
+        assertEquals(mapOf("/a/b" to DownloadFolders.LABEL), DownloadFolders.keepLabelsOf(listOf(BotFolderSetting("/a/b/", false)), labels, ignoreCase = false))
     }
 
     @Test
@@ -53,11 +53,11 @@ class RumbleDownloadFoldersTest {
     fun testRCL090_UnitPositive_aNewDownloadFolderIsAddedSwitchedOnAndLabelledAtTheEnd() {
         val folder = Path.of("C:/Users/me/rumble-bots")
 
-        val remembered = DownloadFolders.remember(own, emptyMap(), folder, windows = true)
+        val remembered = DownloadFolders.remember(own, emptyMap(), folder, ignoreCase = true)
 
         assertEquals(FolderOutcome.ADDED, remembered.outcome)
         assertEquals(own + BotFolderSetting(folder.toString(), true), remembered.folders, "the person's own folders are kept as they were, in order")
-        assertTrue(DownloadFolders.isLabelled(folder.toString(), remembered.labels, windows = true))
+        assertTrue(DownloadFolders.isLabelled(folder.toString(), remembered.labels, ignoreCase = true))
     }
 
     @Test
@@ -67,17 +67,21 @@ class RumbleDownloadFoldersTest {
     fun testRCL090_UnitNegative_aFolderAlreadyThereKeepsItsPlaceAndSwitchAndIsLabelledOnlyWhenItHoldsOnlyDownloads() {
         val folders = own + BotFolderSetting("C:/Users/me/rumble-bots", false)
 
-        val downloads = DownloadFolders.remember(folders, emptyMap(), Path.of("c:\\users\\me\\rumble-bots"), onlyDownloads = true, windows = true)
+        val downloads = DownloadFolders.remember(folders, emptyMap(), Path.of("c:\\users\\me\\rumble-bots"), onlyDownloads = true, ignoreCase = true)
         assertEquals(FolderOutcome.SWITCHED_OFF, downloads.outcome, "the person's switch stays off, and the screen says so")
         assertEquals(folders, downloads.folders, "not added twice")
-        assertTrue(DownloadFolders.isLabelled("C:/Users/me/rumble-bots", downloads.labels, windows = true))
+        assertTrue(DownloadFolders.isLabelled("C:/Users/me/rumble-bots", downloads.labels, ignoreCase = true))
 
-        val labelledBefore = DownloadFolders.remember(own, mapOf(DownloadFolders.key("C:/Code/bots/java", true) to DownloadFolders.LABEL), Path.of("C:/Code/bots/java"), windows = true)
+        val labelledBefore = DownloadFolders.remember(own, mapOf(DownloadFolders.key("C:/Code/bots/java", ignoreCase = true) to DownloadFolders.LABEL), Path.of("C:/Code/bots/java"), ignoreCase = true)
         assertEquals(FolderOutcome.LABELLED, labelledBefore.outcome, "a labelled folder stays labelled, switched on")
 
-        val mine = DownloadFolders.remember(own, emptyMap(), Path.of("C:/Code/bots/java"), onlyDownloads = false, windows = true)
+        val mine = DownloadFolders.remember(own, emptyMap(), Path.of("C:/Code/bots/java"), onlyDownloads = false, ignoreCase = true)
         assertEquals(FolderOutcome.OWN_FOLDER, mine.outcome, "one of the person's own bot directories")
         assertEquals(own to emptyMap<String, String>(), mine.folders to mine.labels, "their own bots are never moved into the group")
+
+        val mineOff = DownloadFolders.remember(own, emptyMap(), Path.of("C:/Code/bots/python"), onlyDownloads = false, ignoreCase = true)
+        assertEquals(FolderOutcome.OWN_FOLDER_SWITCHED_OFF, mineOff.outcome, "an own folder that is switched off is never said to be in New Battle")
+        assertEquals(own to emptyMap<String, String>(), mineOff.folders to mineOff.labels)
     }
 
     @Test
@@ -102,10 +106,10 @@ class RumbleDownloadFoldersTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCL090_UnitNegative_theSuggestedFolderIsWorkedOutFromTheOwnFoldersAndNeverMoves() {
-        val labels = mapOf(DownloadFolders.key("C:/Users/me/rumble-bots", windows = true) to DownloadFolders.LABEL)
+        val labels = mapOf(DownloadFolders.key("C:/Users/me/rumble-bots", ignoreCase = true) to DownloadFolders.LABEL)
         val folders = listOf(BotFolderSetting("C:/Users/me/rumble-bots", true)) + own
 
-        val ownFolders = DownloadFolders.ownFolders(folders, labels, windows = true)
+        val ownFolders = DownloadFolders.ownFolders(folders, labels, ignoreCase = true)
 
         assertEquals(listOf(Path.of("C:/Code/bots/java")), ownFolders, "the download folder and switched-off folders are skipped")
         assertEquals(Path.of("C:/Code/bots/rumble-bots"), BotDownloads.defaultFolder(ownFolders, Path.of("C:/Users/me")))
@@ -120,14 +124,16 @@ class RumbleDownloadFoldersTest {
         val settings = { own to emptyMap<String, String>() }
         var saved: RememberedFolder? = null
 
-        assertEquals(FolderOutcome.ADDED, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { saved = it }, windows = true))
+        assertEquals(FolderOutcome.ADDED, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { saved = it }, ignoreCase = true))
         assertEquals(own + BotFolderSetting(folder.toString(), true), saved?.folders, "what was worked out is what is saved")
 
-        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { throw java.io.UncheckedIOException(java.io.IOException("no access")) }, settings, {}, windows = true),
+        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { throw java.io.UncheckedIOException(java.io.IOException("no access")) }, settings, {}, ignoreCase = true),
             "a folder that cannot be listed")
-        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { throw java.io.IOException("read-only settings") }, windows = true),
+        val told = mutableListOf<Exception>()
+        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { throw java.io.IOException("read-only settings") }, { told += it }, ignoreCase = true),
             "settings that cannot be written")
-        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { true }, { throw SecurityException("no access") }, {}, windows = true),
+        assertEquals(listOf("read-only settings"), told.map { it.message }, "the reason is told, so it can be logged")
+        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { true }, { throw SecurityException("no access") }, {}, ignoreCase = true),
             "settings that cannot be read")
     }
 
@@ -138,11 +144,11 @@ class RumbleDownloadFoldersTest {
     fun testRCL091_UnitPositive_aBotIsDownloadedOnlyWhenItLiesInALabelledFolder() {
         val labels = mapOf("/home/me/rumble-bots" to DownloadFolders.LABEL, "/home/me/other" to "something-else")
 
-        assertTrue(DownloadFolders.isDownloaded("/home/me/rumble-bots/Corners", labels, windows = false))
-        assertFalse(DownloadFolders.isDownloaded("/home/me/bots/Corners", labels, windows = false), "the person's own bot")
-        assertFalse(DownloadFolders.isDownloaded("/home/me/other/Walls", labels, windows = false), "a folder with another label")
-        assertFalse(DownloadFolders.isDownloaded("/home/me/rumble-bots/Corners/sub", labels, windows = false), "only the bot folders directly in it")
-        assertFalse(DownloadFolders.isDownloaded("/home/me/rumble-bots/Corners", emptyMap(), windows = false), "no labels, no group")
+        assertTrue(DownloadFolders.isDownloaded("/home/me/rumble-bots/Corners", labels, ignoreCase = false))
+        assertFalse(DownloadFolders.isDownloaded("/home/me/bots/Corners", labels, ignoreCase = false), "the person's own bot")
+        assertFalse(DownloadFolders.isDownloaded("/home/me/other/Walls", labels, ignoreCase = false), "a folder with another label")
+        assertFalse(DownloadFolders.isDownloaded("/home/me/rumble-bots/Corners/sub", labels, ignoreCase = false), "only the bot folders directly in it")
+        assertFalse(DownloadFolders.isDownloaded("/home/me/rumble-bots/Corners", emptyMap(), ignoreCase = false), "no labels, no group")
     }
 
     @Test
@@ -188,7 +194,6 @@ class RumbleDownloadFoldersTest {
         assertEquals("https://spdx.org/licenses/MIT.html", LicenseLinks.spdxPage("MIT"))
         assertEquals("https://spdx.org/licenses/GPL-3.0-or-later.html", LicenseLinks.spdxPage(" GPL-3.0-or-later "))
         RumbleLicenses.ALL.forEach { assertEquals(it.officialPage, LicenseLinks.spdxPage(it.id), "the same page as the Download bots screen: ${it.id}") }
-        assertTrue(LicenseLinks.isSpdxPage(LicenseLinks.spdxPage("Apache-2.0")!!))
         assertEquals("https://spdx.org/licenses/Apache-2.0.html", LicenseLinks.spdxPage("apache-2.0"), "letter case does not matter, the page is the one on the list")
         assertEquals("https://spdx.org/licenses/GPL-3.0.html", LicenseLinks.spdxPage("GPL-3.0"), "an identifier the list keeps as deprecated still has its page")
     }
@@ -201,8 +206,10 @@ class RumbleDownloadFoldersTest {
         listOf(null, "", "   ", "Proprietary license", "Proprietary", "Custom", "LicenseRef-foo", "MIT2", "MIT OR Apache-2.0", "<script>", "../x").forEach {
             assertEquals(null, LicenseLinks.spdxPage(it), it.toString())
         }
-        listOf("https://example.com/MIT.html", "https://spdx.org/licenses/../x.html", "https://spdx.org/licenses/MIT", "http://spdx.org/licenses/MIT.html",
-            "https://spdx.org/licenses/Proprietary.html", "https://spdx.org/licenses/mit.html")
-            .forEach { assertFalse(LicenseLinks.isSpdxPage(it), it) }
+        listOf("MIT", "Apache-2.0", "mit", "GPL-3.0", "0BSD").forEach {
+            val page = LicenseLinks.spdxPage(it)!!
+            assertTrue(page.startsWith(LicenseLinks.SPDX_PAGES) && page.endsWith(".html") && page.removePrefix(LicenseLinks.SPDX_PAGES).matches(Regex("[A-Za-z0-9.+-]+\\.html")),
+                "only a page on the SPDX site, made from an identifier on the list: $page")
+        }
     }
 }

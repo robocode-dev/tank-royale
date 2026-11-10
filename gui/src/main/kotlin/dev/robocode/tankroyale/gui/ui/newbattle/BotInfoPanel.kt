@@ -28,11 +28,12 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     private val licenseTextField = RcNonEditableTextField()
 
     // The official text of the license opens from a button people can see, not from a hidden link in a read-only field.
-    // It is active only when the license is a standard SPDX identifier, whose official page it opens.
+    // It is active only when the license is an identifier on the SPDX License List, whose official page it opens; the
+    // page is only ever made by the library from such an identifier.
     private var licensePage: String? = null
     private val showLicenseButton = JButton(Strings.get("bot_info.show_license")).apply {
         addActionListener {
-            licensePage?.takeIf { LicenseLinks.isSpdxPage(it) }?.let { Browser.browse(it) }
+            licensePage?.let { Browser.browse(it) }
         }
     }
 

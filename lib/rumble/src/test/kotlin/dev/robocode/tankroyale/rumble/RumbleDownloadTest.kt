@@ -519,6 +519,12 @@ class RumbleDownloadTest {
     // RCL-079
 
     private class FakePort(var read: DownloadRead, var ended: DownloadEnded = DownloadEnded.Done(emptyList())) : DownloadPort {
+        val remembered = mutableListOf<Pair<Path, Thread>>()
+        var outcome: FolderOutcome? = FolderOutcome.ADDED
+        override fun rememberFolder(folder: Path): FolderOutcome? {
+            remembered += folder to Thread.currentThread()
+            return outcome
+        }
         val reads = mutableListOf<Path>()
         val downloads = mutableListOf<List<CatalogBot>>()
         val replaced = mutableListOf<Set<String>>()
@@ -550,6 +556,40 @@ class RumbleDownloadTest {
     private val direct = Executor { it.run() }
 
     private fun listed(vararg bots: CatalogBot, folder: Path) = catalog(*bots).let { DownloadRead.Listed(it, BotDownloads.rows(it, folder)) }
+
+    @Test
+    @Tag("RCL-090")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL090_UnitPositive_theFolderIsRememberedOnceAwayFromTheScreenOnlyWhenABotWasPlaced(@TempDir dir: Path) {
+        val placed = DownloadEnded.Done(listOf(DownloadResult.Placed(bot("Walls"), updated = false, license = "MIT"), DownloadResult.UpToDate(bot("Orbit"))))
+        val port = FakePort(listed(bot("Walls"), bot("Orbit"), folder = dir), placed)
+        val background = Held()
+        val shown = mutableListOf<DownloadState>()
+        val controller = DownloadController(port, dir, background, direct) { shown += it }
+        controller.start()
+        background.runAll()
+        controller.setAll(true)
+        controller.download()
+        assertEquals(emptyList<Pair<Path, Thread>>(), port.remembered, "nothing is remembered on the screen's thread")
+        background.runAll()
+
+        assertEquals(listOf(dir), port.remembered.map { it.first }, "remembered once, for the folder shown")
+        assertEquals(FolderOutcome.ADDED, (controller.state as DownloadState.Ended).folderOutcome, "the result carries what remembering did")
+        val ended = controller.state
+        shown.clear()
+        assertEquals(1, port.remembered.size, "showing the result again remembers nothing more")
+        assertEquals(ended, controller.state)
+
+        port.ended = DownloadEnded.Done(listOf(DownloadResult.UpToDate(bot("Walls"))))
+        port.outcome = FolderOutcome.LABELLED
+        controller.start()
+        background.runAll()
+        controller.setAll(true)
+        controller.download()
+        background.runAll()
+        assertEquals(1, port.remembered.size, "a download that placed no bot does not touch the bot directories")
+    }
 
     @Test
     @Tag("RCL-079")

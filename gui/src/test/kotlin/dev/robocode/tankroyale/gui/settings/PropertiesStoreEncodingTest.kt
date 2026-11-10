@@ -15,9 +15,23 @@ class PropertiesStoreEncodingTest : StringSpec({
             setProperty("bot-directory-labels", "c:/users/jørgen/rumble-bots;rumble-downloads")
         }
 
-        val read = PropertiesStore.read(PropertiesStore.write(written, "title"))
+        val bytes = PropertiesStore.write(written, "title")
 
-        read shouldBe written
+        PropertiesStore.read(bytes) shouldBe written
+        bytes.all { it >= 0 } shouldBe true
+        Properties().apply { load(bytes.inputStream()) } shouldBe written
+    }
+
+    "an older version, which read the file as ISO-8859-1, reads the same letters" {
+        val written = Properties().apply { setProperty("bot-directories", "/home/J\u00f8rgen/\u0420\u0443/bots,true") }
+
+        Properties().apply { load(PropertiesStore.write(written, "title").inputStream()) }.getProperty("bot-directories") shouldBe "/home/J\u00f8rgen/\u0420\u0443/bots,true"
+    }
+
+    "a file an earlier version wrote in UTF-8 is read as written" {
+        val bytes = "bot-directories=C:/Users/J\u00f8rgen/bots,true\n".toByteArray(StandardCharsets.UTF_8)
+
+        PropertiesStore.read(bytes).getProperty("bot-directories") shouldBe "C:/Users/J\u00f8rgen/bots,true"
     }
 
     "a file written by an older version in a single-byte charset is read as before" {
