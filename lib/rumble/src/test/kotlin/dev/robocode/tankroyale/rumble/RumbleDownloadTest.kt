@@ -519,6 +519,12 @@ class RumbleDownloadTest {
     // RCL-079
 
     private class FakePort(var read: DownloadRead, var ended: DownloadEnded = DownloadEnded.Done(emptyList())) : DownloadPort {
+        val remembered = mutableListOf<Pair<Path, Boolean>>()
+        var outcome: () -> FolderOutcome? = { FolderOutcome.ADDED }
+        override fun rememberFolder(folder: Path, placed: Boolean): FolderOutcome? {
+            remembered += folder to placed
+            return outcome()
+        }
         val reads = mutableListOf<Path>()
         val downloads = mutableListOf<List<CatalogBot>>()
         val replaced = mutableListOf<Set<String>>()
@@ -550,6 +556,71 @@ class RumbleDownloadTest {
     private val direct = Executor { it.run() }
 
     private fun listed(vararg bots: CatalogBot, folder: Path) = catalog(*bots).let { DownloadRead.Listed(it, BotDownloads.rows(it, folder)) }
+
+    @Test
+    @Tag("RCL-090")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL090_UnitPositive_theFolderIsRememberedOnceAwayFromTheScreenOnlyWhenABotWasPlaced(@TempDir dir: Path) {
+        val placed = DownloadEnded.Done(listOf(DownloadResult.Placed(bot("Walls"), updated = false, license = "MIT"), DownloadResult.UpToDate(bot("Orbit"))))
+        val port = FakePort(listed(bot("Walls"), bot("Orbit"), folder = dir), placed)
+        val background = Held()
+        val shown = mutableListOf<DownloadState>()
+        val controller = DownloadController(port, dir, background, direct) { shown += it }
+        controller.start()
+        background.runAll()
+        controller.setAll(true)
+        controller.download()
+        assertEquals(emptyList<Pair<Path, Boolean>>(), port.remembered, "nothing is remembered on the screen's thread")
+        background.runAll()
+
+        assertEquals(listOf(dir to true), port.remembered, "remembered once, for the folder shown, as a folder a bot was placed in")
+        assertEquals(FolderOutcome.ADDED, (controller.state as DownloadState.Ended).folderOutcome, "the result carries what remembering did")
+        val ended = controller.state
+        shown.clear()
+        assertEquals(1, port.remembered.size, "showing the result again remembers nothing more")
+        assertEquals(ended, controller.state)
+
+        port.ended = DownloadEnded.Done(listOf(DownloadResult.UpToDate(bot("Walls"))))
+        port.outcome = { FolderOutcome.LABELLED }
+        controller.start()
+        background.runAll()
+        controller.setAll(true)
+        controller.download()
+        background.runAll()
+        assertEquals(dir to false, port.remembered.last(), "a download that placed no bot only asks how the folder stands, which changes nothing")
+        assertEquals(FolderOutcome.LABELLED, (controller.state as DownloadState.Ended).folderOutcome, "so a folder already in New Battle is said to be there")
+    }
+
+    @Test
+    @Tag("RCL-090")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL090_UnitNegative_aFolderThatCannotBeRememberedNeverTurnsPlacedBotsIntoAFailedDownload(@TempDir dir: Path) {
+        val placed = DownloadEnded.Done(listOf(DownloadResult.Placed(bot("Walls"), updated = false, license = "MIT")))
+        val port = FakePort(listed(bot("Walls"), folder = dir), placed)
+        val controller = DownloadController(port, dir, direct, direct) {}
+        controller.start()
+
+        port.outcome = { throw OutOfMemoryError("while saving the settings") }
+        controller.setAll(true)
+        controller.download()
+        val ended = controller.state as DownloadState.Ended
+        assertEquals(1, ended.placed, "the bots on the disk are shown as placed")
+        assertEquals(FolderOutcome.NOT_REMEMBERED, ended.folderOutcome, "and the folder as not remembered")
+
+        port.outcome = { null }
+        controller.start()
+        controller.setAll(true)
+        controller.download()
+        assertEquals(FolderOutcome.NOT_REMEMBERED, (controller.state as DownloadState.Ended).folderOutcome)
+
+        port.ended = DownloadEnded.Done(listOf(DownloadResult.UpToDate(bot("Walls"))))
+        controller.start()
+        controller.setAll(true)
+        controller.download()
+        assertEquals(FolderOutcome.NOT_LISTED, (controller.state as DownloadState.Ended).folderOutcome, "nothing placed and nothing known: the hint to add the folder")
+    }
 
     @Test
     @Tag("RCL-079")

@@ -17,4 +17,7 @@ data class BootEntry(
     val programmingLang: String? = null,
     val initialPosition: String? = null,
     val teamMembers: List<String>? = null,
-)
+) {
+    /** True for a team, by the same rule as the booter's own filter for bots only or teams only: it has team members. */
+    val isTeam: Boolean get() = teamMembers?.isNotEmpty() == true
+}

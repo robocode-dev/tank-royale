@@ -79,6 +79,18 @@ object BotDownloads {
         return current + gone
     }
 
+    /**
+     * True when [target] holds bot folders and every one of them was placed by this screen, so it is a folder of
+     * downloaded bots and not one of the person's own. Hidden folders, such as the private Python environment, are skipped.
+     */
+    fun holdsOnlyDownloads(target: Path): Boolean {
+        if (!Files.isDirectory(target)) return false
+        val folders = Files.list(target).use { paths ->
+            paths.filter { Files.isDirectory(it, LinkOption.NOFOLLOW_LINKS) && !it.fileName.toString().startsWith(".") }.collect(Collectors.toList())
+        }
+        return folders.isNotEmpty() && folders.all { isMarked(it) }
+    }
+
     /** True when the folder can be made and written to. It is asked before anything is fetched. */
     fun writable(target: Path): Boolean =
         try {

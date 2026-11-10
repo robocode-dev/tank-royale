@@ -22,6 +22,8 @@ data class BotInfo(
     val port: Int = -1,
     val sessionId: String? = null,
     val debuggerAttached: Boolean? = null,
+    /** The license the bot's own configuration file declares; empty when it declares none, null when it is not known. */
+    val license: String? = null,
 ) : Comparable<BotInfo> {
 
     val botAddress: BotAddress = BotAddress(host, port)

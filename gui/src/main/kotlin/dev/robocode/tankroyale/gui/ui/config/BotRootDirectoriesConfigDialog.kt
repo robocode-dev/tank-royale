@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.rumble.BotFolderSetting
+import dev.robocode.tankroyale.rumble.DownloadFolders
 import dev.robocode.tankroyale.common.event.Event
-import dev.robocode.tankroyale.gui.settings.BotDirectoryConfig
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -31,9 +32,13 @@ object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directorie
         setLocationRelativeTo(owner) // center on owner window
 
         onClosing {
-            ConfigSettings.botDirectories =
-                listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
+            BotDirectoryConfigPanel.updateSettings()
         }
+    }
+
+    override fun setVisible(visible: Boolean) {
+        if (visible && !isVisible) BotDirectoryConfigPanel.reload()
+        super.setVisible(visible)
     }
 }
 
@@ -48,7 +53,11 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     val scrollPane = JScrollPane(list)
 
     init {
-        list.cellRenderer = CheckListRenderer()
+        // A labelled folder says what it holds, beside its path.
+        // The labels are read when the list is read, not for every row painted.
+        list.cellRenderer = CheckListRenderer { path ->
+            if (DownloadFolders.isLabelled(path, labels)) " " + String.format(Strings.get("bot_root_dirs.labelled"), Strings.get("rumble_downloads_label")) else ""
+        }
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 
         add(scrollPane, "span, grow, wrap")
@@ -66,6 +75,12 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         }
 
         ConfigSettings.botDirectories.forEach { listModel.addElement(CheckListEntity(it.path, it.enabled)) }
+
+        // The dialog saves each change at once, so it holds nothing unsaved. When the settings are saved elsewhere while
+        // it is open, for example when a download adds its folder, it reads them again, so it never writes back an old list.
+        ConfigSettings.onSaved.on(this) {
+            if (!saving && BotRootDirectoriesConfigDialog.isVisible) reload()
+        }
 
         onAdd.on(BotRootDirectoriesConfigDialog) { addDirectory() }
         onRemove.on(BotRootDirectoriesConfigDialog) { removeDirectory() }
@@ -106,20 +121,13 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             selectedFiles.forEach { file ->
                 val selectedPath = file.toPath()
 
-                // If the directory has already been added, make sure to enable it
-                var found = false
-                listModel.elements().iterator().forEach {
-                    if (it.label == selectedPath.toString()) {
-                        it.isActive = true
-                        found = true
-                    }
-                }
+                // If the directory has already been added, however its path is written, make sure to enable it
+                val key = DownloadFolders.key(selectedPath.toString())
+                val existing = listModel.elements().toList().filter { DownloadFolders.key(it.label) == key }
+                existing.forEach { it.isActive = true }
                 // Else, we just add the directory
-                if (!found) {
-                    val existingEntries = listModel.elements().toList().map { it.label }
-                    if (!existingEntries.contains(selectedPath.toString())) {
-                        listModel.addElement(CheckListEntity(selectedPath.toString(), true))
-                    }
+                if (existing.isEmpty()) {
+                    listModel.addElement(CheckListEntity(selectedPath.toString(), true))
                 }
             }
             EDT.enqueue { list.repaint() }
@@ -143,6 +151,30 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     }
 
     fun updateSettings() {
-        ConfigSettings.botDirectories = listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
+        val folders = listModel.elements().toList().map { BotFolderSetting(it.label, it.isActive) }
+        // A removed folder leaves no label behind; both are saved in one write.
+        labels = DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)
+        saving = true
+        try {
+            ConfigSettings.saveBotFolders(folders, labels)
+        } finally {
+            saving = false
+        }
+    }
+
+    /** True while this dialog saves, so its own save does not make it read the list again. */
+    private var saving = false
+
+    /** The labels of the bot directories as last read or saved. */
+    private var labels: Map<String, String> = ConfigSettings.botDirectoryLabels
+
+    /**
+     * Reads the bot directories again, because they may have changed while the dialog was closed, for example when a
+     * download added its folder. Without it, closing the dialog would write back an old list.
+     */
+    fun reload() {
+        labels = ConfigSettings.botDirectoryLabels
+        listModel.clear()
+        ConfigSettings.botDirectories.forEach { listModel.addElement(CheckListEntity(it.path, it.enabled)) }
     }
 }

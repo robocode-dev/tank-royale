@@ -70,7 +70,7 @@ object DownloadTexts {
         "rumble.download.which", "rumble.download.all", "rumble.download.selected", "rumble.download.platforms", "rumble.download.row",
         "rumble.download.row_license", "rumble.download.row_here", "rumble.download.replace_changed", "rumble.download.none", "rumble.download.downloading",
         "rumble.download.ended", "rumble.download.result_line", "rumble.download.license_of", "rumble.download.no_license",
-        "rumble.download.add_folder_hint", "rumble.download.kept_at", "rumble.download.details", "rumble.download.status_success", "rumble.download.status_failed",
+        "rumble.download.add_folder_hint", "rumble.download.folder_added", "rumble.download.folder_in_new_battle", "rumble.download.folder_switched_off", "rumble.download.folder_own", "rumble.download.folder_own_switched_off", "rumble.download.folder_added_own", "rumble.download.folder_not_remembered", "rumble.download.folder_comma", "rumble.download.kept_at", "rumble.download.details", "rumble.download.status_success", "rumble.download.status_failed",
         "rumble.download.unknown", "rumble.download.licenses", "rumble.download.licenses_intro", "rumble.download.licenses_label",
         "rumble.download.for_author", "rumble.download.for_user", "rumble.download.may", "rumble.download.must", "rumble.download.note",
         "rumble.download.author_later", "rumble.download.credit",

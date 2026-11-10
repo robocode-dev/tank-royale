@@ -1,6 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
+import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.util.Browser
+import dev.robocode.tankroyale.rumble.LicenseLinks
 import dev.robocode.tankroyale.gui.ui.components.RcHtmlPane
 import dev.robocode.tankroyale.gui.ui.components.RcNonEditableTextArea
 import dev.robocode.tankroyale.gui.ui.components.RcNonEditableTextField
@@ -22,6 +25,17 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     private val gameTypesTextField = RcNonEditableTextField()
     private val platformTextField = RcNonEditableTextField()
     private val programmingLangTextField = RcNonEditableTextField()
+    private val licenseTextField = RcNonEditableTextField()
+
+    // The official text of the license opens from a button people can see, not from a hidden link in a read-only field.
+    // It is active only when the license is an identifier on the SPDX License List, whose official page it opens; the
+    // page is only ever made by the library from such an identifier.
+    private var licensePage: String? = null
+    private val showLicenseButton = JButton(Strings.get("bot_info.show_license")).apply {
+        addActionListener {
+            licensePage?.let { Browser.browse(it) }
+        }
+    }
 
     init {
         border = BorderFactory.createTitledBorder("Bot Info")
@@ -38,8 +52,14 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         addLabel("bot_info.homepage", "cell 0 3")
         add(homepageTextPane, "cell 1 3, growx")
 
-        addLabel("bot_info.description", "cell 0 4")
-        add(descriptionTextArea, "growx, span 4")
+        addLabel("bot_info.license", "cell 0 4")
+        add(JPanel(MigLayout("insets 0, fillx", "[grow, fill][]")).apply {
+            add(licenseTextField, "growx")
+            add(showLicenseButton)
+        }, "cell 1 4, growx")
+
+        addLabel("bot_info.description", "cell 0 5")
+        add(descriptionTextArea, "cell 1 5, growx, span 4")
         descriptionTextArea.font = font
 
         addLabel("bot_info.platform", "cell 3 0")
@@ -79,6 +99,15 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         countryCodesTextPane.text = botInfo?.countryCodes?.let { generateCountryHtml(botInfo.countryCodes) } ?: ""
         platformTextField.text = botInfo?.platform
         programmingLangTextField.text = botInfo?.programmingLang
+        licenseTextField.text = licenseText(botInfo)
+        licensePage = LicenseLinks.spdxPage(botInfo?.license)
+        showLicenseButton.isEnabled = licensePage != null
+    }
+
+    /** The license as the bot declares it, or that it declares none, or that it is not known for a bot that joined on its own. */
+    private fun licenseText(botInfo: BotInfo?): String {
+        val license = botInfo?.license?.trim() ?: return if (botInfo == null) "" else Strings.get("bot_info.license_unknown")
+        return license.ifEmpty { Strings.get("bot_info.no_license") }
     }
 
     private fun truncateDescriptionLines(text: String): String {

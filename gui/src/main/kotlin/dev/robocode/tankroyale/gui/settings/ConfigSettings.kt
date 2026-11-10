@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
+import dev.robocode.tankroyale.rumble.BotFolderSetting
+import dev.robocode.tankroyale.rumble.DownloadFolders
 import java.util.*
 
 object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.properties") {
@@ -33,6 +35,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val CHECK_BOT_API_UPDATES = "check-bot-api-updates"
 
     private const val BOT_DIRS_SEPARATOR = ','
+    private const val BOT_DIRECTORY_LABELS = "bot-directory-labels"
 
     var enableAutoRecording: Boolean
         get() = load(ENABLE_AUTO_RECORDING)?.lowercase() == "true"
@@ -46,11 +49,22 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
             save(CHECK_BOT_API_UPDATES, if (value) "true" else "false")
         }
 
-    var botDirectories: List<BotDirectoryConfig>
+    /** The bot directories; they are saved with their labels by [saveBotFolders]. */
+    val botDirectories: List<BotDirectoryConfig>
         get() = getBotDirectoryConfigs()
-        set(value) {
-            setBotDirectoryConfigs(value)
-        }
+
+    /**
+     * The labels of bot directories, by path. They are kept in a setting of their own, so [botDirectories] is read and
+     * written exactly as before, and an older version of the program sees the same bot directories. Only the labels of
+     * folders among the bot directories count, so a label left behind when an older version removed its folder never
+     * comes back with a folder the person adds later.
+     */
+    val botDirectoryLabels: Map<String, String>
+        get() = DownloadFolders.keepLabelsOf(botFolders, DownloadFolders.parseLabels(load(BOT_DIRECTORY_LABELS, "")))
+
+    /** The bot directories as the shared Rumble library sees them; they are saved with [saveBotFolders]. */
+    val botFolders: List<BotFolderSetting>
+        get() = botDirectories.map { BotFolderSetting(it.path, it.enabled) }
 
     var gameType: GameType
         get() {
@@ -226,7 +240,17 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         return botDirectoryConfigs
     }
 
-    private fun setBotDirectoryConfigs(botDirectoryConfigs: List<BotDirectoryConfig>) {
+    /**
+     * Saves the bot directories and their labels in one write, so a screen listening for saved settings reads them once
+     * and never sees one without the other.
+     */
+    fun saveBotFolders(folders: List<BotFolderSetting>, labels: Map<String, String>) {
+        set(BOT_DIRECTORY_LABELS, DownloadFolders.formatLabels(labels))
+        set(BOT_DIRECTORIES, botDirectoriesText(folders.map { BotDirectoryConfig(it.path, it.enabled) }))
+        save()
+    }
+
+    private fun botDirectoriesText(botDirectoryConfigs: List<BotDirectoryConfig>): String {
         val stringBuffer = StringBuilder()
         botDirectoryConfigs.filter { it.path.isNotBlank() }.forEach { botDirectoryConfig ->
             // Normalize path separators to forward slashes to avoid escape sequence issues in properties files
@@ -235,6 +259,6 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
                 .append(normalizedPath).append(BOT_DIRS_SEPARATOR)
                 .append(if (botDirectoryConfig.enabled) "true" else "false").append(BOT_DIRS_SEPARATOR)
         }
-        save(BOT_DIRECTORIES, stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR))
+        return stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR)
     }
 }
