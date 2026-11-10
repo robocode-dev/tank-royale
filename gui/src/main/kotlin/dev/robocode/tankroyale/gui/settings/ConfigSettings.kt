@@ -49,21 +49,18 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
             save(CHECK_BOT_API_UPDATES, if (value) "true" else "false")
         }
 
-    var botDirectories: List<BotDirectoryConfig>
+    /** The bot directories; they are saved with their labels by [saveBotFolders]. */
+    val botDirectories: List<BotDirectoryConfig>
         get() = getBotDirectoryConfigs()
-        set(value) {
-            setBotDirectoryConfigs(value)
-        }
 
     /**
      * The labels of bot directories, by path. They are kept in a setting of their own, so [botDirectories] is read and
-     * written exactly as before, and an older version of the program sees the same bot directories.
+     * written exactly as before, and an older version of the program sees the same bot directories. Only the labels of
+     * folders among the bot directories count, so a label left behind when an older version removed its folder never
+     * comes back with a folder the person adds later.
      */
-    var botDirectoryLabels: Map<String, String>
-        get() = DownloadFolders.parseLabels(load(BOT_DIRECTORY_LABELS, ""))
-        set(value) {
-            save(BOT_DIRECTORY_LABELS, DownloadFolders.formatLabels(value))
-        }
+    val botDirectoryLabels: Map<String, String>
+        get() = DownloadFolders.keepLabelsOf(botFolders, DownloadFolders.parseLabels(load(BOT_DIRECTORY_LABELS, "")))
 
     /** The bot directories as the shared Rumble library sees them; they are saved with [saveBotFolders]. */
     val botFolders: List<BotFolderSetting>
@@ -251,10 +248,6 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         set(BOT_DIRECTORY_LABELS, DownloadFolders.formatLabels(labels))
         set(BOT_DIRECTORIES, botDirectoriesText(folders.map { BotDirectoryConfig(it.path, it.enabled) }))
         save()
-    }
-
-    private fun setBotDirectoryConfigs(botDirectoryConfigs: List<BotDirectoryConfig>) {
-        save(BOT_DIRECTORIES, botDirectoriesText(botDirectoryConfigs))
     }
 
     private fun botDirectoriesText(botDirectoryConfigs: List<BotDirectoryConfig>): String {

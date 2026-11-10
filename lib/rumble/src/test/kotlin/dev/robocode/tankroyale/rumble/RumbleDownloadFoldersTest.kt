@@ -53,11 +53,36 @@ class RumbleDownloadFoldersTest {
     fun testRCL090_UnitPositive_aNewDownloadFolderIsAddedSwitchedOnAndLabelledAtTheEnd() {
         val folder = Path.of("C:/Users/me/rumble-bots")
 
-        val remembered = DownloadFolders.remember(own, emptyMap(), folder, ignoreCase = true)
+        val remembered = DownloadFolders.remember(own, emptyMap(), folder, onlyDownloads = true, ignoreCase = true)
 
         assertEquals(FolderOutcome.ADDED, remembered.outcome)
         assertEquals(own + BotFolderSetting(folder.toString(), true), remembered.folders, "the person's own folders are kept as they were, in order")
         assertTrue(DownloadFolders.isLabelled(folder.toString(), remembered.labels, ignoreCase = true))
+    }
+
+    @Test
+    @Tag("RCL-090")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL090_UnitNegative_aNewFolderHoldingOwnBotsIsAddedWithoutALabelAndNothingChangesWhenNothingWasPlaced() {
+        val folder = Path.of("C:/Users/me/my-bots")
+
+        val mixed = DownloadFolders.remember(own, emptyMap(), folder, onlyDownloads = false, ignoreCase = true)
+        assertEquals(FolderOutcome.ADDED_AS_OWN, mixed.outcome)
+        assertEquals(own + BotFolderSetting(folder.toString(), true), mixed.folders, "added, so the new bots are in New Battle")
+        assertFalse(DownloadFolders.isLabelled(folder.toString(), mixed.labels, ignoreCase = true), "but the person's own bots there are never moved into the group")
+
+        val notListed = DownloadFolders.remember(own, emptyMap(), folder, onlyDownloads = true, ignoreCase = true, placed = false)
+        assertEquals(FolderOutcome.NOT_LISTED, notListed.outcome)
+        assertEquals(own to emptyMap<String, String>(), notListed.folders to notListed.labels, "nothing placed, nothing added")
+
+        val labels = mapOf(DownloadFolders.key("C:/Code/bots/java", ignoreCase = true) to DownloadFolders.LABEL)
+        val there = DownloadFolders.remember(own, labels, Path.of("C:/Code/bots/java"), ignoreCase = true, placed = false)
+        assertEquals(FolderOutcome.LABELLED, there.outcome, "a labelled folder is said to be in New Battle again")
+        assertEquals(own to labels, there.folders to there.labels)
+        val ownThere = DownloadFolders.remember(own, emptyMap(), Path.of("C:/Code/bots/java"), onlyDownloads = true, ignoreCase = true, placed = false)
+        assertEquals(FolderOutcome.OWN_FOLDER, ownThere.outcome, "an unlabelled folder is not labelled when nothing was placed")
+        assertEquals(emptyMap<String, String>(), ownThere.labels)
     }
 
     @Test

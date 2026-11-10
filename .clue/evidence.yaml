@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "c705eeea2ea27a970e6476363c8bc677866c5a21d47465400c272a0dd567ab0c"
+          "sha256": "544de028db3983e9759d54c6f442b9732d72539b89ca714e3712fcb78d47ba7c"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1724,7 +1724,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
-          "sha256": "6c79d612f619af08079cd79d384513be5d6512a1d2545bdd78e1adab5e39de30"
+          "sha256": "8a59dd8151357dd038efbb47c0266e4d8d8aeb887c08e8718ef6ff11d08ddca5"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
@@ -1732,7 +1732,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
-          "sha256": "3836bf8be8460044b74aed7c73acd9c8547c1847ab6dacfb92d543c58fa510d8"
+          "sha256": "57663788cf9c71d2a844365848f1ef8ed8e4d1bc1e847ae5c3d246df17f712d4"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
@@ -2158,6 +2158,13 @@
         {
           "id": "RCL-090",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_aNewFolderHoldingOwnBotsIsAddedWithoutALabelAndNothingChangesWhenNothingWasPlaced",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
           "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_theSuggestedFolderIsWorkedOutFromTheOwnFoldersAndNeverMoves",
           "type": "Unit",
           "direction": "negative"
@@ -2497,6 +2504,13 @@
           "subject": "RumbleDownloadTest.testRCL079_UnitPositive_nothingIsFetchedBeforeDownloadAndAllWorkRunsAwayFromTheScreenAndInOrder",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
+          "subject": "RumbleDownloadTest.testRCL090_UnitNegative_aFolderThatCannotBeRememberedNeverTurnsPlacedBotsIntoAFailedDownload",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-090",

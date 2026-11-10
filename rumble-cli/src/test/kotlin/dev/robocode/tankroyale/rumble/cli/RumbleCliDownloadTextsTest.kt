@@ -232,14 +232,14 @@ class RumbleCliDownloadTextsTest {
         val download = code(dialogFile)
         assertTrue(download.contains("rememberFolder = ::rememberFolder") && download.contains("when (state.folderOutcome)"),
             "the folder is remembered by the download, away from the screen's thread, and the result only shows what that did")
-        assertTrue(download.contains("runCatching { BotDownloads.holdsOnlyDownloads(folder) }") && download.contains("save = { ConfigSettings.saveBotFolders(it.folders, it.labels) }"),
+        assertTrue(download.contains("runCatching { placed && BotDownloads.holdsOnlyDownloads(folder) }") && download.contains("save = { ConfigSettings.saveBotFolders(it.folders, it.labels) }"),
             "an own folder is never labelled, and the folders and labels are saved in one write")
         assertTrue(download.contains("DownloadFolders.rememberAfterDownload("), "a folder that cannot be looked into or saved leaves the screen showing what the download did")
-        assertTrue(download.contains("null -> text(\"rumble.download.add_folder_hint\")"), "and asks the person to add the folder by hand")
+        assertTrue(download.contains("FolderOutcome.NOT_LISTED, null -> text(\"rumble.download.add_folder_hint\")"), "a folder not in the bot directories when nothing was placed gets the hint to add it by hand")
         val panel = code(newBattleFile)
         assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }") && panel.contains("RefreshWhenShown({ isShowing })"),
             "New Battle reads the bot directories after a download only when it is open, so the download screen never waits for it")
-        listOf("ADDED", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
+        listOf("ADDED", "ADDED_AS_OWN", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF", "NOT_REMEMBERED").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
         assertTrue(download.contains("DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)"), "the suggestion skips download folders")
         val settings = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/config/BotRootDirectoriesConfigDialog.kt")
         assertTrue(settings.contains("if (visible && !isVisible) BotDirectoryConfigPanel.reload()"), "the dialog reads the bot directories again each time it opens")

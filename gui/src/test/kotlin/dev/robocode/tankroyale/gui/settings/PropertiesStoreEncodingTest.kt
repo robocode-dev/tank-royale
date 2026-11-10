@@ -40,6 +40,16 @@ class PropertiesStoreEncodingTest : StringSpec({
         PropertiesStore.read(bytes).getProperty("bot-directories") shouldBe "C:/Users/Jørgen/bots,true"
     }
 
+    "a backslash, a line break, a leading space and separators in a key are read back as written" {
+        val written = Properties().apply {
+            setProperty("path", "C:\\users\\new\\u0041")
+            setProperty("lines", " two\nlines\tand\r\u000c")
+            setProperty("odd key=:#! ", "=:#! value")
+        }
+
+        PropertiesStore.read(PropertiesStore.write(written, "title")) shouldBe written
+    }
+
     "the file is written sorted, one setting per line" {
         val written = Properties().apply {
             setProperty("tps", "30")

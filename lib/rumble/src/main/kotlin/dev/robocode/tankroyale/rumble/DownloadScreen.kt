@@ -74,7 +74,7 @@ sealed interface DownloadState {
 
     data class SettingUpPython(override val folder: Path) : DownloadState
 
-    /** [folderOutcome] is what remembering the folder among the bot directories did; null when nothing was placed or it could not be remembered. */
+    /** [folderOutcome] is what remembering the folder among the bot directories did, or how it stands when nothing was placed. */
     data class Ended(override val folder: Path, val results: List<DownloadResult>, val folderOutcome: FolderOutcome? = null) : DownloadState {
         val placed: Int get() = results.count { it is DownloadResult.Placed }
     }
@@ -93,10 +93,11 @@ interface DownloadPort {
     fun setUpPython(folder: Path): PythonSetupResult = PythonSetupResult.Failed(PythonSetupStep.MAKE_ENVIRONMENT, "")
 
     /**
-     * Remembers [folder] among the bot directories after a download placed at least one bot there, and says what that
-     * did, or null when it could not. Called once per download, away from the screen's thread. Never throws.
+     * Remembers [folder] among the bot directories after a download, and says what that did; when [placed] is false,
+     * nothing is changed and the outcome only says how the folder stands. Null when it could not be found out. Called
+     * once per download, away from the screen's thread.
      */
-    fun rememberFolder(folder: Path): FolderOutcome? = null
+    fun rememberFolder(folder: Path, placed: Boolean): FolderOutcome? = null
 }
 
 /** The real port. The catalog and the sources are public, so no sign-in is asked for or sent. */
@@ -110,10 +111,10 @@ class LibraryDownloadPort(
     private val pythonBotApiName: String? = null,
     private val writePythonBotApi: (Path) -> Unit = {},
     /** How the desktop program remembers a download folder among its bot directories. */
-    private val rememberFolder: (Path) -> FolderOutcome? = { null },
+    private val rememberFolder: (Path, Boolean) -> FolderOutcome? = { _, _ -> null },
 ) : DownloadPort {
 
-    override fun rememberFolder(folder: Path): FolderOutcome? = rememberFolder.invoke(folder)
+    override fun rememberFolder(folder: Path, placed: Boolean): FolderOutcome? = rememberFolder.invoke(folder, placed)
 
     /**
      * The program's own Python Bot API is written to a folder of its own that only this person can use, made once for
@@ -264,12 +265,19 @@ class DownloadController(
         if (bots.isEmpty()) return@execute
         val mine = ++epoch
         show(DownloadState.Downloading(choosing.folder, bots.size))
-        // The folder is remembered among the bot directories on the same background thread, once per download and only
-        // when a bot was placed, so the screen never waits for the disk and showing the result again changes nothing.
+        // The folder is remembered among the bot directories on the same background thread, once per download, and
+        // changed only when a bot was placed, so the screen never waits for the disk and showing the result again changes
+        // nothing. Whatever goes wrong there never turns bots that are on the disk into a failed download.
         val call = {
             val ended = port.download(known, bots, choosing.replaceChanged, choosing.folder)
-            val placed = ended is DownloadEnded.Done && ended.results.any { it is DownloadResult.Placed }
-            ended to (if (placed) port.rememberFolder(choosing.folder) else null)
+            val outcome = if (ended is DownloadEnded.Done) {
+                val placed = ended.results.any { it is DownloadResult.Placed }
+                runCatching { port.rememberFolder(choosing.folder, placed) }.getOrNull()
+                    ?: if (placed) FolderOutcome.NOT_REMEMBERED else FolderOutcome.NOT_LISTED
+            } else {
+                null
+            }
+            ended to outcome
         }
         work(mine, choosing.folder, call) { (ended, folderOutcome) ->
             show(

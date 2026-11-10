@@ -192,7 +192,9 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             FolderOutcome.SWITCHED_OFF -> text("rumble.download.folder_switched_off", label)
             FolderOutcome.OWN_FOLDER -> text("rumble.download.folder_own")
             FolderOutcome.OWN_FOLDER_SWITCHED_OFF -> text("rumble.download.folder_own_switched_off")
-            null -> text("rumble.download.add_folder_hint")
+            FolderOutcome.ADDED_AS_OWN -> text("rumble.download.folder_added_own")
+            FolderOutcome.NOT_REMEMBERED -> text("rumble.download.folder_not_remembered")
+            FolderOutcome.NOT_LISTED, null -> text("rumble.download.add_folder_hint")
         }))
         act(
             button("rumble.download.licenses") { showLicenses() },
@@ -334,17 +336,25 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
          * settings cannot be saved, nothing is remembered, the reason is logged, and the result asks the person to add
          * the folder by hand.
          */
-        private fun rememberFolder(folder: Path): FolderOutcome? {
-            val onlyDownloads = runCatching { BotDownloads.holdsOnlyDownloads(folder) }
+        private fun rememberFolder(folder: Path, placed: Boolean): FolderOutcome? {
+            val onlyDownloads = runCatching { placed && BotDownloads.holdsOnlyDownloads(folder) }
             var outcome: FolderOutcome? = null
-            SwingUtilities.invokeAndWait {
-                outcome = DownloadFolders.rememberAfterDownload(
-                    folder,
-                    onlyDownloads = { onlyDownloads.getOrThrow() },
-                    read = { ConfigSettings.botFolders to ConfigSettings.botDirectoryLabels },
-                    save = { ConfigSettings.saveBotFolders(it.folders, it.labels) },
-                    onFailure = { it.printStackTrace() },
-                )
+            try {
+                SwingUtilities.invokeAndWait {
+                    outcome = DownloadFolders.rememberAfterDownload(
+                        folder,
+                        onlyDownloads = { onlyDownloads.getOrThrow() },
+                        read = { ConfigSettings.botFolders to ConfigSettings.botDirectoryLabels },
+                        save = { ConfigSettings.saveBotFolders(it.folders, it.labels) },
+                        onFailure = { it.printStackTrace() },
+                        placed = placed,
+                    )
+                }
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+                e.printStackTrace()
+            } catch (e: java.lang.reflect.InvocationTargetException) {
+                e.printStackTrace()
             }
             return outcome
         }

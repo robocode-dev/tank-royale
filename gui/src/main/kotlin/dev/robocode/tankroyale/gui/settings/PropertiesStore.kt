@@ -136,16 +136,16 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
 
     companion object {
         /**
-         * The settings as they are written to the file: sorted, one per line, with every letter outside ASCII written as
-         * a Unicode escape, so a path such as a home folder named Jørgen is read back as it was written, by this version
-         * and by older ones, which read the file as ISO-8859-1.
+         * The settings as they are written to the file: sorted, one per line, escaped as a properties file needs, and
+         * with every letter outside ASCII written as a Unicode escape, so every value, such as a path in a home folder
+         * named Jørgen or one with a backslash, is read back as it was written, by this version and by older ones,
+         * which read the file as ISO-8859-1.
          */
         internal fun write(properties: Properties, title: String): ByteArray {
             val sortedProperties = object : Properties() {
                 override fun store(writer: Writer, comments: String) {
                     keys.stream().map { k -> k }.sorted().forEach { k ->
-                        val value = asciiOnly("${get(k)}")
-                        writer.append("${k}=${value}\n")
+                        writer.append("${escape("$k", key = true)}=${escape("${get(k)}", key = false)}\n")
                     }
                 }
             }
@@ -155,9 +155,25 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             return writer.toString().toByteArray(StandardCharsets.UTF_8)
         }
 
-        /** Writes each character outside ASCII as a Unicode escape, which every reader of a properties file understands. */
-        private fun asciiOnly(text: String): String = buildString {
-            text.forEach { c -> if (c.code < 0x80) append(c) else append("\\u%04x".format(c.code)) }
+        /**
+         * Writes [text] so a properties file gives it back exactly: a backslash, a line break, a tab, a leading space,
+         * and in a key a separator or a comment sign, are escaped, and each character outside ASCII is written as a
+         * Unicode escape, which every reader of a properties file understands.
+         */
+        internal fun escape(text: String, key: Boolean): String = buildString {
+            text.forEachIndexed { i, c ->
+                when {
+                    c == '\\' -> append("\\\\")
+                    c == '\n' -> append("\\n")
+                    c == '\r' -> append("\\r")
+                    c == '\t' -> append("\\t")
+                    c == '\u000c' -> append("\\f")
+                    c == ' ' && (i == 0 || key) -> append("\\ ")
+                    key && (c == '=' || c == ':' || c == '#' || c == '!') -> append('\\').append(c)
+                    c.code < 0x20 || c.code >= 0x7f -> append("\\u%04x".format(c.code))
+                    else -> append(c)
+                }
+            }
         }
 
         /**

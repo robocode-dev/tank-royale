@@ -6,10 +6,13 @@ import java.nio.file.Path
 /** One of the person's bot directories as the desktop program keeps it: a path and whether it is switched on. */
 data class BotFolderSetting(val path: String, val enabled: Boolean)
 
-/** What remembering a download folder did, so the screen can say where the bots are. */
+/** What remembering a download folder did, or how it stands when nothing was placed, so the screen can say where the bots are. */
 enum class FolderOutcome {
     /** Added to the bot directories, switched on and labelled. */
     ADDED,
+
+    /** Added to the bot directories, switched on, without a label, because it also holds bots of the person's own. */
+    ADDED_AS_OWN,
 
     /** Already among the bot directories and switched on; now labelled. */
     LABELLED,
@@ -22,6 +25,12 @@ enum class FolderOutcome {
 
     /** One of the person's own bot directories, left as it was, without a label, and switched off, so its bots are not in New Battle. */
     OWN_FOLDER_SWITCHED_OFF,
+
+    /** Nothing was placed, and the folder is not among the bot directories; nothing was changed. */
+    NOT_LISTED,
+
+    /** A bot was placed, but the folder could not be looked into or the settings could not be read or written. */
+    NOT_REMEMBERED,
 }
 
 /** The bot directories and their labels after a download folder was remembered, and what that did. */
@@ -76,22 +85,30 @@ object DownloadFolders {
     }
 
     /**
-     * Remembers [folder] as a download folder after a download placed bots in it. A folder not yet among [folders] is
-     * added at the end, switched on and labelled. A folder already there keeps its place and its switch, and gets the
-     * label only when it is labelled already or [onlyDownloads] says it holds nothing but downloaded bots, so one of the
-     * person's own bot directories never has their own bots moved into the group of downloaded bots.
+     * Remembers [folder] as a download folder after a download. When [placed] is false, nothing is changed and the
+     * outcome only says how the folder stands. Otherwise a folder not yet among [folders] is added at the end, switched
+     * on, and labelled only when [onlyDownloads] says it holds nothing but downloaded bots. A folder already there keeps
+     * its place and its switch, and gets the label only when it is labelled already or [onlyDownloads] holds. So the
+     * person's own bots are never moved into the group of downloaded bots.
      */
     fun remember(
         folders: List<BotFolderSetting>, labels: Map<String, String>, folder: Path,
-        onlyDownloads: Boolean = false, ignoreCase: Boolean = IGNORE_CASE,
+        onlyDownloads: Boolean = false, ignoreCase: Boolean = IGNORE_CASE, placed: Boolean = true,
     ): RememberedFolder {
         val key = key(folder.toString(), ignoreCase)
         val existing = folders.firstOrNull { key(it.path, ignoreCase) == key }
-            ?: return RememberedFolder(folders + BotFolderSetting(folder.toString(), true), labels + (key to LABEL), FolderOutcome.ADDED)
-        if (labels[key] != LABEL && !onlyDownloads) {
+        if (existing == null) {
+            return when {
+                !placed -> RememberedFolder(folders, labels, FolderOutcome.NOT_LISTED)
+                onlyDownloads -> RememberedFolder(folders + BotFolderSetting(folder.toString(), true), labels + (key to LABEL), FolderOutcome.ADDED)
+                else -> RememberedFolder(folders + BotFolderSetting(folder.toString(), true), labels - key, FolderOutcome.ADDED_AS_OWN)
+            }
+        }
+        if (labels[key] != LABEL && (!onlyDownloads || !placed)) {
             return RememberedFolder(folders, labels, if (existing.enabled) FolderOutcome.OWN_FOLDER else FolderOutcome.OWN_FOLDER_SWITCHED_OFF)
         }
-        return RememberedFolder(folders, labels + (key to LABEL), if (existing.enabled) FolderOutcome.LABELLED else FolderOutcome.SWITCHED_OFF)
+        val kept = if (placed) labels + (key to LABEL) else labels
+        return RememberedFolder(folders, kept, if (existing.enabled) FolderOutcome.LABELLED else FolderOutcome.SWITCHED_OFF)
     }
 
     /**
@@ -106,9 +123,14 @@ object DownloadFolders {
         save: (RememberedFolder) -> Unit,
         onFailure: (Exception) -> Unit = {},
         ignoreCase: Boolean = IGNORE_CASE,
+        placed: Boolean = true,
     ): FolderOutcome? = try {
         val (folders, labels) = read()
-        remember(folders, labels, folder, onlyDownloads(), ignoreCase).also(save).outcome
+        if (placed) {
+            remember(folders, labels, folder, onlyDownloads(), ignoreCase).also(save).outcome
+        } else {
+            remember(folders, labels, folder, ignoreCase = ignoreCase, placed = false).outcome
+        }
     } catch (e: Exception) {
         onFailure(e)
         null

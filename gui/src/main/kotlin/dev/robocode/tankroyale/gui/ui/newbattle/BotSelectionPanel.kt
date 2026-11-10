@@ -450,6 +450,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         botsDirectoryListModel.clear()
         downloadedList.clearSelection()
         downloadedListModel.clear()
+        knownLicenses = KnownLicenses(emptyList())
         val labels = ConfigSettings.botDirectoryLabels
 
         val (botsOnly: Boolean, teamsOnly: Boolean) = when (filterDropdown.selectedItem) {
