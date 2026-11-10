@@ -772,7 +772,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given bots from the bot directories that declare a standard license, another license text or none, and a bot that joined the battle on its own
     When the person selects each in New Battle
-    Then Bot Info shows the declared license as written, or that no license is declared, and a standard SPDX license identifier links to its page on the SPDX license list, which is the only address the field opens
+    Then Bot Info shows the declared license as written, or that no license is declared, and beside it a Show button, whose text is a resource, opens the page of a standard SPDX license identifier on the SPDX license list; the button is active only when there is such a page, and it opens no other address
     And a bot that joined on its own shows the license of the bot of the same name and version in the bot directories, or that its license is not known
     And every text of the field and of the group is in every language file
 

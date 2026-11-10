@@ -238,12 +238,14 @@ class RumbleCliDownloadTextsTest {
     @Tag("Negative")
     fun testRCL092_UnitNegative_botInfoLinksOnlyTheSpdxPageAndAJoinedBotTakesItsLicenseFromItsFolder() {
         val info = code(botInfoFile)
-        assertTrue(info.contains("LicenseLinks.spdxPage(license)") && info.contains("LicenseLinks.isSpdxPage(url)"), "the link is made and checked by the library")
+        assertTrue(info.contains("LicenseLinks.spdxPage(botInfo?.license)") && info.contains("LicenseLinks.isSpdxPage(it)"), "the page is made and checked by the library")
+        assertTrue(info.contains("showLicenseButton.isEnabled = licensePage != null"), "a visible button opens it, and only when there is a page")
+        assertTrue(info.contains("Strings.get(\"bot_info.show_license\")"), "the button's text is a resource")
         assertTrue(info.contains("Strings.get(\"bot_info.no_license\")") && info.contains("Strings.get(\"bot_info.license_unknown\")"))
         val panel = code(newBattleFile)
         assertTrue(panel.contains("BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it))"))
         assertTrue(panel.contains("license = license ?: \"\""), "a bot in the bot directories with no license says so; null is kept for not known")
-        val strings = listOf("bot_info.license", "bot_info.no_license", "bot_info.license_unknown", "rumble_downloads_label", "rumble_downloads_group", "bot_root_dirs.labelled")
+        val strings = listOf("bot_info.license", "bot_info.no_license", "bot_info.license_unknown", "rumble_downloads_label", "rumble_downloads_group", "bot_root_dirs.labelled", "bot_info.show_license")
         languages.forEach { suffix ->
             val file = Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings$suffix.properties"), Charsets.UTF_8).use { load(it) } }
             assertEquals(emptyList<String>(), strings.filter { file.getProperty(it).isNullOrBlank() }, "Strings$suffix")

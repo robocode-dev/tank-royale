@@ -24,7 +24,16 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     private val gameTypesTextField = RcNonEditableTextField()
     private val platformTextField = RcNonEditableTextField()
     private val programmingLangTextField = RcNonEditableTextField()
-    private val licenseTextPane = RcHtmlPane { BotInfoStyleSheet() }
+    private val licenseTextField = RcNonEditableTextField()
+
+    // The official text of the license opens from a button people can see, not from a hidden link in a read-only field.
+    // It is active only when the license is a standard SPDX identifier, whose official page it opens.
+    private var licensePage: String? = null
+    private val showLicenseButton = JButton(Strings.get("bot_info.show_license")).apply {
+        addActionListener {
+            licensePage?.takeIf { LicenseLinks.isSpdxPage(it) && Desktop.isDesktopSupported() }?.let { Desktop.getDesktop().browse(java.net.URI(it)) }
+        }
+    }
 
     init {
         border = BorderFactory.createTitledBorder("Bot Info")
@@ -42,7 +51,10 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         add(homepageTextPane, "cell 1 3, growx")
 
         addLabel("bot_info.license", "cell 0 4")
-        add(licenseTextPane, "cell 1 4, growx")
+        add(JPanel(MigLayout("insets 0, fillx", "[grow, fill][]")).apply {
+            add(licenseTextField, "growx")
+            add(showLicenseButton)
+        }, "cell 1 4, growx")
 
         addLabel("bot_info.description", "cell 0 5")
         add(descriptionTextArea, "cell 1 5, growx, span 4")
@@ -62,12 +74,6 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
         homepageTextPane.addHyperlinkListener {
             if (it.eventType == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(it.url.toURI())
-            }
-        }
-        licenseTextPane.addHyperlinkListener {
-            // Only the official SPDX page of a license is opened from here.
-            if (it.eventType == HyperlinkEvent.EventType.ACTIVATED && it.url?.toString()?.let { url -> LicenseLinks.isSpdxPage(url) } == true && Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(it.url.toURI())
             }
         }
@@ -91,17 +97,16 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         countryCodesTextPane.text = botInfo?.countryCodes?.let { generateCountryHtml(botInfo.countryCodes) } ?: ""
         platformTextField.text = botInfo?.platform
         programmingLangTextField.text = botInfo?.programmingLang
-        licenseTextPane.text = licenseHtml(botInfo)
+        licenseTextField.text = licenseText(botInfo)
+        licensePage = LicenseLinks.spdxPage(botInfo?.license)
+        showLicenseButton.isEnabled = licensePage != null
     }
 
-    private fun licenseHtml(botInfo: BotInfo?): String {
+    /** The license as the bot declares it, or that it declares none, or that it is not known for a bot that joined on its own. */
+    private fun licenseText(botInfo: BotInfo?): String {
         val license = botInfo?.license?.trim() ?: return if (botInfo == null) "" else Strings.get("bot_info.license_unknown")
-        if (license.isEmpty()) return Strings.get("bot_info.no_license")
-        // A license written as a standard SPDX identifier links to its official text; anything else is shown as written.
-        return LicenseLinks.spdxPage(license)?.let { "<a href=\"$it\">$license</a>" } ?: escape(license)
+        return license.ifEmpty { Strings.get("bot_info.no_license") }
     }
-
-    private fun escape(text: String) = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     private fun truncateDescriptionLines(text: String): String {
         var lines = text.lines()
