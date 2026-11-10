@@ -40,9 +40,12 @@ object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
         }
     }
 
-    /** Each time New Battle opens, the group of downloaded bots starts closed, so the person's own bots come first. */
+    /**
+     * Each time New Battle opens, the group of downloaded bots starts closed, so the person's own bots come first, and
+     * the bot directories are read again if they changed while it was closed.
+     */
     override fun setVisible(visible: Boolean) {
-        if (visible && !isVisible) BotSelectionPanel.closeDownloadedGroup()
+        if (visible && !isVisible) BotSelectionPanel.opened()
         super.setVisible(visible)
     }
 }

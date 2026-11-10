@@ -216,9 +216,12 @@ class RumbleCliDownloadTextsTest {
             "one selection at a time across the two lists")
         assertTrue(panel.contains("runFromBotDirectoryAtIndex(downloadedListModel, it)"), "a double-click boots a downloaded bot the same way as an own one")
         assertTrue(panel.contains("downloadedHeader.isVisible = downloadedListModel.size > 0"), "no header row without downloaded bots")
-        assertTrue(panel.contains("java.io.File((value as BotInfo).host).name"), "a downloaded bot is shown by its own folder name")
+        assertTrue(panel.contains("downloadedNames = DownloadFolders.shownNames(downloadedListModel.list().map { it.host })") &&
+            panel.contains("text = downloadedNames[host] ?: java.io.File(host).name"), "a downloaded bot is shown by its own folder name, or its path when two are alike")
         val dialog = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/NewBattleDialog.kt")
-        assertTrue(dialog.contains("if (visible && !isVisible) BotSelectionPanel.closeDownloadedGroup()"), "closed each time New Battle opens")
+        assertTrue(dialog.contains("if (visible && !isVisible) BotSelectionPanel.opened()"), "closed each time New Battle opens")
+        val opened = panel.substringAfter("fun opened() {").substringBefore("}")
+        assertTrue(opened.contains("showDownloaded(false)") && opened.contains("refreshDirectories.shown()"), "closed, and read again when the settings changed while New Battle was closed")
     }
 
     @Test
@@ -228,12 +231,18 @@ class RumbleCliDownloadTextsTest {
     fun testRCL090_UnitNegative_theScreenAddsOnlyAfterPlacingAndTheSettingsDialogNeverWritesBackAnOldList() {
         val download = code(dialogFile)
         assertTrue(download.contains("folderOutcome = if (state.placed > 0) rememberFolder(state.folder) else null"), "nothing is added when nothing was placed")
-        assertTrue(download.contains("BotDownloads.holdsOnlyDownloads(folder)") && download.contains("ConfigSettings.saveBotFolders(remembered.folders, remembered.labels)"),
+        assertTrue(download.contains("onlyDownloads = { BotDownloads.holdsOnlyDownloads(folder) }") && download.contains("save = { ConfigSettings.saveBotFolders(it.folders, it.labels) }"),
             "an own folder is never labelled, and the folders and labels are saved in one write")
+        assertTrue(download.contains("DownloadFolders.rememberAfterDownload("), "a folder that cannot be looked into or saved leaves the screen showing what the download did")
+        assertTrue(download.contains("null -> text(\"rumble.download.add_folder_hint\")"), "and asks the person to add the folder by hand")
+        val panel = code(newBattleFile)
+        assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }") && panel.contains("RefreshWhenShown({ isShowing })"),
+            "New Battle reads the bot directories after a download only when it is open, so the download screen never waits for it")
         listOf("ADDED", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
         assertTrue(download.contains("DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)"), "the suggestion skips download folders")
         val settings = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/config/BotRootDirectoriesConfigDialog.kt")
         assertTrue(settings.contains("if (visible && !isVisible) BotDirectoryConfigPanel.reload()"), "the dialog reads the bot directories again each time it opens")
+        assertTrue(settings.contains("if (!saving && BotRootDirectoriesConfigDialog.isVisible) reload()"), "and when a download saves them while it is open")
         assertTrue(settings.contains("DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)"), "a removed folder leaves no label behind")
         assertTrue(settings.contains("DownloadFolders.isLabelled(path, labels)"), "the rows are painted from the labels read with the list, not from the disk")
         val config = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/settings/ConfigSettings.kt")
@@ -256,6 +265,8 @@ class RumbleCliDownloadTextsTest {
         assertTrue(panel.contains("BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it))") && panel.contains("BotSelectionEvents.onBotSelected(withKnownLicense(it))"),
             "a joined bot shows the same license in Joined Bots and in Selected Bots")
         assertTrue(panel.contains("license = license ?: \"\""), "a bot in the bot directories with no license says so; null is kept for not known")
+        assertTrue(panel.contains("knownLicenses.of(BotIdentity(botInfo.name, botInfo.version, botInfo.authors))"), "the license of the bot with the same name, version and authors")
+        assertTrue(panel.contains("val entries = BootProcess.info()") && panel.contains("knownLicenses = KnownLicenses(entries.map"), "taken from every bot, whatever the filter shows")
         val strings = listOf("bot_info.license", "bot_info.no_license", "bot_info.license_unknown", "rumble_downloads_label", "rumble_downloads_group", "bot_root_dirs.labelled", "bot_info.show_license")
         languages.forEach { suffix ->
             val file = Properties().apply { Files.newBufferedReader(root.resolve("gui/src/main/resources/Strings$suffix.properties"), Charsets.UTF_8).use { load(it) } }

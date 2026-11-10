@@ -27,8 +27,8 @@ class RumbleDownloadFoldersTest {
         }
         assertFalse(DownloadFolders.isLabelled("/home/me/Rumble-Bots", mapOf("/home/me/rumble-bots" to DownloadFolders.LABEL), windows = false),
             "letter case counts where the file system tells it apart")
-        val comma = mapOf("/home/me/bots, rumble" to DownloadFolders.LABEL, "/home/me/100%" to DownloadFolders.LABEL, "/x" to DownloadFolders.LABEL)
-        assertEquals(comma, DownloadFolders.parseLabels(DownloadFolders.formatLabels(comma), windows = false), "a comma or a percent sign in a path keeps every pair in place")
+        val comma = mapOf("/home/me/bots, rumble" to DownloadFolders.LABEL, "/home/me/100%" to DownloadFolders.LABEL, "/home/me/a;b%2C" to DownloadFolders.LABEL, "/x" to DownloadFolders.LABEL)
+        assertEquals(comma, DownloadFolders.parseLabels(DownloadFolders.formatLabels(comma), windows = false), "a comma, a semicolon or a percent sign in a path keeps every pair in place")
     }
 
     @Test
@@ -36,8 +36,10 @@ class RumbleDownloadFoldersTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCL089_UnitNegative_brokenTextIsLeftOutAndARemovedFolderLeavesNoLabel() {
-        val read = DownloadFolders.parseLabels("/a/b,rumble-downloads,,x,/c/d", windows = false)
-        assertEquals(mapOf("/a/b" to DownloadFolders.LABEL), read, "a half pair and an empty path are left out, the rest is kept")
+        val read = DownloadFolders.parseLabels("/a/b;rumble-downloads,,x,/c/d;,;rumble-downloads,/e/f;rumble-downloads", windows = false)
+        assertEquals(mapOf("/a/b" to DownloadFolders.LABEL, "/e/f" to DownloadFolders.LABEL), read, "a half entry or an empty path is left out on its own, the rest is kept")
+        assertEquals(mapOf("/c/b" to DownloadFolders.LABEL), DownloadFolders.parseLabels("/c/a,/c/b;rumble-downloads", windows = false),
+            "an entry without its label does not shift the entries after it")
         assertEquals(emptyMap<String, String>(), DownloadFolders.parseLabels("", windows = false))
 
         val labels = mapOf("/a/b" to DownloadFolders.LABEL, "/gone" to DownloadFolders.LABEL)
@@ -53,7 +55,6 @@ class RumbleDownloadFoldersTest {
 
         val remembered = DownloadFolders.remember(own, emptyMap(), folder, windows = true)
 
-        assertTrue(remembered.added)
         assertEquals(FolderOutcome.ADDED, remembered.outcome)
         assertEquals(own + BotFolderSetting(folder.toString(), true), remembered.folders, "the person's own folders are kept as they were, in order")
         assertTrue(DownloadFolders.isLabelled(folder.toString(), remembered.labels, windows = true))
@@ -111,6 +112,26 @@ class RumbleDownloadFoldersTest {
     }
 
     @Test
+    @Tag("RCL-090")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL090_UnitNegative_aFolderThatCannotBeLookedIntoOrSavedIsNotRememberedAndTheScreenStillEnds() {
+        val folder = Path.of("C:/Users/me/rumble-bots")
+        val settings = { own to emptyMap<String, String>() }
+        var saved: RememberedFolder? = null
+
+        assertEquals(FolderOutcome.ADDED, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { saved = it }, windows = true))
+        assertEquals(own + BotFolderSetting(folder.toString(), true), saved?.folders, "what was worked out is what is saved")
+
+        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { throw java.io.UncheckedIOException(java.io.IOException("no access")) }, settings, {}, windows = true),
+            "a folder that cannot be listed")
+        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { true }, settings, { throw java.io.IOException("read-only settings") }, windows = true),
+            "settings that cannot be written")
+        assertEquals(null, DownloadFolders.rememberAfterDownload(folder, { true }, { throw SecurityException("no access") }, {}, windows = true),
+            "settings that cannot be read")
+    }
+
+    @Test
     @Tag("RCL-091")
     @Tag("Unit")
     @Tag("Positive")
@@ -125,6 +146,41 @@ class RumbleDownloadFoldersTest {
     }
 
     @Test
+    @Tag("RCL-091")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL091_UnitNegative_twoDownloadedBotsWithTheSameFolderNameAreToldApartByTheirPath() {
+        val shown = DownloadFolders.shownNames(listOf("/home/me/rumble-bots/Corners", "/home/me/other/Corners", "/home/me/rumble-bots/Walls"))
+
+        assertEquals(mapOf(
+            "/home/me/rumble-bots/Corners" to "/home/me/rumble-bots/Corners",
+            "/home/me/other/Corners" to "/home/me/other/Corners",
+            "/home/me/rumble-bots/Walls" to "Walls",
+        ), shown, "only the bots whose folder names are alike are shown by their path")
+        assertEquals(emptyMap<String, String>(), DownloadFolders.shownNames(emptyList()))
+    }
+
+    @Test
+    @Tag("RCL-092")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL092_UnitNegative_aJoinedBotTakesTheLicenseOnlyOfTheBotWithItsNameVersionAndAuthors() {
+        val known = KnownLicenses(listOf(
+            BotIdentity("Walls", "1.0", listOf("Ann")) to "MIT",
+            BotIdentity("Walls", "1.0", listOf("Bob")) to "Apache-2.0",
+            BotIdentity("Corners", "1.0", listOf("Ann", "Bob")) to null,
+            BotIdentity("Twin", "1.0", listOf("Ann")) to "MIT",
+            BotIdentity("Twin", "1.0", listOf("Ann")) to "GPL-3.0-or-later",
+        ))
+
+        assertEquals("MIT", known.of(BotIdentity("Walls", "1.0", listOf("Ann"))))
+        assertEquals("Apache-2.0", known.of(BotIdentity("Walls", "1.0", listOf(" Bob "))), "the authors tell bots of the same name and version apart")
+        assertEquals("", known.of(BotIdentity("Corners", "1.0", listOf("Bob", "Ann"))), "a bot that declares no license says so, whatever the order of its authors")
+        assertEquals(null, known.of(BotIdentity("Walls", "2.0", listOf("Ann"))), "another version is another bot")
+        assertEquals(null, known.of(BotIdentity("Twin", "1.0", listOf("Ann"))), "two such bots with different licenses leave it not known")
+    }
+
+    @Test
     @Tag("RCL-092")
     @Tag("Unit")
     @Tag("Positive")
@@ -133,6 +189,8 @@ class RumbleDownloadFoldersTest {
         assertEquals("https://spdx.org/licenses/GPL-3.0-or-later.html", LicenseLinks.spdxPage(" GPL-3.0-or-later "))
         RumbleLicenses.ALL.forEach { assertEquals(it.officialPage, LicenseLinks.spdxPage(it.id), "the same page as the Download bots screen: ${it.id}") }
         assertTrue(LicenseLinks.isSpdxPage(LicenseLinks.spdxPage("Apache-2.0")!!))
+        assertEquals("https://spdx.org/licenses/Apache-2.0.html", LicenseLinks.spdxPage("apache-2.0"), "letter case does not matter, the page is the one on the list")
+        assertEquals("https://spdx.org/licenses/GPL-3.0.html", LicenseLinks.spdxPage("GPL-3.0"), "an identifier the list keeps as deprecated still has its page")
     }
 
     @Test
@@ -140,10 +198,11 @@ class RumbleDownloadFoldersTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCL092_UnitNegative_otherLicenseTextHasNoLinkAndNoOtherAddressIsOpened() {
-        listOf(null, "", "   ", "Proprietary license", "MIT OR Apache-2.0", "<script>", "../x").forEach {
+        listOf(null, "", "   ", "Proprietary license", "Proprietary", "Custom", "LicenseRef-foo", "MIT2", "MIT OR Apache-2.0", "<script>", "../x").forEach {
             assertEquals(null, LicenseLinks.spdxPage(it), it.toString())
         }
-        listOf("https://example.com/MIT.html", "https://spdx.org/licenses/../x.html", "https://spdx.org/licenses/MIT", "http://spdx.org/licenses/MIT.html")
+        listOf("https://example.com/MIT.html", "https://spdx.org/licenses/../x.html", "https://spdx.org/licenses/MIT", "http://spdx.org/licenses/MIT.html",
+            "https://spdx.org/licenses/Proprietary.html", "https://spdx.org/licenses/mit.html")
             .forEach { assertFalse(LicenseLinks.isSpdxPage(it), it) }
     }
 }

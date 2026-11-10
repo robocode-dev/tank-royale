@@ -65,12 +65,9 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
             save(BOT_DIRECTORY_LABELS, DownloadFolders.formatLabels(value))
         }
 
-    /** The bot directories as the shared Rumble library sees them. */
-    var botFolders: List<BotFolderSetting>
+    /** The bot directories as the shared Rumble library sees them; they are saved with [saveBotFolders]. */
+    val botFolders: List<BotFolderSetting>
         get() = botDirectories.map { BotFolderSetting(it.path, it.enabled) }
-        set(value) {
-            botDirectories = value.map { BotDirectoryConfig(it.path, it.enabled) }
-        }
 
     var gameType: GameType
         get() {

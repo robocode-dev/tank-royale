@@ -3,9 +3,13 @@ package dev.robocode.tankroyale.gui.settings
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.common.util.UserDataDirectory
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileWriter
+import java.io.StringReader
+import java.io.StringWriter
 import java.io.Writer
+import java.nio.ByteBuffer
+import java.nio.charset.CharacterCodingException
+import java.nio.charset.CodingErrorAction
+import java.nio.charset.StandardCharsets
 import java.util.*
 
 
@@ -26,13 +30,9 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
         // Ensure a parent exists and create the file if missing
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
         val alreadyExists = file.createNewFile()
-        val input = FileInputStream(file)
-        input.use {
-            val tmp = Properties()
-            tmp.load(input)
-            properties.clear()
-            properties.putAll(tmp)
-        }
+        val tmp = read(file.readBytes())
+        properties.clear()
+        properties.putAll(tmp)
         return alreadyExists
     }
 
@@ -46,19 +46,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
 
         val file = File(baseDir, fileName)
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
-        val output = FileWriter(file)
-        output.use {
-            val sortedProperties = object : Properties() {
-                override fun store(writer: Writer, comments: String) {
-                    keys.stream().map { k -> k }.sorted().forEach { k ->
-                        val value = "${get(k)}"
-                        writer.append("${k}=${value}\n")
-                    }
-                }
-            }
-            sortedProperties.putAll(properties) // Use our properties
-            sortedProperties.store(output, title)
-        }
+        file.writeBytes(write(properties, title))
 
         // Update backup to reflect the current saved state
         backedUpProperties.clear()
@@ -143,6 +131,43 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
         var index = 0
         while (properties.remove("$propertyName.$index") != null) {
             index++
+        }
+    }
+
+    companion object {
+        /**
+         * The settings as they are written to the file: sorted, one per line, in UTF-8, so a path with letters outside
+         * ASCII, such as a home folder named Jørgen, is read back as it was written.
+         */
+        internal fun write(properties: Properties, title: String): ByteArray {
+            val sortedProperties = object : Properties() {
+                override fun store(writer: Writer, comments: String) {
+                    keys.stream().map { k -> k }.sorted().forEach { k ->
+                        val value = "${get(k)}"
+                        writer.append("${k}=${value}\n")
+                    }
+                }
+            }
+            sortedProperties.putAll(properties)
+            val writer = StringWriter()
+            sortedProperties.store(writer, title)
+            return writer.toString().toByteArray(StandardCharsets.UTF_8)
+        }
+
+        /**
+         * Reads the settings from the bytes of the file. The file is UTF-8, as written by [write] and by earlier versions
+         * on Java 18 and later; a file an older version wrote in a single-byte charset is read as ISO-8859-1, as before.
+         */
+        internal fun read(bytes: ByteArray): Properties {
+            val text = try {
+                StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(bytes)).toString()
+            } catch (_: CharacterCodingException) {
+                String(bytes, StandardCharsets.ISO_8859_1)
+            }
+            return Properties().apply { load(StringReader(text)) }
         }
     }
 }

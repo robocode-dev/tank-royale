@@ -76,6 +76,12 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
         ConfigSettings.botDirectories.forEach { listModel.addElement(CheckListEntity(it.path, it.enabled)) }
 
+        // The dialog saves each change at once, so it holds nothing unsaved. When the settings are saved elsewhere while
+        // it is open, for example when a download adds its folder, it reads them again, so it never writes back an old list.
+        ConfigSettings.onSaved.on(this) {
+            if (!saving && BotRootDirectoriesConfigDialog.isVisible) reload()
+        }
+
         onAdd.on(BotRootDirectoriesConfigDialog) { addDirectory() }
         onRemove.on(BotRootDirectoriesConfigDialog) { removeDirectory() }
         onOk.on(BotRootDirectoriesConfigDialog) { BotRootDirectoriesConfigDialog.dispose() }
@@ -155,8 +161,16 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
         val folders = listModel.elements().toList().map { BotFolderSetting(it.label, it.isActive) }
         // A removed folder leaves no label behind; both are saved in one write.
         labels = DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)
-        ConfigSettings.saveBotFolders(folders, labels)
+        saving = true
+        try {
+            ConfigSettings.saveBotFolders(folders, labels)
+        } finally {
+            saving = false
+        }
     }
+
+    /** True while this dialog saves, so its own save does not make it read the list again. */
+    private var saving = false
 
     /** The labels of the bot directories as last read or saved. */
     private var labels: Map<String, String> = ConfigSettings.botDirectoryLabels

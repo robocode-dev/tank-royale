@@ -22,9 +22,7 @@ enum class FolderOutcome {
 }
 
 /** The bot directories and their labels after a download folder was remembered, and what that did. */
-data class RememberedFolder(val folders: List<BotFolderSetting>, val labels: Map<String, String>, val outcome: FolderOutcome) {
-    val added: Boolean get() = outcome == FolderOutcome.ADDED
-}
+data class RememberedFolder(val folders: List<BotFolderSetting>, val labels: Map<String, String>, val outcome: FolderOutcome)
 
 /**
  * How folders of bots downloaded from the Rumble live among the person's bot directories. The desktop program keeps the
@@ -36,7 +34,8 @@ object DownloadFolders {
     /** The label of a folder of bots downloaded from the Rumble. The text a person sees is a resource. */
     const val LABEL = "rumble-downloads"
 
-    private const val SEPARATOR = ','
+    private const val ENTRY_SEPARATOR = ','
+    private const val PAIR_SEPARATOR = ';'
 
     /** A folder's path in one form: forward slashes, no trailing slash, and on Windows in lower case. */
     fun key(path: String, windows: Boolean = Platform.isWindows): String {
@@ -45,20 +44,21 @@ object DownloadFolders {
     }
 
     /**
-     * Reads the labels setting: pairs of path and label. A comma or a percent sign inside a path or a label is written
-     * escaped, so a folder whose name holds a comma keeps its label. Text that is not such a pair is left out.
+     * Reads the labels setting: entries of a path and a label, each entry on its own between commas. A comma, a semicolon
+     * or a percent sign inside a path or a label is written escaped, so a folder whose name holds one keeps its label. An
+     * entry that is not such a pair is left out on its own, so it never shifts the entries after it.
      */
     fun parseLabels(text: String, windows: Boolean = Platform.isWindows): Map<String, String> =
-        text.split(SEPARATOR).map { unescape(it) }.chunked(2)
+        text.split(ENTRY_SEPARATOR).map { it.split(PAIR_SEPARATOR) }
             .filter { it.size == 2 && it[0].isNotBlank() && it[1].isNotBlank() }
-            .associate { key(it[0], windows) to it[1].trim() }
+            .associate { key(unescape(it[0]), windows) to unescape(it[1]).trim() }
 
     fun formatLabels(labels: Map<String, String>): String =
-        labels.entries.joinToString(SEPARATOR.toString()) { escape(it.key) + SEPARATOR + escape(it.value) }
+        labels.entries.joinToString(ENTRY_SEPARATOR.toString()) { escape(it.key) + PAIR_SEPARATOR + escape(it.value) }
 
-    private fun escape(text: String) = text.replace("%", "%25").replace(",", "%2C")
+    private fun escape(text: String) = text.replace("%", "%25").replace(",", "%2C").replace(";", "%3B")
 
-    private fun unescape(text: String) = text.replace("%2C", ",", ignoreCase = true).replace("%25", "%")
+    private fun unescape(text: String) = text.replace("%2C", ",", ignoreCase = true).replace("%3B", ";", ignoreCase = true).replace("%25", "%")
 
     /** The labels of only the folders still among [folders], so a removed folder leaves no label behind. */
     fun keepLabelsOf(folders: List<BotFolderSetting>, labels: Map<String, String>, windows: Boolean = Platform.isWindows): Map<String, String> {
@@ -83,12 +83,39 @@ object DownloadFolders {
         return RememberedFolder(folders, labels + (key to LABEL), if (existing.enabled) FolderOutcome.LABELLED else FolderOutcome.SWITCHED_OFF)
     }
 
+    /**
+     * Remembers [folder] after a download as [remember] does, reading the settings with [read] and writing them with
+     * [save]. When the folder cannot be looked into or the settings cannot be read or written, nothing is remembered and
+     * the result is null, so the screen still shows what the download did and asks the person to add the folder by hand.
+     */
+    fun rememberAfterDownload(
+        folder: Path, onlyDownloads: () -> Boolean,
+        read: () -> Pair<List<BotFolderSetting>, Map<String, String>>,
+        save: (RememberedFolder) -> Unit,
+        windows: Boolean = Platform.isWindows,
+    ): FolderOutcome? = try {
+        val (folders, labels) = read()
+        remember(folders, labels, folder, onlyDownloads(), windows).also(save).outcome
+    } catch (e: Exception) {
+        null
+    }
+
     /** The person's own switched-on bot directories, which the suggested download folder is worked out from. */
     fun ownFolders(folders: List<BotFolderSetting>, labels: Map<String, String>, windows: Boolean = Platform.isWindows): List<Path> =
         folders.filter { it.enabled && labels[key(it.path, windows)] != LABEL }.map { Path.of(it.path) }
 
     /** True when the folder at [path] is labelled as a download folder. */
     fun isLabelled(path: String, labels: Map<String, String>, windows: Boolean = Platform.isWindows): Boolean = labels[key(path, windows)] == LABEL
+
+    /**
+     * The text each bot of the group of downloaded bots is shown by, for the bot folders [botDirs]: the bot's own folder
+     * name, or its whole path when another bot in the group has a folder of the same name, so two are never alike.
+     */
+    fun shownNames(botDirs: Collection<String>): Map<String, String> {
+        val names = botDirs.associateWith { Path.of(it).fileName?.toString() ?: it }
+        val repeated = names.values.groupingBy { it }.eachCount().filterValues { it > 1 }.keys
+        return names.mapValues { (dir, name) -> if (name in repeated) dir else name }
+    }
 
     /** True when the bot in [botDir] lies in a labelled download folder. */
     fun isDownloaded(botDir: String, labels: Map<String, String>, windows: Boolean = Platform.isWindows): Boolean {
@@ -97,15 +124,27 @@ object DownloadFolders {
     }
 }
 
-/** The official text of a license a bot declares, when it is written as a standard SPDX identifier. */
+/** The official text of a license a bot declares, when it is written as an identifier on the SPDX License List. */
 object LicenseLinks {
     const val SPDX_PAGES = "https://spdx.org/licenses/"
-    private val IDENTIFIER = Regex("[A-Za-z0-9][A-Za-z0-9.+-]*")
+    private const val RESOURCE = "spdx-license-ids.txt"
 
-    /** The SPDX page of [license], or null when it is not written as an SPDX identifier. */
-    fun spdxPage(license: String?): String? = license?.trim()?.takeIf { IDENTIFIER.matches(it) }?.let { "$SPDX_PAGES$it.html" }
+    /** The identifiers of the SPDX License List kept with this library, by lower case, as written on the list. */
+    private val IDENTIFIERS: Map<String, String> = run {
+        val text = LicenseLinks::class.java.getResourceAsStream(RESOURCE)
+            ?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+            ?: error("Missing resource $RESOURCE")
+        text.lines().map { it.trim() }.filter { it.isNotEmpty() && !it.startsWith("#") }.associateBy { it.lowercase() }
+    }
 
-    /** True only for a page this program makes for a license, so nothing else is opened from the field. */
+    /**
+     * The SPDX page of [license], or null when it is not an identifier on the SPDX License List, such as a license
+     * of the bot's own, a LicenseRef or an expression of several licenses. Letter case does not matter, as on the list.
+     */
+    fun spdxPage(license: String?): String? = license?.trim()?.lowercase()?.let { IDENTIFIERS[it] }?.let { "$SPDX_PAGES$it.html" }
+
+    /** True only for the page of an identifier on the list, so nothing else is opened from Bot Info. */
     fun isSpdxPage(address: String): Boolean =
-        address.startsWith(SPDX_PAGES) && address.endsWith(".html") && IDENTIFIER.matches(address.removePrefix(SPDX_PAGES).removeSuffix(".html"))
+        address.startsWith(SPDX_PAGES) && address.endsWith(".html") &&
+            IDENTIFIERS[address.removePrefix(SPDX_PAGES).removeSuffix(".html").lowercase()] == address.removePrefix(SPDX_PAGES).removeSuffix(".html")
 }

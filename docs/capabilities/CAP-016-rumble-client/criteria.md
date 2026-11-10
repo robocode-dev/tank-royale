@@ -746,7 +746,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a setting of bot directories, each switched on or off, and labels for some of them
     When the labels are written and read again, and the same folder is written with other slashes, a trailing slash or, on Windows, other letter case
     Then the setting of bot directories is exactly what it was, every directory and its switch kept, so an older version of the program reads the same bot directories
-    And each label comes back for its folder, the same folder written another way has the same label, a comma or a percent sign in a path keeps every pair in place, and text that is not a pair of path and label is ignored without losing the others
+    And each label comes back for its folder, the same folder written another way has the same label, a comma, a semicolon or a percent sign in a path keeps every pair in place, and an entry that is not a pair of path and label is left out on its own without shifting or losing the others
     And a label whose folder was removed from the bot directories is dropped when the bot directories are saved
 
   @RCL-090
@@ -756,7 +756,8 @@ Feature: rumble-client — Local ranked and practice battle client
     When the folder is remembered after the download
     Then a folder not yet in the bot directories is added at the end, switched on and labelled as downloaded from the Rumble, and a folder already there keeps its place and its switch and gets the label only when it is labelled already or holds nothing but bot folders the screen placed, so one of the person's own bot directories never has their own bots moved into the group
     And the result says in one line whether the folder was added, was there already, is switched off so its bots are not in New Battle, or is one of the person's own bot directories, and the bot directories and labels are saved in one write
-    And nothing is added when the download placed no bot
+    And nothing is added when the download placed no bot, and when the folder cannot be looked into or the settings cannot be read or written nothing is added, and the result still shows what the download did and asks the person to add the folder by hand
+    And New Battle reads the bot directories again after a download only while it is open, and otherwise when it opens next, so the download screen never waits for it, and the Bot Root Directories dialog, when open, reads them again, so it never writes back an old list
     And the suggested download folder is worked out from the first of the person's own switched-on bot directories, skipping labelled download folders, so it stays where it was when a download folder is added
 
   @RCL-091
@@ -764,7 +765,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given bot entries from the person's own bot directories and from a labelled download folder
     When New Battle lists them
-    Then the person's own bots are listed first as before, and the downloaded bots follow under a header row with the label and their number, each shown by its own folder name
+    Then the person's own bots are listed first as before, and the downloaded bots follow under a header row with the label and their number, each shown by its own folder name, or by its whole path when another bot in the group has a folder of the same name
     And the header row sits outside the list of the person's own bots, so it is in view however that list is scrolled, the group is closed each time New Battle opens and opens or closes when the header is clicked, its bots can be booted like any other, Boot is offered for a selection in either list, only one of the two lists holds a selection at a time, and a closed group holds none, so Boot never boots a bot the person cannot see
     And without a labelled folder there is no header row and the list is exactly as before
 
@@ -774,7 +775,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given bots from the bot directories that declare a standard license, another license text or none, and a bot that joined the battle on its own
     When the person selects each in New Battle
     Then Bot Info shows the declared license as written, or that no license is declared, and beside it a Show button, whose text is a resource, opens the page of a standard SPDX license identifier on the SPDX license list; the button is active only when there is such a page, and it opens no other address
-    And a bot that joined on its own shows the license of the bot of the same name and version in the bot directories, or that its license is not known, both in Joined Bots and in Selected Bots, and the page opens through the program's own browser helper, which tells the person when it cannot
+    And a bot that joined on its own shows the license of the bot of the same name, version and authors among all bots in the bot directories for the game type, whatever the filter shows, or that its license is not known when there is none or several that disagree, both in Joined Bots and in Selected Bots, and the page opens through the program's own browser helper, which tells the person when it cannot
     And every text of the field and of the group is in every language file
 
   @RCL-093

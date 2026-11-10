@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "dea28fc8cace12f760efa1a76680dd43f72ffeeecd9c24fc2a838aab74696713"
+          "sha256": "7a40635d30b338c0d2c7730bcfa0991780fb8624ace0db9291755e24778138ae"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1724,7 +1724,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
-          "sha256": "11f46ad83dc3514bc555dfa5c1e97ebd98120b5f4b5aa8abcc30db4993aae041"
+          "sha256": "d3fd499c04cdd9670f218ec4e268eb546233ffded9aef95b735cb60df83d012c"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
@@ -2151,6 +2151,13 @@
         {
           "id": "RCL-090",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_aFolderThatCannotBeLookedIntoOrSavedIsNotRememberedAndTheScreenStillEnds",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
           "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_theSuggestedFolderIsWorkedOutFromTheOwnFoldersAndNeverMoves",
           "type": "Unit",
           "direction": "negative"
@@ -2165,9 +2172,23 @@
         {
           "id": "RCL-091",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL091_UnitNegative_twoDownloadedBotsWithTheSameFolderNameAreToldApartByTheirPath",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-091",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
           "subject": "RumbleDownloadFoldersTest.testRCL091_UnitPositive_aBotIsDownloadedOnlyWhenItLiesInALabelledFolder",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-092",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL092_UnitNegative_aJoinedBotTakesTheLicenseOnlyOfTheBotWithItsNameVersionAndAuthors",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-092",
