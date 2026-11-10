@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "fe964bc1a612f1c7ac0d8b0c4d571f01dbb5b6b4b4a202756fe9eeda2fd4af80"
+          "sha256": "e763393182033987a418ce7bfb71a0a02de0e5b62c67578e41bdd76744d5f59d"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -723,6 +723,27 @@
           "subject": "RumbleCliDownloadTextsTest.testRCL087_UnitPositive_everyReasonOfferAndResultOfThePlatformChecksHasATextInEveryLanguageFile",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-090",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL090_UnitNegative_theScreenAddsOnlyAfterPlacingAndTheSettingsDialogNeverWritesBackAnOldList",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-091",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL091_UnitPositive_theGroupSitsBelowTheOwnBotsClosesOnOpeningAndItsBotsBootLikeAnyOther",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-092",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL092_UnitNegative_botInfoLinksOnlyTheSpdxPageAndAJoinedBotTakesItsLicenseFromItsFolder",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCI-044",
@@ -1702,6 +1723,10 @@
           "sha256": "39ec27461a9534db6fb9dffb72ca4e35e16db224cd9b7b34f877dfba9c8ad89f"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "sha256": "da748c9a3114a559630a22c068fba9857b1302867c7b2ba4308e604d0d4d3700"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
           "sha256": "a5303364c6a013c3f700ef1d34e7d4ff50361334ba7e52f95a7d47945d6200f9"
         },
@@ -2092,6 +2117,62 @@
           "id": "RCL-020",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDependencyRulesTest.kt",
           "subject": "RumbleDependencyRulesTest.testRCL020_UnitPositive_theLibrarySourcesImportNoDesktopOrRunnerCode",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-089",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL089_UnitNegative_brokenTextIsLeftOutAndARemovedFolderLeavesNoLabel",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-089",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL089_UnitPositive_labelsComeBackForTheirFolderHoweverItIsWritten",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_aFolderAlreadyThereKeepsItsPlaceAndSwitchAndOnlyGetsTheLabel",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_theSuggestedFolderIsWorkedOutFromTheOwnFoldersAndNeverMoves",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitPositive_aNewDownloadFolderIsAddedSwitchedOnAndLabelledAtTheEnd",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-091",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL091_UnitPositive_aBotIsDownloadedOnlyWhenItLiesInALabelledFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-092",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL092_UnitNegative_otherLicenseTextHasNoLinkAndNoOtherAddressIsOpened",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-092",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL092_UnitPositive_aStandardLicenseLinksToItsSpdxPage",
           "type": "Unit",
           "direction": "positive"
         },

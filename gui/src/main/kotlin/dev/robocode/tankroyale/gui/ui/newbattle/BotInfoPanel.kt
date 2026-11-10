@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
+import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.rumble.LicenseLinks
 import dev.robocode.tankroyale.gui.ui.components.RcHtmlPane
 import dev.robocode.tankroyale.gui.ui.components.RcNonEditableTextArea
 import dev.robocode.tankroyale.gui.ui.components.RcNonEditableTextField
@@ -22,6 +24,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     private val gameTypesTextField = RcNonEditableTextField()
     private val platformTextField = RcNonEditableTextField()
     private val programmingLangTextField = RcNonEditableTextField()
+    private val licenseTextPane = RcHtmlPane { BotInfoStyleSheet() }
 
     init {
         border = BorderFactory.createTitledBorder("Bot Info")
@@ -38,8 +41,11 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         addLabel("bot_info.homepage", "cell 0 3")
         add(homepageTextPane, "cell 1 3, growx")
 
-        addLabel("bot_info.description", "cell 0 4")
-        add(descriptionTextArea, "growx, span 4")
+        addLabel("bot_info.license", "cell 0 4")
+        add(licenseTextPane, "cell 1 4, growx")
+
+        addLabel("bot_info.description", "cell 0 5")
+        add(descriptionTextArea, "cell 1 5, growx, span 4")
         descriptionTextArea.font = font
 
         addLabel("bot_info.platform", "cell 3 0")
@@ -56,6 +62,12 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
         homepageTextPane.addHyperlinkListener {
             if (it.eventType == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(it.url.toURI())
+            }
+        }
+        licenseTextPane.addHyperlinkListener {
+            // Only the official SPDX page of a license is opened from here.
+            if (it.eventType == HyperlinkEvent.EventType.ACTIVATED && it.url?.toString()?.let { url -> LicenseLinks.isSpdxPage(url) } == true && Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(it.url.toURI())
             }
         }
@@ -79,7 +91,17 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         countryCodesTextPane.text = botInfo?.countryCodes?.let { generateCountryHtml(botInfo.countryCodes) } ?: ""
         platformTextField.text = botInfo?.platform
         programmingLangTextField.text = botInfo?.programmingLang
+        licenseTextPane.text = licenseHtml(botInfo)
     }
+
+    private fun licenseHtml(botInfo: BotInfo?): String {
+        val license = botInfo?.license?.trim() ?: return if (botInfo == null) "" else Strings.get("bot_info.license_unknown")
+        if (license.isEmpty()) return Strings.get("bot_info.no_license")
+        // A license written as a standard SPDX identifier links to its official text; anything else is shown as written.
+        return LicenseLinks.spdxPage(license)?.let { "<a href=\"$it\">$license</a>" } ?: escape(license)
+    }
+
+    private fun escape(text: String) = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     private fun truncateDescriptionLines(text: String): String {
         var lines = text.lines()

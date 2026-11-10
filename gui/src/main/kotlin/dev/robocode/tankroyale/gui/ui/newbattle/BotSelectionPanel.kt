@@ -20,6 +20,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.EDT.enqueue
+import dev.robocode.tankroyale.rumble.DownloadFolders
 import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import java.awt.event.FocusEvent
@@ -61,6 +62,28 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private val selectedBotListModel = SortedListModel<BotInfo>()
 
     private val botsDirectoryList = createBotDirectoryList()
+
+    // The bots of bot directories labelled as downloaded from the Rumble, shown under the person's own bots below a
+    // header row that opens and closes the group. The header sits outside the sideways-scrolled list of long paths, so
+    // it is always in view. The group starts closed, so the person's own bots come first.
+    private val downloadedListModel = SortedListModel<BotInfo>()
+    // Only the bot's own folder name is shown: the header row already says where the downloaded bots are.
+    private val downloadedList = BotList(downloadedListModel).apply {
+        cellRenderer = object : AbstractListCellRenderer() {
+            override fun onRender(list: JList<out Any>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean) {
+                text = java.io.File((value as BotInfo).host).name
+            }
+        }
+    }
+    private var downloadedOpen = false
+    private val downloadedHeader = JButton().apply {
+        isBorderPainted = false
+        isContentAreaFilled = false
+        isFocusPainted = false
+        horizontalAlignment = SwingConstants.LEFT
+        addActionListener { showDownloaded(!downloadedOpen) }
+    }
+    private val downloadedScrollPane = JScrollPane(downloadedList)
     private val bootedBotList = createBootedBotList()
     private val joinedBotList = createBotInfoList(joinedBotListModel)
     private val selectedBotList = createBotInfoList(selectedBotListModel)
@@ -120,11 +143,16 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         onRemoveAll.on(this) { handleRemoveAll() }
 
         botsDirectoryList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(it) }
+        downloadedList.onMultiClickedAtIndex { index ->
+            if (index >= 0 && index < downloadedListModel.size) bootCoordinator.bootBots(listOf(downloadedListModel[index]))
+        }
+        downloadedList.onSelection { BotSelectionEvents.onBotDirectorySelected(it) }
+        showDownloaded(false)
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
         botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected(it) }
-        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected(it) }
+        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it)) }
         selectedBotList.onSelection { BotSelectionEvents.onBotSelected(it) }
 
         selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated(selectedBotListModel.list()) }
@@ -196,8 +224,30 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         filterDropdown.model.selectedItem
     }
 
+    /** Opens or closes the group of downloaded bots, and shows how many there are on its header row. */
+    private fun showDownloaded(open: Boolean) {
+        downloadedOpen = open
+        downloadedScrollPane.isVisible = open && downloadedListModel.size > 0
+        downloadedHeader.isVisible = downloadedListModel.size > 0
+        downloadedHeader.icon = UIManager.getIcon(if (open) "Tree.expandedIcon" else "Tree.collapsedIcon")
+        downloadedHeader.text = String.format(Strings.get("rumble_downloads_group"), Strings.get("rumble_downloads_label"), downloadedListModel.size)
+        botsDirectoryPanel.revalidate()
+        botsDirectoryPanel.repaint()
+    }
+
+    /**
+     * A bot that joined the battle on its own brings no license, so it is taken from the bot of the same name and version
+     * in the bot directories. When there is none, the license stays not known.
+     */
+    private fun withKnownLicense(botInfo: BotInfo): BotInfo {
+        if (botInfo.license != null) return botInfo
+        val known = (botsDirectoryListModel.list() + downloadedListModel.list())
+            .firstOrNull { it.name == botInfo.name && it.version == botInfo.version }
+        return known?.license?.let { botInfo.copy(license = it) } ?: botInfo
+    }
+
     private fun handleBootBots() {
-        val selected = botsDirectoryList.selectedValuesList
+        val selected = botsDirectoryList.selectedValuesList + downloadedList.selectedValuesList
         if (selected.isEmpty()) return
         bootAndShowProgress(selected)
     }
@@ -336,8 +386,10 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
 
     private fun createBotsDirectoryPanel() =
-        JPanel(MigLayout("fill")).apply {
+        JPanel(MigLayout("fill, hidemode 3, wrap 1, gapy 2", "[grow, fill]", "[grow][][grow]")).apply {
             add(botsDirectoryScrollPane, "grow")
+            add(downloadedHeader, "growx")
+            add(downloadedScrollPane, "grow")
             border = BorderFactory.createTitledBorder(Strings.get("bot_directories"))
         }
 
@@ -380,6 +432,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private fun updateBotsDirectoryEntries() {
         botsDirectoryList.clearSelection()
         botsDirectoryListModel.clear()
+        downloadedList.clearSelection()
+        downloadedListModel.clear()
+        val labels = ConfigSettings.botDirectoryLabels
 
         val (botsOnly: Boolean, teamsOnly: Boolean) = when (filterDropdown.selectedItem) {
             filterBotsOnlyString -> Pair(true, false)
@@ -393,8 +448,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
 
         BootProcess.info(botsOnly, teamsOnly).forEach { botEntry ->
+            val model = if (DownloadFolders.isDownloaded(botEntry.dir, labels)) downloadedListModel else botsDirectoryListModel
             botEntry.apply {
-                botsDirectoryListModel.addElement(
+                model.addElement(
                     BotInfo(
                         name,
                         version,
@@ -405,7 +461,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                         gameTypes?.toSet() ?: emptySet(),
                         platform,
                         programmingLang,
-                        host = botEntry.dir // host serves as filename here
+                        host = botEntry.dir, // host serves as filename here
+                        license = license ?: "",
                     )
                 )
             }
@@ -415,7 +472,11 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                 }
             }
         }
+        showDownloaded(downloadedOpen)
     }
+
+    /** Closes the group of downloaded bots, as when New Battle opens, so the person's own bots come first. */
+    fun closeDownloadedGroup() = showDownloaded(false)
 
     private fun enforceBotDirIsConfigured() {
         if (ConfigSettings.botDirectories.isEmpty()) {

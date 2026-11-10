@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.rumble.BotFolderSetting
+import dev.robocode.tankroyale.rumble.DownloadFolders
 import dev.robocode.tankroyale.common.event.Event
-import dev.robocode.tankroyale.gui.settings.BotDirectoryConfig
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -31,9 +32,13 @@ object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directorie
         setLocationRelativeTo(owner) // center on owner window
 
         onClosing {
-            ConfigSettings.botDirectories =
-                listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
+            BotDirectoryConfigPanel.updateSettings()
         }
+    }
+
+    override fun setVisible(visible: Boolean) {
+        if (visible && !isVisible) BotDirectoryConfigPanel.reload()
+        super.setVisible(visible)
     }
 }
 
@@ -48,7 +53,10 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     val scrollPane = JScrollPane(list)
 
     init {
-        list.cellRenderer = CheckListRenderer()
+        // A labelled folder says what it holds, beside its path.
+        list.cellRenderer = CheckListRenderer { path ->
+            if (DownloadFolders.isLabelled(path, ConfigSettings.botDirectoryLabels)) " " + String.format(Strings.get("bot_root_dirs.labelled"), Strings.get("rumble_downloads_label")) else ""
+        }
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 
         add(scrollPane, "span, grow, wrap")
@@ -143,6 +151,18 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     }
 
     fun updateSettings() {
-        ConfigSettings.botDirectories = listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
+        val folders = listModel.elements().toList().map { BotFolderSetting(it.label, it.isActive) }
+        // A removed folder leaves no label behind; the labels are saved first, so no list is ever shown without them.
+        ConfigSettings.botDirectoryLabels = DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)
+        ConfigSettings.botFolders = folders
+    }
+
+    /**
+     * Reads the bot directories again, because they may have changed while the dialog was closed, for example when a
+     * download added its folder. Without it, closing the dialog would write back an old list.
+     */
+    fun reload() {
+        listModel.clear()
+        ConfigSettings.botDirectories.forEach { listModel.addElement(CheckListEntity(it.path, it.enabled)) }
     }
 }

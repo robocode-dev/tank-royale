@@ -39,3 +39,12 @@ Grouping in New Battle changes a screen used by everybody, also people who never
 - Removing a downloaded bot from the folder from the screen.
 - A different warning when a bot directory no longer exists; today the booter's warning appears each time New Battle opens.
 - Translations.
+
+## Human evidence
+
+For the scenario where the maintainer finds downloaded bots in New Battle and reads their license.
+
+- **Observer:** the maintainer, with the author of this change.
+- **Conditions:** a prototype of this change built into the desktop program, started with the Rumble menu switched on for the test environment. The maintainer's own bot directories were all switched off, and a folder the author had deleted after an earlier trial was still listed and switched on, which made the booter warn that it does not exist each time New Battle opened; the author removed that entry from the settings and switched the download folder on again after the maintainer had switched it off by a click in the settings dialog, which saves at once.
+- **Observation:** the maintainer downloaded Corners and CornersCrazy into the suggested `rumble-bots` folder. The result said "Downloaded 2 of 2", each with its license, and that the folder was added to the bot directories as Rumble bots (downloaded). In the first prototype New Battle showed no bots: the header row lay inside the sideways-scrolled list of the person's own bots and was scrolled out of view. After the header row and the group were moved below that list, New Battle showed the header "Rumble bots (downloaded) (2)" below the empty list of own bots; clicking it showed Corners and CornersCrazy by name. Selecting Corners showed "Apache-2.0" in the new License field of Bot Info. Corners booted. After closing and opening New Battle, the group was closed.
+- **Not observed:** clicking the license link to its SPDX page, the label in the Bot Root Directories dialog and the dialog reading the bot directories again when it opens, which were built after this trial, a download into a folder already among the bot directories, and the final build of this change in front of the maintainer.

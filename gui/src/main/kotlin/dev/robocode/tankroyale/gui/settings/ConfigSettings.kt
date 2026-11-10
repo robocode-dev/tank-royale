@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
+import dev.robocode.tankroyale.rumble.BotFolderSetting
+import dev.robocode.tankroyale.rumble.DownloadFolders
 import java.util.*
 
 object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.properties") {
@@ -33,6 +35,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val CHECK_BOT_API_UPDATES = "check-bot-api-updates"
 
     private const val BOT_DIRS_SEPARATOR = ','
+    private const val BOT_DIRECTORY_LABELS = "bot-directory-labels"
 
     var enableAutoRecording: Boolean
         get() = load(ENABLE_AUTO_RECORDING)?.lowercase() == "true"
@@ -50,6 +53,23 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         get() = getBotDirectoryConfigs()
         set(value) {
             setBotDirectoryConfigs(value)
+        }
+
+    /**
+     * The labels of bot directories, by path. They are kept in a setting of their own, so [botDirectories] is read and
+     * written exactly as before, and an older version of the program sees the same bot directories.
+     */
+    var botDirectoryLabels: Map<String, String>
+        get() = DownloadFolders.parseLabels(load(BOT_DIRECTORY_LABELS, ""))
+        set(value) {
+            save(BOT_DIRECTORY_LABELS, DownloadFolders.formatLabels(value))
+        }
+
+    /** The bot directories as the shared Rumble library sees them. */
+    var botFolders: List<BotFolderSetting>
+        get() = botDirectories.map { BotFolderSetting(it.path, it.enabled) }
+        set(value) {
+            botDirectories = value.map { BotDirectoryConfig(it.path, it.enabled) }
         }
 
     var gameType: GameType

@@ -39,6 +39,12 @@ object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
             dispose()
         }
     }
+
+    /** Each time New Battle opens, the group of downloaded bots starts closed, so the person's own bots come first. */
+    override fun setVisible(visible: Boolean) {
+        if (visible && !isVisible) BotSelectionPanel.closeDownloadedGroup()
+        super.setVisible(visible)
+    }
 }
 
 class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {

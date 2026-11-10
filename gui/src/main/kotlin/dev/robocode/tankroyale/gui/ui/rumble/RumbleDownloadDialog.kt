@@ -5,10 +5,12 @@ import dev.robocode.tankroyale.gui.botapi.BotApiPlatform
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.util.Browser
 import dev.robocode.tankroyale.rumble.BotDownloads
 import dev.robocode.tankroyale.rumble.DownloadController
+import dev.robocode.tankroyale.rumble.DownloadFolders
 import dev.robocode.tankroyale.rumble.DownloadResult
 import dev.robocode.tankroyale.rumble.DownloadRow
 import dev.robocode.tankroyale.rumble.DownloadState
@@ -90,7 +92,10 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             is DownloadState.Choosing -> renderChoosing(state)
             is DownloadState.Downloading -> put(wrapped(text("rumble.download.downloading", state.count)))
             is DownloadState.SettingUpPython -> put(wrapped(text("rumble.download.setup.running")))
-            is DownloadState.Ended -> renderEnded(state)
+            is DownloadState.Ended -> {
+                if (state.placed > 0) folderAdded = rememberFolder(state.folder)
+                renderEnded(state)
+            }
             is DownloadState.Failed -> renderFailed(state)
         }
         content.revalidate()
@@ -182,7 +187,12 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         state.results.forEach { result -> put(toned(resultText(result), DownloadTexts.toneOf(result))) }
         put(wrapped(state.folder.toString()))
         put(button("rumble.download.button.show_folder") { showFolder(state.folder) })
-        put(wrapped(text("rumble.download.add_folder_hint")))
+        val label = Strings.get("rumble_downloads_label")
+        put(wrapped(when (folderAdded) {
+            true -> text("rumble.download.folder_added", label)
+            false -> text("rumble.download.folder_in_new_battle", label)
+            null -> text("rumble.download.add_folder_hint")
+        }))
         act(
             button("rumble.download.licenses") { showLicenses() },
             button("rumble.download.button.back") { controller.start() },
@@ -210,6 +220,20 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
     private fun folderLine(folder: Path) {
         put(wrapped(text("rumble.download.folder", folder.toString())))
         put(button("rumble.download.button.change_folder") { chooseFolder(folder) })
+    }
+
+    /** Whether the last download added its folder to the bot directories; null when it placed nothing. */
+    private var folderAdded: Boolean? = null
+
+    /**
+     * Adds the download folder to the bot directories, switched on and labelled, so its bots are in New Battle, unless it
+     * is there already. The label is saved first, so New Battle never shows the folder without it. True when it was added.
+     */
+    private fun rememberFolder(folder: Path): Boolean {
+        val remembered = DownloadFolders.remember(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels, folder)
+        ConfigSettings.botDirectoryLabels = remembered.labels
+        if (remembered.added) ConfigSettings.botFolders = remembered.folders
+        return remembered.added
     }
 
     /** The licenses in a small window of their own, so they are there when wanted and take no room on the screen. */
@@ -318,7 +342,8 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             val environment = choice.environment
             val background = Executors.newCachedThreadPool { runnable -> Thread(runnable, "rumble-download").apply { isDaemon = true } }
             val post = Executor { SwingUtilities.invokeLater(it) }
-            val botFolders = ConfigSettings.botDirectories.filter { it.enabled }.map { Path.of(it.path) }
+            // The suggestion comes from the person's own bot folders, so it never moves next to a download folder.
+            val botFolders = DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)
             val folder = BotDownloads.defaultFolder(botFolders, Path.of(System.getProperty("user.home")))
             RumbleDownloadDialog(environment.displayName) { self ->
                 val port = LibraryDownloadPort(
