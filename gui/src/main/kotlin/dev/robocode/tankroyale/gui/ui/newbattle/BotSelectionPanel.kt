@@ -142,18 +142,19 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         onRemove.on(this) { handleRemove() }
         onRemoveAll.on(this) { handleRemoveAll() }
 
-        botsDirectoryList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(it) }
-        downloadedList.onMultiClickedAtIndex { index ->
-            if (index >= 0 && index < downloadedListModel.size) bootCoordinator.bootBots(listOf(downloadedListModel[index]))
-        }
+        botsDirectoryList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(botsDirectoryListModel, it) }
+        downloadedList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(downloadedListModel, it) }
         downloadedList.onSelection { BotSelectionEvents.onBotDirectorySelected(it) }
+        // One selection at a time across the person's own bots and the downloaded ones, so Boot boots what is seen selected.
+        botsDirectoryList.addListSelectionListener { if (!botsDirectoryList.isSelectionEmpty) downloadedList.clearSelection() }
+        downloadedList.addListSelectionListener { if (!downloadedList.isSelectionEmpty) botsDirectoryList.clearSelection() }
         showDownloaded(false)
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
         botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected(it) }
         joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it)) }
-        selectedBotList.onSelection { BotSelectionEvents.onBotSelected(it) }
+        selectedBotList.onSelection { BotSelectionEvents.onBotSelected(withKnownLicense(it)) }
 
         selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated(selectedBotListModel.list()) }
 
@@ -189,9 +190,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
     }
 
-    private fun runFromBotDirectoryAtIndex(index: Int) {
-        if (index >= 0 && index < botsDirectoryListModel.size) {
-            bootCoordinator.bootBots(listOf(botsDirectoryListModel[index]))
+    private fun runFromBotDirectoryAtIndex(model: SortedListModel<BotInfo>, index: Int) {
+        if (index >= 0 && index < model.size) {
+            bootCoordinator.bootBots(listOf(model[index]))
         }
     }
 
@@ -227,6 +228,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     /** Opens or closes the group of downloaded bots, and shows how many there are on its header row. */
     private fun showDownloaded(open: Boolean) {
         downloadedOpen = open
+        // A closed group keeps no selection, so Boot never boots a bot the person cannot see.
+        if (!open) downloadedList.clearSelection()
         downloadedScrollPane.isVisible = open && downloadedListModel.size > 0
         downloadedHeader.isVisible = downloadedListModel.size > 0
         downloadedHeader.icon = UIManager.getIcon(if (open) "Tree.expandedIcon" else "Tree.collapsedIcon")
@@ -304,9 +307,10 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private fun addBootButton() {
         bootButtonPanel.addButton("boot_arrow", onBootBots, "cell 0 0").apply {
             isEnabled = false
-            botsDirectoryList.onSelection {
-                isEnabled = botsDirectoryList.selectedIndices.isNotEmpty()
-            }
+            // Boot is offered for a selection in either the person's own bots or the downloaded ones.
+            val update = { isEnabled = !botsDirectoryList.isSelectionEmpty || !downloadedList.isSelectionEmpty }
+            botsDirectoryList.addListSelectionListener { update() }
+            downloadedList.addListSelectionListener { update() }
         }
     }
 

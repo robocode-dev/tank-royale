@@ -246,7 +246,21 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         return botDirectoryConfigs
     }
 
+    /**
+     * Saves the bot directories and their labels in one write, so a screen listening for saved settings reads them once
+     * and never sees one without the other.
+     */
+    fun saveBotFolders(folders: List<BotFolderSetting>, labels: Map<String, String>) {
+        set(BOT_DIRECTORY_LABELS, DownloadFolders.formatLabels(labels))
+        set(BOT_DIRECTORIES, botDirectoriesText(folders.map { BotDirectoryConfig(it.path, it.enabled) }))
+        save()
+    }
+
     private fun setBotDirectoryConfigs(botDirectoryConfigs: List<BotDirectoryConfig>) {
+        save(BOT_DIRECTORIES, botDirectoriesText(botDirectoryConfigs))
+    }
+
+    private fun botDirectoriesText(botDirectoryConfigs: List<BotDirectoryConfig>): String {
         val stringBuffer = StringBuilder()
         botDirectoryConfigs.filter { it.path.isNotBlank() }.forEach { botDirectoryConfig ->
             // Normalize path separators to forward slashes to avoid escape sequence issues in properties files
@@ -255,6 +269,6 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
                 .append(normalizedPath).append(BOT_DIRS_SEPARATOR)
                 .append(if (botDirectoryConfig.enabled) "true" else "false").append(BOT_DIRS_SEPARATOR)
         }
-        save(BOT_DIRECTORIES, stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR))
+        return stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR)
     }
 }

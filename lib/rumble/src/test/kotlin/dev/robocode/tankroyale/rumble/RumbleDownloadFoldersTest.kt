@@ -27,6 +27,8 @@ class RumbleDownloadFoldersTest {
         }
         assertFalse(DownloadFolders.isLabelled("/home/me/Rumble-Bots", mapOf("/home/me/rumble-bots" to DownloadFolders.LABEL), windows = false),
             "letter case counts where the file system tells it apart")
+        val comma = mapOf("/home/me/bots, rumble" to DownloadFolders.LABEL, "/home/me/100%" to DownloadFolders.LABEL, "/x" to DownloadFolders.LABEL)
+        assertEquals(comma, DownloadFolders.parseLabels(DownloadFolders.formatLabels(comma), windows = false), "a comma or a percent sign in a path keeps every pair in place")
     }
 
     @Test
@@ -52,6 +54,7 @@ class RumbleDownloadFoldersTest {
         val remembered = DownloadFolders.remember(own, emptyMap(), folder, windows = true)
 
         assertTrue(remembered.added)
+        assertEquals(FolderOutcome.ADDED, remembered.outcome)
         assertEquals(own + BotFolderSetting(folder.toString(), true), remembered.folders, "the person's own folders are kept as they were, in order")
         assertTrue(DownloadFolders.isLabelled(folder.toString(), remembered.labels, windows = true))
     }
@@ -60,14 +63,37 @@ class RumbleDownloadFoldersTest {
     @Tag("RCL-090")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCL090_UnitNegative_aFolderAlreadyThereKeepsItsPlaceAndSwitchAndOnlyGetsTheLabel() {
+    fun testRCL090_UnitNegative_aFolderAlreadyThereKeepsItsPlaceAndSwitchAndIsLabelledOnlyWhenItHoldsOnlyDownloads() {
         val folders = own + BotFolderSetting("C:/Users/me/rumble-bots", false)
 
-        val remembered = DownloadFolders.remember(folders, emptyMap(), Path.of("c:\\users\\me\\rumble-bots"), windows = true)
+        val downloads = DownloadFolders.remember(folders, emptyMap(), Path.of("c:\\users\\me\\rumble-bots"), onlyDownloads = true, windows = true)
+        assertEquals(FolderOutcome.SWITCHED_OFF, downloads.outcome, "the person's switch stays off, and the screen says so")
+        assertEquals(folders, downloads.folders, "not added twice")
+        assertTrue(DownloadFolders.isLabelled("C:/Users/me/rumble-bots", downloads.labels, windows = true))
 
-        assertFalse(remembered.added)
-        assertEquals(folders, remembered.folders, "not added twice, and a folder the person switched off stays off")
-        assertTrue(DownloadFolders.isLabelled("C:/Users/me/rumble-bots", remembered.labels, windows = true))
+        val labelledBefore = DownloadFolders.remember(own, mapOf(DownloadFolders.key("C:/Code/bots/java", true) to DownloadFolders.LABEL), Path.of("C:/Code/bots/java"), windows = true)
+        assertEquals(FolderOutcome.LABELLED, labelledBefore.outcome, "a labelled folder stays labelled, switched on")
+
+        val mine = DownloadFolders.remember(own, emptyMap(), Path.of("C:/Code/bots/java"), onlyDownloads = false, windows = true)
+        assertEquals(FolderOutcome.OWN_FOLDER, mine.outcome, "one of the person's own bot directories")
+        assertEquals(own to emptyMap<String, String>(), mine.folders to mine.labels, "their own bots are never moved into the group")
+    }
+
+    @Test
+    @Tag("RCL-090")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL090_UnitNegative_aFolderHoldsOnlyDownloadsOnlyWhenEveryBotFolderInItWasPlacedByTheScreen(@org.junit.jupiter.api.io.TempDir dir: Path) {
+        fun bot(name: String, marked: Boolean) = java.nio.file.Files.createDirectories(dir.resolve(name)).also {
+            if (marked) java.nio.file.Files.write(it.resolve(BotDownloads.MARKER), ByteArray(0))
+        }
+        assertFalse(BotDownloads.holdsOnlyDownloads(dir), "an empty folder holds no downloads")
+        bot("Corners", marked = true)
+        java.nio.file.Files.createDirectories(dir.resolve(".rumble-python"))
+        assertTrue(BotDownloads.holdsOnlyDownloads(dir), "hidden folders such as the Python environment do not count")
+        bot("MyOwnBot", marked = false)
+        assertFalse(BotDownloads.holdsOnlyDownloads(dir), "one bot of the person's own makes it their folder")
+        assertFalse(BotDownloads.holdsOnlyDownloads(dir.resolve("missing")))
     }
 
     @Test

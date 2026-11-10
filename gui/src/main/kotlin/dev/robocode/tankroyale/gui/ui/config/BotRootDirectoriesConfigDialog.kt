@@ -54,8 +54,9 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
     init {
         // A labelled folder says what it holds, beside its path.
+        // The labels are read when the list is read, not for every row painted.
         list.cellRenderer = CheckListRenderer { path ->
-            if (DownloadFolders.isLabelled(path, ConfigSettings.botDirectoryLabels)) " " + String.format(Strings.get("bot_root_dirs.labelled"), Strings.get("rumble_downloads_label")) else ""
+            if (DownloadFolders.isLabelled(path, labels)) " " + String.format(Strings.get("bot_root_dirs.labelled"), Strings.get("rumble_downloads_label")) else ""
         }
         list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 
@@ -152,16 +153,20 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
     fun updateSettings() {
         val folders = listModel.elements().toList().map { BotFolderSetting(it.label, it.isActive) }
-        // A removed folder leaves no label behind; the labels are saved first, so no list is ever shown without them.
-        ConfigSettings.botDirectoryLabels = DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)
-        ConfigSettings.botFolders = folders
+        // A removed folder leaves no label behind; both are saved in one write.
+        labels = DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)
+        ConfigSettings.saveBotFolders(folders, labels)
     }
+
+    /** The labels of the bot directories as last read or saved. */
+    private var labels: Map<String, String> = ConfigSettings.botDirectoryLabels
 
     /**
      * Reads the bot directories again, because they may have changed while the dialog was closed, for example when a
      * download added its folder. Without it, closing the dialog would write back an old list.
      */
     fun reload() {
+        labels = ConfigSettings.botDirectoryLabels
         listModel.clear()
         ConfigSettings.botDirectories.forEach { listModel.addElement(CheckListEntity(it.path, it.enabled)) }
     }

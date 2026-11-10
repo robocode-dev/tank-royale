@@ -350,7 +350,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "8e3c946aade0a402a31f930179179765f9ed7cb8c9bc770292d0223c907111e8"
+          "sha256": "dea28fc8cace12f760efa1a76680dd43f72ffeeecd9c24fc2a838aab74696713"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1724,7 +1724,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
-          "sha256": "da748c9a3114a559630a22c068fba9857b1302867c7b2ba4308e604d0d4d3700"
+          "sha256": "11f46ad83dc3514bc555dfa5c1e97ebd98120b5f4b5aa8abcc30db4993aae041"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
@@ -2137,7 +2137,14 @@
         {
           "id": "RCL-090",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
-          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_aFolderAlreadyThereKeepsItsPlaceAndSwitchAndOnlyGetsTheLabel",
+          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_aFolderAlreadyThereKeepsItsPlaceAndSwitchAndIsLabelledOnlyWhenItHoldsOnlyDownloads",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-090",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadFoldersTest.kt",
+          "subject": "RumbleDownloadFoldersTest.testRCL090_UnitNegative_aFolderHoldsOnlyDownloadsOnlyWhenEveryBotFolderInItWasPlacedByTheScreen",
           "type": "Unit",
           "direction": "negative"
         },

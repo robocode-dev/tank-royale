@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.util.Browser
 import dev.robocode.tankroyale.rumble.LicenseLinks
 import dev.robocode.tankroyale.gui.ui.components.RcHtmlPane
 import dev.robocode.tankroyale.gui.ui.components.RcNonEditableTextArea
@@ -31,7 +32,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     private var licensePage: String? = null
     private val showLicenseButton = JButton(Strings.get("bot_info.show_license")).apply {
         addActionListener {
-            licensePage?.takeIf { LicenseLinks.isSpdxPage(it) && Desktop.isDesktopSupported() }?.let { Desktop.getDesktop().browse(java.net.URI(it)) }
+            licensePage?.takeIf { LicenseLinks.isSpdxPage(it) }?.let { Browser.browse(it) }
         }
     }
 

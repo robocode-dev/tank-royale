@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.util.Browser
 import dev.robocode.tankroyale.rumble.BotDownloads
 import dev.robocode.tankroyale.rumble.DownloadController
 import dev.robocode.tankroyale.rumble.DownloadFolders
+import dev.robocode.tankroyale.rumble.FolderOutcome
 import dev.robocode.tankroyale.rumble.DownloadResult
 import dev.robocode.tankroyale.rumble.DownloadRow
 import dev.robocode.tankroyale.rumble.DownloadState
@@ -93,7 +94,7 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
             is DownloadState.Downloading -> put(wrapped(text("rumble.download.downloading", state.count)))
             is DownloadState.SettingUpPython -> put(wrapped(text("rumble.download.setup.running")))
             is DownloadState.Ended -> {
-                if (state.placed > 0) folderAdded = rememberFolder(state.folder)
+                folderOutcome = if (state.placed > 0) rememberFolder(state.folder) else null
                 renderEnded(state)
             }
             is DownloadState.Failed -> renderFailed(state)
@@ -188,9 +189,11 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(wrapped(state.folder.toString()))
         put(button("rumble.download.button.show_folder") { showFolder(state.folder) })
         val label = Strings.get("rumble_downloads_label")
-        put(wrapped(when (folderAdded) {
-            true -> text("rumble.download.folder_added", label)
-            false -> text("rumble.download.folder_in_new_battle", label)
+        put(wrapped(when (folderOutcome) {
+            FolderOutcome.ADDED -> text("rumble.download.folder_added", label)
+            FolderOutcome.LABELLED -> text("rumble.download.folder_in_new_battle", label)
+            FolderOutcome.SWITCHED_OFF -> text("rumble.download.folder_switched_off", label)
+            FolderOutcome.OWN_FOLDER -> text("rumble.download.folder_own")
             null -> text("rumble.download.add_folder_hint")
         }))
         act(
@@ -222,18 +225,22 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
         put(button("rumble.download.button.change_folder") { chooseFolder(folder) })
     }
 
-    /** Whether the last download added its folder to the bot directories; null when it placed nothing. */
-    private var folderAdded: Boolean? = null
+    /** What the last download did with its folder among the bot directories; null when it placed nothing. */
+    private var folderOutcome: FolderOutcome? = null
 
     /**
      * Adds the download folder to the bot directories, switched on and labelled, so its bots are in New Battle, unless it
      * is there already. The label is saved first, so New Battle never shows the folder without it. True when it was added.
      */
-    private fun rememberFolder(folder: Path): Boolean {
-        val remembered = DownloadFolders.remember(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels, folder)
-        ConfigSettings.botDirectoryLabels = remembered.labels
-        if (remembered.added) ConfigSettings.botFolders = remembered.folders
-        return remembered.added
+    private fun rememberFolder(folder: Path): FolderOutcome {
+        val onlyDownloads = try {
+            BotDownloads.holdsOnlyDownloads(folder)
+        } catch (e: java.io.IOException) {
+            false
+        }
+        val remembered = DownloadFolders.remember(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels, folder, onlyDownloads)
+        ConfigSettings.saveBotFolders(remembered.folders, remembered.labels)
+        return remembered.outcome
     }
 
     /** The licenses in a small window of their own, so they are there when wanted and take no room on the screen. */

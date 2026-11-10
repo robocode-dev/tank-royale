@@ -210,6 +210,11 @@ class RumbleCliDownloadTextsTest {
         assertTrue(panel.contains("private val botsDirectoryScrollPane = JScrollPane(botsDirectoryList)"), "the header is not inside the sideways-scrolled list of own bots")
         assertTrue(panel.contains("DownloadFolders.isDownloaded(botEntry.dir, labels)"), "the library decides which bots belong to the group")
         assertTrue(panel.contains("botsDirectoryList.selectedValuesList + downloadedList.selectedValuesList"), "booting covers the group's bots")
+        assertTrue(panel.contains("isEnabled = !botsDirectoryList.isSelectionEmpty || !downloadedList.isSelectionEmpty"), "Boot is offered for a selection in either list")
+        assertTrue(panel.contains("if (!open) downloadedList.clearSelection()"), "a closed group keeps no selection, so Boot never boots a hidden bot")
+        assertTrue(panel.contains("if (!botsDirectoryList.isSelectionEmpty) downloadedList.clearSelection()") && panel.contains("if (!downloadedList.isSelectionEmpty) botsDirectoryList.clearSelection()"),
+            "one selection at a time across the two lists")
+        assertTrue(panel.contains("runFromBotDirectoryAtIndex(downloadedListModel, it)"), "a double-click boots a downloaded bot the same way as an own one")
         assertTrue(panel.contains("downloadedHeader.isVisible = downloadedListModel.size > 0"), "no header row without downloaded bots")
         assertTrue(panel.contains("java.io.File((value as BotInfo).host).name"), "a downloaded bot is shown by its own folder name")
         val dialog = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/NewBattleDialog.kt")
@@ -222,11 +227,15 @@ class RumbleCliDownloadTextsTest {
     @Tag("Negative")
     fun testRCL090_UnitNegative_theScreenAddsOnlyAfterPlacingAndTheSettingsDialogNeverWritesBackAnOldList() {
         val download = code(dialogFile)
-        assertTrue(download.contains("if (state.placed > 0) folderAdded = rememberFolder(state.folder)"), "nothing is added when nothing was placed")
+        assertTrue(download.contains("folderOutcome = if (state.placed > 0) rememberFolder(state.folder) else null"), "nothing is added when nothing was placed")
+        assertTrue(download.contains("BotDownloads.holdsOnlyDownloads(folder)") && download.contains("ConfigSettings.saveBotFolders(remembered.folders, remembered.labels)"),
+            "an own folder is never labelled, and the folders and labels are saved in one write")
+        listOf("ADDED", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
         assertTrue(download.contains("DownloadFolders.ownFolders(ConfigSettings.botFolders, ConfigSettings.botDirectoryLabels)"), "the suggestion skips download folders")
         val settings = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/config/BotRootDirectoriesConfigDialog.kt")
         assertTrue(settings.contains("if (visible && !isVisible) BotDirectoryConfigPanel.reload()"), "the dialog reads the bot directories again each time it opens")
         assertTrue(settings.contains("DownloadFolders.keepLabelsOf(folders, ConfigSettings.botDirectoryLabels)"), "a removed folder leaves no label behind")
+        assertTrue(settings.contains("DownloadFolders.isLabelled(path, labels)"), "the rows are painted from the labels read with the list, not from the disk")
         val config = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/settings/ConfigSettings.kt")
         assertTrue(config.contains("private const val BOT_DIRECTORY_LABELS = \"bot-directory-labels\"") && config.contains("private const val BOT_DIRECTORIES = \"bot-directories\""),
             "the labels have a setting of their own beside the unchanged one")
@@ -240,10 +249,12 @@ class RumbleCliDownloadTextsTest {
         val info = code(botInfoFile)
         assertTrue(info.contains("LicenseLinks.spdxPage(botInfo?.license)") && info.contains("LicenseLinks.isSpdxPage(it)"), "the page is made and checked by the library")
         assertTrue(info.contains("showLicenseButton.isEnabled = licensePage != null"), "a visible button opens it, and only when there is a page")
+        assertTrue(info.contains("Browser.browse(it)") && !info.contains("Desktop.getDesktop().browse(java.net.URI"), "through the program's own browser helper, which tells the person when it cannot")
         assertTrue(info.contains("Strings.get(\"bot_info.show_license\")"), "the button's text is a resource")
         assertTrue(info.contains("Strings.get(\"bot_info.no_license\")") && info.contains("Strings.get(\"bot_info.license_unknown\")"))
         val panel = code(newBattleFile)
-        assertTrue(panel.contains("BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it))"))
+        assertTrue(panel.contains("BotSelectionEvents.onJoinedBotSelected(withKnownLicense(it))") && panel.contains("BotSelectionEvents.onBotSelected(withKnownLicense(it))"),
+            "a joined bot shows the same license in Joined Bots and in Selected Bots")
         assertTrue(panel.contains("license = license ?: \"\""), "a bot in the bot directories with no license says so; null is kept for not known")
         val strings = listOf("bot_info.license", "bot_info.no_license", "bot_info.license_unknown", "rumble_downloads_label", "rumble_downloads_group", "bot_root_dirs.labelled", "bot_info.show_license")
         languages.forEach { suffix ->
