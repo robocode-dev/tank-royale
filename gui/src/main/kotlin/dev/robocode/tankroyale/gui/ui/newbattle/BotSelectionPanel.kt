@@ -85,10 +85,21 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     // The licenses of every bot in the bot directories for the game type, whatever the filter shows, for bots that join on their own.
     private var knownLicenses = KnownLicenses(emptyList())
 
-    // A change of the settings made while New Battle is closed, such as a download adding its folder, is read when New
-    // Battle opens, so the download screen never waits for the bot directories to be read. While New Battle is open,
-    // it is read once the screen that saved has been drawn.
-    private val refreshDirectories = RefreshWhenShown({ isShowing }) { enqueue { updateBotsDirectoryEntries() } }
+    // The bot directories are read each time New Battle opens, so it never shows an older list than the folders hold.
+    // While New Battle is open, they are read again after the settings are saved or a download places bots, once the
+    // screen that did it has been drawn; while it is closed, such a change costs nothing.
+    // Several reasons in a row, such as a download that saves the settings and places bots, read the bot directories
+    // once: a reading already waiting on the event queue takes them all.
+    private var directoriesQueued = false
+    private val refreshDirectories = RefreshWhenShown({ isShowing }) {
+        if (!directoriesQueued) {
+            directoriesQueued = true
+            enqueue {
+                directoriesQueued = false
+                updateBotsDirectoryEntries()
+            }
+        }
+    }
     private var downloadedOpen = false
     private val downloadedHeader = JButton().apply {
         isBorderPainted = false
@@ -178,6 +189,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BootProcess.onUnbootBot.on(this) { removeUnbootingBot(it) }
 
         ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }
+        BotSelectionEvents.onBotsPlaced.on(this) { refreshDirectories.changed() }
 
         ServerEvents.onStopped.on(this) { reset() }
     }
@@ -508,7 +520,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     /**
      * New Battle is opening: the group of downloaded bots is closed, so the person's own bots come first, and the bot
-     * directories are read again when the settings changed while New Battle was closed.
+     * directories are read again, so bots placed while New Battle was closed are listed.
      */
     fun opened() {
         showDownloaded(false)

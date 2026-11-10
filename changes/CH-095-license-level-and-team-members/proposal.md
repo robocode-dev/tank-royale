@@ -31,6 +31,8 @@ Downloaded bots are there to practise against, and their code is there to read. 
 - **Shared rules.** The level is worked out in the shared Rumble library from the license text, with no Swing and no disk, so the command line can use it later. The texts are resources in every language file, English until translated.
 - **Documents:** the participation design and the mockups say what was built; the plan records the slice.
 
+- **New Battle lists every downloaded bot.** The maintainer downloaded all bots of the test environment in several rounds into one folder, and New Battle listed only the three of the first round. New Battle read the bot directories only when the settings changed, and the later rounds placed bots in a folder that was already listed, so no setting changed. New Battle now reads the bot directories each time it opens, as every list in the program is brought up to date when it is opened again, and a download that places bots tells an open New Battle to read them again. This corrects the change that added downloaded bots to New Battle.
+
 Nothing changes how a bot is booted, what the booter reads, or what the game protocol carries: the desktop program already receives the license and the team members from the booter.
 
 ## Challenge the commitment

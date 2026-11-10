@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.util.Browser
+import dev.robocode.tankroyale.gui.ui.newbattle.BotSelectionEvents
 import dev.robocode.tankroyale.gui.ui.newbattle.CopyLevelTexts
 import dev.robocode.tankroyale.rumble.BotDownloads
 import dev.robocode.tankroyale.rumble.DownloadController
@@ -351,6 +352,9 @@ class RumbleDownloadDialog private constructor(environmentName: String, controll
                         onFailure = { it.printStackTrace() },
                         placed = placed,
                     )
+                    // New Battle lists the new bots also when the folder was already among the bot directories, so
+                    // the settings did not change.
+                    if (placed) BotSelectionEvents.onBotsPlaced(Unit)
                 }
             } catch (e: InterruptedException) {
                 Thread.currentThread().interrupt()

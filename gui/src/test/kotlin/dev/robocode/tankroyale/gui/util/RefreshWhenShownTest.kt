@@ -9,33 +9,25 @@ class RefreshWhenShownTest : StringSpec({
 
     "a change while the screen is showing refreshes it at once" {
         var refreshed = 0
-        val refresh = RefreshWhenShown({ true }) { refreshed++ }
-
-        refresh.changed()
-        refresh.shown()
+        RefreshWhenShown({ true }) { refreshed++ }.changed()
 
         refreshed shouldBe 1
     }
 
-    "changes while the screen is not showing do no work until it is shown, and then once" {
-        var showing = false
+    "a change while the screen is not showing does no work" {
         var refreshed = 0
-        val refresh = RefreshWhenShown({ showing }) { refreshed++ }
+        RefreshWhenShown({ false }) { refreshed++ }.changed()
 
-        refresh.changed()
-        refresh.changed()
         refreshed shouldBe 0
-
-        showing = true
-        refresh.shown()
-        refresh.shown()
-        refreshed shouldBe 1
     }
 
-    "showing the screen without a change does not refresh it" {
+    "the screen is refreshed each time it is shown, also when nothing it was told about changed" {
         var refreshed = 0
-        RefreshWhenShown({ false }) { refreshed++ }.shown()
+        val refresh = RefreshWhenShown({ false }) { refreshed++ }
 
-        refreshed shouldBe 0
+        refresh.shown()
+        refresh.shown()
+
+        refreshed shouldBe 2
     }
 })

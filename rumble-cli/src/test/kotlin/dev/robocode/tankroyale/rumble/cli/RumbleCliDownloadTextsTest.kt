@@ -221,7 +221,7 @@ class RumbleCliDownloadTextsTest {
         val dialog = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/NewBattleDialog.kt")
         assertTrue(dialog.contains("if (visible && !isVisible) BotSelectionPanel.opened()"), "closed each time New Battle opens")
         val opened = panel.substringAfter("fun opened() {").substringBefore("}")
-        assertTrue(opened.contains("showDownloaded(false)") && opened.contains("refreshDirectories.shown()"), "closed, and read again when the settings changed while New Battle was closed")
+        assertTrue(opened.contains("showDownloaded(false)") && opened.contains("refreshDirectories.shown()"), "closed, and the bot directories read again each time New Battle opens")
     }
 
     @Test
@@ -237,6 +237,9 @@ class RumbleCliDownloadTextsTest {
         assertTrue(download.contains("DownloadFolders.rememberAfterDownload("), "a folder that cannot be looked into or saved leaves the screen showing what the download did")
         assertTrue(download.contains("FolderOutcome.NOT_LISTED, null -> text(\"rumble.download.add_folder_hint\")"), "a folder not in the bot directories when nothing was placed gets the hint to add it by hand")
         val panel = code(newBattleFile)
+        assertTrue(download.contains("if (placed) BotSelectionEvents.onBotsPlaced(Unit)") && panel.contains("BotSelectionEvents.onBotsPlaced.on(this) { refreshDirectories.changed() }"),
+            "a download that places bots in a folder already listed, which changes no setting, still brings an open New Battle up to date")
+        assertTrue(panel.contains("if (!directoriesQueued) {"), "several reasons in a row read the bot directories once")
         assertTrue(panel.contains("ConfigSettings.onSaved.on(this) { refreshDirectories.changed() }") && panel.contains("RefreshWhenShown({ isShowing })"),
             "New Battle reads the bot directories after a download only when it is open, so the download screen never waits for it")
         listOf("ADDED", "ADDED_AS_OWN", "LABELLED", "SWITCHED_OFF", "OWN_FOLDER", "OWN_FOLDER_SWITCHED_OFF", "NOT_REMEMBERED", "COMMA_IN_PATH").forEach { assertTrue(download.contains("FolderOutcome.$it ->"), "a message for $it") }
