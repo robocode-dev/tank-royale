@@ -173,7 +173,7 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
         put(wrapped(text(SubmitTexts.forState(state)), bold = true))
         put(wrapped(text("rumble.submit.send_intro")))
         put(wrapped(text("rumble.submit.public_notice"), bold = true))
-        put(toned(text(SubmitTexts.forContent(ready.content)), SubmitTexts.toneOf(ready.content)))
+        put(toned(text(SubmitTexts.forContent(ready.content)), SubmitTexts.contentTone(state)))
         // What the Rumble's rules would refuse stops the send; a lower version is only a note.
         ready.rules?.let { rules ->
             rules.problems.forEach { finding -> SubmitTexts.forRule(finding.code)?.let { put(status(false, text(it, *finding.values.toTypedArray()))) } }

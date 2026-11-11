@@ -113,6 +113,15 @@ object SubmitTexts {
     /** The key of the text for a pre-check finding, or null when the fifth step leaves it to the content line. */
     fun forRule(code: String): String? = code.takeIf { it in RULE_CODES }?.let { "rumble.submit.rule." + it.replace('-', '_') }
 
+    /**
+     * The tone of the fifth step's content line: good only while the bot can be sent, so a line about a new version is
+     * never shown as a success beside a rule that stops the send.
+     */
+    fun contentTone(state: SubmitState.SendReady): Tone {
+        val tone = toneOf(state.ready.content)
+        return if (tone == Tone.GOOD && !state.canSend) Tone.NEUTRAL else tone
+    }
+
     /** The moderation's reason as plain text: without the code marks GitHub's comments use. */
     fun plainReason(reason: String): String = reason.replace("`", "").trim()
 

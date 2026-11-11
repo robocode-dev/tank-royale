@@ -560,6 +560,8 @@ class RumbleSubmitSendTest {
         listOf(owned, banned, disqualified).forEach { ready ->
             val state = SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", ready)
             assertFalse(state.canSend, "nothing is offered to send: ${ready.rules}")
+            assertEquals(ContentState.NEW, ready.content)
+            assertEquals(Tone.NEUTRAL, SubmitTexts.contentTone(state), "a new version is not shown as a success beside a rule that stops the send")
         }
 
         val screen = screen(dir.resolve("screen"), FakeSendPort().apply { prepared = owned })
@@ -576,6 +578,8 @@ class RumbleSubmitSendTest {
         val mine = port(dir.resolve("mine"), ruleFiles = rules(owners = """{"schemaVersion":1,"owners":[{"ownerId":"alice","accounts":["alice"],"bots":["MyBot"]}]}"""))
             .prepare(submission(dir), "alice") as SendPrepared.Ready
         assertEquals(emptyList<PrecheckFinding>(), mine.rules!!.problems, "the owner may update their own bot")
+        assertEquals(Tone.GOOD, SubmitTexts.contentTone(SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", mine)),
+            "a new version that can be sent is good news")
 
         val head = HeadApi()
         port(dir.resolve("signed"), ruleFiles = rules(), head = head).prepare(submission(dir), "alice")
