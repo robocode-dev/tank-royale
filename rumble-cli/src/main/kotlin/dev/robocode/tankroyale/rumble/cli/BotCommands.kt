@@ -323,6 +323,10 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
                 env, ExitCodes.REFUSED, "setup-needed",
                 "Your repository ${readiness.repositoryUrl} has the name of the Rumble's bot repository but is not a copy of it. Rename or remove it, make a real copy, then run this command again. Nothing was changed.",
             ) { put("setup", "not-a-copy"); put("setupUrl", readiness.repositoryUrl); putNotice(emptyList()) }
+            is SubmissionReadiness.CopyBehind -> reply(
+                env, ExitCodes.REFUSED, "setup-needed",
+                "Your copy lacks a change to the Rumble's workflows, which the sign-in App may not bring into it. Open ${readiness.copyUrl}, press Sync fork, then run this command again. Nothing was sent.",
+            ) { put("setup", "copy-behind"); put("setupUrl", readiness.copyUrl); putNotice(emptyList()) }
             is SubmissionReadiness.SignInNeeded -> {
                 flow.forgetRefused(renewal)
                 reply(env, ExitCodes.SIGN_IN_NEEDED, "sign-in-refused", readiness.message, next = "login")

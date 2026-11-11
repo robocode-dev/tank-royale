@@ -105,6 +105,23 @@ class RumbleSubmitSendTest {
     }
 
     @Test
+    @Tag("RCL-097")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL097_UnitPositive_aCopyThatMustBeSyncedIsWaitedForAndTheWizardGoesOnBySelf(@TempDir dir: Path) {
+        val behind = screen(dir, FakeSendPort().apply { readiness = SubmissionReadiness.CopyBehind("alice", "https://github.com/alice/rumble-bots-test") })
+        behind.toReview(); behind.tickBoth(); behind.controller.next()
+        assertEquals(behind.fake.readiness, (behind.state as SubmitState.Copy).readiness)
+        assertEquals("rumble.submit.copy_behind", SubmitTexts.forReadiness(behind.fake.readiness))
+        assertEquals(listOf(5L), behind.clock.open.map { it.seconds }, "it looks again by itself while the person syncs the copy")
+
+        behind.fake.readiness = SubmissionReadiness.Ready("alice", "alice/rumble-bots-test")
+        behind.clock.fire()
+        assertInstanceOf(SubmitState.SendReady::class.java, behind.state, "synced, so it goes on by itself")
+        assertEquals(emptyList<ManualScheduler.Task>(), behind.clock.open)
+    }
+
+    @Test
     @Tag("RCL-066")
     @Tag("Unit")
     @Tag("Negative")

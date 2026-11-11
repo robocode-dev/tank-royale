@@ -49,6 +49,12 @@ class FakeBotGitHub(val login: String = "alice") : GitHubApi {
     var treeStatus = 201
     var pullStatus = 201
 
+    /** The status GitHub gives when a branch is made in the copy, such as 403 when it brings a changed workflow file. */
+    var refStatus = 201
+
+    /** The files the Rumble's main branch has changed since the copy's, as GitHub's comparison lists them; null when it does not answer. */
+    var upstreamAhead: List<String>? = emptyList()
+
     private val blobs = mutableMapOf<String, ByteArray>()
     private val trees = mutableMapOf<String, Map<String, Entry>>()
     private class Commit(val tree: String, val parents: List<String>)
@@ -96,6 +102,9 @@ class FakeBotGitHub(val login: String = "alice") : GitHubApi {
             path.contains("/git/ref/heads/") -> ref(path)
             path.contains("/git/commits/") -> commit(path)
             path.contains("/git/trees/") -> tree(path)
+            path.startsWith("$up/compare/") -> upstreamAhead?.let { files ->
+                ok("""{"status":"${if (files.isEmpty()) "identical" else "ahead"}","files":[${files.joinToString(",") { """{"filename":"$it"}""" }}]}""")
+            } ?: ApiResponse(500, """{"message":"Server Error"}""")
             path.startsWith("$up/pulls?") -> pullList(path)
             path.startsWith("$up/pulls/") && path.contains("/files") -> pullFiles(path)
             else -> ApiResponse(404, """{"message":"Not Found"}""")
@@ -118,7 +127,7 @@ class FakeBotGitHub(val login: String = "alice") : GitHubApi {
                 val parents = (body["parents"] as JsonArray).map { (it as JsonPrimitive).content }
                 created("""{"sha":"${storeCommit(body.str("tree"), parents, body.str("message"))}"}""")
             }
-            "$fk/git/refs" -> {
+            "$fk/git/refs" -> if (refStatus != 201) ApiResponse(refStatus, """{"message":"Resource not accessible by integration"}""") else {
                 val branch = body.str("ref").removePrefix("refs/heads/")
                 val sha = body.str("sha")
                 if (branch in refs.getValue(fk)) ApiResponse(422, """{"message":"Reference already exists"}""")

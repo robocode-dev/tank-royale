@@ -401,6 +401,7 @@ class RumbleCliBotTest {
             SubmissionReadiness.NoCopy("alice", "https://github.com/robocode-dev/rumble-bots-test/fork") to "no-copy",
             SubmissionReadiness.AppNotInstalled("alice", "https://github.com/apps/x/installations/new") to "app-not-installed",
             SubmissionReadiness.NotRumblesRepository("alice", "https://github.com/alice/rumble-bots-test") to "not-a-copy",
+            SubmissionReadiness.CopyBehind("alice", "https://github.com/alice/rumble-bots-test") to "copy-behind",
         ).forEach { (readiness, setup) ->
             world.sending.readiness = readiness
 

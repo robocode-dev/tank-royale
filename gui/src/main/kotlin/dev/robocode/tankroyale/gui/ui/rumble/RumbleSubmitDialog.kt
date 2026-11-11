@@ -158,6 +158,7 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
         when (readiness) {
             is SubmissionReadiness.NoCopy -> put(pageButton("rumble.submit.button.open_fork", readiness.pageUrl))
             is SubmissionReadiness.AppNotInstalled -> put(pageButton("rumble.submit.button.open_install", readiness.installUrl))
+            is SubmissionReadiness.CopyBehind -> put(pageButton("rumble.submit.button.open_copy", readiness.copyUrl))
             is SubmissionReadiness.NotRumblesRepository -> detail(readiness.repositoryUrl)
             is SubmissionReadiness.SignInNeeded -> detail(readiness.message)
             is SubmissionReadiness.Failed -> {
@@ -200,6 +201,7 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
             }
             is SubmissionResult.SetupNeeded -> {
                 put(wrapped(text(SubmitTexts.forReadiness(result.readiness))))
+                (result.readiness as? SubmissionReadiness.CopyBehind)?.let { put(pageButton("rumble.submit.button.open_copy", it.copyUrl)) }
                 put(button("rumble.submit.button.back") { controller.back() })
             }
             is SubmissionResult.Refused -> {

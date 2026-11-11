@@ -269,8 +269,8 @@ class SubmitController(
                 return@work
             }
             show(SubmitState.Copy(folder, review, readiness))
-            // The person makes the copy or installs the App in the browser, and this finds it by itself.
-            if (readiness is SubmissionReadiness.NoCopy || readiness is SubmissionReadiness.AppNotInstalled) {
+            // The person makes the copy, installs the App or syncs the copy in the browser, and this finds it by itself.
+            if (readiness is SubmissionReadiness.NoCopy || readiness is SubmissionReadiness.AppNotInstalled || readiness is SubmissionReadiness.CopyBehind) {
                 scheduled = scheduler.after(COPY_CHECK_SECONDS) { post.execute { if (mine == epoch) askReadiness(mine, folder, review) } }
             }
         }, onThrow = {

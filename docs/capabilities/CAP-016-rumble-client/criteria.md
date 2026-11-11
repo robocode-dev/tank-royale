@@ -813,4 +813,21 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer selects a downloaded bot and bots of their own with different licenses, and a team such as MyFirstTeam, in New Battle, and opens the Download bots screen
     Then Bot Info shows each bot's copy level as a shape and words with its tooltip, the team's members, and the Download bots screen shows the level beside each license
     And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
+
+  @RCL-097
+  Scenario: Sending asks for a synced copy when it lacks a change to the Rumble's workflows, and a refused step is named
+    Test-type: Unit
+    Given a fake of GitHub with the account's copy, the App installed on it, and the Rumble's main branch ahead of the copy
+    When the wizard checks the copy before sending, and the bot is sent
+    Then a copy that lacks a change to a file under .github/workflows gets its own state with a button that opens only the copy on GitHub, the wizard looks again by itself and goes on once the copy is synced, and nothing is changed on GitHub
+    And a copy that lacks only other changes, or that GitHub's comparison cannot judge, goes on at once as before
+    And a branch that GitHub refuses as forbidden gives the same state and opens no pull request, any other refusal names its step and keeps GitHub's own message instead of pointing at the App installation, the command line answers copy-behind with the copy's address, and every text is in every language file
+
+  @RCL-098
+  Scenario: The maintainer sends a bot from a copy that lacks a change to the Rumble's workflows
+    Test-type: Human
+    Given the desktop program started with the menu switched on for the test environment, and the maintainer's copy of the bot repository one workflow change behind
+    When the maintainer sends a bot
+    Then the fourth step asks to sync the copy, after Sync fork on GitHub the window goes on by itself, and the bot is sent and its pull request followed
+    And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
 ```
