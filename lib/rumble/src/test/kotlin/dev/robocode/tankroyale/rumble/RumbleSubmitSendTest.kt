@@ -384,6 +384,15 @@ class RumbleSubmitSendTest {
         s2.toSendReady()
         s2.controller.send()
         assertEquals(SubmissionResult.Failed(""), (s2.state as SubmitState.SendEnded).result)
+
+        // An error that is not an exception, such as a missing class, also ends the send instead of leaving it waiting.
+        val erring = object : SendPort by FakeSendPort() {
+            override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult = throw NoSuchMethodError("gone")
+        }
+        val s3 = Screen(dir.resolve("e"), erring, direct, direct)
+        s3.toSendReady()
+        s3.controller.send()
+        assertEquals(SubmissionResult.Failed(""), (s3.state as SubmitState.SendEnded).result)
     }
 
     // RCL-070

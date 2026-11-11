@@ -398,12 +398,17 @@ class SubmitController(
         onState(next)
     }
 
-    /** Runs [call] on [background], and its result on [post]. A call that throws shows the folder as no bot with a plain code. */
+    /**
+     * Runs [call] on [background], and its result on [post]. Whatever [call] throws, also an error that is not an
+     * exception, is written to the error output and leads to [onThrow], so the screen never waits for an answer that
+     * will not come.
+     */
     private fun <T> work(call: () -> T, onThrow: () -> Unit = { failed() }, then: (T) -> Unit) {
         background.execute {
             val result = try {
                 call()
-            } catch (e: RuntimeException) {
+            } catch (e: Throwable) {
+                e.printStackTrace()
                 null
             }
             post.execute {

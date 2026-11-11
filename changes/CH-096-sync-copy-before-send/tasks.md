@@ -13,4 +13,4 @@ title: Ask for a synced copy before sending when it lacks a workflow change, and
 - [x] Name the refused step in every refusal, and say to sync the copy when the branch is refused.
 - [x] Texts in every language file.
 - [x] Run the tests, the fixture check, evidence and validation, and build the jar.
-- [ ] The maintainer sends from a copy one workflow change behind.
+- [x] The maintainer sends from a copy one workflow change behind.

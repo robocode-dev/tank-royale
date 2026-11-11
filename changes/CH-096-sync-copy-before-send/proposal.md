@@ -26,6 +26,7 @@ Every participant whose copy was made or last synced before the Rumble changed o
 - **Every refusal says which step it was.** When GitHub refuses a step, the message names it (reading the Rumble's repository, writing the files to the copy, making the branch, opening the pull request) with GitHub's own message as the detail, instead of pointing at the App installation. A refused branch, should the copy still lack a workflow change, says to sync the copy.
 - **The command line** gives the same setup answer, "copy-behind", with the copy's address.
 - **Texts** are resources in every language file, translated.
+- **The wizard never waits for an answer that will not come.** In the maintainer's first send after syncing the copy, the window stayed at "Sending the bot..." with no branch or pull request made: a thread dump showed that the background thread had ended, because the screen's background work caught only runtime exceptions, and an error of another kind ended the thread without a result. The cause of that error was not written anywhere and is not known. The background work of the submit and account screens now catches whatever is thrown, writes it to the error output, and ends the step as failed.
 
 ## Challenge the commitment
 
@@ -49,3 +50,12 @@ The change and its two criteria were allocated with the repository's coordinated
 ## Decision
 
 The maintainer chose the first of two ways on 11 November 2026: find the case before sending and ask for one click, rather than giving the App the Workflows permission. The maintainer asked the author to go on and fix it without a further stop for review ("ja, fortsæt endelig og få det fikset").
+
+## Human evidence
+
+For the scenario where the maintainer sends a bot from a copy that lacks a change to the Rumble's workflows.
+
+- **Observer:** the maintainer, with the author of this change, who checked GitHub with the maintainer's `gh` sign-in and the saved sign-in of the test environment.
+- **Conditions:** the desktop program in Danish, started with the menu switched on for the test environment, sending RumbleOnboardingScout 1.0.1 (the Rumble held 1.0.0) from the maintainer's copy `flemming-n-larsen/rumble-bots-test`, which lacked one commit of `robocode-dev/rumble-bots-test` that changed `.github/workflows/validate.yml`.
+- **Observation:** before this change the send failed with "GitHub did not allow this. Check that the Rumble sign-in App is installed on your copy", while the App was installed with the right access, as the maintainer showed on GitHub's settings page; the author found the refused step as described above. With this change, the fourth step said that the copy lacks a recent change to the Rumble's checks, with the button "Åbn din kopi på GitHub"; the author's check of the same step against the real GitHub answered that the copy is behind. The maintainer asked for the text to be split so that what to do stands on its own line, and noted that Sync fork is hard to spot and that Update branch must be pressed after it; the text now says both. After Sync fork and Update branch on GitHub the copy was identical to the Rumble's main branch. The first send after that stayed at "Sending the bot...", as described above; after the fix of the background work, the send opened pull request 13 "Update RumbleOnboardingScout to 1.0.1" through the sign-in App with exactly the four reviewed files, and the sixth step showed it waiting for the checks, with the moderation workflow started by itself.
+- **Not observed:** the window going on by itself while waiting on the fourth step (the maintainer synced and went on), the new two-line text on screen, the moderation's end and the merge of pull request 13, and the cause of the error that ended the background thread.
