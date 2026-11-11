@@ -241,12 +241,7 @@ class AccountController(
      */
     private fun <T> work(call: () -> T, fallback: () -> T, then: (T) -> Unit) {
         background.execute {
-            val result = try {
-                call()
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                fallback()
-            }
+            val result = attempt(call).getOrElse { fallback() }
             post.execute { then(result) }
         }
     }

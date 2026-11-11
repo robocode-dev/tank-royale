@@ -440,6 +440,26 @@ class RumbleBotSubmissionTest {
             assertEquals(SubmissionReadiness.Ready("alice", "alice/rumble-bots-test"), BotSubmission(env, github).checkReadiness(tokens()),
                 "a copy that lacks only other bots, or that the comparison cannot judge, goes on at once: $ahead")
         }
+
+        val unreadable = world { upstreamAhead = listOf(".github/workflows/validate.yml"); upstreamStatus = 500 }
+        assertEquals(SubmissionReadiness.Ready("alice", "alice/rumble-bots-test"), BotSubmission(env, unreadable).checkReadiness(tokens()),
+            "a Rumble repository that cannot be read never fails the check")
+    }
+
+    @Test
+    @Tag("RCL-097")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL097_UnitPositive_anOpenPullRequestIsUpdatedWithoutSyncingTheCopy(@TempDir dir: Path) {
+        val github = world()
+        submitted(send(github, stagedBot(dir.resolve("one"))))
+        github.upstreamAhead = listOf(".github/workflows/validate.yml")
+        val fixed = stagedBot(dir.resolve("two"), version = "1.0.4", files = mapOf("Scout.json" to "{}\n", "Scout.sh" to "#!/bin/sh\n", "Scout.java" to "class Scout { int fixed; }\n"))
+
+        val updated = submitted(send(github, fixed))
+
+        assertEquals(SubmissionOutcome.UPDATED, updated.outcome, "the update builds on the pull request's own branch, which brings no workflow change")
+        assertEquals(1, github.pulls.size)
     }
 
     @Test
@@ -447,10 +467,20 @@ class RumbleBotSubmissionTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCL097_UnitNegative_aRefusedBranchAsksForASyncedCopyAndEveryOtherRefusalNamesItsStepAndGitHubsMessage(@TempDir dir: Path) {
-        val refused = world { refStatus = 403 }
+        val refused = world { refStatus = 403; upstreamAhead = listOf("bots/java/Other/Other.json") }
         val result = send(refused, stagedBot(dir))
-        assertEquals(SubmissionResult.SetupNeeded(SubmissionReadiness.CopyBehind("alice", "https://github.com/alice/rumble-bots-test")), result)
+        assertEquals(SubmissionResult.SetupNeeded(SubmissionReadiness.CopyBehind("alice", "https://github.com/alice/rumble-bots-test")), result,
+            "a refused branch from a copy that lacks commits of the Rumble asks for a synced copy")
         assertTrue(refused.pulls.isEmpty(), "no pull request is opened")
+
+        val synced = world { refStatus = 403 }
+        val stillRefused = assertInstanceOf(SubmissionResult.Failed::class.java, send(synced, stagedBot(dir.resolve("s"))))
+        assertTrue(stillRefused.message.contains("making the branch in your copy") && stillRefused.message.contains("Resource not accessible by integration"),
+            "a synced copy is never sent to sync again: the real refusal is told: ${stillRefused.message}")
+
+        val installations = world { installationsStatus = 403 }
+        val checking = assertInstanceOf(SubmissionReadiness.Failed::class.java, BotSubmission(env, installations).checkReadiness(tokens()))
+        assertTrue(checking.message.contains("reading where the Rumble sign-in App is installed") && !checking.message.contains("sent"), checking.message)
 
         val tree = world { treeStatus = 403 }
         val failed = assertInstanceOf(SubmissionResult.Failed::class.java, send(tree, stagedBot(dir.resolve("b"))))

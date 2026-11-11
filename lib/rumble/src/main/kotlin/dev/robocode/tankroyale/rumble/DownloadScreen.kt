@@ -332,13 +332,9 @@ class DownloadController(
      */
     private fun <T : Any> work(mine: Int, folder: Path, call: () -> T, then: (T) -> Unit) {
         background.execute {
-            var failure: Throwable? = null
-            val result = try {
-                call()
-            } catch (e: Throwable) {
-                failure = e
-                null
-            }
+            val outcome = attempt(call)
+            val failure = outcome.exceptionOrNull()
+            val result = outcome.getOrNull()
             post.execute {
                 if (mine != epoch) return@execute
                 if (result != null) then(result) else show(DownloadState.Failed(folder, DownloadFailure.OTHER, failure?.message.orEmpty()))

@@ -1722,7 +1722,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
-          "sha256": "cc496702f148205ea90f57107e2f4759002dab5b9f242eb3a46f33467d74481d"
+          "sha256": "53e1af46548946a7c21555dcc0a1711500ef74273f4cc9d0721e3117c599a2f2"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
@@ -1814,7 +1814,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
-          "sha256": "d0fafa07b2b7d0422b1649f849b40b6faa9673588fb15bdb444a5c5ac33644f0"
+          "sha256": "2aacd3f7ddd3300c0b50918ad605cf5bed191d59bd8616e15ff1b89734484a8e"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
@@ -2086,6 +2086,13 @@
           "id": "RCL-097",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
           "subject": "RumbleBotSubmissionTest.testRCL097_UnitPositive_aCopyThatLacksAChangeToTheRumblesWorkflowsIsAskedToBeSyncedAndOtherwiseGoesOn",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-097",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleBotSubmissionTest.kt",
+          "subject": "RumbleBotSubmissionTest.testRCL097_UnitPositive_anOpenPullRequestIsUpdatedWithoutSyncingTheCopy",
           "type": "Unit",
           "direction": "positive"
         },

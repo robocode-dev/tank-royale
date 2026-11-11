@@ -55,6 +55,12 @@ class FakeBotGitHub(val login: String = "alice") : GitHubApi {
     /** The files the Rumble's main branch has changed since the copy's, as GitHub's comparison lists them; null when it does not answer. */
     var upstreamAhead: List<String>? = emptyList()
 
+    /** The status GitHub gives when the Rumble's bot repository itself is read. */
+    var upstreamStatus = 200
+
+    /** The status GitHub gives when the account's App installations are read. */
+    var installationsStatus = 200
+
     private val blobs = mutableMapOf<String, ByteArray>()
     private val trees = mutableMapOf<String, Map<String, Entry>>()
     private class Commit(val tree: String, val parents: List<String>)
@@ -96,9 +102,9 @@ class FakeBotGitHub(val login: String = "alice") : GitHubApi {
         return when {
             path == "/user" -> ok("""{"login":"$login"}""")
             path == fk -> repository()
-            path == "/user/installations?per_page=100" -> installations()
+            path == "/user/installations?per_page=100" -> if (installationsStatus != 200) ApiResponse(installationsStatus, """{"message":"Resource not accessible by integration"}""") else installations()
             path.startsWith("/user/installations/") && path.contains("/repositories") -> selectedRepositories()
-            path == up -> ok("""{"default_branch":"main","html_url":"https://github.com/$owner/$repo"}""")
+            path == up -> if (upstreamStatus != 200) ApiResponse(upstreamStatus, """{"message":"Server Error"}""") else ok("""{"default_branch":"main","html_url":"https://github.com/$owner/$repo"}""")
             path.contains("/git/ref/heads/") -> ref(path)
             path.contains("/git/commits/") -> commit(path)
             path.contains("/git/trees/") -> tree(path)

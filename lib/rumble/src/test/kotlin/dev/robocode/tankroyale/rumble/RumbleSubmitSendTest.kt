@@ -119,6 +119,16 @@ class RumbleSubmitSendTest {
         behind.clock.fire()
         assertInstanceOf(SubmitState.SendReady::class.java, behind.state, "synced, so it goes on by itself")
         assertEquals(emptyList<ManualScheduler.Task>(), behind.clock.open)
+
+        // A send that finds the copy not ready ends with that, and looks again by itself, as its text promises.
+        val needed = SubmissionResult.SetupNeeded(SubmissionReadiness.CopyBehind("alice", "https://github.com/alice/rumble-bots-test"))
+        val late = screen(dir.resolve("late"), FakeSendPort().apply { result = needed })
+        late.toSendReady()
+        late.controller.send()
+        assertEquals(needed, (late.state as SubmitState.SendEnded).result)
+        assertEquals(listOf(5L), late.clock.open.map { it.seconds })
+        late.clock.fire()
+        assertInstanceOf(SubmitState.SendReady::class.java, late.state, "found ready again, it goes on")
     }
 
     @Test
@@ -393,6 +403,15 @@ class RumbleSubmitSendTest {
         s3.toSendReady()
         s3.controller.send()
         assertEquals(SubmissionResult.Failed(""), (s3.state as SubmitState.SendEnded).result)
+
+        // Running out of memory also ends the waiting, as on the Download bots screen.
+        val exhausted = object : SendPort by FakeSendPort() {
+            override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult = throw OutOfMemoryError("full")
+        }
+        val s4 = Screen(dir.resolve("m"), exhausted, direct, direct)
+        s4.toSendReady()
+        s4.controller.send()
+        assertEquals(SubmissionResult.Failed(""), (s4.state as SubmitState.SendEnded).result)
     }
 
     // RCL-070

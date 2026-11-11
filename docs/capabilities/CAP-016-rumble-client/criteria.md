@@ -821,7 +821,10 @@ Feature: rumble-client — Local ranked and practice battle client
     When the wizard checks the copy before sending, and the bot is sent
     Then a copy that lacks a change to a file under .github/workflows gets its own state with a button that opens only the copy on GitHub, the wizard looks again by itself and goes on once the copy is synced, and nothing is changed on GitHub
     And a copy that lacks only other changes, or that GitHub's comparison cannot judge, goes on at once as before
-    And a branch that GitHub refuses as forbidden gives the same state and opens no pull request, any other refusal names its step and keeps GitHub's own message instead of pointing at the App installation, the command line answers copy-behind with the copy's address, and every text is in every language file
+    And a branch that GitHub refuses as forbidden gives the same state and opens no pull request when the copy lacks commits of the Rumble, and otherwise the refusal is told; any refusal names its step and keeps GitHub's own message instead of pointing at the App installation, and a read while checking never says that something was sent
+    And a send that finds the copy or the App not ready ends with that state and the button that opens the page to set it up, and looks again by itself and goes on once it is set up; an update of the author's open pull request needs no synced copy; a Rumble repository that cannot be read never fails the check
+    And the work of the submit and account screens away from their thread ends with a failure whatever is thrown, also an error that is not an exception, as on the Download bots screen, so a screen never waits for an answer that will not come
+    And the command line answers copy-behind with the copy's address, and every text is in every language file
 
   @RCL-098
   Scenario: The maintainer sends a bot from a copy that lacks a change to the Rumble's workflows

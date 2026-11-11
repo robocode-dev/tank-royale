@@ -155,10 +155,8 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
         val readiness = state.readiness
         put(wrapped(text(SubmitTexts.forState(state)), bold = true))
         put(toned(text(SubmitTexts.forReadiness(readiness)), SubmitTexts.toneOf(readiness)))
+        readinessButton(readiness)?.let { put(it) }
         when (readiness) {
-            is SubmissionReadiness.NoCopy -> put(pageButton("rumble.submit.button.open_fork", readiness.pageUrl))
-            is SubmissionReadiness.AppNotInstalled -> put(pageButton("rumble.submit.button.open_install", readiness.installUrl))
-            is SubmissionReadiness.CopyBehind -> put(pageButton("rumble.submit.button.open_copy", readiness.copyUrl))
             is SubmissionReadiness.NotRumblesRepository -> detail(readiness.repositoryUrl)
             is SubmissionReadiness.SignInNeeded -> detail(readiness.message)
             is SubmissionReadiness.Failed -> {
@@ -201,7 +199,7 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
             }
             is SubmissionResult.SetupNeeded -> {
                 put(wrapped(text(SubmitTexts.forReadiness(result.readiness))))
-                (result.readiness as? SubmissionReadiness.CopyBehind)?.let { put(pageButton("rumble.submit.button.open_copy", it.copyUrl)) }
+                readinessButton(result.readiness)?.let { put(it) }
                 put(button("rumble.submit.button.back") { controller.back() })
             }
             is SubmissionResult.Refused -> {
@@ -241,6 +239,14 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
     }
 
     /** A button that opens a page of GitHub's own in the browser, and never any other address. */
+    /** The button that opens GitHub's page where the person sets up what [readiness] says is missing, or null. */
+    private fun readinessButton(readiness: SubmissionReadiness?) = when (readiness) {
+        is SubmissionReadiness.NoCopy -> pageButton("rumble.submit.button.open_fork", readiness.pageUrl)
+        is SubmissionReadiness.AppNotInstalled -> pageButton("rumble.submit.button.open_install", readiness.installUrl)
+        is SubmissionReadiness.CopyBehind -> pageButton("rumble.submit.button.open_copy", readiness.copyUrl)
+        else -> null
+    }
+
     private fun pageButton(key: String, address: String) =
         button(key) { if (RumbleLinks.isGitHubPage(address)) Browser.browse(address) }
 
