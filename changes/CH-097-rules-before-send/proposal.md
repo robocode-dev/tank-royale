@@ -43,3 +43,12 @@ The change and its three criteria were allocated with the repository's coordinat
 ## Decision
 
 The maintainer asked for items 1 and 2 of the list after the trial ("Gå igang med 1 og 2"), so the author goes on through implementation without a separate stop for review of this proposal.
+
+## Human evidence
+
+For the scenario where the maintainer is stopped before sending a bot that belongs to another account.
+
+- **Observer:** the maintainer, with the author of this change, who checked GitHub with the maintainer's `gh` sign-in.
+- **Conditions:** the desktop program in Danish, started with the menu switched on for the test environment, staging RumbleOnboardingScout 1.0.1, which the Rumble's owner list gives to the outside test account `robocode-rumble-test`.
+- **Observation:** in the first build of this change the fifth step did not stop the bot and pull request 14 was opened, because GitHub refused the anonymous lookup of the Rumble's newest commit (60 requests an hour, used up), as described above. With the lookup made with the sign-in, the maintainer showed the fifth step: "Mislykkedes: Navnet RumbleOnboardingScout tilhører en anden ejer, robocode-rumble-test. Kun ejeren kan opdatere denne bot, så vælg et andet navn til din.", with the button to update the pull request greyed out. The same screen showed the open pull request 14 as "Sendt tilbage af moderationen." on its own red line and "Begrundelse: bot RumbleOnboardingScout belongs to owner robocode-rumble-test" on the next, without code marks. The maintainer found the green "Lykkedes: Dette er en ny version til Rumble." beside the red refusal odd; the line is now neutral when the bot cannot be sent.
+- **Not observed:** the neutral line on screen, a banned account, a disqualified bot, a lower version, and rules that cannot be read.

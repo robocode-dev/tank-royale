@@ -10,5 +10,5 @@ title: Check the Rumble's rules in the fifth step, and show a sent-back reason o
 - [x] Run the pre-check in the fifth step and stop the send on a rule problem.
 - [x] Show a sent-back pull request with its reason on a line of its own.
 - [x] Texts in every language file.
-- [ ] Run the tests, the fixture check, evidence and validation, and build the jar.
-- [ ] The maintainer is stopped before sending RumbleOnboardingScout.
+- [x] Run the tests, the fixture check, evidence and validation, and build the jar.
+- [x] The maintainer is stopped before sending RumbleOnboardingScout.
