@@ -28,6 +28,12 @@ sealed interface SubmissionReadiness {
     /** The account has a repository of the same name that is not a copy of the Rumble's bot repository. */
     data class NotRumblesRepository(val account: String, val repositoryUrl: String) : SubmissionReadiness
 
+    /**
+     * The copy lacks a change the Rumble made to its workflows, which the sign-in App may not bring into the copy; the
+     * person syncs the copy on [copyUrl] with GitHub's Sync fork.
+     */
+    data class CopyBehind(val account: String, val copyUrl: String) : SubmissionReadiness
+
     /** GitHub did not accept the sign-in; the person must sign in again. */
     data class SignInNeeded(val message: String) : SubmissionReadiness
 
@@ -147,31 +153,66 @@ class BotSubmission(
 
     // ---- Readiness ----
 
-    private fun readiness(token: String): SubmissionReadiness {
+    /** [upstreamBranch] is the Rumble's main branch when the caller has read it already, so it is read only once. */
+    private fun readiness(token: String, upstreamBranch: String? = null): SubmissionReadiness {
         val account = whoAmI(token)
         val slug = environment.signInAppSlug ?: throw Stop(false, "This Rumble has no sign-in App yet.")
         val answer = api.get("/repos/$account/$repository", token)
         if (answer.status == 404) return SubmissionReadiness.NoCopy(account, "https://github.com/$owner/$repository/fork")
-        expect(answer, 200)
+        expect(answer, 200, step = "reading your copy of the bot repository")
         val repo = obj(answer.body)
         val parent = (repo?.get("parent") as? JsonObject)?.string("full_name")
         val isCopy = (repo?.get("fork") as? JsonPrimitive)?.booleanOrNull == true && parent.equals("$owner/$repository", ignoreCase = true)
         if (!isCopy) {
             return SubmissionReadiness.NotRumblesRepository(account, repo?.string("html_url") ?: "https://github.com/$account/$repository")
         }
-        return if (appInstalledOnCopy(account, slug, token)) SubmissionReadiness.Ready(account, "$account/$repository")
-        else SubmissionReadiness.AppNotInstalled(account, "https://github.com/apps/$slug/installations/new")
+        if (!appInstalledOnCopy(account, slug, token)) {
+            return SubmissionReadiness.AppNotInstalled(account, "https://github.com/apps/$slug/installations/new")
+        }
+        val copyBranch = repo?.string("default_branch") ?: "main"
+        return if (compareCopy(account, copyBranch, token, upstreamBranch) == CopyState.LACKS_WORKFLOW_CHANGE) copyBehind(account)
+        else SubmissionReadiness.Ready(account, "$account/$repository")
     }
 
+    private fun copyBehind(account: String) = SubmissionReadiness.CopyBehind(account, "https://github.com/$account/$repository")
+
+    /** How the copy's main branch stands against the Rumble's. */
+    private enum class CopyState { UP_TO_DATE, LACKS_COMMITS, LACKS_WORKFLOW_CHANGE, UNKNOWN }
+
+    /**
+     * Compares the copy's [copyBranch] with the Rumble's main branch. A branch that brings a changed file under
+     * `.github/workflows/` into the copy needs GitHub's Workflows permission, which the sign-in App does not hold, so a
+     * copy that lacks such a change must be synced first. Merged bots never touch workflows, so a copy that lacks only
+     * other commits can send as it is. When GitHub does not answer, or lists as many files as it can, the state is not
+     * known and sending goes on as before. This only reads, and a failure here never fails the check.
+     */
+    private fun compareCopy(account: String, copyBranch: String, token: String, upstreamBranch: String? = null): CopyState {
+        val branch = upstreamBranch ?: api.get(upstream, token).takeIf { it.status == 200 }?.let { obj(it.body)?.string("default_branch") } ?: return CopyState.UNKNOWN
+        val answer = api.get("$upstream/compare/$account:$copyBranch...$branch", token)
+        if (answer.status != 200) return CopyState.UNKNOWN
+        val compared = obj(answer.body) ?: return CopyState.UNKNOWN
+        val files = (compared["files"] as? JsonArray).orEmpty().mapNotNull { (it as? JsonObject)?.string("filename") }
+        return when {
+            files.size >= MAX_COMPARED_FILES -> CopyState.UNKNOWN
+            files.any { it.startsWith(WORKFLOWS) } -> CopyState.LACKS_WORKFLOW_CHANGE
+            compared.string("status") == "identical" || compared.string("status") == "behind" -> CopyState.UP_TO_DATE
+            else -> CopyState.LACKS_COMMITS
+        }
+    }
+
+    /** The default branch of the account's copy. */
+    private fun copyBranch(copy: String, token: String): String =
+        obj(api.get(copy, token).takeIf { it.status == 200 }?.body.orEmpty())?.string("default_branch") ?: "main"
+
     private fun appInstalledOnCopy(account: String, slug: String, token: String): Boolean {
-        val answer = expect(api.get("/user/installations?per_page=100", token), 200)
+        val answer = expect(api.get("/user/installations?per_page=100", token), 200, step = "reading where the Rumble sign-in App is installed")
         val installations = (obj(answer.body)?.get("installations") as? JsonArray).orEmpty().mapNotNull { it as? JsonObject }
             .filter { it.string("app_slug").equals(slug, ignoreCase = true) }
         for (installation in installations) {
             val holder = (installation["account"] as? JsonObject)?.string("login")
             if (installation.string("repository_selection") == "all" && holder.equals(account, ignoreCase = true)) return true
             val id = (installation["id"] as? JsonPrimitive)?.contentOrNull?.toLongOrNull() ?: continue
-            val repositories = expect(api.get("/user/installations/$id/repositories?per_page=100", token), 200)
+            val repositories = expect(api.get("/user/installations/$id/repositories?per_page=100", token), 200, step = "reading where the Rumble sign-in App is installed")
             val names = (obj(repositories.body)?.get("repositories") as? JsonArray).orEmpty().mapNotNull { (it as? JsonObject)?.string("full_name") }
             if (names.any { it.equals("$account/$repository", ignoreCase = true) }) return true
         }
@@ -186,14 +227,19 @@ class BotSubmission(
     private class OpenPullRequest(val number: Int, val url: String, val branch: String, val headSha: String)
 
     private fun send(token: String, submission: StagedSubmission, version: String, files: Map<String, ByteArray>): SubmissionResult {
-        val ready = readiness(token)
-        if (ready !is SubmissionReadiness.Ready) return SubmissionResult.SetupNeeded(ready)
-        val account = ready.account
-        val copy = "/repos/${ready.copy}"
         val name = submission.name
         val folder = "bots/${submission.language}/$name"
-
-        val defaultBranch = obj(expect(api.get(upstream, token), 200).body)?.string("default_branch") ?: throw Stop(false, unexpected("the repository"))
+        val defaultBranch = obj(expect(api.get(upstream, token), 200, step = "reading the Rumble's bot repository").body)?.string("default_branch") ?: throw Stop(false, unexpected("the repository"))
+        val ready = readiness(token, defaultBranch)
+        // An update of an open pull request builds on that pull request's own branch, which never brings the Rumble's
+        // workflow change into the copy, so a copy that lacks one need not be synced for it.
+        val account = when (ready) {
+            is SubmissionReadiness.Ready -> ready.account
+            is SubmissionReadiness.CopyBehind -> ready.account.takeIf { findOpenPullRequest(it, name, folder, token) != null }
+                ?: return SubmissionResult.SetupNeeded(ready)
+            else -> return SubmissionResult.SetupNeeded(ready)
+        }
+        val copy = "/repos/$account/$repository"
         val headSha = refSha(upstream, defaultBranch, token) ?: throw Stop(false, unexpected("the repository's main branch"))
         val headTree = commitTree(upstream, headSha, token)
         val existingUpstream = folderEntries(upstream, headTree, folder, token)
@@ -224,7 +270,13 @@ class BotSubmission(
             val existing = refSha(copy, branch, token)
             if (existing == null) {
                 val commit = commit(copy, headTree, headSha, existingUpstream, expected, submission, files, folder, commitMessage, token)
-                createBranch(copy, branch, commit, token)
+                val refused = createBranch(copy, branch, commit, token)
+                if (refused != null) {
+                    // Syncing helps only when the copy lacks commits of the Rumble; otherwise the real refusal is told.
+                    val state = compareCopy(account, copyBranch(copy, token), token, defaultBranch)
+                    if (state == CopyState.LACKS_COMMITS || state == CopyState.LACKS_WORKFLOW_CHANGE) return SubmissionResult.SetupNeeded(copyBehind(account))
+                    expect(refused, 201, step = "making the branch in your copy")
+                }
                 return createPullRequest(account, branch, defaultBranch, title, text, SubmissionOutcome.OPENED, token)
             }
             val used = hasPullRequest(account, branch, token)
@@ -239,7 +291,7 @@ class BotSubmission(
         account: String, branch: String, defaultBranch: String, title: String, text: String, outcome: SubmissionOutcome, token: String,
     ): SubmissionResult {
         val answer = api.postJson("$upstream/pulls", token, json("title" to title, "head" to "$account:$branch", "base" to defaultBranch, "body" to text))
-        expect(answer, 201, refused = "GitHub did not open the pull request. If your copy is behind the Rumble's bot repository, update it on GitHub and try again.")
+        expect(answer, 201, refused = "GitHub did not open the pull request. If your copy is behind the Rumble's bot repository, update it on GitHub and try again.", step = "opening the pull request")
         val created = obj(answer.body)
         val number = (created?.get("number") as? JsonPrimitive)?.contentOrNull?.toIntOrNull()
         val url = created?.string("html_url")
@@ -302,7 +354,7 @@ class BotSubmission(
                     "$repo/git/blobs", token,
                     json("content" to Base64.getEncoder().encodeToString(files.getValue(file.path)), "encoding" to "base64"),
                 )
-                expect(blob, 201, refused = COPY_REFUSED)
+                expect(blob, 201, refused = COPY_REFUSED, step = "writing the files to your copy")
                 if (obj(blob.body)?.string("sha") != entry.sha) throw Stop(false, DIFFERENT)
             }
             tree += JsonObject(mapOf("path" to JsonPrimitive(path), "mode" to JsonPrimitive(entry.mode), "type" to JsonPrimitive("blob"), "sha" to JsonPrimitive(entry.sha)))
@@ -313,25 +365,33 @@ class BotSubmission(
             }
         }
         val created = api.postJson("$repo/git/trees", token, Json.encodeToString(JsonObject.serializer(), JsonObject(mapOf("base_tree" to JsonPrimitive(baseTree), "tree" to JsonArray(tree)))))
-        expect(created, 201, refused = COPY_REFUSED)
+        expect(created, 201, refused = COPY_REFUSED, step = "writing the files to your copy")
         val treeSha = obj(created.body)?.string("sha") ?: throw Stop(false, unexpected("the new tree"))
 
         val commit = api.postJson("$repo/git/commits", token, Json.encodeToString(JsonObject.serializer(), JsonObject(mapOf("message" to JsonPrimitive(message), "tree" to JsonPrimitive(treeSha), "parents" to JsonArray(listOf(JsonPrimitive(parentSha)))))))
-        expect(commit, 201, refused = COPY_REFUSED)
+        expect(commit, 201, refused = COPY_REFUSED, step = "writing the files to your copy")
         val commitSha = obj(commit.body)?.string("sha") ?: throw Stop(false, unexpected("the new commit"))
 
         if (folderEntries(repo, commitTree(repo, commitSha, token), folder, token) != expected) throw Stop(false, DIFFERENT)
         return commitSha
     }
 
-    private fun createBranch(repo: String, branch: String, sha: String, token: String) {
-        expect(api.postJson("$repo/git/refs", token, json("ref" to "refs/heads/$branch", "sha" to sha)), 201, refused = COPY_REFUSED)
+    /**
+     * Makes the branch in the copy, and gives GitHub's answer when GitHub refuses it as forbidden, or null when it is
+     * made. GitHub refuses a branch that brings a changed workflow file into the copy, as the sign-in App has no right to
+     * workflows; the caller then tells whether syncing the copy would help.
+     */
+    private fun createBranch(repo: String, branch: String, sha: String, token: String): ApiResponse? {
+        val answer = api.postJson("$repo/git/refs", token, json("ref" to "refs/heads/$branch", "sha" to sha))
+        if (answer.status == 403 && !rateLimited(answer)) return answer
+        expect(answer, 201, refused = COPY_REFUSED, step = "making the branch in your copy")
+        return null
     }
 
     /** Moves the branch forward to [sha]; GitHub refuses a move that is not a fast-forward, and nothing is forced. */
     private fun moveBranch(repo: String, branch: String, sha: String, token: String) {
         val body = Json.encodeToString(JsonObject.serializer(), JsonObject(mapOf("sha" to JsonPrimitive(sha), "force" to JsonPrimitive(false))))
-        expect(api.patchJson("$repo/git/refs/heads/$branch", token, body), 200, refused = COPY_REFUSED)
+        expect(api.patchJson("$repo/git/refs/heads/$branch", token, body), 200, refused = COPY_REFUSED, step = "moving the branch in your copy")
     }
 
     private fun refSha(repo: String, branch: String, token: String): String? {
@@ -396,24 +456,32 @@ class BotSubmission(
     }
 
     private fun whoAmI(token: String): String {
-        val answer = expect(api.get("/user", token), 200)
+        val answer = expect(api.get("/user", token), 200, step = "reading the signed-in account")
         val login = obj(answer.body)?.string("login")
         if (login == null || !ACCOUNT.matches(login)) throw Stop(false, "GitHub did not say which account is signed in.")
         return login
     }
 
-    /** Returns [answer] when its status is one of [ok]; otherwise stops with a plain-word reason. */
-    private fun expect(answer: ApiResponse, vararg ok: Int, refused: String? = null): ApiResponse {
+    /**
+     * Returns [answer] when its status is one of [ok]; otherwise stops with a plain-word reason. A refusal names the
+     * [step] that was refused and keeps GitHub's own message, so the cause can be found.
+     */
+    private fun expect(answer: ApiResponse, vararg ok: Int, refused: String? = null, step: String = "a request to GitHub"): ApiResponse {
         if (answer.status in ok) return answer
         throw when {
             answer.status == 401 -> Stop(true, "GitHub did not accept the sign-in. Sign in again.")
-            answer.status == 429 || (answer.status == 403 && answer.body.contains("rate limit", ignoreCase = true)) ->
-                Stop(false, "GitHub is limiting requests. Try again later.")
-            answer.status == 403 -> Stop(false, "GitHub did not allow this. Check that the Rumble sign-in App is installed on your copy of the bot repository.")
+            answer.status == 429 || rateLimited(answer) -> Stop(false, "GitHub is limiting requests. Try again later.")
+            answer.status == 403 -> Stop(false, "GitHub refused $step" + githubSaid(answer) + ".")
             refused != null && (answer.status == 404 || answer.status == 409 || answer.status == 422) -> Stop(false, refused)
-            else -> Stop(false, "GitHub gave an unexpected answer (HTTP ${answer.status}). Try again later.")
+            else -> Stop(false, "GitHub gave an unexpected answer to $step (HTTP ${answer.status})" + githubSaid(answer) + ". Try again later.")
         }
     }
+
+    private fun rateLimited(answer: ApiResponse) = answer.status == 403 && answer.body.contains("rate limit", ignoreCase = true)
+
+    /** GitHub's own message about a refusal, as a short quoted detail, or nothing. */
+    private fun githubSaid(answer: ApiResponse): String =
+        obj(answer.body)?.string("message")?.filter { !it.isISOControl() }?.take(MAX_CODE)?.takeIf { it.isNotBlank() }?.let { ": GitHub said \"$it\"" }.orEmpty()
 
     /** A name or version that is safe in a branch name, a folder name and a public text. */
     private fun safe(text: String): Boolean =
@@ -440,6 +508,10 @@ class BotSubmission(
         private const val MAX_BRANCH_NAMES = 50
         private const val MAX_CODE = 100
         private const val OFFLINE = "GitHub cannot be reached. Try again when you are online."
+        private const val WORKFLOWS = ".github/workflows/"
+
+        /** GitHub's comparison lists at most this many files; a list this long may be cut short. */
+        private const val MAX_COMPARED_FILES = 300
         private const val COPY_REFUSED =
             "GitHub refused the change in your copy of the bot repository. If your copy is behind the Rumble's bot repository, update it on GitHub and try again."
         private const val DIFFERENT =

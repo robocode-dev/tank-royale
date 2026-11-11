@@ -34,13 +34,14 @@ object SubmitTexts {
         is SubmissionReadiness.NoCopy -> "rumble.submit.copy_none"
         is SubmissionReadiness.AppNotInstalled -> "rumble.submit.copy_app"
         is SubmissionReadiness.NotRumblesRepository -> "rumble.submit.copy_not_rumbles"
+        is SubmissionReadiness.CopyBehind -> "rumble.submit.copy_behind"
         is SubmissionReadiness.SignInNeeded -> "rumble.submit.copy_sign_in"
         is SubmissionReadiness.Failed -> "rumble.submit.copy_failed"
     }
 
     fun toneOf(readiness: SubmissionReadiness?): Tone = when (readiness) {
         is SubmissionReadiness.Ready -> Tone.GOOD
-        null, is SubmissionReadiness.NoCopy, is SubmissionReadiness.AppNotInstalled -> Tone.NEUTRAL
+        null, is SubmissionReadiness.NoCopy, is SubmissionReadiness.AppNotInstalled, is SubmissionReadiness.CopyBehind -> Tone.NEUTRAL
         is SubmissionReadiness.NotRumblesRepository, is SubmissionReadiness.SignInNeeded, is SubmissionReadiness.Failed -> Tone.BAD
     }
 
@@ -113,7 +114,7 @@ object SubmitTexts {
         "rumble.submit.confirm_public", "rumble.submit.confirm_author", "rumble.submit.send_intro", "rumble.submit.existing", "rumble.submit.progress_label", "rumble.submit.progress_reading",
         "rumble.submit.button.choose", "rumble.submit.button.check", "rumble.submit.button.check_again", "rumble.submit.button.review",
         "rumble.submit.button.back", "rumble.submit.button.next", "rumble.submit.button.close", "rumble.submit.button.open_fork",
-        "rumble.submit.button.open_install", "rumble.submit.button.check_now", "rumble.submit.button.send", "rumble.submit.button.update",
+        "rumble.submit.button.open_install", "rumble.submit.button.open_copy", "rumble.submit.button.check_now", "rumble.submit.button.send", "rumble.submit.button.update",
         "rumble.submit.button.open_pr",
     )
 
@@ -135,7 +136,7 @@ object SubmitTexts {
     /** Every case of the look for the account's copy. */
     val ALL_READINESS: List<SubmissionReadiness?> = listOf(
         null, SubmissionReadiness.Ready("", ""), SubmissionReadiness.NoCopy("", ""), SubmissionReadiness.AppNotInstalled("", ""),
-        SubmissionReadiness.NotRumblesRepository("", ""), SubmissionReadiness.SignInNeeded(""), SubmissionReadiness.Failed(""),
+        SubmissionReadiness.NotRumblesRepository("", ""), SubmissionReadiness.CopyBehind("", ""), SubmissionReadiness.SignInNeeded(""), SubmissionReadiness.Failed(""),
     )
 
     /** Every way sending can end. */

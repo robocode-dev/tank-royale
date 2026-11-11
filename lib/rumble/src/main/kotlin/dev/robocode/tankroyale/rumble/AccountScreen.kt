@@ -234,14 +234,14 @@ class AccountController(
         onState(next)
     }
 
-    /** Runs [call] on [background], and its result, or [fallback] when it throws, on [post]. */
+    /**
+     * Runs [call] on [background], and its result, or [fallback] when it throws anything, also an error that is not an
+     * exception, on [post]; what was thrown is written to the error output. The screen never waits for an answer that
+     * will not come.
+     */
     private fun <T> work(call: () -> T, fallback: () -> T, then: (T) -> Unit) {
         background.execute {
-            val result = try {
-                call()
-            } catch (e: RuntimeException) {
-                fallback()
-            }
+            val result = attempt(call).getOrElse { fallback() }
             post.execute { then(result) }
         }
     }

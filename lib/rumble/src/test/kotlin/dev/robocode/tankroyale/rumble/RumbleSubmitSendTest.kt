@@ -105,6 +105,33 @@ class RumbleSubmitSendTest {
     }
 
     @Test
+    @Tag("RCL-097")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL097_UnitPositive_aCopyThatMustBeSyncedIsWaitedForAndTheWizardGoesOnBySelf(@TempDir dir: Path) {
+        val behind = screen(dir, FakeSendPort().apply { readiness = SubmissionReadiness.CopyBehind("alice", "https://github.com/alice/rumble-bots-test") })
+        behind.toReview(); behind.tickBoth(); behind.controller.next()
+        assertEquals(behind.fake.readiness, (behind.state as SubmitState.Copy).readiness)
+        assertEquals("rumble.submit.copy_behind", SubmitTexts.forReadiness(behind.fake.readiness))
+        assertEquals(listOf(5L), behind.clock.open.map { it.seconds }, "it looks again by itself while the person syncs the copy")
+
+        behind.fake.readiness = SubmissionReadiness.Ready("alice", "alice/rumble-bots-test")
+        behind.clock.fire()
+        assertInstanceOf(SubmitState.SendReady::class.java, behind.state, "synced, so it goes on by itself")
+        assertEquals(emptyList<ManualScheduler.Task>(), behind.clock.open)
+
+        // A send that finds the copy not ready ends with that, and looks again by itself, as its text promises.
+        val needed = SubmissionResult.SetupNeeded(SubmissionReadiness.CopyBehind("alice", "https://github.com/alice/rumble-bots-test"))
+        val late = screen(dir.resolve("late"), FakeSendPort().apply { result = needed })
+        late.toSendReady()
+        late.controller.send()
+        assertEquals(needed, (late.state as SubmitState.SendEnded).result)
+        assertEquals(listOf(5L), late.clock.open.map { it.seconds })
+        late.clock.fire()
+        assertInstanceOf(SubmitState.SendReady::class.java, late.state, "found ready again, it goes on")
+    }
+
+    @Test
     @Tag("RCL-066")
     @Tag("Unit")
     @Tag("Negative")
@@ -367,6 +394,24 @@ class RumbleSubmitSendTest {
         s2.toSendReady()
         s2.controller.send()
         assertEquals(SubmissionResult.Failed(""), (s2.state as SubmitState.SendEnded).result)
+
+        // An error that is not an exception, such as a missing class, also ends the send instead of leaving it waiting.
+        val erring = object : SendPort by FakeSendPort() {
+            override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult = throw NoSuchMethodError("gone")
+        }
+        val s3 = Screen(dir.resolve("e"), erring, direct, direct)
+        s3.toSendReady()
+        s3.controller.send()
+        assertEquals(SubmissionResult.Failed(""), (s3.state as SubmitState.SendEnded).result)
+
+        // Running out of memory also ends the waiting, as on the Download bots screen.
+        val exhausted = object : SendPort by FakeSendPort() {
+            override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult = throw OutOfMemoryError("full")
+        }
+        val s4 = Screen(dir.resolve("m"), exhausted, direct, direct)
+        s4.toSendReady()
+        s4.controller.send()
+        assertEquals(SubmissionResult.Failed(""), (s4.state as SubmitState.SendEnded).result)
     }
 
     // RCL-070

@@ -248,6 +248,11 @@ class SubmitController(
             if (mine == epoch) {
                 val ended = SubmitState.SendEnded(ready.folder, ready.review, result, ready.ready.launchers)
                 show(ended)
+                // A send that finds the copy or the App not ready looks again by itself, as its text promises, and goes
+                // on once the person has set it up in the browser.
+                if (result is SubmissionResult.SetupNeeded && waitsForPerson(result.readiness)) {
+                    scheduled = scheduler.after(COPY_CHECK_SECONDS) { post.execute { if (mine == epoch) askReadiness(mine, ready.folder, ready.review) } }
+                }
                 if (result is SubmissionResult.Submitted) follow(ended, result.pullRequestNumber)
             }
         }, onThrow = {
@@ -268,15 +273,23 @@ class SubmitController(
                 prepare(mine, folder, review, readiness.account)
                 return@work
             }
-            show(SubmitState.Copy(folder, review, readiness))
-            // The person makes the copy or installs the App in the browser, and this finds it by itself.
-            if (readiness is SubmissionReadiness.NoCopy || readiness is SubmissionReadiness.AppNotInstalled) {
-                scheduled = scheduler.after(COPY_CHECK_SECONDS) { post.execute { if (mine == epoch) askReadiness(mine, folder, review) } }
-            }
+            waitForCopy(mine, folder, review, readiness)
         }, onThrow = {
             if (mine == epoch) show(SubmitState.Copy(folder, review, SubmissionReadiness.Failed("")))
         })
     }
+
+    /** Shows the step for the copy with [readiness], and looks again by itself while the person sets things up in the browser. */
+    private fun waitForCopy(mine: Int, folder: Path, review: ReviewInfo, readiness: SubmissionReadiness) {
+        show(SubmitState.Copy(folder, review, readiness))
+        if (waitsForPerson(readiness)) {
+            scheduled = scheduler.after(COPY_CHECK_SECONDS) { post.execute { if (mine == epoch) askReadiness(mine, folder, review) } }
+        }
+    }
+
+    /** The person makes the copy, installs the App or syncs the copy in the browser, and the wizard finds it by itself. */
+    private fun waitsForPerson(readiness: SubmissionReadiness) =
+        readiness is SubmissionReadiness.NoCopy || readiness is SubmissionReadiness.AppNotInstalled || readiness is SubmissionReadiness.CopyBehind
 
     private fun prepare(mine: Int, folder: Path, review: ReviewInfo, account: String) {
         val submission = staged ?: return show(SubmitState.Copy(folder, review, SubmissionReadiness.Failed("")))
@@ -398,14 +411,14 @@ class SubmitController(
         onState(next)
     }
 
-    /** Runs [call] on [background], and its result on [post]. A call that throws shows the folder as no bot with a plain code. */
+    /**
+     * Runs [call] on [background], and its result on [post]. Whatever [call] throws, also an error that is not an
+     * exception, is written to the error output and leads to [onThrow], so the screen never waits for an answer that
+     * will not come.
+     */
     private fun <T> work(call: () -> T, onThrow: () -> Unit = { failed() }, then: (T) -> Unit) {
         background.execute {
-            val result = try {
-                call()
-            } catch (e: RuntimeException) {
-                null
-            }
+            val result = attempt(call).getOrNull()
             post.execute {
                 @Suppress("UNCHECKED_CAST")
                 if (result != null) then(result as T) else onThrow()
