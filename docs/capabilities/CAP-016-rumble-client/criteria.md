@@ -840,7 +840,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a fake Rumble with its catalog and its owner and ban lists at one commit, and a staged bot
     When the fifth step prepares the send
     Then a banned account, a disqualified bot and a name that belongs to another owner each give their own text with the account, the bot and the owner, and nothing is offered to send, so pressing send sends nothing
-    And the owner's own bot and a new name are offered to send, a version lower than the active one gives a note and is offered, a version already published is told by the content line, and rules that cannot be read stop nothing
+    And the owner's own bot and a new name are offered to send, a version lower than the active one gives a note and is offered, a version already published is told by the content line, and rules that cannot be read stop nothing, while the screen says that the name, owner and version were not checked
+    And the Rumble's newest commit is looked up with the sign-in, because GitHub allows only a few requests an hour without one, and a refusal would leave the catalog and the rules unread
     And the pre-check gives codes and the values in them to the screen, and every text is in every language file
 
   @RCL-100

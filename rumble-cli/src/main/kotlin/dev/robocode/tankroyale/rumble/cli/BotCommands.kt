@@ -180,7 +180,7 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
         }
         val files = staged.files.map { it.path }
 
-        val advice = advice(env, staged, ready.account)
+        val advice = advice(env, staged, ready.account, tokens.accessToken)
         if (advice.report?.hasProblems == true) {
             val findings = advice.report.problems
             answer(
@@ -245,9 +245,9 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
     private class Advice(val report: PrecheckReport?, val note: String?)
 
     /** The advisory check against the Rumble's catalog and rules. A Rumble that cannot be read does not stop the send. */
-    private fun advice(env: RumbleEnvironment, staged: StagedSubmission, account: String): Advice =
+    private fun advice(env: RumbleEnvironment, staged: StagedSubmission, account: String, token: String): Advice =
         try {
-            val commit = RumbleHead.commit(services.api, env)
+            val commit = RumbleHead.commit(services.api, env, token)
             val source = services.catalog(env)
             val catalog = Catalog.parse(source.catalogText(commit))
             val rules = RumbleRules.read(source, commit)
@@ -397,7 +397,7 @@ internal class BotStatusCommand(io: Io, services: Services) : BotLeaf("status", 
         }
         var catalogNote: String? = null
         val catalog = try {
-            Catalog.parse(services.catalog(env).catalogText(RumbleHead.commit(services.api, env)))
+            Catalog.parse(services.catalog(env).catalogText(RumbleHead.commit(services.api, env, tokens.accessToken)))
         } catch (e: CatalogUnreadable) {
             catalogNote = "The Rumble's catalog could not be read, so a merged bot cannot be told from one that is in the Rumble."
             null

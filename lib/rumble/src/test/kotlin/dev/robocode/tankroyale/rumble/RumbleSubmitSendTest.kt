@@ -509,7 +509,11 @@ class RumbleSubmitSendTest {
         mapOf(RumbleRules.OWNERS_PATH to owners, RumbleRules.BANS_PATH to bans)
 
     private class HeadApi : GitHubApi {
-        override fun get(path: String, token: String?) = ApiResponse(200, "{\"sha\":\"" + "a".repeat(40) + "\"}")
+        val tokens = mutableListOf<String?>()
+        override fun get(path: String, token: String?): ApiResponse {
+            tokens += token
+            return ApiResponse(200, "{\"sha\":\"" + "a".repeat(40) + "\"}")
+        }
         override fun postJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
         override fun patchJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
     }
@@ -524,14 +528,14 @@ class RumbleSubmitSendTest {
 
     private fun port(
         dir: Path, sending: Sending = Sending(), reading: Reading = Reading(), catalogText: String? = catalog(), refreshes: Int = 6,
-        ruleFiles: Map<String, String> = emptyMap(),
+        ruleFiles: Map<String, String> = emptyMap(), head: HeadApi = HeadApi(),
     ): LibrarySendPort {
         val env = RumbleEnvironments.TEST
         SignInStore(env, dir).save("refresh-0", Instant.now().plusSeconds(86_400))
         val clock = MutableClock(Instant.now())
         val answers = (1..refreshes).map { tokenAnswer("access-$it", "refresh-$it") }.toTypedArray()
         val flow = SignInFlow(env, GitHubSignIn(env, FakeTransport(*answers), clock), SignInStore(env, dir), FakeRumbleGitHub(), clock)
-        return LibrarySendPort(env, flow, HeadApi(), sending, reading, Catalogs(catalogText, ruleFiles))
+        return LibrarySendPort(env, flow, head, sending, reading, Catalogs(catalogText, ruleFiles))
     }
 
     @Test
@@ -572,6 +576,10 @@ class RumbleSubmitSendTest {
         val mine = port(dir.resolve("mine"), ruleFiles = rules(owners = """{"schemaVersion":1,"owners":[{"ownerId":"alice","accounts":["alice"],"bots":["MyBot"]}]}"""))
             .prepare(submission(dir), "alice") as SendPrepared.Ready
         assertEquals(emptyList<PrecheckFinding>(), mine.rules!!.problems, "the owner may update their own bot")
+
+        val head = HeadApi()
+        port(dir.resolve("signed"), ruleFiles = rules(), head = head).prepare(submission(dir), "alice")
+        assertTrue(head.tokens.isNotEmpty() && head.tokens.all { it != null }, "the Rumble's head is read with the sign-in, as GitHub allows few requests without one")
 
         val unreadable = port(dir.resolve("unreadable")).prepare(submission(dir), "alice") as SendPrepared.Ready
         assertEquals(null, unreadable.rules, "rules that cannot be read stop nothing")

@@ -112,7 +112,7 @@ class LibrarySendPort(
 
     private fun look(tokens: GitHubTokens, submission: StagedSubmission, account: String): SendPrepared {
         val launchers = sending.compareLaunchers(tokens, submission)
-        val (catalog, rules) = readRumble()
+        val (catalog, rules) = readRumble(tokens.accessToken)
         val content = content(submission, catalog)
         // The same pre-check as the command line: what the bot repository's validator would refuse for this bot.
         val report = if (catalog != null && rules != null) SubmissionPrecheck.check(submission, account, catalog, rules) else null
@@ -120,9 +120,9 @@ class LibrarySendPort(
     }
 
     /** The Rumble's catalog and per-bot rules at one commit; either is null when it cannot be read, which stops nothing. */
-    private fun readRumble(): Pair<Catalog?, RumbleRules?> {
+    private fun readRumble(token: String): Pair<Catalog?, RumbleRules?> {
         val commit = try {
-            RumbleHead.commit(api, environment)
+            RumbleHead.commit(api, environment, token)
         } catch (e: CatalogUnreadable) {
             return null to null
         } catch (e: IOException) {
@@ -154,15 +154,14 @@ class LibrarySendPort(
 
     override fun progress(number: Int, name: String, version: String): BotProgress =
         try {
-            val catalog = readCatalog()
-            withSignIn({ it is BotProgress.SignInNeeded }) { reading.read(it, number, name, version, catalog) }
+            withSignIn({ it is BotProgress.SignInNeeded }) { reading.read(it, number, name, version, readCatalog(it.accessToken)) }
         } catch (e: NoSignIn) {
             if (e.failed) BotProgress.Failed(e.reason) else BotProgress.SignInNeeded(e.reason)
         }
 
-    private fun readCatalog(): Catalog? =
+    private fun readCatalog(token: String): Catalog? =
         try {
-            Catalog.parse(catalogSource.catalogText(RumbleHead.commit(api, environment)))
+            Catalog.parse(catalogSource.catalogText(RumbleHead.commit(api, environment, token)))
         } catch (e: CatalogUnreadable) {
             null
         } catch (e: IOException) {
