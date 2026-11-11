@@ -325,7 +325,7 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
             ) { put("setup", "not-a-copy"); put("setupUrl", readiness.repositoryUrl); putNotice(emptyList()) }
             is SubmissionReadiness.CopyBehind -> reply(
                 env, ExitCodes.REFUSED, "setup-needed",
-                "Your copy lacks a change to the Rumble's workflows, which the sign-in App may not bring into it. Open ${readiness.copyUrl}, press Sync fork, then run this command again. Nothing was sent.",
+                "Your copy lacks a change to the Rumble's workflows, which the sign-in App may not bring into it. Open ${readiness.copyUrl}, press Sync fork to the right above the list of files, then Update branch, and run this command again. Nothing was sent.",
             ) { put("setup", "copy-behind"); put("setupUrl", readiness.copyUrl); putNotice(emptyList()) }
             is SubmissionReadiness.SignInNeeded -> {
                 flow.forgetRefused(renewal)
