@@ -833,4 +833,28 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer sends a bot
     Then the fourth step asks to sync the copy, after Sync fork on GitHub the window goes on by itself, and the bot is sent and its pull request followed
     And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
+
+  @RCL-099
+  Scenario: The fifth step of Submit or update bot checks the Rumble's rules for the bot before sending
+    Test-type: Unit
+    Given a fake Rumble with its catalog and its owner and ban lists at one commit, and a staged bot
+    When the fifth step prepares the send
+    Then a banned account, a disqualified bot and a name that belongs to another owner each give their own text with the account, the bot and the owner, and nothing is offered to send, so pressing send sends nothing
+    And the owner's own bot and a new name are offered to send, a version lower than the active one gives a note and is offered, a version already published is told by the content line, and rules that cannot be read stop nothing
+    And the pre-check gives codes and the values in them to the screen, and every text is in every language file
+
+  @RCL-100
+  Scenario: A pull request sent back by the moderation is said on a line of its own, with its reason on the next
+    Test-type: Unit
+    Given a pull request that the moderation has sent back with a reason
+    When the sixth step shows where it stands
+    Then the text for a sent-back pull request holds no value, and the reason is shown on a line of its own without the code marks of GitHub's comments
+
+  @RCL-101
+  Scenario: The maintainer is stopped before sending a bot that belongs to another account
+    Test-type: Human
+    Given the desktop program started with the menu switched on for the test environment, and RumbleOnboardingScout owned by the outside test account
+    When the maintainer stages RumbleOnboardingScout and goes on to the fifth step
+    Then the step says that the name belongs to another owner, names the owner, and offers nothing to send
+    And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
 ```

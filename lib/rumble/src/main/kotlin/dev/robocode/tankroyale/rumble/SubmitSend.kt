@@ -23,7 +23,10 @@ data class ExistingPullRequest(val number: Int, val version: String, val progres
 
 /** What is known about the staged copy just before it is sent, all of it advice. */
 sealed interface SendPrepared {
-    data class Ready(val launchers: LauncherState, val content: ContentState, val existing: ExistingPullRequest?) : SendPrepared
+    /** [rules] is what the Rumble's per-bot rules say about the bot, or null when they could not be read. */
+    data class Ready(
+        val launchers: LauncherState, val content: ContentState, val existing: ExistingPullRequest?, val rules: PrecheckReport? = null,
+    ) : SendPrepared
 
     data class SignInNeeded(val message: String) : SendPrepared
 
@@ -109,9 +112,37 @@ class LibrarySendPort(
 
     private fun look(tokens: GitHubTokens, submission: StagedSubmission, account: String): SendPrepared {
         val launchers = sending.compareLaunchers(tokens, submission)
-        val catalog = readCatalog()
+        val (catalog, rules) = readRumble()
         val content = content(submission, catalog)
-        return SendPrepared.Ready(launchers, content, existing(tokens, account, submission.name, catalog))
+        // The same pre-check as the command line: what the bot repository's validator would refuse for this bot.
+        val report = if (catalog != null && rules != null) SubmissionPrecheck.check(submission, account, catalog, rules) else null
+        return SendPrepared.Ready(launchers, content, existing(tokens, account, submission.name, catalog), report)
+    }
+
+    /** The Rumble's catalog and per-bot rules at one commit; either is null when it cannot be read, which stops nothing. */
+    private fun readRumble(): Pair<Catalog?, RumbleRules?> {
+        val commit = try {
+            RumbleHead.commit(api, environment)
+        } catch (e: CatalogUnreadable) {
+            return null to null
+        } catch (e: IOException) {
+            return null to null
+        }
+        val catalog = try {
+            Catalog.parse(catalogSource.catalogText(commit))
+        } catch (e: CatalogUnreadable) {
+            null
+        } catch (e: IOException) {
+            null
+        }
+        val rules = try {
+            RumbleRules.read(catalogSource, commit)
+        } catch (e: CatalogUnreadable) {
+            null
+        } catch (e: IOException) {
+            null
+        }
+        return catalog to rules
     }
 
     override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult =

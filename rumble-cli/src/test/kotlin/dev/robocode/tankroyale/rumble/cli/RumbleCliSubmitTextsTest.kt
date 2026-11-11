@@ -117,14 +117,15 @@ class RumbleCliSubmitTextsTest {
         val oneArgument = setOf(
             "rumble.submit.file", "rumble.submit.details", "rumble.submit.fix", "rumble.submit.notes",
             "rumble.submit.review_license", "rumble.submit.status_success", "rumble.submit.status_failed",
-            "rumble.submit.launchers_differ", "rumble.submit.existing", "rumble.submit.progress_sent_back", "rumble.submit.progress_in_catalog",
+            "rumble.submit.launchers_differ", "rumble.submit.existing", "rumble.submit.progress_reason", "rumble.submit.progress_in_catalog",
+            "rumble.submit.rule.account_banned", "rumble.submit.rule.bot_disqualified",
         )
         wizard.forEach { key ->
             val count = Regex("%[sd]").findAll(messages.getProperty(key)).count()
             val expected = when (key) {
                 in oneArgument -> 1
                 "rumble.submit.found" -> 3
-                "rumble.submit.found_team", "rumble.submit.review_name" -> 2
+                "rumble.submit.found_team", "rumble.submit.review_name", "rumble.submit.rule.owned_by_another", "rumble.submit.rule.lower_version" -> 2
                 "rumble.submit.review_language", "rumble.submit.review_files" -> 1
                 else -> 0
             }

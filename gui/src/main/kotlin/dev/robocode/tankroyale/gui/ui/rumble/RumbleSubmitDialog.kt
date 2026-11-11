@@ -174,10 +174,15 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
         put(wrapped(text("rumble.submit.send_intro")))
         put(wrapped(text("rumble.submit.public_notice"), bold = true))
         put(toned(text(SubmitTexts.forContent(ready.content)), SubmitTexts.toneOf(ready.content)))
+        // What the Rumble's rules would refuse stops the send; a lower version is only a note.
+        ready.rules?.let { rules ->
+            rules.problems.forEach { finding -> SubmitTexts.forRule(finding.code)?.let { put(status(false, text(it, *finding.values.toTypedArray()))) } }
+            rules.warnings.forEach { finding -> SubmitTexts.forRule(finding.code)?.let { put(wrapped(text(it, *finding.values.toTypedArray()))) } }
+        }
         put(wrapped(launchersText(ready.launchers)))
         ready.existing?.let { existing ->
             put(wrapped(text("rumble.submit.existing", existing.version)))
-            put(progress(existing.progress))
+            progress(existing.progress).forEach { put(it) }
         }
         put(button(if (ready.existing != null) "rumble.submit.button.update" else "rumble.submit.button.send") { controller.send() }.apply { isEnabled = state.canSend })
         if (ready.existing != null) put(button("rumble.submit.button.check_now") { controller.checkNow() })
@@ -192,7 +197,7 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
             is SubmissionResult.Submitted -> {
                 put(wrapped(result.pullRequestUrl))
                 put(wrapped(launchersText(state.launchers)))
-                put(state.progress?.let { progress(it) } ?: wrapped(text("rumble.submit.progress_reading")))
+                state.progress?.let { progress(it).forEach { line -> put(line) } } ?: put(wrapped(text("rumble.submit.progress_reading")))
                 put(pageButton("rumble.submit.button.open_pr", result.pullRequestUrl))
                 put(button("rumble.submit.button.check_now") { controller.checkNow() })
                 put(button("rumble.submit.button.close") { dispose() })
@@ -218,13 +223,17 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
     }
 
     /** Where the pull request stands, with the label and the colour of what it says. */
-    private fun progress(progress: BotProgress): Component {
-        val line = when (progress) {
-            is BotProgress.SentBack -> text(SubmitTexts.forProgress(progress), progress.reason)
-            is BotProgress.InCatalog -> text(SubmitTexts.forProgress(progress), progress.version)
-            else -> text(SubmitTexts.forProgress(progress))
-        }
-        return toned(text("rumble.submit.progress_label") + " " + line, SubmitTexts.toneOf(progress))
+    /**
+     * Where the pull request stands. A pull request sent back by the moderation is said on a line of its own, and the
+     * moderation's reason on the next, without code marks.
+     */
+    private fun progress(progress: BotProgress): List<Component> = when (progress) {
+        is BotProgress.SentBack -> listOfNotNull(
+            wrapped(text(SubmitTexts.forProgress(progress)), bold = true).apply { foreground = statusColor(false) },
+            progress.reason.takeIf { it.isNotBlank() }?.let { wrapped(text("rumble.submit.progress_reason", SubmitTexts.plainReason(it))) },
+        )
+        is BotProgress.InCatalog -> listOf(toned(text("rumble.submit.progress_label") + " " + text(SubmitTexts.forProgress(progress), progress.version), SubmitTexts.toneOf(progress)))
+        else -> listOf(toned(text("rumble.submit.progress_label") + " " + text(SubmitTexts.forProgress(progress)), SubmitTexts.toneOf(progress)))
     }
 
     private fun launchersText(launchers: LauncherState): String = when (launchers) {
