@@ -1045,6 +1045,11 @@ claims:
       state: reserved
       prefix: CH
       component: "98"
+    - id: CH-099
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "99"
     - id: G-001
       kind: numeric
       state: reserved
@@ -2856,11 +2861,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "24"
-    - id: CH-097
+    - id: CH-098
       kind: numeric
       state: reserved
       prefix: CH
-      component: "97"
+      component: "98"
     - id: G-004
       kind: numeric
       state: reserved
