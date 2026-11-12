@@ -1265,6 +1265,9 @@ events:
     - {id: M-029, kind: numeric, state: retired, prefix: M, component: "29"}
     - {id: CH-098, kind: numeric, state: retired, prefix: CH, component: "98"}
     - {id: CH-098-tasks, kind: opaque, state: retired}
+    - {id: CH-099, kind: numeric, state: reserved, prefix: CH, component: "99"}
+    - {id: CH-099, kind: numeric, state: live, prefix: CH, component: "99"}
+    - {id: CH-099-tasks, kind: opaque, state: live}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
