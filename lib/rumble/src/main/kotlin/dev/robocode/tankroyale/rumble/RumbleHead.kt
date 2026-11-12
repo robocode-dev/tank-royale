@@ -10,9 +10,13 @@ import java.io.IOException
 object RumbleHead {
     private val SHA = Regex("[0-9a-f]{40}")
 
-    /** The commit the repository's default branch points at now. Throws [IOException] with a plain message otherwise. */
-    fun commit(api: GitHubApi, environment: RumbleEnvironment): String {
-        val answer = api.get("/repos/${RumbleEnvironments.owner}/${environment.botsRepository}/commits/HEAD", null)
+    /**
+     * The commit the repository's default branch points at now. Throws [IOException] with a plain message otherwise.
+     * Give the signed-in [token] when there is one: GitHub allows only a few requests an hour without one, and a refusal
+     * would leave the catalog and the rules unread.
+     */
+    fun commit(api: GitHubApi, environment: RumbleEnvironment, token: String? = null): String {
+        val answer = api.get("/repos/${RumbleEnvironments.owner}/${environment.botsRepository}/commits/HEAD", token)
         if (answer.status != 200) throw IOException("GitHub gave an unexpected answer (HTTP ${answer.status}) about the Rumble's bot repository.")
         val sha = try {
             ((Json.parseToJsonElement(answer.body) as? JsonObject)?.get("sha") as? JsonPrimitive)?.contentOrNull

@@ -3,8 +3,11 @@ package dev.robocode.tankroyale.rumble
 import dev.robocode.tankroyale.botproject.StagedSubmission
 import java.math.BigInteger
 
-/** One thing the pre-check found: a stable [code], what it means in plain words and the [fix] for it. */
-data class PrecheckFinding(val code: String, val message: String, val fix: String)
+/**
+ * One thing the pre-check found: a stable [code], what it means in plain words and the [fix] for it, and the [values]
+ * that the message names, in order, so a screen can say it in its own words and languages.
+ */
+data class PrecheckFinding(val code: String, val message: String, val fix: String, val values: List<String> = emptyList())
 
 /**
  * What the pre-check found. [problems] are things the Rumble's own validator would refuse; [warnings] are things it
@@ -27,6 +30,12 @@ object SubmissionPrecheck {
     const val ALREADY_PUBLISHED = "already-published"
     const val LOWER_VERSION = "lower-version"
 
+    /**
+     * The problems that stop a send in the desktop program: who may submit which name. A version already published is
+     * stopped by the content check, which reads the same catalog.
+     */
+    val STOPPING: Set<String> = setOf(ACCOUNT_BANNED, BOT_DISQUALIFIED, OWNED_BY_ANOTHER)
+
     private val PLAIN_VERSION = Regex("\\d+(?:\\.\\d+)*")
 
     fun check(submission: StagedSubmission, account: String, catalog: Catalog, rules: RumbleRules): PrecheckReport {
@@ -38,20 +47,20 @@ object SubmissionPrecheck {
         if (rules.bannedAccounts.any { it.equals(account, ignoreCase = true) }) {
             problems += PrecheckFinding(
                 ACCOUNT_BANNED, "The account $account is banned from submitting to this Rumble.",
-                "Contact the Rumble's moderators if you think this is a mistake.",
+                "Contact the Rumble's moderators if you think this is a mistake.", listOf(account),
             )
         }
         if (name in rules.disqualifiedBots) {
             problems += PrecheckFinding(
                 BOT_DISQUALIFIED, "A bot called $name has been disqualified from this Rumble.",
-                "Choose another name for your bot, or contact the moderators.",
+                "Choose another name for your bot, or contact the moderators.", listOf(name),
             )
         }
         val owner = rules.ownerOf(name)
         if (owner != null && owner.accounts.none { it.equals(account, ignoreCase = true) }) {
             problems += PrecheckFinding(
                 OWNED_BY_ANOTHER, "The name $name belongs to another owner, ${owner.ownerId}.",
-                "Choose another name for your bot.",
+                "Choose another name for your bot.", listOf(name, owner.ownerId),
             )
         }
         val active = catalog.activeBots.firstOrNull { it.name == name }
@@ -60,13 +69,13 @@ object SubmissionPrecheck {
                 if (active.sourceHash == submission.treeHash) {
                     problems += PrecheckFinding(
                         ALREADY_PUBLISHED, "Version $version of $name is already in the Rumble with exactly these files.",
-                        "There is nothing to send. Change the bot and raise its version to send a new one.",
+                        "There is nothing to send. Change the bot and raise its version to send a new one.", listOf(version, name),
                     )
                 } else {
                     problems += PrecheckFinding(
                         SAME_VERSION_DIFFERENT_SOURCE,
                         "Version $version of $name is already in the Rumble, and your files differ from it.",
-                        "Raise the version in the bot's configuration file, then stage it again.",
+                        "Raise the version in the bot's configuration file, then stage it again.", listOf(version, name),
                     )
                 }
             } else if (isLower(version, active.version)) {
@@ -74,7 +83,7 @@ object SubmissionPrecheck {
                     LOWER_VERSION,
                     "Version $version is lower than the version ${active.version} that is active now. " +
                         "The Rumble accepts it, but the older version would replace the newer.",
-                    "If that is not what you want, raise the version above ${active.version}.",
+                    "If that is not what you want, raise the version above ${active.version}.", listOf(version, active.version),
                 )
             }
         }

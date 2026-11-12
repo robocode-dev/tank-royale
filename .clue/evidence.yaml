@@ -370,7 +370,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSubmitTextsTest.kt",
-          "sha256": "26f22c48d4386ba1c4374189cc31e31e18efbf7dc37d95d2fbad37068b14e2ec"
+          "sha256": "27603e4bfbbe9bb2a554c701c96ec35a852ee10dd83345ca9290f40926b1f509"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliTest.kt",
@@ -1814,7 +1814,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
-          "sha256": "2aacd3f7ddd3300c0b50918ad605cf5bed191d59bd8616e15ff1b89734484a8e"
+          "sha256": "990d60ccd6619a15e851bf05c8e11b28afd8ed2210df32bb898985af2b57e03c"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleTokenSecrecyTest.kt",
@@ -3514,6 +3514,27 @@
           "id": "RCL-097",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
           "subject": "RumbleSubmitSendTest.testRCL097_UnitPositive_aCopyThatMustBeSyncedIsWaitedForAndTheWizardGoesOnBySelf",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-099",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL099_UnitNegative_aBannedAccountADisqualifiedBotOrANameOwnedByAnotherAreToldAndNothingIsOfferedToSend",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-099",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL099_UnitPositive_theOwnersOwnBotANewNameOrUnreadableRulesAreOfferedAndALowerVersionIsANote",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-100",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitSendTest.kt",
+          "subject": "RumbleSubmitSendTest.testRCL100_UnitPositive_aSentBackPullRequestIsSaidOnItsOwnLineWithTheReasonWithoutCodeMarks",
           "type": "Unit",
           "direction": "positive"
         },

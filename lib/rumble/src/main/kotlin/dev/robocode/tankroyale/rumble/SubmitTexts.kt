@@ -102,6 +102,43 @@ object SubmitTexts {
         BotProgress.WaitingForChecks, is BotProgress.BeingChecked, BotProgress.WaitingForModerator -> Tone.NEUTRAL
     }
 
+    /**
+     * The pre-check's codes the fifth step says in its own words; a version already published is told by the content
+     * line instead. Each text takes the finding's values in order.
+     */
+    val RULE_CODES: List<String> = listOf(
+        SubmissionPrecheck.ACCOUNT_BANNED, SubmissionPrecheck.BOT_DISQUALIFIED, SubmissionPrecheck.OWNED_BY_ANOTHER, SubmissionPrecheck.LOWER_VERSION,
+    )
+
+    /** The key of the text for a pre-check finding, or null when the fifth step leaves it to the content line. */
+    fun forRule(code: String): String? = code.takeIf { it in RULE_CODES }?.let { "rumble.submit.rule." + it.replace('-', '_') }
+
+    /**
+     * The tone of the fifth step's content line: good only while the bot can be sent, so a line about a new version is
+     * never shown as a success beside a rule that stops the send.
+     */
+    fun contentTone(state: SubmitState.SendReady): Tone {
+        val tone = toneOf(state.ready.content)
+        return if (tone == Tone.GOOD && !state.canSend) Tone.NEUTRAL else tone
+    }
+
+    /**
+     * The key of the note that the Rumble's rules were not read, when the catalog was: the content line then says nothing
+     * about them. When neither was read, the content line already says so.
+     */
+    fun forRulesNotChecked(ready: SendPrepared.Ready): String? =
+        "rumble.submit.rules_not_checked".takeIf { ready.rules == null && ready.content != ContentState.NOT_CHECKED }
+
+    /**
+     * The moderation's reason as plain text: GitHub's comments are Markdown, so code marks, emphasis and line breaks are
+     * removed, and a link is kept as its text followed by its address.
+     */
+    fun plainReason(reason: String): String = reason
+        .replace(Regex("\\[([^\\]]*)]\\(([^)\\s]*)\\)"), "$1 ($2)")
+        .replace("`", "").replace("**", "").replace("__", "")
+        .replace(Regex("\\s+"), " ")
+        .trim()
+
     /** The codes the wizard itself adds to the library's own. */
     val WIZARD_CODES: List<String> = listOf("STAGING_REFUSED", "READ_FAILED")
 
@@ -112,6 +149,8 @@ object SubmitTexts {
         "rumble.submit.review_intro", "rumble.submit.review_name", "rumble.submit.review_language", "rumble.submit.review_license",
         "rumble.submit.review_no_license", "rumble.submit.review_files", "rumble.submit.public_notice",
         "rumble.submit.confirm_public", "rumble.submit.confirm_author", "rumble.submit.send_intro", "rumble.submit.existing", "rumble.submit.progress_label", "rumble.submit.progress_reading",
+        "rumble.submit.progress_reason", "rumble.submit.rules_not_checked", "rumble.submit.rule.account_banned", "rumble.submit.rule.bot_disqualified", "rumble.submit.rule.owned_by_another",
+        "rumble.submit.rule.lower_version",
         "rumble.submit.button.choose", "rumble.submit.button.check", "rumble.submit.button.check_again", "rumble.submit.button.review",
         "rumble.submit.button.back", "rumble.submit.button.next", "rumble.submit.button.close", "rumble.submit.button.open_fork",
         "rumble.submit.button.open_install", "rumble.submit.button.open_copy", "rumble.submit.button.check_now", "rumble.submit.button.send", "rumble.submit.button.update",

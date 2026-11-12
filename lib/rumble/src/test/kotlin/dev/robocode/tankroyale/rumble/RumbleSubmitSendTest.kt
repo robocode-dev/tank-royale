@@ -498,13 +498,23 @@ class RumbleSubmitSendTest {
         }
     }
 
-    private class Catalogs(val text: String?) : CatalogSource {
+    private class Catalogs(val text: String?, val files: Map<String, String> = emptyMap()) : CatalogSource {
         override fun catalogText(commit: String): String = text ?: throw CatalogUnreadable("The catalog cannot be read.")
         override fun archive(commit: String) = throw UnsupportedOperationException()
+        override fun fileText(commit: String, path: String): String? =
+            if (files.isEmpty()) throw CatalogUnreadable("The rules cannot be read.") else files[path]
     }
 
-    private class HeadApi : GitHubApi {
-        override fun get(path: String, token: String?) = ApiResponse(200, "{\"sha\":\"" + "a".repeat(40) + "\"}")
+    private fun rules(owners: String = """{"schemaVersion":1,"owners":[]}""", bans: String = """{"schemaVersion":1}""") =
+        mapOf(RumbleRules.OWNERS_PATH to owners, RumbleRules.BANS_PATH to bans)
+
+    private class HeadApi(val refuseToken: Boolean = false) : GitHubApi {
+        val tokens = mutableListOf<String?>()
+        override fun get(path: String, token: String?): ApiResponse {
+            tokens += token
+            if (refuseToken && token != null) return ApiResponse(401, "{\"message\":\"Bad credentials\"}")
+            return ApiResponse(200, "{\"sha\":\"" + "a".repeat(40) + "\"}")
+        }
         override fun postJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
         override fun patchJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
     }
@@ -517,13 +527,106 @@ class RumbleSubmitSendTest {
     private fun submission(dir: Path, hash: String = "sha256:aaa"): StagedSubmission =
         StagedSubmission("MyBot", "1.0.0", "java", "MIT", listOf("A"), false, dir, dir, emptyList(), emptyList(), hash)
 
-    private fun port(dir: Path, sending: Sending = Sending(), reading: Reading = Reading(), catalogText: String? = catalog(), refreshes: Int = 6): LibrarySendPort {
+    private fun port(
+        dir: Path, sending: Sending = Sending(), reading: Reading = Reading(), catalogText: String? = catalog(), refreshes: Int = 6,
+        ruleFiles: Map<String, String> = emptyMap(), head: HeadApi = HeadApi(),
+    ): LibrarySendPort {
         val env = RumbleEnvironments.TEST
         SignInStore(env, dir).save("refresh-0", Instant.now().plusSeconds(86_400))
         val clock = MutableClock(Instant.now())
         val answers = (1..refreshes).map { tokenAnswer("access-$it", "refresh-$it") }.toTypedArray()
         val flow = SignInFlow(env, GitHubSignIn(env, FakeTransport(*answers), clock), SignInStore(env, dir), FakeRumbleGitHub(), clock)
-        return LibrarySendPort(env, flow, HeadApi(), sending, reading, Catalogs(catalogText))
+        return LibrarySendPort(env, flow, head, sending, reading, Catalogs(catalogText, ruleFiles))
+    }
+
+    @Test
+    @Tag("RCL-099")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL099_UnitNegative_aBannedAccountADisqualifiedBotOrANameOwnedByAnotherAreToldAndNothingIsOfferedToSend(@TempDir dir: Path) {
+        fun prepared(name: String, files: Map<String, String>) =
+            port(dir.resolve(name), ruleFiles = files).prepare(submission(dir), "alice") as SendPrepared.Ready
+
+        val owned = prepared("owned", rules(owners = """{"schemaVersion":1,"owners":[{"ownerId":"robocode-rumble-test","accounts":["robocode-rumble-test"],"bots":["MyBot"]}]}"""))
+        val finding = owned.rules!!.problems.single()
+        assertEquals(SubmissionPrecheck.OWNED_BY_ANOTHER to listOf("MyBot", "robocode-rumble-test"), finding.code to finding.values)
+        assertEquals("rumble.submit.rule.owned_by_another", SubmitTexts.forRule(finding.code))
+
+        val noCatalog = port(dir.resolve("nocat"), catalogText = null,
+            ruleFiles = rules(owners = """{"schemaVersion":1,"owners":[{"ownerId":"robocode-rumble-test","accounts":["robocode-rumble-test"],"bots":["MyBot"]}]}"""))
+            .prepare(submission(dir), "alice") as SendPrepared.Ready
+        assertEquals(listOf(SubmissionPrecheck.OWNED_BY_ANOTHER), noCatalog.rules!!.problems.map { it.code }, "owners need no catalog")
+
+        val banned = prepared("banned", rules(bans = """{"schemaVersion":1,"bannedOwners":[{"account":"alice"}]}"""))
+        assertEquals(listOf(SubmissionPrecheck.ACCOUNT_BANNED to listOf("alice")), banned.rules!!.problems.map { it.code to it.values })
+
+        val disqualified = prepared("disq", rules(bans = """{"schemaVersion":1,"disqualifiedBots":[{"bot":"MyBot"}]}"""))
+        assertEquals(listOf(SubmissionPrecheck.BOT_DISQUALIFIED to listOf("MyBot")), disqualified.rules!!.problems.map { it.code to it.values })
+
+        listOf(owned, banned, disqualified).forEach { ready ->
+            val state = SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", ready)
+            assertFalse(state.canSend, "nothing is offered to send: ${ready.rules}")
+            assertEquals(ContentState.NEW, ready.content)
+            assertEquals(Tone.NEUTRAL, SubmitTexts.contentTone(state), "a new version is not shown as a success beside a rule that stops the send")
+        }
+
+        val screen = screen(dir.resolve("screen"), FakeSendPort().apply { prepared = owned })
+        screen.toSendReady()
+        screen.controller.send()
+        assertTrue(screen.fake.sent.isEmpty(), "pressing send sends nothing")
+    }
+
+    @Test
+    @Tag("RCL-099")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL099_UnitPositive_theOwnersOwnBotANewNameOrUnreadableRulesAreOfferedAndALowerVersionIsANote(@TempDir dir: Path) {
+        val mine = port(dir.resolve("mine"), ruleFiles = rules(owners = """{"schemaVersion":1,"owners":[{"ownerId":"alice","accounts":["alice"],"bots":["MyBot"]}]}"""))
+            .prepare(submission(dir), "alice") as SendPrepared.Ready
+        assertEquals(emptyList<PrecheckFinding>(), mine.rules!!.problems, "the owner may update their own bot")
+        assertEquals(Tone.GOOD, SubmitTexts.contentTone(SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", mine)),
+            "a new version that can be sent is good news")
+
+        val head = HeadApi()
+        port(dir.resolve("signed"), ruleFiles = rules(), head = head).prepare(submission(dir), "alice")
+        assertTrue(head.tokens.isNotEmpty() && head.tokens.all { it != null }, "the Rumble's head is read with the sign-in, as GitHub allows few requests without one")
+
+        val unreadable = port(dir.resolve("unreadable")).prepare(submission(dir), "alice") as SendPrepared.Ready
+        assertEquals(null, unreadable.rules, "rules that cannot be read stop nothing")
+        assertTrue(SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", unreadable).canSend)
+        assertEquals(ContentState.NEW, unreadable.content)
+        assertEquals("rumble.submit.rules_not_checked", SubmitTexts.forRulesNotChecked(unreadable), "the screen says that the rules were not checked")
+        assertEquals(null, SubmitTexts.forRulesNotChecked(SendPrepared.Ready(LauncherState.Same, ContentState.NOT_CHECKED, null)),
+            "when neither was read, the content line already says so")
+
+        val stale = HeadApi(refuseToken = true)
+        val anonymous = port(dir.resolve("stale"), ruleFiles = rules(), head = stale).prepare(submission(dir), "alice") as SendPrepared.Ready
+        assertTrue(anonymous.rules != null && stale.tokens.contains(null), "a refused sign-in falls back to the lookup without it")
+
+        val onlyAPublishedVersion = SendPrepared.Ready(LauncherState.Same, ContentState.NEW, null,
+            PrecheckReport(listOf(PrecheckFinding(SubmissionPrecheck.ALREADY_PUBLISHED, "", "", listOf("1.0.0", "MyBot"))), emptyList()))
+        assertTrue(SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", onlyAPublishedVersion).canSend,
+            "only who may submit which name stops the send here; a version is the content line's, so no button is greyed out without a reason")
+
+        val lower = port(dir.resolve("lower"), catalogText = catalog(Triple("MyBot", "2.0.0", "sha256:old")), ruleFiles = rules())
+            .prepare(submission(dir), "alice") as SendPrepared.Ready
+        val note = lower.rules!!.warnings.single()
+        assertEquals(SubmissionPrecheck.LOWER_VERSION to listOf("1.0.0", "2.0.0"), note.code to note.values)
+        assertTrue(SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", lower).canSend, "a lower version is only a note")
+        assertEquals("rumble.submit.rule.lower_version", SubmitTexts.forRule(note.code))
+        assertEquals(null, SubmitTexts.forRule(SubmissionPrecheck.ALREADY_PUBLISHED), "a version already published is told by the content line")
+    }
+
+    @Test
+    @Tag("RCL-100")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL100_UnitPositive_aSentBackPullRequestIsSaidOnItsOwnLineWithTheReasonWithoutCodeMarks() {
+        assertEquals("rumble.submit.progress_sent_back", SubmitTexts.forProgress(BotProgress.SentBack("x")))
+        assertEquals("bot RumbleOnboardingScout belongs to owner robocode-rumble-test",
+            SubmitTexts.plainReason(" bot `RumbleOnboardingScout` belongs to owner `robocode-rumble-test` "))
+        assertEquals("Refused: see the rules (https://example.org/rules) and try again.",
+            SubmitTexts.plainReason("**Refused**: see [the rules](https://example.org/rules)\nand __try again__."))
     }
 
     @Test

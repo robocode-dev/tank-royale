@@ -23,7 +23,10 @@ data class ExistingPullRequest(val number: Int, val version: String, val progres
 
 /** What is known about the staged copy just before it is sent, all of it advice. */
 sealed interface SendPrepared {
-    data class Ready(val launchers: LauncherState, val content: ContentState, val existing: ExistingPullRequest?) : SendPrepared
+    /** [rules] is what the Rumble's per-bot rules say about the bot, or null when they could not be read. */
+    data class Ready(
+        val launchers: LauncherState, val content: ContentState, val existing: ExistingPullRequest?, val rules: PrecheckReport? = null,
+    ) : SendPrepared
 
     data class SignInNeeded(val message: String) : SendPrepared
 
@@ -109,9 +112,15 @@ class LibrarySendPort(
 
     private fun look(tokens: GitHubTokens, submission: StagedSubmission, account: String): SendPrepared {
         val launchers = sending.compareLaunchers(tokens, submission)
-        val catalog = readCatalog()
+        val snapshot = RumbleSnapshot.read(api, environment, catalogSource, tokens.accessToken)
+        val catalog = snapshot.catalog
         val content = content(submission, catalog)
-        return SendPrepared.Ready(launchers, content, existing(tokens, account, submission.name, catalog))
+        // The same pre-check as the command line: what the bot repository's validator would refuse for this bot. Bans,
+        // disqualifications and owners need only the rules, so they are checked also when the catalog cannot be read.
+        val report = snapshot.rules?.let { rules ->
+            SubmissionPrecheck.check(submission, account, catalog ?: Catalog(0, "", "", emptyList()), rules)
+        }
+        return SendPrepared.Ready(launchers, content, existing(tokens, account, submission.name, catalog), report)
     }
 
     override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult =
@@ -123,20 +132,12 @@ class LibrarySendPort(
 
     override fun progress(number: Int, name: String, version: String): BotProgress =
         try {
-            val catalog = readCatalog()
-            withSignIn({ it is BotProgress.SignInNeeded }) { reading.read(it, number, name, version, catalog) }
+            withSignIn({ it is BotProgress.SignInNeeded }) { reading.read(it, number, name, version, readCatalog(it.accessToken)) }
         } catch (e: NoSignIn) {
             if (e.failed) BotProgress.Failed(e.reason) else BotProgress.SignInNeeded(e.reason)
         }
 
-    private fun readCatalog(): Catalog? =
-        try {
-            Catalog.parse(catalogSource.catalogText(RumbleHead.commit(api, environment)))
-        } catch (e: CatalogUnreadable) {
-            null
-        } catch (e: IOException) {
-            null
-        }
+    private fun readCatalog(token: String): Catalog? = RumbleSnapshot.read(api, environment, catalogSource, token).catalog
 
     /** The checksum of the staged copy against what the catalog holds for the same name and version. */
     private fun content(submission: StagedSubmission, catalog: Catalog?): ContentState {

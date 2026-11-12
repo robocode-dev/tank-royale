@@ -48,8 +48,13 @@ sealed interface SubmitState {
 
     /** Step 5, before sending: what is known about the staged copy. The person sends from here. */
     data class SendReady(val folder: Path, val review: ReviewInfo, val account: String, val ready: SendPrepared.Ready) : SubmitState {
-        /** Nothing is offered to send when the Rumble already holds this version, or holds the name and version with other content. */
-        val canSend: Boolean get() = ready.content != ContentState.ALREADY_IN_RUMBLE && ready.content != ContentState.DIFFERENT_CONTENT
+        /**
+         * Nothing is offered to send when the Rumble already holds this version, or holds the name and version with other
+         * content, or when the Rumble's rules would refuse the bot.
+         */
+        val canSend: Boolean get() =
+            ready.content != ContentState.ALREADY_IN_RUMBLE && ready.content != ContentState.DIFFERENT_CONTENT &&
+                ready.rules?.problems.orEmpty().none { it.code in SubmissionPrecheck.STOPPING }
     }
 
     /** The staged copy is being sent. */
