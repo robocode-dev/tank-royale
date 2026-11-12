@@ -2565,6 +2565,41 @@ claims:
       state: reserved
       prefix: RCL
       component: "107"
+    - id: RCL-108
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "108"
+    - id: RCL-109
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "109"
+    - id: RCL-110
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "110"
+    - id: RCL-111
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "111"
+    - id: RCL-112
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "112"
+    - id: RCL-113
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "113"
+    - id: RCL-114
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "114"
     - id: RDA-001
       kind: numeric
       state: reserved
@@ -2896,11 +2931,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "24"
-    - id: CH-099
+    - id: CH-100
       kind: numeric
       state: reserved
       prefix: CH
-      component: "99"
+      component: "100"
     - id: G-004
       kind: numeric
       state: reserved
