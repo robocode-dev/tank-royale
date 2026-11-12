@@ -841,7 +841,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When the fifth step prepares the send
     Then a banned account, a disqualified bot and a name that belongs to another owner each give their own text with the account, the bot and the owner, and nothing is offered to send, so pressing send sends nothing, and the line about a new version is then not shown as a success
     And the owner's own bot and a new name are offered to send, a version lower than the active one gives a note and is offered, a version already published is told by the content line, and rules that cannot be read stop nothing, while the screen says that the name, owner and version were not checked
-    And the Rumble's newest commit is looked up with the sign-in, because GitHub allows only a few requests an hour without one, and a refusal would leave the catalog and the rules unread
+    And the Rumble's newest commit is looked up with the sign-in, because GitHub allows only a few requests an hour without one, and again without it when GitHub refuses the sign-in; owners and bans are checked also when the catalog cannot be read; only who may submit which name stops the send, so the button is never greyed out without a reason; and the screen says when the rules alone could not be read
     And the pre-check gives codes and the values in them to the screen, and every text is in every language file
 
   @RCL-100
@@ -849,7 +849,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a pull request that the moderation has sent back with a reason
     When the sixth step shows where it stands
-    Then the text for a sent-back pull request holds no value, and the reason is shown on a line of its own without the code marks of GitHub's comments
+    Then the text for a sent-back pull request holds no value, and the reason is shown on a line of its own as plain text, without the code marks, emphasis and line breaks of GitHub's comments and with a link kept as its text and address
 
   @RCL-101
   Scenario: The maintainer is stopped before sending a bot that belongs to another account

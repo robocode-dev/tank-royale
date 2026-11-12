@@ -508,10 +508,11 @@ class RumbleSubmitSendTest {
     private fun rules(owners: String = """{"schemaVersion":1,"owners":[]}""", bans: String = """{"schemaVersion":1}""") =
         mapOf(RumbleRules.OWNERS_PATH to owners, RumbleRules.BANS_PATH to bans)
 
-    private class HeadApi : GitHubApi {
+    private class HeadApi(val refuseToken: Boolean = false) : GitHubApi {
         val tokens = mutableListOf<String?>()
         override fun get(path: String, token: String?): ApiResponse {
             tokens += token
+            if (refuseToken && token != null) return ApiResponse(401, "{\"message\":\"Bad credentials\"}")
             return ApiResponse(200, "{\"sha\":\"" + "a".repeat(40) + "\"}")
         }
         override fun postJson(path: String, token: String, json: String) = throw UnsupportedOperationException()
@@ -551,6 +552,11 @@ class RumbleSubmitSendTest {
         assertEquals(SubmissionPrecheck.OWNED_BY_ANOTHER to listOf("MyBot", "robocode-rumble-test"), finding.code to finding.values)
         assertEquals("rumble.submit.rule.owned_by_another", SubmitTexts.forRule(finding.code))
 
+        val noCatalog = port(dir.resolve("nocat"), catalogText = null,
+            ruleFiles = rules(owners = """{"schemaVersion":1,"owners":[{"ownerId":"robocode-rumble-test","accounts":["robocode-rumble-test"],"bots":["MyBot"]}]}"""))
+            .prepare(submission(dir), "alice") as SendPrepared.Ready
+        assertEquals(listOf(SubmissionPrecheck.OWNED_BY_ANOTHER), noCatalog.rules!!.problems.map { it.code }, "owners need no catalog")
+
         val banned = prepared("banned", rules(bans = """{"schemaVersion":1,"bannedOwners":[{"account":"alice"}]}"""))
         assertEquals(listOf(SubmissionPrecheck.ACCOUNT_BANNED to listOf("alice")), banned.rules!!.problems.map { it.code to it.values })
 
@@ -588,6 +594,19 @@ class RumbleSubmitSendTest {
         val unreadable = port(dir.resolve("unreadable")).prepare(submission(dir), "alice") as SendPrepared.Ready
         assertEquals(null, unreadable.rules, "rules that cannot be read stop nothing")
         assertTrue(SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", unreadable).canSend)
+        assertEquals(ContentState.NEW, unreadable.content)
+        assertEquals("rumble.submit.rules_not_checked", SubmitTexts.forRulesNotChecked(unreadable), "the screen says that the rules were not checked")
+        assertEquals(null, SubmitTexts.forRulesNotChecked(SendPrepared.Ready(LauncherState.Same, ContentState.NOT_CHECKED, null)),
+            "when neither was read, the content line already says so")
+
+        val stale = HeadApi(refuseToken = true)
+        val anonymous = port(dir.resolve("stale"), ruleFiles = rules(), head = stale).prepare(submission(dir), "alice") as SendPrepared.Ready
+        assertTrue(anonymous.rules != null && stale.tokens.contains(null), "a refused sign-in falls back to the lookup without it")
+
+        val onlyAPublishedVersion = SendPrepared.Ready(LauncherState.Same, ContentState.NEW, null,
+            PrecheckReport(listOf(PrecheckFinding(SubmissionPrecheck.ALREADY_PUBLISHED, "", "", listOf("1.0.0", "MyBot"))), emptyList()))
+        assertTrue(SubmitState.SendReady(dir, ReviewInfo("", null, "", null, false, emptyList()), "alice", onlyAPublishedVersion).canSend,
+            "only who may submit which name stops the send here; a version is the content line's, so no button is greyed out without a reason")
 
         val lower = port(dir.resolve("lower"), catalogText = catalog(Triple("MyBot", "2.0.0", "sha256:old")), ruleFiles = rules())
             .prepare(submission(dir), "alice") as SendPrepared.Ready
@@ -606,6 +625,8 @@ class RumbleSubmitSendTest {
         assertEquals("rumble.submit.progress_sent_back", SubmitTexts.forProgress(BotProgress.SentBack("x")))
         assertEquals("bot RumbleOnboardingScout belongs to owner robocode-rumble-test",
             SubmitTexts.plainReason(" bot `RumbleOnboardingScout` belongs to owner `robocode-rumble-test` "))
+        assertEquals("Refused: see the rules (https://example.org/rules) and try again.",
+            SubmitTexts.plainReason("**Refused**: see [the rules](https://example.org/rules)\nand __try again__."))
     }
 
     @Test

@@ -112,37 +112,15 @@ class LibrarySendPort(
 
     private fun look(tokens: GitHubTokens, submission: StagedSubmission, account: String): SendPrepared {
         val launchers = sending.compareLaunchers(tokens, submission)
-        val (catalog, rules) = readRumble(tokens.accessToken)
+        val snapshot = RumbleSnapshot.read(api, environment, catalogSource, tokens.accessToken)
+        val catalog = snapshot.catalog
         val content = content(submission, catalog)
-        // The same pre-check as the command line: what the bot repository's validator would refuse for this bot.
-        val report = if (catalog != null && rules != null) SubmissionPrecheck.check(submission, account, catalog, rules) else null
+        // The same pre-check as the command line: what the bot repository's validator would refuse for this bot. Bans,
+        // disqualifications and owners need only the rules, so they are checked also when the catalog cannot be read.
+        val report = snapshot.rules?.let { rules ->
+            SubmissionPrecheck.check(submission, account, catalog ?: Catalog(0, "", "", emptyList()), rules)
+        }
         return SendPrepared.Ready(launchers, content, existing(tokens, account, submission.name, catalog), report)
-    }
-
-    /** The Rumble's catalog and per-bot rules at one commit; either is null when it cannot be read, which stops nothing. */
-    private fun readRumble(token: String): Pair<Catalog?, RumbleRules?> {
-        val commit = try {
-            RumbleHead.commit(api, environment, token)
-        } catch (e: CatalogUnreadable) {
-            return null to null
-        } catch (e: IOException) {
-            return null to null
-        }
-        val catalog = try {
-            Catalog.parse(catalogSource.catalogText(commit))
-        } catch (e: CatalogUnreadable) {
-            null
-        } catch (e: IOException) {
-            null
-        }
-        val rules = try {
-            RumbleRules.read(catalogSource, commit)
-        } catch (e: CatalogUnreadable) {
-            null
-        } catch (e: IOException) {
-            null
-        }
-        return catalog to rules
     }
 
     override fun send(submission: StagedSubmission, authorCertifiesLicense: Boolean): SubmissionResult =
@@ -159,14 +137,7 @@ class LibrarySendPort(
             if (e.failed) BotProgress.Failed(e.reason) else BotProgress.SignInNeeded(e.reason)
         }
 
-    private fun readCatalog(token: String): Catalog? =
-        try {
-            Catalog.parse(catalogSource.catalogText(RumbleHead.commit(api, environment, token)))
-        } catch (e: CatalogUnreadable) {
-            null
-        } catch (e: IOException) {
-            null
-        }
+    private fun readCatalog(token: String): Catalog? = RumbleSnapshot.read(api, environment, catalogSource, token).catalog
 
     /** The checksum of the staged copy against what the catalog holds for the same name and version. */
     private fun content(submission: StagedSubmission, catalog: Catalog?): ContentState {

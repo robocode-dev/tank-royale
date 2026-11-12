@@ -30,6 +30,12 @@ object SubmissionPrecheck {
     const val ALREADY_PUBLISHED = "already-published"
     const val LOWER_VERSION = "lower-version"
 
+    /**
+     * The problems that stop a send in the desktop program: who may submit which name. A version already published is
+     * stopped by the content check, which reads the same catalog.
+     */
+    val STOPPING: Set<String> = setOf(ACCOUNT_BANNED, BOT_DISQUALIFIED, OWNED_BY_ANOTHER)
+
     private val PLAIN_VERSION = Regex("\\d+(?:\\.\\d+)*")
 
     fun check(submission: StagedSubmission, account: String, catalog: Catalog, rules: RumbleRules): PrecheckReport {

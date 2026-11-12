@@ -20,6 +20,7 @@ import dev.robocode.tankroyale.rumble.LauncherCheck
 import dev.robocode.tankroyale.rumble.LauncherState
 import dev.robocode.tankroyale.rumble.RumbleHead
 import dev.robocode.tankroyale.rumble.RumbleRules
+import dev.robocode.tankroyale.rumble.RumbleSnapshot
 import dev.robocode.tankroyale.rumble.SavedRenewal
 import dev.robocode.tankroyale.rumble.SignInRefused
 import dev.robocode.tankroyale.rumble.SourceNotice
@@ -245,18 +246,13 @@ internal class BotSendCommand(io: Io, services: Services) : BotLeaf("send", io, 
     private class Advice(val report: PrecheckReport?, val note: String?)
 
     /** The advisory check against the Rumble's catalog and rules. A Rumble that cannot be read does not stop the send. */
-    private fun advice(env: RumbleEnvironment, staged: StagedSubmission, account: String, token: String): Advice =
-        try {
-            val commit = RumbleHead.commit(services.api, env, token)
-            val source = services.catalog(env)
-            val catalog = Catalog.parse(source.catalogText(commit))
-            val rules = RumbleRules.read(source, commit)
-            Advice(SubmissionPrecheck.check(staged, account, catalog, rules), null)
-        } catch (e: CatalogUnreadable) {
-            Advice(null, "The Rumble's catalog and rules could not be read (${io.outside(e.message.orEmpty())}), so the name, owner and version were not checked. The bot repository checks them anyway.")
-        } catch (e: IOException) {
-            Advice(null, "The Rumble's catalog and rules could not be read (${io.outside(e.message.orEmpty())}), so the name, owner and version were not checked. The bot repository checks them anyway.")
-        }
+    private fun advice(env: RumbleEnvironment, staged: StagedSubmission, account: String, token: String): Advice {
+        val snapshot = RumbleSnapshot.read(services.api, env, services.catalog(env), token)
+        val catalog = snapshot.catalog
+        val rules = snapshot.rules
+        if (catalog != null && rules != null) return Advice(SubmissionPrecheck.check(staged, account, catalog, rules), null)
+        return Advice(null, "The Rumble's catalog and rules could not be read (${io.outside(snapshot.problem.orEmpty())}), so the name, owner and version were not checked. The bot repository checks them anyway.")
+    }
 
     private fun factsText(staged: StagedSubmission, advice: Advice, files: List<String>, launchers: LauncherState): String = buildString {
         appendLine("Bot: ${io.outside(staged.name)} ${io.outside(staged.version.orEmpty())} (${staged.language}), license ${io.outside(staged.license ?: "none declared")}")

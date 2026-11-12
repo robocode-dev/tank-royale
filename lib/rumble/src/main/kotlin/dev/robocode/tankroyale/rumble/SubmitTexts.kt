@@ -122,8 +122,22 @@ object SubmitTexts {
         return if (tone == Tone.GOOD && !state.canSend) Tone.NEUTRAL else tone
     }
 
-    /** The moderation's reason as plain text: without the code marks GitHub's comments use. */
-    fun plainReason(reason: String): String = reason.replace("`", "").trim()
+    /**
+     * The key of the note that the Rumble's rules were not read, when the catalog was: the content line then says nothing
+     * about them. When neither was read, the content line already says so.
+     */
+    fun forRulesNotChecked(ready: SendPrepared.Ready): String? =
+        "rumble.submit.rules_not_checked".takeIf { ready.rules == null && ready.content != ContentState.NOT_CHECKED }
+
+    /**
+     * The moderation's reason as plain text: GitHub's comments are Markdown, so code marks, emphasis and line breaks are
+     * removed, and a link is kept as its text followed by its address.
+     */
+    fun plainReason(reason: String): String = reason
+        .replace(Regex("\\[([^\\]]*)]\\(([^)\\s]*)\\)"), "$1 ($2)")
+        .replace("`", "").replace("**", "").replace("__", "")
+        .replace(Regex("\\s+"), " ")
+        .trim()
 
     /** The codes the wizard itself adds to the library's own. */
     val WIZARD_CODES: List<String> = listOf("STAGING_REFUSED", "READ_FAILED")
@@ -135,7 +149,7 @@ object SubmitTexts {
         "rumble.submit.review_intro", "rumble.submit.review_name", "rumble.submit.review_language", "rumble.submit.review_license",
         "rumble.submit.review_no_license", "rumble.submit.review_files", "rumble.submit.public_notice",
         "rumble.submit.confirm_public", "rumble.submit.confirm_author", "rumble.submit.send_intro", "rumble.submit.existing", "rumble.submit.progress_label", "rumble.submit.progress_reading",
-        "rumble.submit.progress_reason", "rumble.submit.rule.account_banned", "rumble.submit.rule.bot_disqualified", "rumble.submit.rule.owned_by_another",
+        "rumble.submit.progress_reason", "rumble.submit.rules_not_checked", "rumble.submit.rule.account_banned", "rumble.submit.rule.bot_disqualified", "rumble.submit.rule.owned_by_another",
         "rumble.submit.rule.lower_version",
         "rumble.submit.button.choose", "rumble.submit.button.check", "rumble.submit.button.check_again", "rumble.submit.button.review",
         "rumble.submit.button.back", "rumble.submit.button.next", "rumble.submit.button.close", "rumble.submit.button.open_fork",

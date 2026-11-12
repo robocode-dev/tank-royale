@@ -53,7 +53,8 @@ sealed interface SubmitState {
          * content, or when the Rumble's rules would refuse the bot.
          */
         val canSend: Boolean get() =
-            ready.content != ContentState.ALREADY_IN_RUMBLE && ready.content != ContentState.DIFFERENT_CONTENT && ready.rules?.hasProblems != true
+            ready.content != ContentState.ALREADY_IN_RUMBLE && ready.content != ContentState.DIFFERENT_CONTENT &&
+                ready.rules?.problems.orEmpty().none { it.code in SubmissionPrecheck.STOPPING }
     }
 
     /** The staged copy is being sent. */

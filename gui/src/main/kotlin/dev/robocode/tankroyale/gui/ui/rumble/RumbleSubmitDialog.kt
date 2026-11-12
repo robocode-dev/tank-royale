@@ -175,10 +175,12 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
         put(wrapped(text("rumble.submit.public_notice"), bold = true))
         put(toned(text(SubmitTexts.forContent(ready.content)), SubmitTexts.contentTone(state)))
         // What the Rumble's rules would refuse stops the send; a lower version is only a note.
+        // A refusal by the rules is said in red, without the word for a failure, as nothing has been tried yet.
         ready.rules?.let { rules ->
-            rules.problems.forEach { finding -> SubmitTexts.forRule(finding.code)?.let { put(status(false, text(it, *finding.values.toTypedArray()))) } }
+            rules.problems.forEach { finding -> SubmitTexts.forRule(finding.code)?.let { put(alert(text(it, *finding.values.toTypedArray()))) } }
             rules.warnings.forEach { finding -> SubmitTexts.forRule(finding.code)?.let { put(wrapped(text(it, *finding.values.toTypedArray()))) } }
         }
+        SubmitTexts.forRulesNotChecked(ready)?.let { put(wrapped(text(it))) }
         put(wrapped(launchersText(ready.launchers)))
         ready.existing?.let { existing ->
             put(wrapped(text("rumble.submit.existing", existing.version)))
@@ -229,7 +231,7 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
      */
     private fun progress(progress: BotProgress): List<Component> = when (progress) {
         is BotProgress.SentBack -> listOfNotNull(
-            wrapped(text(SubmitTexts.forProgress(progress)), bold = true).apply { foreground = statusColor(false) },
+            alert(text(SubmitTexts.forProgress(progress))),
             progress.reason.takeIf { it.isNotBlank() }?.let { wrapped(text("rumble.submit.progress_reason", SubmitTexts.plainReason(it))) },
         )
         is BotProgress.InCatalog -> listOf(toned(text("rumble.submit.progress_label") + " " + text(SubmitTexts.forProgress(progress), progress.version), SubmitTexts.toneOf(progress)))
@@ -266,6 +268,9 @@ class RumbleSubmitDialog private constructor(private val scheduling: ScheduledEx
     }
 
     /** One problem: what the code means from the resources, then the file and the library's own sentences as labelled details. */
+    /** A bold red line that needs no word for a failure, such as a refusal by the rules before anything is sent. */
+    private fun alert(message: String) = wrapped(message, bold = true).apply { foreground = statusColor(false) }
+
     private fun problem(finding: Finding) {
         put(wrapped(text(SubmitTexts.forCode(finding.code)), bold = true).apply { foreground = statusColor(false) })
         if (finding.file.isNotBlank()) put(wrapped(text("rumble.submit.file", finding.file)))
