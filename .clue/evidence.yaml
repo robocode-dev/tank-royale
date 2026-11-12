@@ -1786,7 +1786,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
-          "sha256": "997868e60d36ace389b7138010a2f3042c27163f8a0141884d8278625c2593cc"
+          "sha256": "9fc1557db9fefcd6b8ec1b67c7cf24f101c51f38edf4a1841e32ce4104389214"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
@@ -3107,6 +3107,20 @@
           "subject": "RumbleSessionPlannerTest.testRCL105_UnitPositive_selectedEntriesFormatsAndOpponentsTakeTurns",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-105",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL105_UnitPositive_threeSelectedEntriesShareTheBattlesCloselyForEverySeedAndInTwinDuelToo",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-106",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL106_UnitNegative_adviceNamingTwinDuelTeamsThatShareAMemberOrTooManyTeamsBlocksNoValidBattle",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-106",

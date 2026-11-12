@@ -171,8 +171,8 @@ class RumbleSessionPlannerTest {
         assertTrue(kotlin.math.abs(ones - (battles.size - ones)) <= 1, "the formats take turns")
         val withBot1 = battles.count { "Bot1 1.0" in it.participants }
         val withBot2 = battles.count { "Bot2 1.0" in it.participants }
-        assertTrue(kotlin.math.abs(withBot1 - withBot2) <= battles.size / 2, "both selected entries get battles: $withBot1 and $withBot2")
         assertTrue(withBot1 > 0 && withBot2 > 0)
+        assertTrue(kotlin.math.abs(withBot1 - withBot2) <= 4, "the selected entries take turns: $withBot1 and $withBot2")
         val opponents = battles.flatMap { it.participants }.filter { it != "Bot1 1.0" && it != "Bot2 1.0" }.toSet()
         assertEquals((3..7).map { "Bot$it 1.0" }.toSet(), opponents, "every eligible opponent was used")
     }
@@ -188,6 +188,25 @@ class RumbleSessionPlannerTest {
         val others = (2L..30L).map { SessionPlanner.next(request(entries, seed = it), SessionHistory()) }.toSet()
         assertTrue(others.size > 1, "another seed may give another battle")
         assertNotEquals(setOf(SessionPlanner.next(one, SessionHistory())), others)
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCL105_UnitPositive_threeSelectedEntriesShareTheBattlesCloselyForEverySeedAndInTwinDuelToo() {
+        val selected = setOf("Bot1 1.0", "Bot2 1.0", "Bot3 1.0")
+        for (seed in 1L..5L) {
+            val battles = run(request(individuals(9), selected = selected, mode = SelectionMode.ONLY, seed = seed), 60)
+            val counts = selected.map { s -> battles.count { s in it.participants } }
+            assertTrue(counts.max() - counts.min() <= 6, "seed $seed gave $counts")
+        }
+        val teams = listOf(
+            bot("Team A", members = listOf("Bot1 1.0", "Bot2 1.0")), bot("Team B", members = listOf("Bot3 1.0", "Bot4 1.0")),
+            bot("Team C", members = listOf("Bot5 1.0", "Bot6 1.0")), bot("Team D", members = listOf("Bot7 1.0", "Bot8 1.0")),
+        )
+        val twin = run(request(individuals(8) + teams, selected = setOf("Team A 1.0", "Team B 1.0"), mode = SelectionMode.PREFER, formats = listOf("twinduel")), 40)
+        val a = twin.count { "Team A 1.0" in it.participants }
+        val b = twin.count { "Team B 1.0" in it.participants }
+        assertTrue(kotlin.math.abs(a - b) <= 6 && a > 0 && b > 0, "TwinDuel selected teams took $a and $b")
     }
 
     // RCL-106
@@ -224,6 +243,27 @@ class RumbleSessionPlannerTest {
             assertTrue(b.participants.all { it in entries.map { e -> "${e.name} ${e.version}" } })
         }
         assertFalse(SessionPlanner.next(missing, history) is SessionStep.Finished)
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCL106_UnitNegative_adviceNamingTwinDuelTeamsThatShareAMemberOrTooManyTeamsBlocksNoValidBattle() {
+        val entries = individuals(6) + listOf(
+            bot("Team A", members = listOf("Bot1 1.0", "Bot2 1.0")),
+            bot("Team B", members = listOf("Bot1 1.0", "Bot3 1.0")),
+            bot("Team C", members = listOf("Bot4 1.0", "Bot5 1.0")),
+        )
+        val clashing = mapOf("twinduel" to listOf(listOf("Team A 1.0", "Team B 1.0"), listOf("Team A 1.0", "Team B 1.0", "Team C 1.0")))
+
+        val all = battle(SessionPlanner.next(request(entries, formats = listOf("twinduel"), advice = clashing), SessionHistory()))
+        val only = battle(SessionPlanner.next(request(entries, selected = setOf("Team A 1.0"), mode = SelectionMode.ONLY, formats = listOf("twinduel"), advice = clashing), SessionHistory()))
+
+        for (b in listOf(all, only)) {
+            assertEquals(2, b.participants.size)
+            val members = b.participants.flatMap { p -> entries.first { "${it.name} ${it.version}" == p }.teamMembers }
+            assertEquals(4, members.toSet().size, "the teams of ${b.participants} must not share a bot")
+        }
+        assertTrue("Team A 1.0" in only.participants)
     }
 
     // RCL-107

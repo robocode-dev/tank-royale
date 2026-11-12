@@ -199,9 +199,14 @@ object SessionPlanner {
         val whole = advised.filter { valid(it) }
         if (whole.isNotEmpty()) return whole.take(ADVICE_BREADTH).random(random)
 
-        // A short advised group is filled up; its members come first.
-        val seed = advised.firstOrNull()?.let { g -> g.take(perBattle) } ?: emptyList()
-        val start = (listOfNotNull(anchor) + seed).distinct().take(perBattle)
+        // A short advised group is filled up; its members come first, as many as fit together. Members that clash with the
+        // ones already taken (two TwinDuel teams sharing a bot) are left out, so odd advice never blocks a valid battle.
+        val drawn = advised.take(ADVICE_BREADTH).randomOrNull(random)
+        val start = mutableListOf<String>()
+        anchor?.let { start += it }
+        for (member in drawn.orEmpty()) {
+            if (start.size < perBattle && member !in start && compatible(start + member, twinDuel, pool)) start += member
+        }
 
         fun cost(chosen: List<String>, c: String) =
             chosen.sumOf { history.met(minOf(c, it), maxOf(c, it)) } * 1000 + (history.perEntry[c] ?: 0)
@@ -214,7 +219,6 @@ object SessionPlanner {
             for (c in fits) fill(chosen + c, rest)?.let { return it }
             return null
         }
-        if (!compatible(start, twinDuel, pool)) return null
         return fill(start, candidates.shuffled(random))
     }
 
