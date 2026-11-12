@@ -1496,7 +1496,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "e2e49eeb921a3835025c58c379705db00690ca784cf5c2184d78b8d2acf6f9c7"
+          "sha256": "288e22845560d25b5b8183233ba53343186d2a6f809b6b6d5260abec3f12e3ef"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1508,7 +1508,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "f9830c95435722056d41d96d2cd5f1e41ef2de31e5532cabc63c80536f90e421"
+          "sha256": "8b7bceef4bd9e17cd028bac98b8e057cb71cdb90e1295c2cc532b11d14925a2b"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -1783,6 +1783,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
           "sha256": "b6bbc107a7e210863fe4e039f4a2601b61cc25f1d479e3de3ce2723837936526"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "sha256": "9fc1557db9fefcd6b8ec1b67c7cf24f101c51f38edf4a1841e32ce4104389214"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
@@ -3038,6 +3042,111 @@
           "id": "RCL-035",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
           "subject": "RumbleSavedSignInTest.testRCL035_UnitPositive_twoProgramsRenewOneAfterTheOtherAndBothStaySignedIn",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-102",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL102_UnitNegative_noGameFormatGivesAWaitAndNoBattle",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-102",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL102_UnitPositive_allBotsIgnoresTheSelectionAndNeverUsesAnEntryThatIsNotActive",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-103",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL103_UnitNegative_preferFallsBackToAnyValidBattleWhenNoSelectedEntryIsUsable",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-103",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL103_UnitPositive_preferTakesASelectedEntryWhenAValidBattleHoldsOne",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-104",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL104_UnitNegative_aWaitThatOnlyTheSelectionCausedIsToldApartFromOneTheWholeCatalogCaused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-104",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL104_UnitNegative_onlySelectedBotsWaitsWithAReasonAndNeverUsesOtherEntries",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-104",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL104_UnitPositive_onlySelectedBotsHoldsASelectedEntryInEveryBattle",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-105",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL105_UnitNegative_theSameRequestAndHistoryGiveTheSameBattleAndAnotherSeedMayGiveAnother",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-105",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL105_UnitPositive_selectedEntriesFormatsAndOpponentsTakeTurns",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-105",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL105_UnitPositive_threeSelectedEntriesShareTheBattlesCloselyForEverySeedAndInTwinDuelToo",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-106",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL106_UnitNegative_adviceNamingTwinDuelTeamsThatShareAMemberOrTooManyTeamsBlocksNoValidBattle",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-106",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL106_UnitNegative_noCountNeverEndsAndMissingOrUnusableAdviceBlocksNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-106",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL106_UnitPositive_aBattleCountEndsTheSessionAndAdviceThatIsUsableIsFollowed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-107",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL107_UnitNegative_aTeamWhoseMemberIsNotActiveIsNeverUsedAndASelectedTeamWithNoPartnerGivesNoBattle",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-107",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
+          "subject": "RumbleSessionPlannerTest.testRCL107_UnitPositive_aTwinDuelBattleHoldsTheSelectedTeamAndAnotherTeamWithDisjointMembers",
           "type": "Unit",
           "direction": "positive"
         },

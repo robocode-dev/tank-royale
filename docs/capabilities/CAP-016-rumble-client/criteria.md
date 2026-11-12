@@ -858,4 +858,52 @@ Feature: rumble-client — Local ranked and practice battle client
     When the maintainer stages RumbleOnboardingScout and goes on to the fifth step
     Then the step says that the name belongs to another owner, names the owner, and offers nothing to send
     And the observer, the conditions, the observation and what was not observed are recorded in the proposal's human evidence, and no human observation is invented
+
+  @RCL-102
+  Scenario: All bots ignores the selection when a contribution session chooses its next battle
+    Test-type: Unit
+    Given a session in the all-bots mode with some entries selected, active entries in the catalog, and entries that are not active
+    When the session chooses its next battle
+    Then every participant is an active entry, the selection does not decide the choice, and entries that are not active are never used
+    And a session with no game format chosen gives a wait with the reason code for no format and no battle
+
+  @RCL-103
+  Scenario: Prefer selected bots takes a selected entry when a valid battle holds one and falls back otherwise
+    Test-type: Unit
+    Given a session in the prefer mode with selected entries
+    When the session chooses its next battle
+    Then the battle holds a selected entry whenever a valid battle with one exists in a chosen format
+    And when no valid battle holds a selected entry, or the selected entries are no longer active, the battle is any valid battle of the whole catalog, and a selection of nothing acts as all bots
+
+  @RCL-104
+  Scenario: Only selected bots never picks a battle without a selected entry and waits with a reason when none is valid
+    Test-type: Unit
+    Given a session in the only-selected mode
+    When the session chooses its next battle
+    Then every battle holds a selected entry
+    And when nothing is selected, the selected entries are not active, or no valid battle holds a selected entry, the answer is a wait with its own reason code and the values that explain it, never a battle with other entries, and a wait that the whole catalog could not fill is told apart from one that only the selection could not fill
+
+  @RCL-105
+  Scenario: Selected entries and game formats take turns, and every eligible opponent is eventually used
+    Test-type: Unit
+    Given a session with several selected entries, several game formats and more eligible opponents than a battle holds
+    When the session runs battle after battle, recording each in its history
+    Then the selected entries take turns, the formats take turns, and over the session every eligible opponent has been used
+    And the same request, history and seed give the same battle, and a different seed may give another
+
+  @RCL-106
+  Scenario: A battle count ends a session, no count never does, and missing advice blocks nothing
+    Test-type: Unit
+    Given a session with a battle count, a session without one, and sessions whose published advice is missing, empty or names entries that are not eligible
+    When the session chooses its next battle
+    Then the session is finished once its history holds the battle count and never finishes when it has no count
+    And advice that is missing, empty or unusable never makes an otherwise valid battle impossible, and usable advice is followed
+
+  @RCL-107
+  Scenario: A TwinDuel team counts as one selected entry and the two teams never share a member bot
+    Test-type: Unit
+    Given active TwinDuel teams whose members are active individual bots, some teams sharing a member, and a team whose member is not active
+    When the session chooses its next TwinDuel battle with a team selected
+    Then the battle holds exactly two teams, one of them the selected team, with disjoint members that together make the pinned number of bots
+    And a team whose member is not active is never used, and a selected team with no disjoint partner gives no battle in the only-selected mode
 ```

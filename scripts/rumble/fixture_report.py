@@ -38,6 +38,7 @@ CASES = [
     ("credential-boundary", "Credential boundary between host and worker"),
     ("legacy-client-import", "Import of the old client's state"),
     ("command-line", "Command line"),
+    ("session-planning", "Contribution session planning"),
 ]
 RESULTS_CASE = ("test-results", "Test results")
 
@@ -46,6 +47,7 @@ RESULTS_CASE = ("test-results", "Test results")
 CLASS_CASES = [
     (re.compile(r"^(RumbleCli\w*Test|RumbleProgramTest)$"), "command-line"),
     (re.compile(r"^RumbleLegacyImportTest$"), "legacy-client-import"),
+    (re.compile(r"^RumbleSessionPlannerTest$"), "session-planning"),
     (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),
     (re.compile(r"^(RumbleSignIn\w*|RumbleSavedSignInTest|RumbleRegistration\w*|RumbleGitHubApiTest|RumbleTokenSecrecyTest|RumbleAccount\w*Test|RumbleMenuSwitchTest|RumbleSubmit\w*Test|RumbleCliSubmitTextsTest)$"), "sign-in-and-registration"),
