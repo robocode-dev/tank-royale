@@ -26,6 +26,10 @@ Battle Runner [CAP-001](../CAP-001-battle-runner/README.md) owns server lifecycl
 
 Ranked mode accepts only active pinned catalog sources and requires the running server's advertised `behaviorVersion` to equal `engine.json`. Practice mode may use local unpublished sources and a different engine, but it has no path to the ranked journal or submission transport. This separation is part of the trust boundary, not a presentation option.
 
+## Choosing the next battle of a session
+
+A contribution session asks `SessionPlanner` in the shared library for its next battle and records each finished battle in the session history it passes back. The planner answers with a battle, a wait with a reason code, or that the session is finished. The three modes are all bots (the selection is ignored), prefer selected bots (a valid battle with a selected entry first, otherwise any valid battle) and only selected bots (every battle holds a selected entry; with none valid it waits and says why, and a wait the whole catalog caused is told apart from one only the selection caused). Missing or unusable advice blocks nothing. The planner has no screen, worker, network or clock, which is what makes it provable alone and the same in the desktop program and the command line.
+
 ## Result, evidence, and journal contracts
 
 After a full ranked battle completes, the client creates the V1 envelope record consumed by [CAP-015](../CAP-015-rumble-result-data/README.md): a UUID battle ID, ISO-8601 completion time, matching client identity and version, pinned behavior version, game type and dimensions, and the complete Battle Runner participant result model. The client stores the replay as local evidence addressed by the battle ID and records its SHA-256 hash locally; replay files are not submitted to `rumble-data` in V1.
