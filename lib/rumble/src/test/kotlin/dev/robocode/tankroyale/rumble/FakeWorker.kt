@@ -65,6 +65,17 @@ fun main(args: Array<String>) {
         "fail" -> { emit(WorkerEvent.Started(jobId = id)); emit(WorkerEvent.Failed(jobId = id, code = ErrorCode.BATTLE_FAILED, message = "no bots")); exitProcess(1) }
         "nofinal" -> emit(WorkerEvent.Started(jobId = id))
         "badexit" -> { finishNormally(); exitProcess(1) }
+        "fewrounds" -> {
+            emit(WorkerEvent.Started(jobId = id))
+            emit(WorkerEvent.Result(jobId = id, numberOfRounds = job.numberOfRounds - 1, bots = job.bots.mapIndexed { i, b -> outcome(b.name, i + 1) }))
+            emit(WorkerEvent.Finished(jobId = id))
+        }
+        "closedhang" -> {
+            // Closes its output, as a worker that is shutting down does, and then hangs.
+            emit(WorkerEvent.Started(jobId = id))
+            System.out.close()
+            Thread.sleep(120_000)
+        }
         "garbage" -> println("this is not an event")
         "bigoutput" -> {
             val line = MessageCodec.write(WorkerEvent.Started(jobId = id))

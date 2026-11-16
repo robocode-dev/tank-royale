@@ -956,4 +956,53 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the public interface of the ranked journal
     When it is inspected
     Then its operations are exactly adding a record, reading the records and the read report, the moves tied to batches, receipts and the engine epoch, and opening a journal; none of them removes, hides or filters a record, none takes a function, predicate or comparator, and none takes anything but a battle ID, a reason code with its details, a version number or a whole record to add, so a record can only be chosen by its identity and never by how well the battle went
+
+  @RCL-115
+  Scenario: A completed battle of a contribution session becomes exactly one record in the journal, made from what was run
+    Test-type: Unit
+    Given a session with a chosen battle, its bots placed from the catalog commit, and a worker that completes the battle
+    When the session runs the battle
+    Then the journal holds exactly one new record with the battle's identity, the game type, the rounds the worker reported, the client, the engine pin, the catalog commit, and each participant's result with the source hash of the bot that was run, and the session reports that the battle started and was kept
+    And a result that names other bots than the battle ran, or holds another number of rounds than the battle asked for, is not kept and is reported as not matching, and a battle identity the journal already holds is not counted as kept and ends the session as a journal failure
+
+  @RCL-116
+  Scenario: A battle that did not complete becomes no record, and the session goes on until too many in a row fail
+    Test-type: Unit
+    Given a worker that refuses the job, fails, ends without finishing, exits with an error, writes something that is not a message, or does not start
+    When the session runs battles
+    Then no record is kept for any of them, each is reported as not kept with its own reason code, the next battle is run, and a completed battle after a failure is kept
+    And after the configured number of battles in a row that were not kept the session ends as given up, without spinning, and a battle for a game format with no rounds set is not run and is reported
+
+  @RCL-117
+  Scenario: A bot that cannot be placed is not run and the session chooses another battle instead of stopping
+    Test-type: Unit
+    Given a catalog whose source for one bot does not match its recorded hash, is missing from the archive, cannot be reached, or is a team with a member of its own folder name
+    When the session chooses a battle that holds that bot
+    Then the bot is not run and the session reports why it could not be placed; a bot that can never be placed from this commit is left out with every team that holds it from then on, and the session goes on with battles that hold only bots that were placed
+    And a source that cannot be reached is tried again after the poll time, is never left out for it, and counts towards giving up like a battle that did not complete
+    And a team's members are placed beside the team, two bots whose folders end in the same name are both placed in one battle, a bot already in the cache with a matching hash is reused without fetching, a cached folder that no longer matches its hash is fetched again, and when too few bots remain the session waits with the planner's reason
+
+  @RCL-118
+  Scenario: Pause finishes the active battle and waits, finish-and-stop ends after it, and cancel-now ends the worker and keeps nothing
+    Test-type: Integration
+    Given a running session and, for cancel-now, a real worker process that has started a child process of its own
+    When the contributor pauses, asks to finish and stop, or cancels now
+    Then pause lets the active battle finish and be kept, reports the pause, runs no further battle until resumed, and reports the resumption
+    And finish-and-stop keeps the active battle's result and then ends the session, and cancel-now ends the worker and everything it started, keeps nothing of the battle and ends the session as cancelled, also when the worker has closed its output but is still running
+    And cancel-now or finish-and-stop during a pause ends the session without reporting a resumption
+
+  @RCL-119
+  Scenario: A battle count ends the session and the planner's wait is reported once with its reason
+    Test-type: Unit
+    Given a session with a battle count, and a session whose planner has no valid battle
+    When the session runs
+    Then it ends as finished after exactly that many kept battles, and counts only kept battles
+    And a wait is reported once for each reason with its values instead of on every look, the session looks again after the poll time without running anything, and a request that changes while it waits is used at the next look
+
+  @RCL-120
+  Scenario: A real battle through the real worker is kept in the journal and read back
+    Test-type: Integration
+    Given two sample bots placed from a catalog source, the real battle worker and a journal
+    When a session with a battle count of one runs
+    Then the journal holds one record whose participants are the two bots with the hashes of the sources that were run, and opening the journal again reads the same record
 ```

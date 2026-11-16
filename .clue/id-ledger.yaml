@@ -1304,6 +1304,20 @@ events:
     - {id: CH-101, kind: numeric, state: reserved, prefix: CH, component: "101"}
     - {id: CH-101, kind: numeric, state: live, prefix: CH, component: "101"}
     - {id: CH-101-tasks, kind: opaque, state: live}
+    - {id: RCL-115, kind: numeric, state: live, prefix: RCL, component: "115"}
+    - {id: RCL-116, kind: numeric, state: live, prefix: RCL, component: "116"}
+    - {id: RCL-117, kind: numeric, state: live, prefix: RCL, component: "117"}
+    - {id: RCL-118, kind: numeric, state: live, prefix: RCL, component: "118"}
+    - {id: RCL-119, kind: numeric, state: live, prefix: RCL, component: "119"}
+    - {id: RCL-120, kind: numeric, state: live, prefix: RCL, component: "120"}
+    - {id: RCL-115, kind: numeric, state: reserved, prefix: RCL, component: "115"}
+    - {id: RCL-116, kind: numeric, state: reserved, prefix: RCL, component: "116"}
+    - {id: RCL-117, kind: numeric, state: reserved, prefix: RCL, component: "117"}
+    - {id: RCL-118, kind: numeric, state: reserved, prefix: RCL, component: "118"}
+    - {id: RCL-119, kind: numeric, state: reserved, prefix: RCL, component: "119"}
+    - {id: RCL-120, kind: numeric, state: reserved, prefix: RCL, component: "120"}
+    - {id: CH-101, kind: numeric, state: retired, prefix: CH, component: "101"}
+    - {id: CH-101-tasks, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}

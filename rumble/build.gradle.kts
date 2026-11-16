@@ -24,6 +24,8 @@ dependencies {
     testImplementation(project(":lib:common"))
     // Only the live host check uses the host library, to start this worker as a real process. It is not on the worker's own classpath.
     testImplementation(project(":lib:rumble"))
+    // The session integration test needs the tree hash to describe the sample bots the way a catalog does.
+    testImplementation(project(":lib:bot-project"))
     testImplementation(platform(testLibs.junit.bom))
     testImplementation(testLibs.bundles.junit)
 }
