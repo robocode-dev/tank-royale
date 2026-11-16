@@ -453,6 +453,70 @@ class RumbleSessionRunnerTest {
         }
     }
 
+    // RCL-122 and RCL-123: a session made from the Rumble's pin and advice
+
+    private class PinData(vararg files: Pair<String, String>) : ResultDataSource {
+        private val files = mapOf(*files)
+        override fun fileText(path: String) = files[path]
+    }
+
+    private val enginePin = EnginePin.PATH to """
+        { "schemaVersion": 1, "behaviorVersion": ${dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION},
+          "gameTypes": { "1v1": { "rounds": 7, "battlefield": [800, 600], "participants": 2 } } }
+    """.trimIndent()
+
+    /** A session whose rounds, battle sizes, engine and advice come from [data]. */
+    private fun pinnedSession(dir: Path, data: ResultDataSource, entries: List<CatalogBot>, vararg names: String): Run {
+        val pin = SessionPins.prepare(data, listOf("1v1")) as SessionPin.Ready
+        val advice = AdviceKeeper(data, pin.formats)
+        val journal = RankedJournal.open(RumbleEnvironments.PUBLIC, dir.resolve("journal.jsonl"))
+        val events = mutableListOf<SessionEvent>()
+        val setup = SessionSetup(
+            commit = commit, source = sourceFor(*names), botCache = dir.resolve("cache"), host = WorkerHost(WorkerLimits(totalTime = Duration.ofSeconds(60))),
+            command = command("ok"), journal = journal, engine = pin.engine("1.4.0", "1.4.0"), client = client, roundsPerFormat = pin.roundsPerFormat,
+            pollMillis = 1, sleep = {},
+        )
+        val end = SessionRunner(setup, SessionControl()) { events += it }.run {
+            SessionRequest(entries, emptySet(), SelectionMode.ALL, pin.formats, pin.participantCounts, battleLimit = 1, advice = advice.current(), seed = 1)
+        }
+        return Run(end, events, journal)
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCL122_UnitPositive_aSessionUnderAPinRunsThePinsRoundsAndKeepsThePinsBehaviorVersion(@TempDir dir: Path) {
+        val run = pinnedSession(dir, PinData(enginePin), listOf(bot("Alpha"), bot("Beta")), "Alpha", "Beta")
+
+        assertEquals(SessionEnd.Finished, run.end, run.events.toString())
+        val record = run.journal.entries().single().record
+        assertEquals(7, record.rounds, "the fake worker reports the rounds the job asked for")
+        assertEquals(dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION, record.engine.behaviorVersion)
+        assertEquals(2, record.participants.size)
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCL123_UnitPositive_anAdvisedBattleIsRunFirstAndWithoutAdviceTheSessionRunsByCoverage(@TempDir dir: Path) {
+        val entries = listOf(bot("Alpha"), bot("Beta"), bot("Gamma"), bot("Delta"))
+        val advised = MatchmakingAdvice.path("1v1") to """
+            { "schemaVersion": 1, "gameType": "1v1", "priorityPairs": [ { "bots": ["Gamma 1.0", "Delta 1.0"] } ] }
+        """.trimIndent()
+
+        val otherAdvice = MatchmakingAdvice.path("1v1") to """
+            { "schemaVersion": 1, "gameType": "1v1", "priorityPairs": [ { "bots": ["Alpha 1.0", "Gamma 1.0"] } ] }
+        """.trimIndent()
+
+        val withAdvice = pinnedSession(dir.resolve("advice"), PinData(enginePin, advised), entries, "Alpha", "Beta", "Gamma", "Delta")
+        val withOther = pinnedSession(dir.resolve("other"), PinData(enginePin, otherAdvice), entries, "Alpha", "Beta", "Gamma", "Delta")
+        val without = pinnedSession(dir.resolve("none"), PinData(enginePin), entries, "Alpha", "Beta", "Gamma", "Delta")
+
+        // The same seed with two different advices runs each advised battle, so the advice and not the seed chooses it.
+        assertEquals(setOf("Gamma", "Delta"), withAdvice.journal.entries().single().record.participants.map { it.name }.toSet())
+        assertEquals(setOf("Alpha", "Gamma"), withOther.journal.entries().single().record.participants.map { it.name }.toSet())
+        assertEquals(SessionEnd.Finished, without.end, "without advice the session still runs, by coverage")
+        assertEquals(1, without.journal.entries().size)
+    }
+
     // RCL-119
 
     @Test
