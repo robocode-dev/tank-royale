@@ -270,6 +270,11 @@ claims:
       state: reserved
       prefix: ADR
       component: "54"
+    - id: ADR-055
+      kind: numeric
+      state: reserved
+      prefix: ADR
+      component: "55"
     - id: AN-001
       kind: numeric
       state: reserved
@@ -3061,11 +3066,11 @@ high-water:
       state: reserved
       prefix: RCI
       component: "47"
-    - id: RCL-120
+    - id: RCL-124
       kind: numeric
       state: reserved
       prefix: RCL
-      component: "120"
+      component: "124"
     - id: RDA-009
       kind: numeric
       state: reserved
