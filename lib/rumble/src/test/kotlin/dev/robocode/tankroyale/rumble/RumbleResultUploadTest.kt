@@ -195,6 +195,19 @@ class RumbleResultUploadTest {
         assertEquals(listOf(current.battleId), epochs.battleIds(1))
         assertEquals(RecordState.SET_ASIDE, states(e.journal)[old.battleId])
         assertTrue(e.events.contains(UploadEvent.SetAside(listOf(old.battleId))))
+
+        // An old-epoch record in a batch that is sent again after a crash is set aside too, never sent.
+        val oldInBatch = record(behavior = CURRENT_BEHAVIOR_VERSION - 1)
+        val newInBatch = record()
+        val crashed = setup(dir.resolve("epoch-crash"), records = listOf(oldInBatch, newInBatch))
+        crashed.sent.begin("batch-old", listOf(oldInBatch.battleId, newInBatch.battleId))
+        crashed.journal.handOver(oldInBatch.battleId)
+        crashed.journal.handOver(newInBatch.battleId)
+        val resent = FakeGitHub()
+        val after = setup(dir.resolve("epoch-crash"), resent)
+        after.uploader.send()
+        assertEquals(listOf(newInBatch.battleId), resent.battleIds(1))
+        assertEquals(RecordState.SET_ASIDE, states(after.journal)[oldInBatch.battleId])
     }
 
     // RCL-126

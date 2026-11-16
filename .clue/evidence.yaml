@@ -1797,7 +1797,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
-          "sha256": "d361bec6873a617f26a13cd4cd4a97ec74b6d6b132e5cbc0b42be203c68b9c68"
+          "sha256": "607b7c7e104a36073c17e16bc3a39a288faff3747b63fa4087cb33314f0ba3f8"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",

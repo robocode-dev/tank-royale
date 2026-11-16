@@ -306,6 +306,11 @@ class ResultUploader(
             val byId = journal.entries().associateBy { it.record.battleId }
             val records = batch.battleIds.mapNotNull { id ->
                 val entry = byId[id] ?: return@mapNotNull null
+                if (entry.record.engine.behaviorVersion != epoch) {
+                    // A record of another engine epoch is never sent; it waits again and is set aside below.
+                    if (entry.state == RecordState.HANDED_OVER) journal.returnToWaiting(id)
+                    return@mapNotNull null
+                }
                 when (entry.state) {
                     RecordState.WAITING -> entry.record.also { journal.handOver(id) }
                     RecordState.HANDED_OVER -> entry.record
@@ -348,9 +353,10 @@ class ResultUploader(
             val comments = when (val read = commentsOf(issue, token)) {
                 is Comments.Read -> read.pages
                 Comments.Gone -> {
-                    // The issue was deleted or moved, so no receipt will come; the records are sent again, which is safe.
-                    returnHandedOver(batch)
+                    // The issue was deleted, so no receipt will come; the records are sent again, which is safe. The batch is
+                    // closed first, so a crash in between never leaves its records counted by two open batches.
                     sent.finish(batch.batchId)
+                    returnHandedOver(batch)
                     continue
                 }
                 Comments.Unreachable -> return
@@ -361,9 +367,9 @@ class ResultUploader(
             when (val receipt = comments.firstNotNullOfOrNull { Receipts.read(it) }) {
                 null -> continue
                 is Receipt.Refused -> {
-                    returnHandedOver(batch)
                     sent.finish(batch.batchId)
                     sent.refuse(receipt.reason)
+                    returnHandedOver(batch)
                     onEvent(UploadEvent.BatchRefused(batch.batchId, issue, receipt.reason))
                 }
                 is Receipt.Processed -> {

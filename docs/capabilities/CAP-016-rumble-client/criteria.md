@@ -1043,7 +1043,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a journal with waiting records of several formats and clients, records of another engine epoch, and more records than one batch may hold
     When the program makes batches to send
     Then every waiting record of the current epoch is in exactly one batch, in the order kept, with no selection, each batch holding one to sixty records of one client and staying within the size bound
-    And each record has the battle identity, completion time, client identity, behavior version, game type, the pin's rounds and battlefield, and every participant's result marked as a team only in TwinDuel, while records of another epoch are set aside and never sent
+    And each record has the battle identity, completion time, client identity, behavior version, game type, the rounds the battle ran and the pin's battlefield, and every participant's result marked as a team only in TwinDuel, while records of another epoch are set aside and never sent
 
   @RCL-126
   Scenario: A batch is sent only after its records are handed over, and a failed send or a crash never loses a record
@@ -1051,7 +1051,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a signed-in contributor and waiting records
     When a batch is sent, GitHub refuses or cannot be reached, or the program stopped after handing records over and before the issue was recorded
     Then the issue has a `[result]` title unique to the batch and exactly one fenced json envelope, and its records were handed over in the journal before it was opened
-    And a send GitHub refuses returns its records to waiting with a reason code, a send with no clear answer (no answer, a server error or an answer that cannot be read) keeps the batch handed over and sends it again under its own identity, a batch handed over but never recorded as an issue is sent again with the records that are still handed over, and a torn last line of the list of sent batches is never read
+    And a send GitHub refuses returns its records to waiting with a reason code, a send with no clear answer (no answer, a server error or an answer that cannot be read) keeps the batch handed over and sends it again under its own identity, a batch handed over but never recorded as an issue is sent again with its records that have not moved on, except those of another engine epoch, which are set aside, and a torn last line of the list of sent batches is never read
 
   @RCL-127
   Scenario: Receipts acknowledge each record only by its own line
