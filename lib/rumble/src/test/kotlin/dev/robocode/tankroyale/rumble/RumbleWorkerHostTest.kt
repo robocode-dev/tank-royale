@@ -241,4 +241,37 @@ class RumbleWorkerHostTest {
         assertTrue(seen != null)
         assertFalse(Files.exists(seen!!.work), "The run folders are removed afterwards")
     }
+
+    // RCI-051: the worker is started shielded from Ctrl+C, with its arguments whole.
+
+    @Test
+    @Tag("Positive")
+    fun testRCI051_UnitPositive_aShieldedCommandKeepsEveryArgumentAndItsExitCode() {
+        val arguments = listOf("a&b", "c!d", "e^f", "g%PATH%h", "i j", "k\\l")
+        val shielded = InterruptShield.wrap(listOf(java, "-cp", System.getProperty("java.class.path"), "dev.robocode.tankroyale.rumble.FakeWorkerKt", "echoargs") + arguments)
+        val builder = ProcessBuilder(shielded.command).redirectErrorStream(false)
+        builder.environment().putAll(shielded.environment)
+
+        val process = builder.start()
+        val said = process.inputStream.bufferedReader().readText().lines().first { it.isNotBlank() }
+
+        assertEquals(arguments.joinToString("|"), said, "every argument arrives as it was, whatever the shell makes of such characters")
+        assertEquals(7, process.waitFor(), "the program's exit code is handed on")
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCI051_UnitNegative_noArgumentIsReadByTheShellAndElsewhereCtrlCIsIgnoredForEveryChild() {
+        val command = listOf("C:\\R&D!\\java.exe", "-jar", "C:\\x^y\\w.jar")
+
+        val windows = InterruptShield.wrap(command, windows = true, systemRoot = "C:\\Windows")
+        val unix = InterruptShield.wrap(command, windows = false)
+
+        assertEquals(listOf("C:\\Windows\\System32\\cmd.exe", "/d", "/v:on", "/c"), windows.command.take(4))
+        command.forEach { argument -> assertFalse(windows.command.any { it.contains(argument) }, "$argument is never in the shell's own command line") }
+        assertEquals(command, command.indices.map { windows.environment.getValue("${InterruptShield.ARGUMENT_PREFIX}$it") })
+        assertTrue(windows.command.last().startsWith("start \"\" /b /wait "), "start runs the program with Ctrl+C ignored, which its children inherit")
+        assertEquals(listOf("/bin/sh", "-c", "trap '' INT; exec \"\$@\"", "sh") + command, unix.command)
+        assertEquals(emptyMap<String, String>(), unix.environment)
+    }
 }

@@ -92,10 +92,11 @@ class WorkerHost(
         val built = command.build(folders)
         // Behind the shield the shell starts the program, so a program that is not there is found missing here.
         if (shieldFromInterrupt && !programExists(built.firstOrNull().orEmpty())) return WorkerOutcome.CouldNotStart("The worker could not be started.")
-        val builder = ProcessBuilder(if (shieldFromInterrupt) InterruptShield.wrap(built) else built)
-            .directory(folders.work.toFile())
+        val shielded = if (shieldFromInterrupt) InterruptShield.wrap(built) else InterruptShield.Shielded(built, emptyMap())
+        val builder = ProcessBuilder(shielded.command).directory(folders.work.toFile())
         builder.environment().clear()
         builder.environment().putAll(WorkerEnvironment.build(hostEnvironment(), folders))
+        builder.environment().putAll(shielded.environment)
         val process = try {
             builder.start()
         } catch (e: IOException) {
@@ -156,15 +157,18 @@ class WorkerHost(
     private fun programExists(program: String): Boolean {
         if (program.isBlank()) return false
         val windows = System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)
-        val extensions = if (windows) listOf("") + (System.getenv("PATHEXT") ?: ".EXE;.CMD;.BAT").split(';').filter { it.isNotBlank() } else listOf("")
-        fun found(path: Path) = extensions.any { Files.isRegularFile(Path.of(path.toString() + it)) }
+        val host = hostEnvironment()
+        fun variable(name: String) = host.entries.firstOrNull { it.key.equals(name, ignoreCase = true) }?.value
+        val extensions = if (windows) listOf("") + (variable("PATHEXT") ?: ".EXE;.CMD;.BAT").split(';').filter { it.isNotBlank() } else listOf("")
+        // Elsewhere a file that cannot be run is not there for this purpose, so it is reported as not started too.
+        fun found(path: Path) = extensions.any { Path.of(path.toString() + it).let { file -> Files.isRegularFile(file) && (windows || Files.isExecutable(file)) } }
         val path = try {
             Path.of(program)
         } catch (e: java.nio.file.InvalidPathException) {
             return false
         }
         if (path.isAbsolute || program.contains('/') || program.contains('\\')) return found(path)
-        val search = hostEnvironment().entries.firstOrNull { it.key.equals("PATH", ignoreCase = true) }?.value.orEmpty()
+        val search = variable("PATH").orEmpty()
         return search.split(java.io.File.pathSeparatorChar).filter { it.isNotBlank() }.any { folder ->
             try {
                 found(Path.of(folder).resolve(program))

@@ -1878,7 +1878,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
-          "sha256": "607b7c7e104a36073c17e16bc3a39a288faff3747b63fa4087cb33314f0ba3f8"
+          "sha256": "fc9c90d2998c72acc33c601cc8b763ecdaf37426d1a3caaeee096e924d44d175"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
@@ -1938,7 +1938,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
-          "sha256": "47ff1fc6fb08ad2c7b9e4f2b806c32c2aba3c7c01b1e29a00abcc10ad89273dc"
+          "sha256": "86eee701165e10f03fcd5e8c9347444801fcafe54ad2c3240243688e0a5e6a4c"
         }
       ],
       "references": [
@@ -4235,6 +4235,20 @@
           "id": "RBW-013",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
           "subject": "RumbleWorkerHostTest.testRBW013_UnitPositive_theUsualCommandHasTheHeapLimitTheFolderSettingsAndTheWorkerArgument",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-051",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRCI051_UnitNegative_noArgumentIsReadByTheShellAndElsewhereCtrlCIsIgnoredForEveryChild",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-051",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRCI051_UnitPositive_aShieldedCommandKeepsEveryArgumentAndItsExitCode",
           "type": "Unit",
           "direction": "positive"
         }

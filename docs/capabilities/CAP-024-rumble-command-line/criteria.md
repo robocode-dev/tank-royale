@@ -428,7 +428,7 @@ Feature: rumble-command-line — Rumble command line
     Given a running session
     When the person presses Ctrl+C once, or twice
     Then once finishes the active battle, keeps it, sends what waits and ends with exit code 0, and twice ends the battle at once, keeps nothing of it, sends nothing more before it ends and ends with exit code 4 because the session did not finish, and each says so as it happens
-    And a Ctrl+C in the terminal does not reach the battle worker or the bots it starts, so the first one lets the battle finish
+    And a Ctrl+C in the terminal does not reach the battle worker or the bots it starts, so the first one lets the battle finish, the worker's arguments arrive whole whatever characters its paths hold, and a third Ctrl+C ends the program the usual way
 
   @RCI-052
   Scenario: Events are reported as lines or JSON lines, and a final answer says how the session ended

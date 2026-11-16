@@ -140,10 +140,11 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             SavedSignInUpload(flow.savedSignIn()) { services.clock.instant() },
             data, { report(uploadEvent(it)) },
         )
-        val automatic = AutomaticUpload(uploader, clock = { services.clock.instant() })
+        val interrupts = AtomicInteger()
+        // After the second Ctrl+C nothing more is started over the network.
+        val automatic = AutomaticUpload(uploader, clock = { services.clock.instant() }, stop = { interrupts.get() >= 2 })
         val advice = AdviceKeeper(data, chosenFormats, clock = { services.clock.instant() })
         val control = SessionControl()
-        val interrupts = AtomicInteger()
         val kept = AtomicInteger()
         val setup = SessionSetup(
             commit = catalog.commit, source = source, botCache = ranked.resolve("bot-cache"), host = WorkerHost(services.workerLimits),
@@ -180,7 +181,8 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
                     end = SessionEnd.JournalFailed(e.message.orEmpty())
                 }
             }
-            answer(ended(env, end, kept.get(), journal))
+            // Written under the same lock as the events, so no late event line follows the answer.
+            synchronized(output) { answer(ended(env, end, kept.get(), journal)) }
         }
     }
 

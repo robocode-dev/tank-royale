@@ -43,18 +43,29 @@ object ExitCodes {
 private const val WORKER_HEAP_MEGABYTES = 512
 
 /**
- * Calls [action] at each Ctrl+C instead of ending the program, until the returned handle is closed. Java gives no
- * supported way to catch Ctrl+C, so the signal handler of the JDK is used. Where it is missing, a shutdown hook calls
- * [action] once and then holds the program open until the handle is closed, at most [SHUTDOWN_WAIT], so the battle can
- * finish, the results be kept and sent and the answer be written before the program ends; a second Ctrl+C then does not
- * reach the program.
+ * Calls [action] at each of the first two Ctrl+C instead of ending the program, until the returned handle is closed; a
+ * third Ctrl+C ends the program the usual way, so a person is never kept from ending it. Java gives no supported way to
+ * catch Ctrl+C, so the signal handler of the JDK is used.
+ *
+ * When Ctrl+C is already ignored, as for a command started in the background by a shell, no Ctrl+C can come and nothing
+ * is installed. Where the JDK's signal handler is missing, a shutdown hook calls [action] once and then holds the program
+ * open until the handle is closed, at most [SHUTDOWN_WAIT], so the battle can finish and the answer be written; the
+ * program then ends with the code of the signal, not the command's own.
  */
 internal fun onInterrupt(action: () -> Unit): AutoCloseable =
     try {
         val signal = sun.misc.Signal("INT")
-        val before = sun.misc.Signal.handle(signal) { action() }
+        val presses = java.util.concurrent.atomic.AtomicInteger()
+        lateinit var before: sun.misc.SignalHandler
+        before = sun.misc.Signal.handle(signal) {
+            if (presses.incrementAndGet() >= 2) sun.misc.Signal.handle(signal, before)
+            action()
+        }
         AutoCloseable { sun.misc.Signal.handle(signal, before) }
-    } catch (e: Throwable) {
+    } catch (e: IllegalArgumentException) {
+        // Ctrl+C is ignored for this program, so none can come.
+        AutoCloseable { }
+    } catch (e: LinkageError) {
         val closed = java.util.concurrent.CountDownLatch(1)
         val hook = Thread {
             action()

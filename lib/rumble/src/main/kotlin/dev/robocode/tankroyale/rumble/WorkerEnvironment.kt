@@ -19,17 +19,29 @@ fun interface WorkerCommand {
  * ignores Ctrl+C by itself, so the command is wrapped: on Windows in `start /b /wait`, which runs the program with Ctrl+C
  * ignored, a setting its children inherit; elsewhere in `sh` with `trap '' INT`, an ignored signal that `exec` and every
  * child keep. The worker is still ended through its process tree, as before.
+ *
+ * On Windows the worker's arguments hold paths of the participant's computer, which may contain characters `cmd` treats
+ * as its own, such as `&`, `^`, `%` or `!`. They are therefore never written into `cmd`'s command line: each is passed in
+ * a variable and read there with delayed expansion, which takes place after `cmd` has read its command line, so the
+ * value is used as it is. `start` does not give the program's exit code back by itself, so it is read the same way and
+ * handed on. A real console Ctrl+C on 2026-11-16 left the shielded program and its child running and `cmd` waiting for
+ * it and handing on its exit code.
  */
 object InterruptShield {
-    fun wrap(command: List<String>, windows: Boolean = isWindows(), systemRoot: String? = System.getenv("SystemRoot")): List<String> =
+    /** The command to start, and the variables it needs on top of the worker's environment. */
+    class Shielded(val command: List<String>, val environment: Map<String, String>)
+
+    const val ARGUMENT_PREFIX = "RUMBLE_WORKER_ARG_"
+
+    fun wrap(command: List<String>, windows: Boolean = isWindows(), systemRoot: String? = System.getenv("SystemRoot")): Shielded =
         if (windows) {
             val cmd = systemRoot?.let { "$it\\System32\\cmd.exe" } ?: "cmd.exe"
-            // The empty title comes first so that a quoted program path is never taken for the window title. `start` does not
-            // give the program's exit code back by itself, so it is read with delayed expansion and handed on. Delayed
-            // expansion would change a `!` in an argument; the worker's own command has none.
-            listOf(cmd, "/d", "/v:on", "/c", "start", "\"\"", "/b", "/wait") + command + listOf("&", "exit", "!errorlevel!")
+            val variables = command.withIndex().associate { (i, argument) -> "$ARGUMENT_PREFIX$i" to argument }
+            // The empty title comes first so that a quoted program path is never taken for the window title.
+            val line = "start \"\" /b /wait " + command.indices.joinToString(" ") { "\"!$ARGUMENT_PREFIX$it!\"" } + " & exit !errorlevel!"
+            Shielded(listOf(cmd, "/d", "/v:on", "/c", line), variables)
         } else {
-            listOf("/bin/sh", "-c", "trap '' INT; exec \"\$@\"", "sh") + command
+            Shielded(listOf("/bin/sh", "-c", "trap '' INT; exec \"\$@\"", "sh") + command, emptyMap())
         }
 
     private fun isWindows() = System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)

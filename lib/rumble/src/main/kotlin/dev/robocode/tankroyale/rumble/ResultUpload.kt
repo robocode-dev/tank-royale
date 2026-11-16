@@ -265,9 +265,10 @@ class ResultUploader(
     /**
      * Sends every waiting record, and again every batch that was handed over but never became an issue. Returns the
      * batches sent. Records of a format the pin does not let this program run wait, while the other formats are sent.
+     * When [stop] says so, no further batch is sent; a batch already on its way is not called back.
      */
     @Synchronized
-    fun send(): Int {
+    fun send(stop: () -> Boolean = { false }): Int {
         sent.refusal?.let {
             onEvent(UploadEvent.NotSent(UploadProblem.BATCH_REFUSED, listOf(it)))
             return 0
@@ -303,6 +304,7 @@ class ResultUploader(
         var count = 0
         // A batch handed over before a crash, or whose send had no clear answer, is sent again under its own ID.
         for (batch in unsent) {
+            if (stop()) return count
             val byId = journal.entries().associateBy { it.record.battleId }
             val records = batch.battleIds.mapNotNull { id ->
                 val entry = byId[id] ?: return@mapNotNull null
@@ -335,6 +337,7 @@ class ResultUploader(
         val sendable = waiting.filter { it.client.id.isNotBlank() && pinFor(it.gameType) != null }
         val pins = sendable.map { it.gameType }.distinct().associateWith { pinFor(it)!! }
         for (records in batches(sendable, pins)) {
+            if (stop()) return count
             val batchId = newBatchId()
             sent.begin(batchId, records.map { it.battleId })
             records.forEach { journal.handOver(it.battleId) }
@@ -602,6 +605,8 @@ class AutomaticUpload(
     /** The least time between two sends, so a send that fails is not tried again at every look of a waiting session. */
     private val sendGap: Duration = Duration.ofMinutes(1),
     private val clock: () -> Instant = Instant::now,
+    /** True when the person asked to end at once: nothing more is started over the network. */
+    private val stop: () -> Boolean = { false },
 ) {
     private var lastSend: Instant? = null
     private var lastReceipts: Instant? = null
@@ -616,7 +621,7 @@ class AutomaticUpload(
         val gapPassed = !now.isBefore(last.plus(sendGap))
         val enough = uploader.waitingCount() >= sendAt && (gapPassed || last == now)
         if (enough || !now.isBefore(last.plus(sendAfter))) {
-            guarded { uploader.send() }
+            guarded { uploader.send(stop) }
             lastSend = now
         }
         val receipts = lastReceipts
@@ -628,7 +633,7 @@ class AutomaticUpload(
 
     /** Called when the session ends: everything waiting is sent and the receipts that are there are read. */
     fun finish() {
-        guarded { uploader.send() }
+        guarded { uploader.send(stop) }
         guarded { uploader.collectReceipts() }
     }
 
@@ -637,6 +642,7 @@ class AutomaticUpload(
      * sent at a later try. A journal that cannot be written is not such a failure and still ends it.
      */
     private fun guarded(work: () -> Unit) {
+        if (stop()) return
         try {
             work()
         } catch (e: RuntimeException) {
