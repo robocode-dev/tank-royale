@@ -1507,7 +1507,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "75146688ac28fc9d7664cb875b9f4c336e81d1caee1d918036e538173d2029dc"
+          "sha256": "caa552c78376344028c1be7d249b415207586365d3bddf8ee095ee4643a0d154"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1519,7 +1519,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "b1503538acc7a36611330422a8ba39b11cd2e4fd1326d0953ec2a679246b316e"
+          "sha256": "28f9946cd5966c8da5e50d65854a5a3116c15b076379237f4423908bf6bd7ab8"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -1800,12 +1800,16 @@
           "sha256": "b6bbc107a7e210863fe4e039f4a2601b61cc25f1d479e3de3ce2723837936526"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
+          "sha256": "3530616162eef713d32182ae2ad46471c677411aee09590003e3335218ea7fde"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "sha256": "9fc1557db9fefcd6b8ec1b67c7cf24f101c51f38edf4a1841e32ce4104389214"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
-          "sha256": "67f8e4d052f4b32fbeacb525f5e42af9dc8f872a8860299db6c8e2d88bdb2d67"
+          "sha256": "33d17b0dacfa96d01aaf58f250ec845c2eb825069eff935660885ccc6d4b135b"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
@@ -3191,6 +3195,48 @@
           "direction": "positive"
         },
         {
+          "id": "RCL-121",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
+          "subject": "RumbleSessionPinTest.testRCL121_UnitNegative_aPinThatCannotBeReadOrUnderstoodRefusesTheSessionWithItsReason",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-121",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
+          "subject": "RumbleSessionPinTest.testRCL121_UnitPositive_aValidPinGivesTheBehaviorVersionAndEachFormatsRoundsAndBattleSize",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-122",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
+          "subject": "RumbleSessionPinTest.testRCL122_UnitNegative_aPinThisProgramCannotRunUnderIsRefusedNamingWhatDiffers",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-123",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
+          "subject": "RumbleSessionPinTest.testRCL123_UnitNegative_missingUnknownOrUnreachableAdviceGivesNoneAndAFailedReReadKeepsTheLast",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-123",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
+          "subject": "RumbleSessionPinTest.testRCL123_UnitPositive_adviceIsReadBestFirstAndReadAgainOnlyAfterTheRefreshTime",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-124",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
+          "subject": "RumbleSessionPinTest.testRCL124_IntegrationPositive_theRealPublicPinAndAdviceFilesAreUnderstood",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
           "id": "RCL-102",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "subject": "RumbleSessionPlannerTest.testRCL102_UnitNegative_noGameFormatGivesAWaitAndNoBattle",
@@ -3383,6 +3429,20 @@
           "id": "RCL-119",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
           "subject": "RumbleSessionRunnerTest.testRCL119_UnitPositive_aBattleCountEndsTheSessionAndOnlyKeptBattlesCount",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-122",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL122_UnitPositive_aSessionUnderAPinRunsThePinsRoundsAndKeepsThePinsBehaviorVersion",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-123",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL123_UnitPositive_anAdvisedBattleIsRunFirstAndWithoutAdviceTheSessionRunsByCoverage",
           "type": "Unit",
           "direction": "positive"
         },
