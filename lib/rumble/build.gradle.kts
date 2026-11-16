@@ -47,6 +47,8 @@ tasks {
         failFast = true
         // Reads the public Rumble in one test that is skipped unless asked for: -Drumble.live=true
         systemProperty("rumble.live", System.getProperty("rumble.live") ?: "false")
+        // Sends one real result batch to the test Rumble with the saved sign-in, skipped unless asked for: -Drumble.live.send=true
+        systemProperty("rumble.live.send", System.getProperty("rumble.live.send") ?: "false")
     }
 
     check {

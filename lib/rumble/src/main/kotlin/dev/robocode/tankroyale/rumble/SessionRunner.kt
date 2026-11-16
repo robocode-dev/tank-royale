@@ -106,6 +106,8 @@ class SessionSetup(
     val sleep: (Long) -> Unit = { Thread.sleep(it) },
     val newBattleId: () -> String = { UUID.randomUUID().toString() },
     val clock: () -> Instant = Instant::now,
+    /** Work done after each battle, kept or not, and while the session waits, such as [AutomaticUpload.betweenBattles]. */
+    val betweenBattles: () -> Unit = {},
 )
 
 /**
@@ -141,6 +143,7 @@ class SessionRunner(
                     val event = SessionEvent.Waiting(step.reason, step.values)
                     if (event != lastWait) onEvent(event)
                     lastWait = event
+                    betweenBattles()?.let { return it }
                     setup.sleep(setup.pollMillis)
                 }
                 is SessionStep.Battle -> {
@@ -170,10 +173,20 @@ class SessionRunner(
                         }
                         is Ran.JournalFailed -> return SessionEnd.JournalFailed(result.message)
                     }
+                    betweenBattles()?.let { return it }
                 }
             }
         }
     }
+
+    /** Runs the setup's work between battles, such as sending results. A journal that cannot be written ends the session. */
+    private fun betweenBattles(): SessionEnd? =
+        try {
+            setup.betweenBattles()
+            null
+        } catch (e: JournalUnusable) {
+            SessionEnd.JournalFailed(e.message.orEmpty())
+        }
 
     private sealed interface Placement {
         /** Every bot of the battle is in place; [jobBots] are the participants. */

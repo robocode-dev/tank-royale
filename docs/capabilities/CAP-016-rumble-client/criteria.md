@@ -1036,4 +1036,49 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the public result repository on the network
     When the engine pin and the advice of each format are read with the readers
     Then the pin is understood with a positive behavior version and the three ranked formats, and each advice file is either understood or absent, never misread
+
+  @RCL-125
+  Scenario: Batches hold every waiting record of the current epoch in the shape the result data validates
+    Test-type: Unit
+    Given a journal with waiting records of several formats and clients, records of another engine epoch, and more records than one batch may hold
+    When the program makes batches to send
+    Then every waiting record of the current epoch is in exactly one batch, in the order kept, with no selection, each batch holding one to sixty records of one client and staying within the size bound
+    And each record has the battle identity, completion time, client identity, behavior version, game type, the rounds the battle ran and the pin's battlefield, and every participant's result marked as a team only in TwinDuel, while records of another epoch are set aside and never sent
+
+  @RCL-126
+  Scenario: A batch is sent only after its records are handed over, and a failed send or a crash never loses a record
+    Test-type: Unit
+    Given a signed-in contributor and waiting records
+    When a batch is sent, GitHub refuses or cannot be reached, or the program stopped after handing records over and before the issue was recorded
+    Then the issue has a `[result]` title unique to the batch and exactly one fenced json envelope, and its records were handed over in the journal before it was opened
+    And a send GitHub refuses returns its records to waiting with a reason code, a send with no clear answer (no answer, a server error or an answer that cannot be read) keeps the batch handed over and sends it again under its own identity, a batch handed over but never recorded as an issue is sent again with its records that have not moved on, except those of another engine epoch, which are set aside, and a torn last line of the list of sent batches is never read
+
+  @RCL-127
+  Scenario: Receipts acknowledge each record only by its own line
+    Test-type: Unit
+    Given sent batches whose issues have a processed receipt, a refused-batch receipt, no receipt yet, or comments by other accounts
+    When the program collects receipts
+    Then a record the receipt accepted is accepted, a record it rejected is rejected with the receipt's reason and not sent again by itself, a record the receipt does not name waits again, and a batch with no receipt yet stays handed over
+    And a batch refused before its records could be read returns them to waiting and stops sending, also after a restart, until the contributor lifts the stop, only the receiving workflow's own comments are read as receipts, also past the first hundred comments, and an issue that is gone returns its records to waiting without holding up the receipts of other batches
+
+  @RCL-128
+  Scenario: Without a usable sign-in or client ID nothing is sent
+    Test-type: Unit
+    Given no saved sign-in, a sign-in that cannot be renewed, a token GitHub no longer accepts, a pin that refuses this program or no longer names a record's format, or a waiting record with no client ID
+    When the program tries to send
+    Then nothing of that is sent, the records keep waiting, and a reason code says why, a refused token is not used again, and a format the pin no longer names holds back only its own records
+
+  @RCL-129
+  Scenario: Sending and receipts run between a session's battles
+    Test-type: Unit
+    Given a session with automatic sending
+    When battles complete and the session waits
+    Then results are sent when enough wait or after the set time, receipts are collected at their own interval, a failed send is not tried again sooner than the least gap, a journal that cannot be written ends the session as a journal failure, and any other failure of sending is reported without ending the session
+
+  @RCL-130
+  Scenario: One real batch is sent and receipted in the test Rumble
+    Test-type: Integration
+    Given a saved sign-in to the test Rumble's App for a registered account and a waiting record of two active catalog bots in the shape a completed battle gives
+    When the program sends it and collects receipts until the receiving workflow answers
+    Then the issue is opened in the test result repository and the record is accepted or rejected by its own receipt line
 ```

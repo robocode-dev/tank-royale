@@ -83,6 +83,9 @@ enum class RecordState {
 object MoveReason {
     /** The record was made on another behavior version than the Rumble's current pin. */
     const val ENGINE_EPOCH = "engine-epoch"
+
+    /** The Rumble's receipt rejected the record; the detail is the receipt's reason. */
+    const val RUMBLE_REJECTED = "rumble-rejected"
 }
 
 /** A record together with where it stands. */

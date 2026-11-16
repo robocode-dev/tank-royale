@@ -42,6 +42,7 @@ CASES = [
     ("ranked-journal", "Journal of completed ranked battles"),
     ("session-running", "Running a session's battles"),
     ("session-pin", "Engine pin and advice for a session"),
+    ("result-upload", "Sending results and reading receipts"),
 ]
 RESULTS_CASE = ("test-results", "Test results")
 
@@ -54,6 +55,7 @@ CLASS_CASES = [
     (re.compile(r"^RumbleRankedJournalTest$"), "ranked-journal"),
     (re.compile(r"^RumbleSessionRunnerTest$"), "session-running"),
     (re.compile(r"^RumbleSessionPinTest$"), "session-pin"),
+    (re.compile(r"^RumbleResultUploadTest$"), "result-upload"),
     (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),
     (re.compile(r"^(RumbleSignIn\w*|RumbleSavedSignInTest|RumbleRegistration\w*|RumbleGitHubApiTest|RumbleTokenSecrecyTest|RumbleAccount\w*Test|RumbleMenuSwitchTest|RumbleSubmit\w*Test|RumbleCliSubmitTextsTest)$"), "sign-in-and-registration"),

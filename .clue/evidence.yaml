@@ -1507,7 +1507,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "caa552c78376344028c1be7d249b415207586365d3bddf8ee095ee4643a0d154"
+          "sha256": "b56a098e4313720421ce5ed714cacc9380d8d3a15349261a7f9b6b9cd07ad4f4"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1519,7 +1519,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "28f9946cd5966c8da5e50d65854a5a3116c15b076379237f4423908bf6bd7ab8"
+          "sha256": "1762d3feb3e8ab5a9fdbc039ad5bee66fc443400dadb99f2003fc33f6880a0af"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -1713,7 +1713,7 @@
         },
         {
           "path": "lib/rumble/build.gradle.kts",
-          "sha256": "dfff45122260e29cfc2885e8d08d391ae9c74b6f6254ca53ad32fc85050022a4"
+          "sha256": "0d53e649014b70713fa4ba471661891b2d9d3391e48564f08347f02255e574a4"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleAccountPortTest.kt",
@@ -1794,6 +1794,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
           "sha256": "50e08d8f7d6962c5718e2f83e7c554b0876e5bb0bd88654863dc98f9bdc3f164"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "sha256": "607b7c7e104a36073c17e16bc3a39a288faff3747b63fa4087cb33314f0ba3f8"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
@@ -3150,6 +3154,90 @@
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationTest.kt",
           "subject": "RumbleRegistrationTest.testRCL042_UnitPositive_theRegistrationIsSavedInTheSignInsOneFileAndARenewalKeepsIt",
           "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-125",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL125_UnitNegative_batchesStayWithinTheirBoundsAndRecordsOfAnotherEpochAreSetAsideAndNeverSent",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-125",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL125_UnitPositive_everyWaitingRecordIsInExactlyOneBatchInTheShapeTheResultDataValidates",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-126",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL126_UnitNegative_aFailedSendOrACrashBeforeTheIssueWasRecordedNeverLosesARecord",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-126",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL126_UnitPositive_aBatchIsSentAsAResultIssueOnlyAfterItsRecordsAreHandedOver",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-127",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL127_UnitNegative_aDeletedIssueDoesNotStopOtherReceiptsAndAReceiptAfterManyCommentsIsFound",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-127",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL127_UnitNegative_aRefusedBatchWaitsAgainAndStopsSendingAndOtherAccountsCannotWriteAReceipt",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-127",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL127_UnitPositive_eachRecordIsAcceptedRejectedOrSentAgainByItsOwnReceiptLine",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-128",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL128_UnitNegative_withoutAUsableSignInPinOrClientIdNothingIsSentAndTheReasonIsGiven",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-128",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL128_UnitPositive_theSavedSignInIsRenewedOnlyWhenItsTokenRanOutOrWasRefused",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-129",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL129_UnitNegative_aSessionSendsBetweenBattlesAndEndsWhenTheListOfSentBatchesCannotBeWritten",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-129",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL129_UnitPositive_automaticSendingRunsWhenEnoughWaitOrTimeHasPassedAndReceiptsAtTheirOwnInterval",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-130",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL130_IntegrationPositive_oneRealBatchIsSentAndReceiptedInTheTestRumble",
+          "type": "Integration",
           "direction": "positive"
         },
         {
