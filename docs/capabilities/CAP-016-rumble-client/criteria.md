@@ -989,7 +989,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When the contributor pauses, asks to finish and stop, or cancels now
     Then pause lets the active battle finish and be kept, reports the pause, runs no further battle until resumed, and reports the resumption
     And finish-and-stop keeps the active battle's result and then ends the session, and cancel-now ends the worker and everything it started, keeps nothing of the battle and ends the session as cancelled, also when the worker has closed its output but is still running
-    And cancel-now or finish-and-stop during a pause ends the session without reporting a resumption
+    And cancel-now or finish-and-stop during a pause ends the session without reporting a resumption, and either one asked for while bots are being fetched ends the session before a battle starts
 
   @RCL-119
   Scenario: A battle count ends the session and the planner's wait is reported once with its reason

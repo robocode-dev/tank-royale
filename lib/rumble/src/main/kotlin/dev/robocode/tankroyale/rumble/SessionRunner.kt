@@ -15,23 +15,23 @@ import java.util.UUID
 class SessionControl {
     private enum class Mode { RUN, PAUSE, FINISH_AND_STOP, CANCEL_NOW }
 
-    @Volatile
-    private var mode = Mode.RUN
+    // Changed only by compare-and-set, so a pause from one thread never undoes a stop or a cancel from another.
+    private val mode = java.util.concurrent.atomic.AtomicReference(Mode.RUN)
 
     /** Finish the active battle, then wait until [resume]. */
-    fun pause() { if (mode == Mode.RUN) mode = Mode.PAUSE }
+    fun pause() { mode.compareAndSet(Mode.RUN, Mode.PAUSE) }
 
-    fun resume() { if (mode == Mode.PAUSE) mode = Mode.RUN }
+    fun resume() { mode.compareAndSet(Mode.PAUSE, Mode.RUN) }
 
     /** Finish the active battle, keep its result, then end the session. */
-    fun finishAndStop() { if (mode != Mode.CANCEL_NOW) mode = Mode.FINISH_AND_STOP }
+    fun finishAndStop() { mode.updateAndGet { if (it == Mode.CANCEL_NOW) it else Mode.FINISH_AND_STOP } }
 
     /** End the active battle now and keep nothing of it, then end the session. */
-    fun cancelNow() { mode = Mode.CANCEL_NOW }
+    fun cancelNow() { mode.set(Mode.CANCEL_NOW) }
 
-    internal val paused: Boolean get() = mode == Mode.PAUSE
-    internal val stopRequested: Boolean get() = mode == Mode.FINISH_AND_STOP
-    internal val cancelRequested: Boolean get() = mode == Mode.CANCEL_NOW
+    internal val paused: Boolean get() = mode.get() == Mode.PAUSE
+    internal val stopRequested: Boolean get() = mode.get() == Mode.FINISH_AND_STOP
+    internal val cancelRequested: Boolean get() = mode.get() == Mode.CANCEL_NOW
 }
 
 /** Why a battle was run but is not in the journal. */
@@ -159,6 +159,9 @@ class SessionRunner(
                             continue
                         }
                     }
+                    // Fetching can take a while; a stop or cancel asked for meanwhile ends the session before a new battle starts.
+                    if (control.cancelRequested) return SessionEnd.Cancelled
+                    if (control.stopRequested) return SessionEnd.Stopped
                     when (val result = runBattle(step, battle)) {
                         is Ran.Kept -> { history = history.after(step); failures = 0 }
                         is Ran.NotKept -> {
@@ -217,7 +220,15 @@ class SessionRunner(
         var tryAgain = false
         val missing = mutableListOf<Spot>()
         for (spot in spots) {
-            if (Files.isDirectory(spot.folder) && TreeHash.ofDirectory(spot.folder) == spot.bot.sourceHash) {
+            val matches = try {
+                Files.isDirectory(spot.folder) && TreeHash.ofDirectory(spot.folder) == spot.bot.sourceHash
+            } catch (e: IOException) {
+                false
+            } catch (e: java.io.UncheckedIOException) {
+                // A file that cannot be read now, for example one held by a process that has not ended; the folder is replaced.
+                false
+            }
+            if (matches) {
                 // add, not +=: a Path is also a list of its own parts.
                 ready.add(spot.folder)
             } else if (Files.exists(spot.folder) && !spot.folder.toFile().deleteRecursively()) {
@@ -271,6 +282,13 @@ class SessionRunner(
                     round.forEach { notPlaced(it, NotPlacedReason.UNSAFE, e.message.orEmpty()) }
                     continue
                 } catch (e: IOException) {
+                    round.forEach { notPlaced(it, NotPlacedReason.SOURCE_UNAVAILABLE, e.message.orEmpty()) }
+                    continue
+                } catch (e: java.io.UncheckedIOException) {
+                    round.forEach { notPlaced(it, NotPlacedReason.SOURCE_UNAVAILABLE, e.message.orEmpty()) }
+                    continue
+                } catch (e: CatalogUnreadable) {
+                    // The bot repository answered with an error status, for example while it is busy; that passes.
                     round.forEach { notPlaced(it, NotPlacedReason.SOURCE_UNAVAILABLE, e.message.orEmpty()) }
                     continue
                 }

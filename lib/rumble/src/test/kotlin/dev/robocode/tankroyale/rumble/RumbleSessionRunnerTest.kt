@@ -60,13 +60,21 @@ class RumbleSessionRunnerTest {
     }
 
     /** A bot repository that serves the given bot folders, by their paths, as one archive, and counts how often it is asked for it. */
-    private inner class Source(trees: Map<String, Map<String, ByteArray>>, private val failArchive: Boolean = false) : CatalogSource {
+    private inner class Source(
+        trees: Map<String, Map<String, ByteArray>>,
+        private val failArchive: Boolean = false,
+        private val busy: Boolean = false,
+        private val onArchive: () -> Unit = {},
+    ) : CatalogSource {
         var archives = 0
         private val archive = zip(trees.flatMap { (path, tree) -> tree.map { "rumble-bots-$commit/$path/${it.key}" to it.value } }.toMap())
         override fun catalogText(commit: String) = throw CatalogUnreadable("not used")
         override fun archive(commit: String): InputStream {
             archives++
+            onArchive()
             if (failArchive) throw IOException("The connection was lost.")
+            // The way the real source reports an error status from the bot repository.
+            if (busy) throw CatalogUnreadable("The bot repository answered 503.")
             return ByteArrayInputStream(archive)
         }
     }
@@ -270,6 +278,14 @@ class RumbleSessionRunnerTest {
         assertTrue(unavailable.events.filterIsInstance<SessionEvent.BotNotPlaced>().all { it.reason == NotPlacedReason.SOURCE_UNAVAILABLE })
         assertTrue(unavailable.events.none { it is SessionEvent.Waiting || it is SessionEvent.BattleStarted })
 
+        // An error status from the bot repository is the same: tried again, never left out.
+        val busy = session(
+            dir.resolve("busy"), Source(listOf("Alpha", "Beta").associate { "bots/java/$it" to files(it) }, busy = true), command("ok"),
+            { request(entries, limit = 1) }, maxFailures = 2,
+        )
+        assertEquals(SessionEnd.GaveUp(2), busy.end)
+        assertTrue(busy.events.filterIsInstance<SessionEvent.BotNotPlaced>().all { it.reason == NotPlacedReason.SOURCE_UNAVAILABLE })
+
         // A bot that can never be placed is left out, and when too few remain the session waits with the planner's reason.
         val tooFew = session(
             dir.resolve("four"), sourceFor("Alpha", "Beta"), command("ok"), { request(listOf(bot("Alpha"), bot("Beta", hash = "sha256:wrong")), limit = 1) },
@@ -321,6 +337,17 @@ class RumbleSessionRunnerTest {
         )
         assertEquals(listOf(SessionEvent.BotNotPlaced("Clash 1.0", NotPlacedReason.FOLDER_NAME_CLASH)), clashing.events.filterIsInstance<SessionEvent.BotNotPlaced>())
         assertEquals(SessionEnd.Stopped, clashing.end)
+
+        // A member that can never be placed leaves its team out with it.
+        val badMember = session(
+            dir.resolve("member"), Source(trees), command("ok"),
+            { request(members.map { if (it == "M1") bot(it, hash = "sha256:wrong") else bot(it) } + teamA + teamB, limit = 1, formats = listOf("twinduel")) },
+            rounds = mapOf("twinduel" to 3),
+            onEvent = { event, control -> if (event is SessionEvent.Waiting) control.finishAndStop() },
+        )
+        assertEquals(listOf("M1 1.0" to NotPlacedReason.HASH_MISMATCH), badMember.events.filterIsInstance<SessionEvent.BotNotPlaced>().map { it.bot to it.reason })
+        assertEquals(SessionEnd.Stopped, badMember.end)
+        assertEquals(0, badMember.events.count { it is SessionEvent.BattleStarted }, "the team without its member is never run")
     }
 
     // RCL-118
@@ -413,6 +440,17 @@ class RumbleSessionRunnerTest {
         )
         assertEquals(SessionEnd.Cancelled, paused.end)
         assertEquals(listOf("BattleStarted", "BattleKept", "Paused"), paused.events.map { it::class.simpleName })
+
+        // Finish-and-stop or cancel-now asked for while the bots are fetched ends the session before a battle starts.
+        for ((ask, expected) in listOf<Pair<(SessionControl) -> Unit, SessionEnd>>({ c: SessionControl -> c.finishAndStop() } to SessionEnd.Stopped, { c: SessionControl -> c.cancelNow() } to SessionEnd.Cancelled)) {
+            val fetchControl = SessionControl()
+            val fetching = session(
+                Files.createTempDirectory(dir, "fetch"), Source(listOf("Alpha", "Beta").associate { "bots/java/$it" to files(it) }, onArchive = { ask(fetchControl) }),
+                command("ok"), { request(entries, limit = 1) }, control = fetchControl,
+            )
+            assertEquals(expected, fetching.end)
+            assertTrue(fetching.events.none { it is SessionEvent.BattleStarted })
+        }
     }
 
     // RCL-119
