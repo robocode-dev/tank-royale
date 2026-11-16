@@ -47,6 +47,9 @@ sealed interface WorkerOutcome {
 
     /** The worker process could not be started. */
     data class CouldNotStart(val message: String) : WorkerOutcome
+
+    /** The caller asked to cancel; the worker and everything it started were stopped and no result exists. */
+    data object Cancelled : WorkerOutcome
 }
 
 /**
@@ -62,7 +65,7 @@ class WorkerHost(
 ) {
     private class Reading(val events: MutableList<WorkerEvent> = mutableListOf())
 
-    fun run(command: WorkerCommand, job: Job): WorkerOutcome {
+    fun run(command: WorkerCommand, job: Job, cancel: () -> Boolean = { false }): WorkerOutcome {
         val base = try {
             runFolders?.also { Files.createDirectories(it) }?.let { Files.createTempDirectory(it, "rumble-worker") }
                 ?: Files.createTempDirectory("rumble-worker")
@@ -75,7 +78,7 @@ class WorkerHost(
                 temp = Files.createDirectory(base.resolve("temp")),
                 home = Files.createDirectory(base.resolve("home")),
             )
-            return runIn(command, job, folders)
+            return runIn(command, job, folders, cancel)
         } catch (e: IOException) {
             return WorkerOutcome.CouldNotStart("A folder for the worker could not be made.")
         } finally {
@@ -83,7 +86,7 @@ class WorkerHost(
         }
     }
 
-    private fun runIn(command: WorkerCommand, job: Job, folders: WorkerFolders): WorkerOutcome {
+    private fun runIn(command: WorkerCommand, job: Job, folders: WorkerFolders, cancel: () -> Boolean): WorkerOutcome {
         val builder = ProcessBuilder(command.build(folders)).directory(folders.work.toFile())
         builder.environment().clear()
         builder.environment().putAll(WorkerEnvironment.build(hostEnvironment(), folders))
@@ -110,6 +113,11 @@ class WorkerHost(
         val descendants = mutableListOf<ProcessHandle>()
         while (reader.isAlive) {
             descendants.addAll(descendantsOf(process))
+            if (cancel()) {
+                stopTree(process, descendants)
+                reader.join(2_000)
+                return WorkerOutcome.Cancelled
+            }
             if (System.nanoTime() >= deadline) {
                 stopTree(process, descendants)
                 reader.join(2_000)
@@ -121,10 +129,17 @@ class WorkerHost(
             stopTree(process, descendants)
             return limit
         }
-        val remaining = TimeUnit.NANOSECONDS.toMillis(maxOf(0L, deadline - System.nanoTime()))
-        if (!process.waitFor(remaining, TimeUnit.MILLISECONDS)) {
-            stopTree(process, descendants)
-            return WorkerOutcome.TimedOut(limits.totalTime)
+        // The worker closed its output but may still be running; cancel and the time limit still apply while it ends.
+        while (!process.waitFor(50, TimeUnit.MILLISECONDS)) {
+            descendants.addAll(descendantsOf(process))
+            if (cancel()) {
+                stopTree(process, descendants)
+                return WorkerOutcome.Cancelled
+            }
+            if (System.nanoTime() >= deadline) {
+                stopTree(process, descendants)
+                return WorkerOutcome.TimedOut(limits.totalTime)
+            }
         }
         // Anything the worker started and left behind is stopped too.
         descendants.filter { it.isAlive }.forEach { it.destroyForcibly() }

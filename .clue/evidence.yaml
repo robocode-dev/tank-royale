@@ -378,7 +378,7 @@
         },
         {
           "path": "rumble/build.gradle.kts",
-          "sha256": "50791c6969c02c05428d6bd0b42b3b1c2b985d7acf3cf6767605f2c1aeee4192"
+          "sha256": "f2c67b48cc1af3a9ff87662df1f1d0ca2bcc6557a76999f2dfbf13f7d838f27f"
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerClasspathTest.kt",
@@ -395,6 +395,10 @@
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerIntegrationTest.kt",
           "sha256": "4813a99c87c5eeef4b780c985a3eaaa13e0561a56dcb2359e34adbbad3d69523"
+        },
+        {
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerSessionIntegrationTest.kt",
+          "sha256": "519ee783e46b1140e8bb37d97151b39408b42a8f763c6a357e575e8e78e22be6"
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
@@ -1425,6 +1429,13 @@
           "direction": "positive"
         },
         {
+          "id": "RCL-120",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerSessionIntegrationTest.kt",
+          "subject": "WorkerSessionIntegrationTest.testRCL120_IntegrationPositive_aRealBattleThroughTheRealWorkerIsKeptInTheJournalAndReadBack",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
           "id": "RBW-003",
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
           "subject": "WorkerTest.testRBW003_UnitPositive_theWorkerReportsStartedResultAndFinishedInOrderAndNothingElse",
@@ -1496,7 +1507,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "02af43588656d452b49a51fb652dcf6b44733d3886dea325880cdff7c002983a"
+          "sha256": "75146688ac28fc9d7664cb875b9f4c336e81d1caee1d918036e538173d2029dc"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1508,7 +1519,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "8fcdbbcb10a5d6f8c923cea87e99689b094c12bb5118085dbabcf54aca3db8c8"
+          "sha256": "b1503538acc7a36611330422a8ba39b11cd2e4fd1326d0953ec2a679246b316e"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -1791,6 +1802,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "sha256": "9fc1557db9fefcd6b8ec1b67c7cf24f101c51f38edf4a1841e32ce4104389214"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "sha256": "67f8e4d052f4b32fbeacb525f5e42af9dc8f872a8860299db6c8e2d88bdb2d67"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
@@ -3277,6 +3292,97 @@
           "id": "RCL-107",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "subject": "RumbleSessionPlannerTest.testRCL107_UnitPositive_aTwinDuelBattleHoldsTheSelectedTeamAndAnotherTeamWithDisjointMembers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-115",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL115_UnitNegative_aResultThatNamesOtherBotsThanTheBattleRanIsNotKept",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-115",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL115_UnitPositive_aCompletedBattleBecomesExactlyOneRecordMadeFromWhatWasRun",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-116",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL116_UnitNegative_tooManyBattlesInARowThatFailGiveUpWithoutSpinningAndAFormatWithNoRoundsIsNotRun",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-116",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL116_UnitPositive_aWorkerThatCannotBeStartedIsReported",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-116",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL116_UnitPositive_everyKindOfBattleThatDidNotCompleteIsReportedAndKeptNothingAndTheSessionGoesOn",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-117",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL117_UnitNegative_aBotInTheCacheIsReusedAndOneThatNoLongerMatchesIsFetchedAgainAndTooFewBotsMakeTheSessionWait",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-117",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL117_UnitPositive_aBotThatCannotBePlacedIsNotRunAndTheSessionGoesOnWithOthers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-117",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL117_UnitPositive_aTeamsMembersArePlacedBesideTheTeamAndBotsWithTheSameFolderNameDoNotMeet",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-118",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL118_IntegrationNegative_cancelNowEndsTheWorkerAndEverythingItStartedAndKeepsNothing",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-118",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL118_IntegrationNegative_cancelNowWorksAfterTheWorkerClosedItsOutputAndDuringAPauseWithoutAResumption",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-118",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL118_IntegrationPositive_pauseLetsTheActiveBattleFinishAndFinishAndStopKeepsItsResult",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-119",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL119_UnitNegative_aWaitIsReportedOnceForItsReasonAndARequestThatChangesWhileWaitingIsUsed",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-119",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL119_UnitPositive_aBattleCountEndsTheSessionAndOnlyKeptBattlesCount",
           "type": "Unit",
           "direction": "positive"
         },
