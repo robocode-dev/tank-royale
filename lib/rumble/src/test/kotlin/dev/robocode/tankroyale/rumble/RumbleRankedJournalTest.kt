@@ -61,6 +61,60 @@ class RumbleRankedJournalTest {
         assertEquals(listOf("one"), ids(journal), "a record that could not be written is not listed as kept")
     }
 
+
+    @Test
+    @Tag("Negative")
+    fun testRCL108_IntegrationNegative_aWriteThatFailsHalfWayIsTakenBackAndNeverGluesAKeptRecordOntoIt(@TempDir dir: Path) {
+        val file = dir.resolve("journal.jsonl")
+        var failing = false
+        val hooks = JournalHooks(write = { channel, buffer ->
+            if (failing) {
+                val half = buffer.remaining() / 2
+                val part = ByteArray(half)
+                buffer.get(part)
+                channel.write(java.nio.ByteBuffer.wrap(part))
+                throw java.io.IOException("the disk is full")
+            }
+            channel.write(buffer)
+        })
+        val journal = RankedJournal.openWith(public, file, clock, hooks)
+        journal.add(JournalFixtures.record("one"))
+        val size = Files.size(file)
+
+        failing = true
+        assertThrows(JournalUnusable::class.java) { journal.add(JournalFixtures.record("two")) }
+        assertEquals(size, Files.size(file), "the half-written line was taken back")
+        failing = false
+        assertEquals(AddResult.Kept, journal.add(JournalFixtures.record("three")))
+
+        val reopened = open(file)
+        assertEquals(listOf("one", "three"), ids(reopened))
+        assertEquals(emptyList<Int>(), reopened.readReport().unreadableLines)
+        assertFalse(reopened.readReport().tornEnd)
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCL108_IntegrationNegative_aFlushThatFailsLeavesNoLineAndAMoveThatFailsChangesNoState(@TempDir dir: Path) {
+        val file = dir.resolve("journal.jsonl")
+        var failing = false
+        val hooks = JournalHooks(force = { channel -> if (failing) throw java.io.IOException("the flush failed") else channel.force(true) })
+        val journal = RankedJournal.openWith(public, file, clock, hooks)
+        journal.add(JournalFixtures.record("one"))
+        val size = Files.size(file)
+
+        failing = true
+        assertThrows(JournalUnusable::class.java) { journal.add(JournalFixtures.record("two")) }
+        assertThrows(JournalUnusable::class.java) { journal.handOver("one") }
+
+        assertEquals(size, Files.size(file), "a line that could not be flushed is not left in the file")
+        assertEquals(listOf("one"), ids(journal))
+        assertEquals(RecordState.WAITING, journal.entries().single().state)
+        failing = false
+        journal.handOver("one")
+        assertEquals(RecordState.HANDED_OVER, open(file).entries().single().state)
+    }
+
     // RCL-109
 
     @Test
@@ -90,7 +144,50 @@ class RumbleRankedJournalTest {
                 }
             } else {
                 assertTrue("three" in read, "a whole line is a record")
+                assertEquals(JournalFixtures.record("three"), reopened.entries().last().record)
+                assertTrue(reopened.readReport().tornEnd, "the line has no newline yet")
             }
+        }
+    }
+
+
+    @Test
+    @Tag("Positive")
+    fun testRCL109_UnitPositive_aHeaderCutAtAnyPositionIsWrittenAgainAndTheJournalIsUsable(@TempDir dir: Path) {
+        val whole = dir.resolve("whole.jsonl")
+        open(whole)
+        val header = Files.readAllBytes(whole)
+
+        for (cut in 0 until header.size) {
+            val file = dir.resolve("header-$cut.jsonl")
+            Files.write(file, header.copyOf(cut))
+
+            val journal = open(file)
+            journal.add(JournalFixtures.record("one"))
+
+            assertEquals(listOf("one"), ids(open(file)), "header cut at $cut")
+        }
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCL109_UnitPositive_aMoveLineCutAtAnyPositionLeavesTheStateAsItWasAndCostsNoRecord(@TempDir dir: Path) {
+        val source = dir.resolve("source.jsonl")
+        val journal = open(source)
+        journal.add(JournalFixtures.record("one"))
+        journal.add(JournalFixtures.record("two"))
+        val before = Files.readAllBytes(source)
+        journal.handOver("one")
+        val whole = Files.readAllBytes(source)
+
+        for (cut in 0 until whole.size - before.size - 1) {
+            val file = dir.resolve("move-$cut.jsonl")
+            Files.write(file, whole.copyOf(before.size + cut))
+
+            val reopened = open(file)
+
+            assertEquals(listOf("one", "two"), ids(reopened), "move cut at $cut")
+            assertEquals(RecordState.WAITING, reopened.entries().first().state, "a cut move is not applied, cut at $cut")
         }
     }
 
@@ -113,8 +210,14 @@ class RumbleRankedJournalTest {
 
         val foreign = dir.resolve("foreign.txt")
         Files.writeString(foreign, "hello\nworld\n")
-        assertThrows(JournalUnusable::class.java) { open(foreign) }
+        val refused = assertThrows(JournalUnusable::class.java) { open(foreign) }
+        assertTrue(refused.message!!.contains("does not start like a Rumble journal"), refused.message)
         assertEquals("hello\nworld\n", Files.readString(foreign), "a foreign file is not written to")
+        val partial = dir.resolve("partial.txt")
+        val start = "{\"kind\":\"header\",\"schemaVersion\":1,\"environment\":\"nobody\""
+        Files.writeString(partial, start)
+        assertThrows(JournalUnusable::class.java) { open(partial) }
+        assertEquals(start, Files.readString(partial), "a file that is not this journal's own start is never overwritten")
     }
 
     // RCL-110
@@ -262,29 +365,34 @@ class RumbleRankedJournalTest {
 
     // RCL-114
 
+    private fun publicMethods(type: Class<*>) =
+        type.methods.filter { it.declaringClass == type && !it.isSynthetic && !it.name.contains('$') }
+
     @Test
     @Tag("Positive")
-    fun testRCL114_UnitPositive_theOnlyWaysToLeaveTheWaitingStateAreTheBatchReceiptAndEpochMoves() {
-        val names = RankedJournal::class.java.methods.filter { it.declaringClass == RankedJournal::class.java }.map { it.name }.toSet()
+    fun testRCL114_UnitPositive_theOnlyOperationsAreTheOnesTiedToBatchesReceiptsAndTheEngineEpoch() {
+        val operations = publicMethods(RankedJournal::class.java).map { it.name }.toSet()
+        val opening = publicMethods(RankedJournal.Companion::class.java).map { it.name }.toSet()
 
-        assertTrue(names.containsAll(setOf("add", "handOver", "returnToWaiting", "accept", "reject", "setAsideOtherEpochs", "entries", "waiting")), "$names")
+        assertEquals(
+            setOf("add", "handOver", "returnToWaiting", "accept", "reject", "setAsideOtherEpochs", "entries", "waiting", "readReport", "getEnvironment"),
+            operations,
+        )
+        assertEquals(setOf("open"), opening)
     }
 
     @Test
     @Tag("Negative")
-    fun testRCL114_UnitNegative_noPublicOperationRemovesHidesFiltersOrChoosesRecordsByTheirOutcome() {
-        val forbiddenNames = Regex("(?i)remove|delete|drop|hide|skip|discard|filter|select|choose|prune|clear|keepIf|keepOnly|best|worst|win|score|rank")
-        val forbiddenParameters = setOf<Class<*>>(
-            java.util.function.Predicate::class.java, java.util.function.Function::class.java, java.util.Comparator::class.java,
-            kotlin.jvm.functions.Function1::class.java, kotlin.jvm.functions.Function2::class.java, java.lang.Runnable::class.java,
-        )
+    fun testRCL114_UnitNegative_noOperationTakesAnythingButAnIdentityAReasonOrAWholeRecordToAdd() {
+        val allowed = setOf<Class<*>>(String::class.java, Int::class.javaPrimitiveType!!, List::class.java, RankedRecord::class.java)
 
-        val methods = RankedJournal::class.java.methods.filter { it.declaringClass == RankedJournal::class.java }
-
-        for (m in methods) {
-            assertFalse(forbiddenNames.containsMatchIn(m.name), "${m.name} reads like a way to choose records")
-            for (p in m.parameterTypes) assertFalse(p in forbiddenParameters, "${m.name} takes a $p")
+        for (m in publicMethods(RankedJournal::class.java)) {
+            for (p in m.parameterTypes) assertTrue(p in allowed, "${m.name} takes a $p, which could choose records by outcome")
         }
         assertTrue(RankedJournal::class.java.constructors.none { !it.isSynthetic }, "a journal is made only by open")
+        val forbiddenNames = Regex("(?i)remove|delete|drop|hide|skip|discard|filter|select|choose|prune|clear|purge|erase|truncate|compact|forget|exclude|only|reset|keepIf|best|worst|win|score|rank")
+        for (m in publicMethods(RankedJournal::class.java) + publicMethods(RankedJournal.Companion::class.java)) {
+            assertFalse(forbiddenNames.containsMatchIn(m.name), "${m.name} reads like a way to choose records")
+        }
     }
 }

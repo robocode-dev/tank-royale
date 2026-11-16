@@ -911,15 +911,15 @@ Feature: rumble-client — Local ranked and practice battle client
   Scenario: A completed ranked result is durable before it is reported kept, and reading it back gives the same record
     Test-type: Integration
     Given a ranked journal of one Rumble environment and a process that adds completed ranked records and reports each one as kept
-    When that process is stopped without warning in the middle of adding records
-    Then every record it reported as kept is read back from the file as exactly the record that was added, and the journal opened again lists them in the order they were added
+    When that process is stopped without warning in the middle of adding records, and when a write or its flush fails half way
+    Then a failed write is taken back and never leaves bytes that a later line could be glued onto, a record whose write failed is not reported kept, and every record it reported as kept is read back from the file as exactly the record that was added, and the journal opened again lists them in the order they were added
 
   @RCL-109
   Scenario: A torn last line is ignored and reported, and never costs an earlier record
     Test-type: Unit
     Given a journal whose last line is cut off at any position, as an interrupted write leaves it
     When the journal is opened and read
-    Then every earlier record is read, the cut line is never taken for a record unless it is whole, and the read report says that the end is torn and which line cannot be read
+    Then every earlier record is read, the cut line is never taken for a record unless it is whole, and the read report says that the end is torn and which line cannot be read, and a header or a move line cut at any position costs no record and leaves every state as it was
     And the next record added afterwards is read back on a line of its own, never glued onto the torn bytes, and a file that does not start like a Rumble journal is refused with a plain message
 
   @RCL-110
@@ -955,5 +955,5 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given the public interface of the ranked journal
     When it is inspected
-    Then it has no operation that removes, deletes, hides or filters a record, none that takes a function, predicate or comparator to choose records, and none that takes a score or rank, so the only ways a record leaves the waiting state are the moves tied to batches, receipts and the engine epoch
+    Then its operations are exactly adding a record, reading the records and the read report, the moves tied to batches, receipts and the engine epoch, and opening a journal; none of them removes, hides or filters a record, none takes a function, predicate or comparator, and none takes anything but a battle ID, a reason code with its details, a version number or a whole record to add, so a record can only be chosen by its identity and never by how well the battle went
 ```

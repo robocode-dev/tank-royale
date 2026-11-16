@@ -130,7 +130,10 @@ private data class JournalLine(
  * line is written and flushed to the disk.
  *
  * There is no way to keep, drop or hide a record by how well the battle went: a record leaves the waiting state only by
- * being handed over, answered by a receipt, set aside for its engine epoch, or returned after a failure.
+ * being handed over for a batch or set aside for its engine epoch, and it comes back to waiting after a failure.
+ *
+ * The line is flushed with the file's own flush, which the operating system is asked for; the entry of a new file in its
+ * folder is not synced. A write that fails is taken back, so a later line is never glued onto half of an earlier one.
  *
  * One program writes a journal at a time; the file is not locked against two writers.
  */
@@ -138,7 +141,11 @@ class RankedJournal private constructor(
     val environment: RumbleEnvironment,
     private val file: Path,
     private val clock: () -> Instant,
+    private val hooks: JournalHooks,
 ) {
+    /** Set when a failed write could not be taken back; the journal then refuses every write until it is opened again. */
+    private var unusable: String? = null
+
     private val order = mutableListOf<String>()
     private val records = mutableMapOf<String, RankedRecord>()
     private val states = mutableMapOf<String, Triple<RecordState, String?, List<String>>>()
@@ -211,11 +218,23 @@ class RankedJournal private constructor(
         appendBytes((json.encodeToString(JournalLine.serializer(), line) + "\n").toByteArray(StandardCharsets.UTF_8))
 
     private fun appendBytes(bytes: ByteArray) {
+        unusable?.let { throw JournalUnusable(it) }
         try {
             FileChannel.open(file, StandardOpenOption.WRITE, StandardOpenOption.APPEND).use { channel ->
-                val buffer = ByteBuffer.wrap(bytes)
-                while (buffer.hasRemaining()) channel.write(buffer)
-                channel.force(true)
+                val before = channel.size()
+                try {
+                    val buffer = ByteBuffer.wrap(bytes)
+                    while (buffer.hasRemaining()) hooks.write(channel, buffer)
+                    hooks.force(channel)
+                } catch (e: IOException) {
+                    // Whatever part of the line reached the file is taken back, so that the next line is never glued onto it.
+                    try {
+                        channel.truncate(before)
+                    } catch (undo: IOException) {
+                        unusable = "The journal holds a half-written line that could not be removed. Close the program and open the journal again."
+                    }
+                    throw e
+                }
             }
         } catch (e: IOException) {
             throw JournalUnusable("The journal could not be written: ${e.message}", e)
@@ -263,17 +282,33 @@ class RankedJournal private constructor(
     companion object {
         private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
+        private fun headerLine(environment: RumbleEnvironment): ByteArray {
+            val header = JournalLine(kind = "header", schemaVersion = 1, environment = environment.name)
+            return (json.encodeToString(JournalLine.serializer(), header) + "\n").toByteArray(StandardCharsets.UTF_8)
+        }
+
         /**
          * Opens the journal of [environment] in [file], making it with its header when it does not exist. A journal made for
          * another environment is refused, so a record made for the test Rumble is never sent to the public one.
          */
-        fun open(environment: RumbleEnvironment, file: Path, clock: () -> Instant = Instant::now): RankedJournal {
-            val journal = RankedJournal(environment, file, clock)
+        fun open(environment: RumbleEnvironment, file: Path, clock: () -> Instant = Instant::now): RankedJournal =
+            openWith(environment, file, clock, JournalHooks())
+
+        internal fun openWith(environment: RumbleEnvironment, file: Path, clock: () -> Instant, hooks: JournalHooks): RankedJournal {
+            val journal = RankedJournal(environment, file, clock, hooks)
             try {
                 file.parent?.let { Files.createDirectories(it) }
-                if (!Files.exists(file) || Files.size(file) == 0L) {
-                    val header = JournalLine(kind = "header", schemaVersion = 1, environment = environment.name)
-                    Files.write(file, (json.encodeToString(JournalLine.serializer(), header) + "\n").toByteArray(StandardCharsets.UTF_8))
+                val header = headerLine(environment)
+                val existing = if (Files.exists(file)) Files.readAllBytes(file) else ByteArray(0)
+                // A file that holds only the start of this environment's own header is what a write cut short leaves; no record
+                // can be in it yet, so the header is written again. Any other file is never overwritten.
+                val tornHeader = existing.isNotEmpty() && '\n'.code.toByte() !in existing &&
+                    String(header, StandardCharsets.UTF_8).startsWith(String(existing, StandardCharsets.UTF_8))
+                if (existing.isEmpty() || tornHeader) {
+                    FileChannel.open(file, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING).use {
+                        it.write(ByteBuffer.wrap(header))
+                        it.force(true)
+                    }
                 }
                 journal.checkHeader()
                 journal.load()
@@ -298,3 +333,9 @@ class RankedJournal private constructor(
         }
     }
 }
+
+/** What the journal does to the file; the tests replace them to let a write fail half way. */
+internal class JournalHooks(
+    val write: (FileChannel, ByteBuffer) -> Unit = { channel, buffer -> channel.write(buffer) },
+    val force: (FileChannel) -> Unit = { channel -> channel.force(true) },
+)
