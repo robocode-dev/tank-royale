@@ -1496,7 +1496,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "288e22845560d25b5b8183233ba53343186d2a6f809b6b6d5260abec3f12e3ef"
+          "sha256": "02af43588656d452b49a51fb652dcf6b44733d3886dea325880cdff7c002983a"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1508,7 +1508,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "8b7bceef4bd9e17cd028bac98b8e057cb71cdb90e1295c2cc532b11d14925a2b"
+          "sha256": "8fcdbbcb10a5d6f8c923cea87e99689b094c12bb5118085dbabcf54aca3db8c8"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -1771,6 +1771,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
           "sha256": "6acb93d9fc0beebe3a7e5f0580fa59173c402789f7d690880be32f8bc2fd5cdd"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "sha256": "90a60778e6aa92f438f37de5920c49d536de0e54c27886250019f4db33ff4eb7"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationLiveTest.kt",
@@ -2902,6 +2906,104 @@
           "id": "RCL-047",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
           "subject": "RumbleProgramTest.testRCL047_UnitPositive_theSettingIsReadFromTheSystemProperty",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-108",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL108_IntegrationNegative_aRecordIsNotKeptWhenTheFileCannotBeWrittenAndTheJournalSaysSo",
+          "type": "Integration",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-108",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL108_IntegrationPositive_everyRecordTheStoppedProcessReportedKeptIsReadBackExactly",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-109",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL109_UnitNegative_theNextRecordAfterATornEndIsOnALineOfItsOwnAndAForeignFileIsRefused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-109",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL109_UnitPositive_aLastLineCutAtAnyPositionNeverCostsAnEarlierRecord",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-110",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL110_UnitNegative_aJournalIsRefusedForTheOtherEnvironmentAndNothingIsWritten",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-110",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL110_UnitPositive_aJournalOpensForItsOwnEnvironmentAndKeepsItsRecordsThere",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-111",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL111_UnitNegative_aDifferentBattleIsKeptAndARecordOfAnUnknownSchemaIsRefused",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-111",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL111_UnitPositive_theSameBattleIsKeptOnceInTheSameRunAndAfterReopening",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-112",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL112_UnitNegative_aMoveThatDoesNotFitOrNamesNoRecordIsRefusedAndWritesNothing",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-112",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL112_UnitPositive_aMoveIsALineAddedAfterTheOthersAndTheStateSurvivesReopening",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-113",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL113_UnitNegative_recordsOfTheCurrentEpochAndRecordsAlreadyOnTheirWayAreNotSetAside",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-113",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL113_UnitPositive_recordsOfAnotherEpochAreSetAsideWithTheirReasonAndStayListed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-114",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL114_UnitNegative_noPublicOperationRemovesHidesFiltersOrChoosesRecordsByTheirOutcome",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-114",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
+          "subject": "RumbleRankedJournalTest.testRCL114_UnitPositive_theOnlyWaysToLeaveTheWaitingStateAreTheBatchReceiptAndEpochMoves",
           "type": "Unit",
           "direction": "positive"
         },
