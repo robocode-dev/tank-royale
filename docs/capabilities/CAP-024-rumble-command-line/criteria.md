@@ -397,4 +397,50 @@ Feature: rumble-command-line — Rumble command line
     Given the release build and the release instructions
     When the release assets, the smoke test of the release and the release instructions are read
     Then the command line jar of the release version is one of the uploaded assets, the smoke test runs it with the version option, and the instructions name it among the executable jars
+
+  @RCI-048
+  Scenario: A contribution session starts only when the sign-in, registration, catalog, pin and worker are ready
+    Test-type: Unit
+    Given a saved sign-in or none, a registered account or not, a catalog that can be read or not, an engine pin this program can run under or not, and a battle worker that can be put in place or not
+    When the person runs `rumble contribute`
+    Then the session starts only when all of them are ready, and a sign-in that is missing, cannot be used or is refused, also while the registration is read, gives the same outcome words as the other commands and the next step to sign in, and a refused one is forgotten
+    And otherwise it ends before any battle with exit code 3 for a missing sign-in or registration and the next step, 2 for a pin this program cannot run under or bad input, and 1 for a registration, catalog, pin or worker that cannot be read or placed now, each with an outcome word and a reason the person can act on
+    And a registration read from the Rumble is remembered, so the next session needs no request for it, and a registration that cannot be read now is never taken for a missing one
+
+  @RCI-049
+  Scenario: The session runs the chosen bots, formats and battle count and sends what it keeps
+    Test-type: Unit
+    Given a ready environment and the options for bots, mode, formats and battle count
+    When the session runs
+    Then it runs the shared session loop with the pin's rounds and sizes, keeps results in the environment's journal under the account's client ID, and sends them as the signed-in account between battles and at the end
+    And a bot that is not in the catalog or not active, or a mode that needs chosen bots without any, is bad input, and choices with which no battle can be run end the session with exit code 1 and the planner's reason instead of waiting for ever
+
+  @RCI-050
+  Scenario: Starting again continues from the journal and the sent batches
+    Test-type: Unit
+    Given an earlier session that kept results and handed a batch over without an issue
+    When the person runs `rumble contribute` again
+    Then the kept results are still there and are not run again, and the batch is sent again under its own identity
+
+  @RCI-051
+  Scenario: The first Ctrl+C finishes and stops and a second cancels now
+    Test-type: Unit
+    Given a running session
+    When the person presses Ctrl+C once, or twice
+    Then once finishes the active battle, keeps it, sends what waits and ends with exit code 0, and twice ends the battle at once, keeps nothing of it, sends nothing more before it ends and ends with exit code 4 because the session did not finish, and each says so as it happens
+    And a Ctrl+C in the terminal does not reach the battle worker or the bots it starts, so the first one lets the battle finish, the worker's arguments arrive whole whatever characters its paths hold, and a third Ctrl+C ends the program the usual way
+
+  @RCI-052
+  Scenario: Events are reported as lines or JSON lines, and a final answer says how the session ended
+    Test-type: Unit
+    Given a session that starts, runs battles, sends and ends
+    When it runs in text form and with `--json`
+    Then each event is one line, or one JSON object per line with an event word, and the final answer gives the outcome word, the results kept in the session and how many results wait, were sent, accepted, rejected or kept apart, with exit code 0 when the battle count was reached or the person stopped it, 1 when the session gave up, no battle could be chosen or the journal failed, and 4 when it was ended at once
+
+  @RCI-053
+  Scenario: One real session in the test Rumble runs, keeps and sends a result that is accepted
+    Test-type: Integration
+    Given the maintainer's saved sign-in and registration for the test Rumble, the carried battle worker and the runtimes of the chosen bots
+    When `rumble contribute -e test --battles 1 --format 1v1` runs
+    Then one battle of two catalog bots is kept and sent, and the receiving workflow accepts it by its own receipt line
 ```

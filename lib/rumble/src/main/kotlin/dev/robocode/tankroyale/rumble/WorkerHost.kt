@@ -62,6 +62,8 @@ class WorkerHost(
     private val limits: WorkerLimits = WorkerLimits(),
     private val hostEnvironment: () -> Map<String, String> = { System.getenv() },
     private val runFolders: Path? = null,
+    /** Starts the worker so that a Ctrl+C in the terminal does not reach it; see [InterruptShield]. */
+    private val shieldFromInterrupt: Boolean = true,
 ) {
     private class Reading(val events: MutableList<WorkerEvent> = mutableListOf())
 
@@ -87,9 +89,14 @@ class WorkerHost(
     }
 
     private fun runIn(command: WorkerCommand, job: Job, folders: WorkerFolders, cancel: () -> Boolean): WorkerOutcome {
-        val builder = ProcessBuilder(command.build(folders)).directory(folders.work.toFile())
+        val built = command.build(folders)
+        // Behind the shield the shell starts the program, so a program that is not there is found missing here.
+        if (shieldFromInterrupt && !programExists(built.firstOrNull().orEmpty())) return WorkerOutcome.CouldNotStart("The worker could not be started.")
+        val shielded = if (shieldFromInterrupt) InterruptShield.wrap(built) else InterruptShield.Shielded(built, emptyMap())
+        val builder = ProcessBuilder(shielded.command).directory(folders.work.toFile())
         builder.environment().clear()
         builder.environment().putAll(WorkerEnvironment.build(hostEnvironment(), folders))
+        builder.environment().putAll(shielded.environment)
         val process = try {
             builder.start()
         } catch (e: IOException) {
@@ -144,6 +151,31 @@ class WorkerHost(
         // Anything the worker started and left behind is stopped too.
         descendants.filter { it.isAlive }.forEach { it.destroyForcibly() }
         return decide(reading, process.exitValue())
+    }
+
+    /** True when [program] is a file, or a program found on the host's search path the way the operating system finds it. */
+    private fun programExists(program: String): Boolean {
+        if (program.isBlank()) return false
+        val windows = System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)
+        val host = hostEnvironment()
+        fun variable(name: String) = host.entries.firstOrNull { it.key.equals(name, ignoreCase = true) }?.value
+        val extensions = if (windows) listOf("") + (variable("PATHEXT") ?: ".EXE;.CMD;.BAT").split(';').filter { it.isNotBlank() } else listOf("")
+        // Elsewhere a file that cannot be run is not there for this purpose, so it is reported as not started too.
+        fun found(path: Path) = extensions.any { Path.of(path.toString() + it).let { file -> Files.isRegularFile(file) && (windows || Files.isExecutable(file)) } }
+        val path = try {
+            Path.of(program)
+        } catch (e: java.nio.file.InvalidPathException) {
+            return false
+        }
+        if (path.isAbsolute || program.contains('/') || program.contains('\\')) return found(path)
+        val search = variable("PATH").orEmpty()
+        return search.split(java.io.File.pathSeparatorChar).filter { it.isNotBlank() }.any { folder ->
+            try {
+                found(Path.of(folder).resolve(program))
+            } catch (e: java.nio.file.InvalidPathException) {
+                false
+            }
+        }
     }
 
     private fun decide(reading: Reading, exitCode: Int): WorkerOutcome {

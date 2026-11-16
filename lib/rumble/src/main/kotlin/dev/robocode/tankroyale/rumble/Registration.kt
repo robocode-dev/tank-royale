@@ -20,6 +20,20 @@ class RegistrationRecord(
     val savedAt: Instant,
 )
 
+/** What the Rumble has registered for an account. */
+sealed interface RegisteredClient {
+    data class Found(val clientId: String) : RegisteredClient
+
+    /** The account has no registration file: it must register. */
+    data object None : RegisteredClient
+
+    /** GitHub did not accept the sign-in; the person must sign in again. */
+    data class SignInRefused(val message: String) : RegisteredClient
+
+    /** The file could not be read now or is not valid; trying again later may work. */
+    data class Unreadable(val message: String) : RegisteredClient
+}
+
 /** Where a registration is remembered, so later runs do not need the network. */
 interface RegistrationMemory {
     /** The registration of [account], or null when none is remembered. */
@@ -104,6 +118,24 @@ class Registration(
         if (answer.status != 200) throw Stop(RegistrationResult.Failed(unexpected(answer)))
         return GitHubAccount.nameIn(answer) ?: throw Stop(RegistrationResult.Failed("GitHub did not say which account is signed in."))
     }
+
+    /**
+     * What the Rumble has registered for [account]. It only reads the registration file and opens no issue, so a session
+     * can learn its client ID without registering; a refused sign-in and a file that cannot be read now are told apart
+     * from a missing registration.
+     */
+    fun registeredClient(account: String, token: String?): RegisteredClient =
+        try {
+            readRegistrationFile(account, token)?.let { RegisteredClient.Found(it) } ?: RegisteredClient.None
+        } catch (e: Stop) {
+            when (val result = e.result) {
+                is RegistrationResult.SignInNeeded -> RegisteredClient.SignInRefused(result.message)
+                is RegistrationResult.Failed -> RegisteredClient.Unreadable(result.message)
+                else -> RegisteredClient.Unreadable("The registration could not be read.")
+            }
+        } catch (e: IOException) {
+            RegisteredClient.Unreadable(e.message ?: "GitHub could not be reached.")
+        }
 
     /** The client ID in the account's registration file, or null if there is none yet. */
     internal fun readRegistrationFile(account: String, token: String?): String? {

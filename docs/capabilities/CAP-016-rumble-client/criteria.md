@@ -971,6 +971,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a worker that refuses the job, fails, ends without finishing, exits with an error, writes something that is not a message, or does not start
     When the session runs battles
     Then no record is kept for any of them, each is reported as not kept with its own reason code, the next battle is run, and a completed battle after a failure is kept
+    And a battle that did not complete makes the next choice another battle where there is one, and advice that is all or part of it is not taken again in the session, without counting towards the battle count
+    And a session set to end when no battle can be chosen ends with the planner's reason instead of waiting
     And after the configured number of battles in a row that were not kept the session ends as given up, without spinning, and a battle for a game format with no rounds set is not run and is reported
 
   @RCL-117

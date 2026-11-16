@@ -34,6 +34,12 @@ fun main(args: Array<String>) {
         System.out.flush()
         return
     }
+    if (mode == "echoargs") {
+        // Writes the arguments after the mode as they arrived, and ends with exit code 7.
+        println(args.drop(1).joinToString("|"))
+        System.out.flush()
+        exitProcess(7)
+    }
     if (mode == "envreport") {
         print(environmentReportText())
         return

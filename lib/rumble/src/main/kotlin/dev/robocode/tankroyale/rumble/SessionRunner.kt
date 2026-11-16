@@ -85,6 +85,9 @@ sealed interface SessionEnd {
 
     /** A completed result could not be written to the journal, so the session stopped rather than lose it. */
     data class JournalFailed(val message: String) : SessionEnd
+
+    /** No battle could be chosen and the session was set to end then, rather than wait; [reason] and [values] are the planner's. */
+    data class NothingToRun(val reason: WaitReason, val values: List<String>) : SessionEnd
 }
 
 /** Everything a session needs besides what to run. */
@@ -108,6 +111,11 @@ class SessionSetup(
     val clock: () -> Instant = Instant::now,
     /** Work done after each battle, kept or not, and while the session waits, such as [AutomaticUpload.betweenBattles]. */
     val betweenBattles: () -> Unit = {},
+    /**
+     * True when no battle can be chosen means the session ends with [SessionEnd.NothingToRun], for a caller whose request
+     * does not change while it runs, such as the command line with its catalog read once. False waits for the request to change.
+     */
+    val endWhenWaiting: Boolean = false,
 )
 
 /**
@@ -143,6 +151,7 @@ class SessionRunner(
                     val event = SessionEvent.Waiting(step.reason, step.values)
                     if (event != lastWait) onEvent(event)
                     lastWait = event
+                    if (setup.endWhenWaiting) return SessionEnd.NothingToRun(step.reason, step.values)
                     betweenBattles()?.let { return it }
                     setup.sleep(setup.pollMillis)
                 }
@@ -169,6 +178,8 @@ class SessionRunner(
                         is Ran.Kept -> { history = history.after(step); failures = 0 }
                         is Ran.NotKept -> {
                             if (result.reason == NotKeptReason.CANCELLED) return SessionEnd.Cancelled
+                            // The same battle is likely to fail again, so the next choice moves on to another where there is one.
+                            history = history.afterNotCompleted(step)
                             if (++failures >= setup.maxConsecutiveFailures) return SessionEnd.GaveUp(failures)
                         }
                         is Ran.JournalFailed -> return SessionEnd.JournalFailed(result.message)

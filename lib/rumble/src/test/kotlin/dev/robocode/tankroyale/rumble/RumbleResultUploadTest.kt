@@ -463,7 +463,7 @@ class RumbleResultUploadTest {
         val github = FakeGitHub()
         val s = setup(dir, github)
         var now = Instant.parse("2026-11-16T10:00:00Z")
-        val automatic = AutomaticUpload(s.uploader, sendAt = 3, sendAfter = Duration.ofMinutes(15), receiptsAfter = Duration.ofMinutes(2), sendGap = Duration.ofMinutes(1)) { now }
+        val automatic = AutomaticUpload(s.uploader, sendAt = 3, sendAfter = Duration.ofMinutes(15), receiptsAfter = Duration.ofMinutes(2), sendGap = Duration.ofMinutes(1), clock = { now })
 
         s.journal.add(record()); automatic.betweenBattles()
         s.journal.add(record()); now = now.plusSeconds(30); automatic.betweenBattles()
@@ -503,6 +503,15 @@ class RumbleResultUploadTest {
 
         assertEquals(SessionEnd.JournalFailed("The list of sent batches cannot be written."), end)
         assertEquals(1, calls, "it ran while the session waited")
+
+        // After the person asked to end at once, nothing more is started over the network.
+        val stopping = FakeGitHub()
+        val st = setup(dir.resolve("stop"), stopping, records = listOf(record(), record()))
+        val stopped = AutomaticUpload(st.uploader, sendAt = 1, stop = { true })
+        stopped.betweenBattles()
+        stopped.finish()
+        assertEquals(0, stopping.posted.size)
+        assertEquals(0, stopping.tokensSeen.size, "no request at all")
 
         // Any other failure of sending is reported and the session goes on.
         val broken = object : GitHubApi {

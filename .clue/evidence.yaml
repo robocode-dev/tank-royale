@@ -334,7 +334,7 @@
         },
         {
           "path": "rumble-cli/build.gradle.kts",
-          "sha256": "ffbb67141b03f908dae96fa71a0977765593a887f13ed00ff6f530bad336c340"
+          "sha256": "d7235c7c2350ecd12a5be84376aa1092012e704396ecedd6592b902a492cb6e1"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
@@ -343,6 +343,10 @@
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
           "sha256": "f503f05b7f853b2c60098fe126fa3a8b9bb484f19b8cf76e3925e8bc2b6cec43"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "sha256": "de6d25763b4fdb4d124be3fb7ffd0ecaca0f47f5cf825bea830183afb6acca28"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -642,6 +646,83 @@
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliBotTest.kt",
           "subject": "RumbleCliBotTest.testRCI045_UnitPositive_botCheckStaysOfflineAndSaysWhereTheLaunchersAreCompared",
           "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-048",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI048_UnitNegative_anythingNotReadyEndsTheCommandBeforeAnyBattleWithItsExitCodeAndReason",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-048",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI048_UnitPositive_aSessionStartsWhenEverythingIsReady",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-049",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI049_UnitNegative_anUnknownBotOrAModeWithoutBotsIsBadInput",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-049",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI049_UnitPositive_theSessionRunsTheChosenBotsAndFormatsAndSendsWhatItKeeps",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-050",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI050_UnitNegative_aBatchWhoseSendHadNoClearAnswerIsSentAgainUnderItsOwnIdentity",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-050",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI050_UnitPositive_startingAgainKeepsWhatWasKeptAndSendsAHandedOverBatchAgain",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-051",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI051_UnitNegative_aSecondCtrlCEndsTheBattleAtOnceAndKeepsNothingOfIt",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-051",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI051_UnitPositive_theFirstCtrlCFinishesTheBattleKeepsItAndStops",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-052",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI052_UnitNegative_aSessionThatGivesUpEndsWithExitCodeOneAndItsReasons",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-052",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI052_UnitPositive_eventsAreJsonLinesAndTheFinalAnswerCountsTheResults",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-053",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI053_IntegrationPositive_oneRealSessionInTheTestRumbleKeepsAndSendsAResultThatIsAccepted",
+          "type": "Integration",
           "direction": "positive"
         },
         {
@@ -1797,7 +1878,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
-          "sha256": "607b7c7e104a36073c17e16bc3a39a288faff3747b63fa4087cb33314f0ba3f8"
+          "sha256": "fc9c90d2998c72acc33c601cc8b763ecdaf37426d1a3caaeee096e924d44d175"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
@@ -1813,7 +1894,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
-          "sha256": "33d17b0dacfa96d01aaf58f250ec845c2eb825069eff935660885ccc6d4b135b"
+          "sha256": "433bbf12a522591bb80fe302952efde57d2d3fd1765663ee7352c4c1bd15041e"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
@@ -1857,7 +1938,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
-          "sha256": "47ff1fc6fb08ad2c7b9e4f2b806c32c2aba3c7c01b1e29a00abcc10ad89273dc"
+          "sha256": "86eee701165e10f03fcd5e8c9347444801fcafe54ad2c3240243688e0a5e6a4c"
         }
       ],
       "references": [
@@ -3453,6 +3534,13 @@
         {
           "id": "RCL-116",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL116_UnitPositive_aBattleThatDidNotCompleteMakesTheNextChoiceAnotherBattle",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-116",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
           "subject": "RumbleSessionRunnerTest.testRCL116_UnitPositive_aWorkerThatCannotBeStartedIsReported",
           "type": "Unit",
           "direction": "positive"
@@ -4147,6 +4235,20 @@
           "id": "RBW-013",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
           "subject": "RumbleWorkerHostTest.testRBW013_UnitPositive_theUsualCommandHasTheHeapLimitTheFolderSettingsAndTheWorkerArgument",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-051",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRCI051_UnitNegative_noArgumentIsReadByTheShellAndElsewhereCtrlCIsIgnoredForEveryChild",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-051",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
+          "subject": "RumbleWorkerHostTest.testRCI051_UnitPositive_aShieldedCommandKeepsEveryArgumentAndItsExitCode",
           "type": "Unit",
           "direction": "positive"
         }

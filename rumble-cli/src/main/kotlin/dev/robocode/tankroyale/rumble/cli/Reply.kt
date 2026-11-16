@@ -13,6 +13,11 @@ import dev.robocode.tankroyale.rumble.SubmissionProgress
 import dev.robocode.tankroyale.rumble.GitHubAuthTransport
 import dev.robocode.tankroyale.rumble.HttpGitHubApi
 import dev.robocode.tankroyale.rumble.HttpGitHubAuthTransport
+import dev.robocode.tankroyale.rumble.GitHubResultDataSource
+import dev.robocode.tankroyale.rumble.ResultDataSource
+import dev.robocode.tankroyale.rumble.WorkerCommand
+import dev.robocode.tankroyale.rumble.WorkerCommands
+import dev.robocode.tankroyale.rumble.WorkerLimits
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -34,6 +39,52 @@ object ExitCodes {
     const val NOT_FINISHED = 4
 }
 
+/** The heap of the battle worker, which runs the server and the battle; the bots are processes of their own. */
+private const val WORKER_HEAP_MEGABYTES = 512
+
+/**
+ * Calls [action] at each of the first two Ctrl+C instead of ending the program, until the returned handle is closed; a
+ * third Ctrl+C ends the program the usual way, so a person is never kept from ending it. Java gives no supported way to
+ * catch Ctrl+C, so the signal handler of the JDK is used.
+ *
+ * When Ctrl+C is already ignored, as for a command started in the background by a shell, no Ctrl+C can come and nothing
+ * is installed. Where the JDK's signal handler is missing, a shutdown hook calls [action] once and then holds the program
+ * open until the handle is closed, at most [SHUTDOWN_WAIT], so the battle can finish and the answer be written; the
+ * program then ends with the code of the signal, not the command's own.
+ */
+internal fun onInterrupt(action: () -> Unit): AutoCloseable =
+    try {
+        val signal = sun.misc.Signal("INT")
+        val presses = java.util.concurrent.atomic.AtomicInteger()
+        lateinit var before: sun.misc.SignalHandler
+        before = sun.misc.Signal.handle(signal) {
+            if (presses.incrementAndGet() >= 2) sun.misc.Signal.handle(signal, before)
+            action()
+        }
+        AutoCloseable { sun.misc.Signal.handle(signal, before) }
+    } catch (e: IllegalArgumentException) {
+        // Ctrl+C is ignored for this program, so none can come.
+        AutoCloseable { }
+    } catch (e: LinkageError) {
+        val closed = java.util.concurrent.CountDownLatch(1)
+        val hook = Thread {
+            action()
+            closed.await(SHUTDOWN_WAIT.toMillis(), java.util.concurrent.TimeUnit.MILLISECONDS)
+        }
+        Runtime.getRuntime().addShutdownHook(hook)
+        AutoCloseable {
+            closed.countDown()
+            try {
+                Runtime.getRuntime().removeShutdownHook(hook)
+            } catch (e: IllegalStateException) {
+                // The program is already ending, and the hook is what holds it open; it has just been let go.
+            }
+        }
+    }
+
+/** How long a program that is ending holds open for the session to finish its battle and answer. */
+private val SHUTDOWN_WAIT: java.time.Duration = java.time.Duration.ofMinutes(35)
+
 /** What a command answers: its exit code, the same facts as JSON and as text for a person. */
 class Reply(val exitCode: Int, val json: JsonObject, val text: String)
 
@@ -53,6 +104,16 @@ class Services(
     private val makeSubmission: ((RumbleEnvironment, GitHubApi) -> BotSending)? = null,
     /** Reads the progress of a sent bot. */
     private val makeProgress: ((RumbleEnvironment, GitHubApi) -> BotProgressReading)? = null,
+    /** Where the result repository's engine pin and advice are read. */
+    val resultData: (RumbleEnvironment) -> ResultDataSource = { GitHubResultDataSource(it) },
+    /** How a session starts the battle worker, given the environment's state folder: the carried worker by default. */
+    val worker: (Path) -> WorkerCommand = { stateRoot -> WorkerCommands.javaJar(EmbeddedWorker.extract(stateRoot), WORKER_HEAP_MEGABYTES) },
+    /** The limits of one battle's worker. */
+    val workerLimits: WorkerLimits = WorkerLimits(totalTime = java.time.Duration.ofMinutes(30)),
+    /** Calls the given action at each Ctrl+C for as long as the returned handle is open. */
+    val interrupts: (() -> Unit) -> AutoCloseable = ::onInterrupt,
+    /** The seed of a session's choices among equals. */
+    val seed: () -> Long = { System.nanoTime() },
 ) {
     fun submission(env: RumbleEnvironment): BotSending = (makeSubmission ?: { e, a -> BotSubmission(e, a) })(env, api)
 
@@ -130,6 +191,12 @@ class Io(
     /** Writes [text], cleaned, and carries on. Only for a command in text form that has more to say. */
     fun say(text: String) {
         out.println(redaction.paths(text))
+        out.flush()
+    }
+
+    /** Writes one event of a running command as one cleaned JSON line, and carries on. */
+    fun event(json: JsonObject) {
+        out.println(encoded(json))
         out.flush()
     }
 
