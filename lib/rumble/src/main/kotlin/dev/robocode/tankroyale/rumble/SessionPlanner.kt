@@ -51,6 +51,10 @@ data class SessionHistory(
     val perEntry: Map<String, Int> = emptyMap(),
     /** How often two entries met, by their keys in sorted order joined with a tab. */
     val perPairing: Map<String, Int> = emptyMap(),
+    /** Battles that were chosen and did not complete. They count for coverage, so the next choice moves on, but not as run. */
+    val notCompleted: Int = 0,
+    /** The battles that did not complete, each as the set of its entries' keys; advice that is part of one is not taken again. */
+    val failedBattles: Set<Set<String>> = emptySet(),
 ) {
     /** The history after [battle] has run to the end. */
     fun after(battle: SessionStep.Battle): SessionHistory {
@@ -59,8 +63,15 @@ data class SessionHistory(
         for (a in keys) for (b in keys) if (a < b) pairings.merge(pairingKey(a, b), 1, Int::plus)
         val entries = perEntry.toMutableMap()
         keys.forEach { entries.merge(it, 1, Int::plus) }
-        return SessionHistory(battlesRun + 1, perFormat + (battle.gameType to (perFormat[battle.gameType] ?: 0) + 1), entries, pairings)
+        return SessionHistory(battlesRun + 1, perFormat + (battle.gameType to (perFormat[battle.gameType] ?: 0) + 1), entries, pairings, notCompleted, failedBattles)
     }
+
+    /**
+     * The history after [battle] was run and did not complete. Its entries and pairing count as used, so the next choice
+     * is another battle where there is one, but the battle does not count towards the battle count.
+     */
+    fun afterNotCompleted(battle: SessionStep.Battle): SessionHistory =
+        after(battle).copy(battlesRun = battlesRun, notCompleted = notCompleted + 1, failedBattles = failedBattles + setOf(battle.participants.toSet()))
 
     internal fun met(a: String, b: String): Int = perPairing[pairingKey(minOf(a, b), maxOf(a, b))] ?: 0
 
@@ -106,7 +117,7 @@ object SessionPlanner {
 
         val pool = Pool(request.entries.filter { it.isActive })
         val formats = request.gameTypes.distinct().sortedBy { history.perFormat[it] ?: 0 } // stable: ties keep the contributor's order
-        val random = Random(request.seed * 31 + history.battlesRun)
+        val random = Random(request.seed * 31 + history.battlesRun + history.notCompleted * 1_000_003L)
 
         val selected = request.selected.filter { it in pool.byKey }.toSet()
         val useSelected = request.mode != SelectionMode.ALL && selected.isNotEmpty()
@@ -166,7 +177,11 @@ object SessionPlanner {
         val perBattle = if (twinDuel) 2 else count
         if (candidates.size < perBattle || perBattle < 2) return null
 
+        // Advice that is all or part of a battle that already failed in this session is not taken again: filled up, a short
+        // group could be that same battle, and the same bots would likely fail again.
+        // A group with none of the candidates left says nothing and takes no place among the advised groups.
         val advice = request.advice[format].orEmpty().map { group -> group.filter { it in candidates }.distinct() }
+            .filter { group -> group.isNotEmpty() && history.failedBattles.none { it.containsAll(group) } }
 
         val anchors = if (mustHold == null) listOf(null) else candidates.filter { it in mustHold }.shuffled(random).sortedBy { history.perEntry[it] ?: 0 }
         for (anchor in anchors) {

@@ -70,7 +70,10 @@ class SignInFlow(
     private val noApp get() = environment.signInNotAvailable()
 
     /** Renews the saved sign-in. */
-    fun renewSaved(): SavedRenewal = SavedSignIn(store, signIn).renew()
+    fun renewSaved(): SavedRenewal = savedSignIn().renew()
+
+    /** The saved sign-in this flow renews, for work that renews it again later, such as sending results during a session. */
+    fun savedSignIn(): SavedSignIn = SavedSignIn(store, signIn)
 
     /** Asks for a code unless the person is already signed in or a code is already waiting. */
     fun start(): SignInStart {

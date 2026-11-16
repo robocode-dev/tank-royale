@@ -92,6 +92,8 @@ tasks {
         failFast = true
 
         systemProperty("repo.root", rootDir.absolutePath)
+        // Runs one real session in the test Rumble with the saved sign-in, skipped unless asked for: -Drumble.live.send=true
+        systemProperty("rumble.live.send", System.getProperty("rumble.live.send") ?: "false")
     }
 
     val smokeTest by registering(Exec::class) {

@@ -198,6 +198,43 @@ class RumbleSessionRunnerTest {
 
     @Test
     @Tag("Positive")
+    fun testRCL116_UnitPositive_aBattleThatDidNotCompleteMakesTheNextChoiceAnotherBattle(@TempDir dir: Path) {
+        val entries = listOf(bot("Alpha"), bot("Beta"), bot("Gamma"), bot("Delta"))
+
+        val run = session(dir, sourceFor("Alpha", "Beta", "Gamma", "Delta"), command("fail", "fail", "ok"), { request(entries, limit = 1) }, maxFailures = 5)
+
+        val chosen = run.events.filterIsInstance<SessionEvent.BattleStarted>().map { it.participants.toSet() }
+        assertEquals(3, chosen.size)
+        assertEquals(chosen.size, chosen.distinct().size, "each battle after a failure is another one: $chosen")
+        assertEquals(SessionEnd.Finished, run.end)
+        assertEquals(1, run.journal.entries().size, "a battle that did not complete does not count towards the battle count")
+
+        // Advice for a battle that failed is not taken again in the session.
+        val advised = session(
+            dir.resolve("advice"), sourceFor("Alpha", "Beta", "Gamma", "Delta"), command("fail", "ok"),
+            { request(entries, limit = 1).copy(advice = mapOf("1v1" to listOf(listOf("Alpha 1.0", "Beta 1.0")))) },
+        )
+        val advisedChoices = advised.events.filterIsInstance<SessionEvent.BattleStarted>().map { it.participants.toSet() }
+        assertEquals(setOf("Alpha 1.0", "Beta 1.0"), advisedChoices.first(), "the advice decides the first battle")
+        assertTrue(advisedChoices.drop(1).none { it == setOf("Alpha 1.0", "Beta 1.0") }, advisedChoices.toString())
+
+        // A short advised group that is part of a failed battle is not filled up into that battle again.
+        val melee = listOf("Alpha", "Beta", "Gamma", "Delta", "Epsilon")
+        val short = session(
+            dir.resolve("short"), sourceFor(*melee.toTypedArray()), command("fail", "ok"),
+            {
+                SessionRequest(melee.map { bot(it) }, emptySet(), SelectionMode.ALL, listOf("melee"), mapOf("melee" to 3), 1,
+                    mapOf("melee" to listOf(listOf("Alpha 1.0", "Beta 1.0"))), seed = 1)
+            },
+            rounds = mapOf("melee" to 3),
+        )
+        val meleeChoices = short.events.filterIsInstance<SessionEvent.BattleStarted>().map { it.participants.toSet() }
+        assertTrue(meleeChoices.first().containsAll(setOf("Alpha 1.0", "Beta 1.0")), "the advice decides the first battle")
+        assertTrue(meleeChoices.drop(1).none { it == meleeChoices.first() }, meleeChoices.toString())
+    }
+
+    @Test
+    @Tag("Positive")
     fun testRCL116_UnitPositive_aWorkerThatCannotBeStartedIsReported(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"))
 
@@ -292,6 +329,17 @@ class RumbleSessionRunnerTest {
             onEvent = { event, control -> if (event is SessionEvent.Waiting) control.finishAndStop() },
         )
         assertEquals(SessionEnd.Stopped, tooFew.end)
+
+        // A session set to end when no battle can be chosen ends with the planner's reason instead of waiting.
+        val ending = SessionSetup(
+            commit = commit, source = sourceFor("Alpha"), botCache = dir.resolve("ending"), host = WorkerHost(WorkerLimits()), command = command("ok"),
+            journal = RankedJournal.open(RumbleEnvironments.PUBLIC, dir.resolve("ending.jsonl")), engine = engine, client = client,
+            roundsPerFormat = mapOf("1v1" to 3), pollMillis = 1, sleep = {}, endWhenWaiting = true,
+        )
+        val endEvents = mutableListOf<SessionEvent>()
+        val nothing = SessionRunner(ending, SessionControl()) { endEvents += it }.run { request(listOf(bot("Alpha")), limit = 1) }
+        assertEquals(SessionEnd.NothingToRun(WaitReason.NOT_ENOUGH_ENTRIES, listOf("1v1")), nothing)
+        assertEquals(listOf(SessionEvent.Waiting(WaitReason.NOT_ENOUGH_ENTRIES, listOf("1v1"))), endEvents)
         assertEquals(listOf(SessionEvent.BotNotPlaced("Beta 1.0", NotPlacedReason.HASH_MISMATCH)), tooFew.events.filterIsInstance<SessionEvent.BotNotPlaced>().map { it.copy(detail = "") })
         assertEquals(SessionEvent.Waiting(WaitReason.NOT_ENOUGH_ENTRIES, listOf("1v1")), tooFew.events.filterIsInstance<SessionEvent.Waiting>().single())
     }

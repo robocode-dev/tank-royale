@@ -12,6 +12,29 @@ fun interface WorkerCommand {
     fun build(folders: WorkerFolders): List<String>
 }
 
+/**
+ * Starts the worker so that a Ctrl+C in the contributor's terminal does not reach it, nor the server and the bots it
+ * starts. The terminal sends Ctrl+C to every process on its console or in its foreground group, so without this the first
+ * Ctrl+C, which is meant to let the running battle finish, would end the battle. Java cannot start a process that
+ * ignores Ctrl+C by itself, so the command is wrapped: on Windows in `start /b /wait`, which runs the program with Ctrl+C
+ * ignored, a setting its children inherit; elsewhere in `sh` with `trap '' INT`, an ignored signal that `exec` and every
+ * child keep. The worker is still ended through its process tree, as before.
+ */
+object InterruptShield {
+    fun wrap(command: List<String>, windows: Boolean = isWindows(), systemRoot: String? = System.getenv("SystemRoot")): List<String> =
+        if (windows) {
+            val cmd = systemRoot?.let { "$it\\System32\\cmd.exe" } ?: "cmd.exe"
+            // The empty title comes first so that a quoted program path is never taken for the window title. `start` does not
+            // give the program's exit code back by itself, so it is read with delayed expansion and handed on. Delayed
+            // expansion would change a `!` in an argument; the worker's own command has none.
+            listOf(cmd, "/d", "/v:on", "/c", "start", "\"\"", "/b", "/wait") + command + listOf("&", "exit", "!errorlevel!")
+        } else {
+            listOf("/bin/sh", "-c", "trap '' INT; exec \"\$@\"", "sh") + command
+        }
+
+    private fun isWindows() = System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)
+}
+
 object WorkerCommands {
     /**
      * The usual command: the Java program from the shared Java helper, a heap limit, the worker's home and temporary

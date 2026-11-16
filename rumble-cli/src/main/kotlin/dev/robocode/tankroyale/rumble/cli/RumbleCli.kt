@@ -63,7 +63,7 @@ object RumbleCli {
     fun run(args: Array<String>, io: Io, services: Services = Services()): Int {
         val root = Root().subcommands(
             VersionCommand(io), EnvironmentsCommand(io), StatusCommand(io, services), LoginCommand(io, services),
-            LogoutCommand(io, services), RegisterCommand(io, services), ImportLegacyCommand(io),
+            LogoutCommand(io, services), RegisterCommand(io, services), ImportLegacyCommand(io), ContributeCommand(io, services),
             BotGroup().subcommands(BotCheckCommand(io, services), BotSendCommand(io, services), BotStatusCommand(io, services)),
         ).context { readEnvvar = services.readEnv }
         val commands = root.registeredSubcommandNames()
