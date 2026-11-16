@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.rumble
 import dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Tag
@@ -89,6 +90,31 @@ class RumbleSessionPinTest {
         assertEquals(PinRefusal.NOT_UNDERSTOOD, refused(prepare("this is not a pin")).reason)
         assertEquals(PinRefusal.NOT_UNDERSTOOD, refused(prepare("""{ "schemaVersion": 1, "behaviorVersion": 2 }""")).reason)
         assertEquals(SessionPin.Refused(PinRefusal.UNSUPPORTED_SCHEMA, listOf("2", "1")), prepare(pin(schema = 2)))
+        // A newer schema says so whatever else it changed, so the screen can say to update the program.
+        assertEquals(
+            SessionPin.Refused(PinRefusal.UNSUPPORTED_SCHEMA, listOf("2", "1")),
+            prepare(pin(schema = 2, oneVsOne = """{ "rounds": 35, "battlefield": { "w": 800, "h": 600 }, "participants": 2, "turnTimeout": 10 }""")),
+        )
+        assertEquals(SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("schemaVersion")), prepare(pin().replace("\"schemaVersion\": 1", "\"schemaVersion\": \"1\"")))
+        assertEquals(SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("the pin is not a JSON object")), prepare("[1, 2]"))
+        // Every number is written as a number, in the formats too.
+        assertEquals(
+            SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("game type 1v1")),
+            prepare(pin(oneVsOne = """{ "rounds": "35", "battlefield": [800, 600], "participants": 2 }""")),
+        )
+        assertEquals(
+            SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("game type 1v1")),
+            prepare(pin(oneVsOne = """{ "rounds": 35, "battlefield": ["800", 600], "participants": 2 }""")),
+        )
+        // A path that leaves its folder is never fetched.
+        val github = GitHubResultDataSource(RumbleEnvironments.TEST)
+        listOf("matchmaking/../engine.json", "../x", "./engine.json").forEach { assertThrows(CatalogUnreadable::class.java, { github.fileUrl(it) }, it) }
+        assertEquals("https://raw.githubusercontent.com/robocode-dev/rumble-data-test/main/engine.json", github.fileUrl(EnginePin.PATH).toString())
+        // A failure without a message still says what failed.
+        val silent = object : ResultDataSource {
+            override fun fileText(path: String): String = throw IOException()
+        }
+        assertEquals(SessionPin.Refused(PinRefusal.UNREADABLE, listOf("IOException")), SessionPins.prepare(silent, formats))
         assertEquals(PinRefusal.NOT_UNDERSTOOD, refused(prepare(pin(behavior = 0), version = 0)).reason)
         assertEquals(
             SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("game type 1v1")),
@@ -105,9 +131,19 @@ class RumbleSessionPinTest {
     fun testRCL122_UnitNegative_aPinThisProgramCannotRunUnderIsRefusedNamingWhatDiffers() {
         assertEquals(SessionPin.Refused(PinRefusal.BEHAVIOR_VERSION_DIFFERS, listOf("1", "2")), prepare(pin(behavior = 1), version = 2))
         assertEquals(SessionPin.Refused(PinRefusal.BEHAVIOR_VERSION_DIFFERS, listOf("3", "2")), prepare(pin(behavior = 3), version = 2))
+        // A newer behavior version is reported as such even when the pin also pins a rule this program does not run.
+        assertEquals(
+            SessionPin.Refused(PinRefusal.BEHAVIOR_VERSION_DIFFERS, listOf("3", "2")),
+            prepare(pin(behavior = 3, oneVsOne = """{ "rounds": 35, "battlefield": [800, 600], "participants": 2, "turnTimeout": 10 }"""), version = 2),
+        )
         assertEquals(SessionPin.Refused(PinRefusal.FORMAT_NOT_PINNED, listOf("classic")), prepare(pin(), listOf("1v1", "classic")))
         assertEquals(
-            SessionPin.Refused(PinRefusal.FORMAT_NOT_RUNNABLE, listOf("classic", "800x600, 4 bots", "")),
+            SessionPin.Refused(PinRefusal.FORMAT_NOT_RUNNABLE, listOf("skirmish", "800x600, 4 bots", "")),
+            prepare(pin(extra = """, "skirmish": { "rounds": 10, "battlefield": [800, 600], "participants": 4 }"""), listOf("skirmish")),
+        )
+        // The worker runs classic too, so a classic format it can run is not refused.
+        assertInstanceOf(
+            SessionPin.Ready::class.java,
             prepare(pin(extra = """, "classic": { "rounds": 10, "battlefield": [800, 600], "participants": 4 }"""), listOf("classic")),
         )
         assertEquals(
@@ -126,6 +162,10 @@ class RumbleSessionPinTest {
         // A format that is not chosen is not checked at all, not even for impossible values or unknown rules.
         val unchosen = """{ "rounds": 0, "battlefield": [1000], "participants": 5, "turnTimeout": 10 }"""
         assertInstanceOf(SessionPin.Ready::class.java, prepare(pin(melee = unchosen), listOf("1v1")))
+        // Nor for a shape this program does not read.
+        val otherShape = """{ "rounds": "many", "battlefield": { "w": 1000, "h": 1000 } }"""
+        assertInstanceOf(SessionPin.Ready::class.java, prepare(pin(melee = otherShape), listOf("1v1")))
+        assertEquals(SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("game type melee")), prepare(pin(melee = otherShape), listOf("melee")))
     }
 
     // RCL-123
@@ -177,6 +217,15 @@ class RumbleSessionPinTest {
         outage.busy = false
         assertEquals(mapOf("1v1" to listOf(listOf("A 1.0", "B 1.0"))), recovering.current())
 
+        // Only the format whose read failed is read again; the others wait for their refresh time.
+        val partly = Data(advice("1v1", listOf("A 1.0", "B 1.0")), advice("melee", listOf("M 1.0", "N 1.0"))).apply { failing += MatchmakingAdvice.path("melee") }
+        val retrying = AdviceKeeper(partly, listOf("1v1", "melee"), Duration.ofMinutes(5)) { now }
+        retrying.current()
+        partly.failing.clear()
+        val again = retrying.current()
+        assertEquals(listOf("1v1", "melee", "melee").map { MatchmakingAdvice.path(it) }, partly.reads)
+        assertEquals(setOf("1v1", "melee"), again.keys)
+
         // An interrupted read, as when the session is cancelled, is a failed read and keeps the thread's interruption.
         val interrupted = object : ResultDataSource {
             override fun fileText(path: String): String = throw InterruptedException()
@@ -196,16 +245,25 @@ class RumbleSessionPinTest {
         assumeTrue(System.getProperty("rumble.live") == "true", "Set -Drumble.live=true to read the public Rumble")
         for (environment in listOf(RumbleEnvironments.PUBLIC, RumbleEnvironments.TEST)) {
             val source = GitHubResultDataSource(environment)
-            val text = source.fileText(EnginePin.PATH) ?: error("No engine pin in ${environment.dataRepository}")
-            val pinned = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }.decodeFromString(EnginePin.serializer(), text)
-            assertTrue(pinned.behaviorVersion >= 1)
-            assertTrue(pinned.gameTypes.keys.containsAll(formats), pinned.gameTypes.keys.toString())
-            // Checked against the pin's own behavior version, so a pin that is behind this program still shows whether it is understood.
-            assertInstanceOf(SessionPin.Ready::class.java, SessionPins.prepare(source, formats, pinned.behaviorVersion), environment.name)
+            // Read as the session reads it. A pin whose behavior version differs from this program's is read again under
+            // its own version, so a pin that is behind this program still shows whether everything else is understood.
+            val first = SessionPins.prepare(source, formats)
+            val pinned = if (first is SessionPin.Refused && first.reason == PinRefusal.BEHAVIOR_VERSION_DIFFERS) {
+                SessionPins.prepare(source, formats, first.values[0].toInt())
+            } else first
+            val ready = assertInstanceOf(SessionPin.Ready::class.java, pinned, "${environment.name}: $pinned")
+            assertTrue(ready.pin.behaviorVersion >= 1)
+            assertEquals(formats.toSet(), ready.pin.gameTypes.keys)
             for (format in formats) {
+                // A published advice file must be understood; only an absent one may give no advice.
+                val published = source.fileText(MatchmakingAdvice.path(format)) != null
                 val read = MatchmakingAdvice.read(source, format)
-                assertTrue(read is AdviceRead.Found || read == AdviceRead.None, "$format in ${environment.dataRepository}: $read")
-                if (read is AdviceRead.Found) assertTrue(read.groups.all { it.size >= 2 }, read.toString())
+                if (published) {
+                    val found = assertInstanceOf(AdviceRead.Found::class.java, read, "$format in ${environment.dataRepository}")
+                    assertTrue(found.groups.all { it.size >= 2 }, found.toString())
+                } else {
+                    assertEquals(AdviceRead.None, read)
+                }
             }
         }
     }

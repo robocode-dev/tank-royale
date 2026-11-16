@@ -1012,14 +1012,14 @@ Feature: rumble-client — Local ranked and practice battle client
     Given an environment's result repository whose `engine.json` is valid, missing, unreachable, not the expected shape, of another schema version, holds a value that cannot be for a chosen format, or pins a rule for a chosen format that this program does not run
     When a session prepares its engine pin
     Then a valid pin gives the behavior version and each pinned format's rounds, battlefield and participant count
-    And every other case refuses the session before any battle with its own reason code and the values that explain it, while a format nobody chose never refuses a session
+    And every other case refuses the session before any battle with its own reason code and the values that explain it, a newer schema version is reported as such whatever else it changed, and a format nobody chose is not read and never refuses a session
 
   @RCL-122
   Scenario: A session is refused before any battle when this program cannot run under the pin, and otherwise runs exactly what the pin says
     Test-type: Unit
     Given a pin whose behavior version differs from this program's, that does not name a chosen format, or whose battlefield or participant count for a chosen format is not what the battle worker runs for it
     When a session prepares its engine pin
-    Then it is refused with a reason code naming the pin's value and this program's, and no worker is started
+    Then the pin is refused with a reason code naming the pin's value and this program's, so the session can end before its first battle, and a different behavior version is reported as such whatever else the pin changed
     And with a pin this program can run, the session runs each battle with the pin's rounds and battle size and keeps the pin's behavior version in each record
 
   @RCL-123
@@ -1028,7 +1028,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given an advice file of needed battles for a format, a missing one, one that cannot be fetched, and one of another schema or game type
     When a session asks for its advice
     Then the advised groups are given best first and an advised battle is run before others, a missing or unknown file gives no advice and the session runs by coverage
-    And the advice is read again only after the refresh time, a read that fails keeps the last advice of that format and is tried again at the next look, and an interrupted read counts as failed and keeps the interruption
+    And the advice is read again only after the refresh time, a read that fails keeps the last advice of that format and only that format is tried again at the next look, and an interrupted read counts as failed and keeps the interruption
 
   @RCL-124
   Scenario: The real public engine pin and advice files are understood

@@ -5,7 +5,11 @@ import dev.robocode.tankroyale.common.rules.GAME_TYPE_PRESETS
 import dev.robocode.tankroyale.common.rules.GameType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
 import java.io.IOException
 import java.io.UncheckedIOException
 import java.net.URI
@@ -43,7 +47,7 @@ class GitHubResultDataSource(
     }
 
     internal fun fileUrl(path: String): URI {
-        if (!pathPattern.matches(path)) throw CatalogUnreadable("'$path' is not a repository file path.")
+        if (!pathPattern.matches(path) || path.split('/').any { it.all { c -> c == '.' } }) throw CatalogUnreadable("'$path' is not a repository file path.")
         return URI.create("https://raw.githubusercontent.com/${RumbleEnvironments.owner}/${environment.dataRepository}/main/$path")
     }
 
@@ -58,28 +62,29 @@ private sealed interface ResultFetch {
     data class Failed(val message: String) : ResultFetch
 }
 
+/** The exception's message, or its kind when it has none (a refused connection often has none), so a refusal always says something. */
+private fun reason(e: Exception): String = e.message?.takeIf { it.isNotBlank() } ?: e.javaClass.simpleName
+
 /** Fetches a result file, turning every way it can fail now into [ResultFetch.Failed]. */
 private fun fetchResultFile(source: ResultDataSource, path: String): ResultFetch =
     try {
         ResultFetch.Text(source.fileText(path))
     } catch (e: IOException) {
-        ResultFetch.Failed(e.message.orEmpty())
+        ResultFetch.Failed(reason(e))
     } catch (e: UncheckedIOException) {
-        ResultFetch.Failed(e.message.orEmpty())
+        ResultFetch.Failed(reason(e))
     } catch (e: CatalogUnreadable) {
-        ResultFetch.Failed(e.message.orEmpty())
+        ResultFetch.Failed(reason(e))
     } catch (e: InterruptedException) {
-        // Cancelling the session interrupts its thread; the interruption is kept for the session to see.
+        // A caller that interrupts the reading thread, for example to give up waiting, sees the interruption again afterwards.
         Thread.currentThread().interrupt()
         ResultFetch.Failed("The read was interrupted.")
     }
 
 /** One game format as the Rumble pins it. */
-@Serializable
 data class PinnedFormat(val rounds: Int, val battlefield: List<Int>, val participants: Int)
 
-/** The Rumble's engine pin, `engine.json` of the result repository. Fields this program does not use are ignored. */
-@Serializable
+/** The Rumble's engine pin, `engine.json` of the result repository, with only the formats a session chose. */
 data class EnginePin(val schemaVersion: Int, val behaviorVersion: Int, val gameTypes: Map<String, PinnedFormat>) {
     companion object {
         const val PATH = "engine.json"
@@ -126,52 +131,74 @@ sealed interface SessionPin {
 }
 
 object SessionPins {
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = Json
 
-    /** The game type the battle worker runs for each Rumble format. */
-    private val workerFormats = mapOf("1v1" to GameType.ONE_VS_ONE, "twinduel" to GameType.TWIN_DUEL, "melee" to GameType.MELEE)
+    /** The game type the battle worker runs for each format name (see the worker's own mapping). */
+    private val workerFormats = mapOf(
+        "1v1" to GameType.ONE_VS_ONE, "twinduel" to GameType.TWIN_DUEL, "melee" to GameType.MELEE, "classic" to GameType.CLASSIC,
+    )
 
-    /** Reads the pin from [source] and checks that this program can run every one of [formats] under it. */
     /** The settings of a pinned format this program runs; a chosen format that pins any other setting is not understood. */
     private val formatSettings = setOf("rounds", "battlefield", "participants")
 
+    /**
+     * Reads the pin from [source] and checks that this program can run every one of [formats] under it. The schema version
+     * and then the behavior version are compared first, so a newer pin says so whatever else it changed, and only the
+     * chosen formats are read at all, so a format nobody chose never refuses a session.
+     */
     fun prepare(source: ResultDataSource, formats: List<String>, behaviorVersion: Int = CURRENT_BEHAVIOR_VERSION): SessionPin {
         val text = when (val fetched = fetchResultFile(source, EnginePin.PATH)) {
             is ResultFetch.Failed -> return SessionPin.Refused(PinRefusal.UNREADABLE, listOf(fetched.message))
             is ResultFetch.Text -> fetched.text ?: return SessionPin.Refused(PinRefusal.MISSING)
         }
-        val pin = try {
-            json.decodeFromString(EnginePin.serializer(), text)
+        fun notUnderstood(what: String) = SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf(what))
+        val root = try {
+            json.parseToJsonElement(text) as? JsonObject
         } catch (e: IllegalArgumentException) {
-            // A SerializationException is one of these too.
-            return SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf(e.message.orEmpty()))
+            null
+        } ?: return notUnderstood("the pin is not a JSON object")
+        val schema = number(root["schemaVersion"]) ?: return notUnderstood("schemaVersion")
+        if (schema != EnginePin.SUPPORTED_SCHEMA_VERSION) {
+            return SessionPin.Refused(PinRefusal.UNSUPPORTED_SCHEMA, listOf(schema.toString(), EnginePin.SUPPORTED_SCHEMA_VERSION.toString()))
         }
-        // A rule the worker would not apply, such as a turn timeout, must not pass as pinned when the battles run another.
-        val pinnedSettings = json.parseToJsonElement(text).jsonObject["gameTypes"]?.jsonObject.orEmpty()
+        val behavior = number(root["behaviorVersion"])?.takeIf { it >= 1 } ?: return notUnderstood("behaviorVersion")
+        if (behavior != behaviorVersion) {
+            return SessionPin.Refused(PinRefusal.BEHAVIOR_VERSION_DIFFERS, listOf(behavior.toString(), behaviorVersion.toString()))
+        }
+        val gameTypes = root["gameTypes"] as? JsonObject ?: return notUnderstood("gameTypes")
+        val chosen = mutableMapOf<String, PinnedFormat>()
         for (name in formats) {
-            val unknown = pinnedSettings[name]?.jsonObject?.keys.orEmpty() - formatSettings
-            if (unknown.isNotEmpty()) return SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("game type $name pins ${unknown.sorted().joinToString()}"))
+            val settings = gameTypes[name] ?: return SessionPin.Refused(PinRefusal.FORMAT_NOT_PINNED, listOf(name))
+            chosen[name] = format(settings) ?: return notUnderstood(
+                (settings as? JsonObject)?.keys?.minus(formatSettings)?.takeIf { it.isNotEmpty() }
+                    ?.let { "game type $name pins ${it.sorted().joinToString()}" } ?: "game type $name"
+            )
         }
-        return check(pin, formats, behaviorVersion)
+        return check(EnginePin(schema, behavior, chosen), formats)
     }
 
-    internal fun check(pin: EnginePin, formats: List<String>, behaviorVersion: Int): SessionPin {
-        if (pin.schemaVersion != EnginePin.SUPPORTED_SCHEMA_VERSION) {
-            return SessionPin.Refused(PinRefusal.UNSUPPORTED_SCHEMA, listOf(pin.schemaVersion.toString(), EnginePin.SUPPORTED_SCHEMA_VERSION.toString()))
-        }
-        if (pin.behaviorVersion < 1) return SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("behaviorVersion ${pin.behaviorVersion}"))
-        // Only the chosen formats matter: a format nobody chose never refuses a session.
+    /**
+     * One chosen format, or null when it is not one this program can take as pinned: a setting other than rounds,
+     * battlefield and participants (a rule the worker would not apply, such as a turn timeout, must not pass as pinned when
+     * the battles run another), a value written as text, or a value that cannot be.
+     */
+    private fun format(element: JsonElement): PinnedFormat? {
+        val settings = element as? JsonObject ?: return null
+        if ((settings.keys - formatSettings).isNotEmpty()) return null
+        val rounds = number(settings["rounds"])?.takeIf { it >= 1 } ?: return null
+        val participants = number(settings["participants"])?.takeIf { it >= 2 } ?: return null
+        val battlefield = (settings["battlefield"] as? JsonArray)?.map { number(it)?.takeIf { size -> size >= 1 } ?: return null } ?: return null
+        if (battlefield.size != 2) return null
+        return PinnedFormat(rounds, battlefield, participants)
+    }
+
+    /** A whole number written as a number, not as text. */
+    private fun number(element: JsonElement?): Int? = (element as? JsonPrimitive)?.takeIf { !it.isString }?.intOrNull
+
+    /** Whether the battle worker runs each chosen format of [pin] as it is pinned. */
+    private fun check(pin: EnginePin, formats: List<String>): SessionPin {
         for (name in formats) {
-            val format = pin.gameTypes[name] ?: continue
-            if (format.rounds < 1 || format.participants < 2 || format.battlefield.size != 2 || format.battlefield.any { it < 1 }) {
-                return SessionPin.Refused(PinRefusal.NOT_UNDERSTOOD, listOf("game type $name"))
-            }
-        }
-        if (pin.behaviorVersion != behaviorVersion) {
-            return SessionPin.Refused(PinRefusal.BEHAVIOR_VERSION_DIFFERS, listOf(pin.behaviorVersion.toString(), behaviorVersion.toString()))
-        }
-        for (name in formats) {
-            val format = pin.gameTypes[name] ?: return SessionPin.Refused(PinRefusal.FORMAT_NOT_PINNED, listOf(name))
+            val format = pin.gameTypes.getValue(name)
             val pinned = "${format.battlefield[0]}x${format.battlefield[1]}, ${format.participants} bots"
             val preset = workerFormats[name]?.let { GAME_TYPE_PRESETS[it] }
                 ?: return SessionPin.Refused(PinRefusal.FORMAT_NOT_RUNNABLE, listOf(name, pinned, ""))
@@ -237,27 +264,23 @@ class AdviceKeeper(
     private val refreshAfter: Duration = Duration.ofMinutes(5),
     private val clock: () -> Instant = Instant::now,
 ) {
-    private var advice: Map<String, List<List<String>>> = emptyMap()
-    private var readAt: Instant? = null
+    private val advice = mutableMapOf<String, List<List<String>>>()
+    private val readAt = mutableMapOf<String, Instant>()
 
     /** The advice per format for the planner. */
     fun current(): Map<String, List<List<String>>> {
         val now = clock()
-        val last = readAt
-        if (last == null || !now.isBefore(last.plus(refreshAfter))) {
-            val next = advice.toMutableMap()
-            var failed = false
-            for (format in formats) {
-                when (val read = MatchmakingAdvice.read(source, format)) {
-                    is AdviceRead.Found -> next[format] = read.groups
-                    AdviceRead.None -> next.remove(format)
-                    is AdviceRead.Failed -> failed = true
-                }
+        for (format in formats) {
+            val last = readAt[format]
+            if (last != null && now.isBefore(last.plus(refreshAfter))) continue
+            when (val read = MatchmakingAdvice.read(source, format)) {
+                is AdviceRead.Found -> advice[format] = read.groups
+                AdviceRead.None -> advice.remove(format)
+                // The refresh time of a format whose read failed does not start, so it alone is tried again at the next use.
+                is AdviceRead.Failed -> continue
             }
-            advice = next
-            // After a failed read the refresh time does not start, so a short outage costs one battle without advice, not minutes.
-            if (!failed) readAt = now
+            readAt[format] = now
         }
-        return advice
+        return advice.toMap()
     }
 }
