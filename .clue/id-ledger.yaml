@@ -1350,6 +1350,9 @@ events:
     - {id: RCL-130, kind: numeric, state: live, prefix: RCL, component: "130"}
     - {id: CH-103, kind: numeric, state: retired, prefix: CH, component: "103"}
     - {id: CH-103-tasks, kind: opaque, state: retired}
+    - {id: CH-104, kind: numeric, state: reserved, prefix: CH, component: "104"}
+    - {id: CH-104, kind: numeric, state: live, prefix: CH, component: "104"}
+    - {id: CH-104-tasks, kind: opaque, state: live}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
