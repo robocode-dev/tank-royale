@@ -906,4 +906,54 @@ Feature: rumble-client — Local ranked and practice battle client
     When the session chooses its next TwinDuel battle with a team selected
     Then the battle holds exactly two teams, one of them the selected team, with disjoint members that together make the pinned number of bots
     And a team whose member is not active is never used, and a selected team with no disjoint partner gives no battle in the only-selected mode
+
+  @RCL-108
+  Scenario: A completed ranked result is durable before it is reported kept, and reading it back gives the same record
+    Test-type: Integration
+    Given a ranked journal of one Rumble environment and a process that adds completed ranked records and reports each one as kept
+    When that process is stopped without warning in the middle of adding records, and when a write or its flush fails half way
+    Then a failed write is taken back and never leaves bytes that a later line could be glued onto, a record whose write failed is not reported kept, and every record it reported as kept is read back from the file as exactly the record that was added, and the journal opened again lists them in the order they were added
+
+  @RCL-109
+  Scenario: A torn last line is ignored and reported, and never costs an earlier record
+    Test-type: Unit
+    Given a journal whose last line is cut off at any position, as an interrupted write leaves it
+    When the journal is opened and read
+    Then every earlier record is read, the cut line is never taken for a record unless it is whole, and the read report says that the end is torn and which line cannot be read, and a header or a move line cut at any position costs no record and leaves every state as it was
+    And the next record added afterwards is read back on a line of its own, never glued onto the torn bytes, and a file that does not start like a Rumble journal is refused with a plain message
+
+  @RCL-110
+  Scenario: A ranked journal belongs to one Rumble environment
+    Test-type: Unit
+    Given a journal file made for one Rumble environment
+    When the program opens it for the other environment
+    Then it is refused with a message naming both environments, nothing is read from it or written to it, and a journal made for a schema version this program does not know is refused with the instruction to update the program
+
+  @RCL-111
+  Scenario: The same battle is kept once
+    Test-type: Unit
+    Given a journal that holds a record of one battle
+    When a record with the same battle ID is added again, in the same run or after the journal is opened again
+    Then nothing is written, the answer says that it was kept before, and the journal still holds one record of that battle
+
+  @RCL-112
+  Scenario: A record moves on by a line that points at it, and the lines before it are never changed
+    Test-type: Unit
+    Given a journal with kept records
+    When a record is handed over, accepted, rejected or returned to waiting
+    Then a move line is added after the existing lines, the lines written before stay byte for byte as they were, the state is read back after the journal is opened again, a rejected record stays available with its reason code, and a move that does not fit the record's state, or names a record that is not in the journal, is refused
+
+  @RCL-113
+  Scenario: A record made on another engine epoch is set aside with its reason and stays available
+    Test-type: Unit
+    Given waiting records made on different behavior versions and the Rumble's current pin
+    When the journal sets aside other epochs
+    Then every waiting record made on another behavior version is set aside with the engine-epoch reason and both versions as its details, records of the current epoch keep waiting, nothing is removed, and the set-aside records are still listed
+
+  @RCL-114
+  Scenario: The journal offers no way to keep or drop a result by its outcome
+    Test-type: Unit
+    Given the public interface of the ranked journal
+    When it is inspected
+    Then its operations are exactly adding a record, reading the records and the read report, the moves tied to batches, receipts and the engine epoch, and opening a journal; none of them removes, hides or filters a record, none takes a function, predicate or comparator, and none takes anything but a battle ID, a reason code with its details, a version number or a whole record to add, so a record can only be chosen by its identity and never by how well the battle went
 ```
