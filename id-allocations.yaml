@@ -1080,6 +1080,11 @@ claims:
       state: reserved
       prefix: CH
       component: "104"
+    - id: CH-105
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "105"
     - id: G-001
       kind: numeric
       state: reserved
@@ -3131,11 +3136,11 @@ high-water:
       state: reserved
       prefix: RBW
       component: "22"
-    - id: RCI-047
+    - id: RCI-053
       kind: numeric
       state: reserved
       prefix: RCI
-      component: "47"
+      component: "53"
     - id: RCL-130
       kind: numeric
       state: reserved
