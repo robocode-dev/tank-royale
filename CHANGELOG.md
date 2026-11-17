@@ -13,6 +13,7 @@
 
 ### 🐞 Bug Fixes
 
+- Bot API (Python): Installing the Python Bot API no longer also installs pip, setuptools, PyYAML and mypy, which are only used to build it; it now needs only `websockets` and `pycountry`.
 - Bot API (Java, .NET, Python, TypeScript): Fixed a colour sent in a team message failing to read, or reading wrong, for a teammate on another Bot API. A colour in a team message is now written as `#RRGGBB`, or as `#RRGGBBAA` when it is transparent, so transparency is kept. This changes Java (which dropped transparency), .NET (which always wrote eight digits) and TypeScript (which sent a colour as an object instead of text). A bot built with an older Bot API cannot read a transparent colour written this way, so update all bots in a team together; opaque colours are unaffected.
 - Server:
     - Fixed scans reporting stale energy or detecting robots killed during the same turn by applying turn damage before scanning and excluding dead robots.

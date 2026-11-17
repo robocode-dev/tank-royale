@@ -4,7 +4,7 @@
 # Behavior:
 # - Creates a local virtual environment in .venv if missing
 # - Ensures pip is present and upgrades core tooling (pip, setuptools, wheel)
-# - Installs required dependencies from requirements.txt
+# - Installs the dependencies for development and building from requirements-dev.txt
 # - Idempotent: safe to run multiple times
 
 set -euo pipefail
@@ -49,9 +49,9 @@ fi
 "$VENV_PY" -m pip install -q --upgrade pip setuptools wheel
 
 # Install project requirements
-if [ -f "requirements.txt" ]; then
-  echo "Installing Python dependencies from requirements.txt ..."
-  "$VENV_PY" -m pip install -q -r requirements.txt
+if [ -f "requirements-dev.txt" ]; then
+  echo "Installing Python dependencies from requirements-dev.txt ..."
+  "$VENV_PY" -m pip install -q -r requirements-dev.txt
 fi
 
 echo "Virtual environment ready: $("$VENV_PY" --version)"

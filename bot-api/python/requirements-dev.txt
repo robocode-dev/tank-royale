@@ -1,0 +1,6 @@
+-r requirements.txt
+# Used to generate the schema, check the types and build the package, not by a bot at run time.
+pip>=24
+PyYAML>=6
+setuptools>=77
+mypy

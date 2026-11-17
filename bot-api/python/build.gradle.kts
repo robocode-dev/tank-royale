@@ -38,7 +38,7 @@ tasks {
 
     val `install-requirements` by registering(Exec::class) {
         dependsOn(setupVenv)
-        commandLine(venvPythonPath(), "-m", "pip", "install", "-r", "requirements.txt")
+        commandLine(venvPythonPath(), "-m", "pip", "install", "-r", "requirements-dev.txt")
     }
 
     val `generate-schema` by registering(Exec::class) {

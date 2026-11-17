@@ -4,7 +4,7 @@
 .DESCRIPTION
   - Creates .venv if missing
   - Ensures pip is available and upgrades pip/setuptools/wheel
-  - Installs dependencies from requirements.txt
+  - Installs the dependencies for development and building from requirements-dev.txt
   - Idempotent
 #>
 
@@ -54,9 +54,9 @@ try {
 & $venvPy -m pip install --upgrade pip setuptools wheel | Out-Null
 
 # Install project requirements
-if (Test-Path 'requirements.txt') {
-    Write-Host 'Installing Python dependencies from requirements.txt ...'
-    & $venvPy -m pip install -r requirements.txt | Out-Null
+if (Test-Path 'requirements-dev.txt') {
+    Write-Host 'Installing Python dependencies from requirements-dev.txt ...'
+    & $venvPy -m pip install -r requirements-dev.txt | Out-Null
 }
 
 Write-Host ("Virtual environment ready: " + (& $venvPy --version))

@@ -65,8 +65,9 @@ class PythonBotApiWheel(private val open: () -> InputStream) {
     val fileName: String get() = "robocode_tank_royale-$version-py3-none-any.whl"
 
     /**
-     * The wheel's own requirements for what the Bot API imports when a bot runs, with their version bounds. The wheel
-     * declares more (pip, setuptools, PyYAML, mypy) for building it, which would make every battle's copy many times larger.
+     * The wheel's own requirements for what the Bot API imports when a bot runs, with their version bounds. Wheels up to
+     * 1.4.0 also declared the tools for building the Bot API (pip, setuptools, PyYAML, mypy), which would make every
+     * battle's copy many times larger, so only these are taken.
      */
     val runtimeRequirements: List<String>
         get() = field("Requires-Dist").filter { !Regex("""\bextra\s*==""").containsMatchIn(it.substringAfter(';', "")) }
