@@ -4,7 +4,16 @@ import dev.robocode.tankroyale.common.util.JavaExec
 import java.nio.file.Path
 
 /** The folders a worker run gets, all new and empty and its own: nothing of the participant's is in them. */
-class WorkerFolders(val work: Path, val temp: Path, val home: Path)
+class WorkerFolders(
+    val work: Path,
+    val temp: Path,
+    val home: Path,
+    /**
+     * A folder for what the host gives the battle, such as its copy of the Python Bot API. Unlike [temp] it is not named
+     * to the bots as their temporary folder, so a bot that clears its temporary files does not clear it.
+     */
+    val battle: Path = work.resolveSibling("battle"),
+)
 
 /** How to start the worker: a command in the same form Tank Royale gives the process builder everywhere else. */
 fun interface WorkerCommand {

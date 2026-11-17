@@ -1083,4 +1083,35 @@ Feature: rumble-client — Local ranked and practice battle client
     Given a saved sign-in to the test Rumble's App for a registered account and a waiting record of two active catalog bots in the shape a completed battle gives
     When the program sends it and collects receipts until the receiving workflow answers
     Then the issue is opened in the test result repository and the record is accepted or rejected by its own receipt line
+
+  @RCL-131
+  Scenario: A session's Python Bot API is installed fresh with the supported Python, its hash kept in memory, and an unusable Python leaves the Python bots out
+    Test-type: Unit
+    Given the Python on the contributor's path, the version the Rumble supports, and the program's own Python Bot API
+    When a session that may run a Python bot sets up Python
+    Then the program's own Bot API and only what it imports when a bot runs are installed into a new folder of the session's own with that Python, the wheel's file name and those requirements' version bounds taken from the wheel's own metadata and pip's own cache not used, the digest is kept in memory and in no file, and the folder is removed when the session ends
+    And the folders of sessions that ended without closing are removed by the next session, while a session that still runs or is just starting keeps its folder, no other session's lock file is removed, a folder that could not be removed keeps its lock file so a later session finds it, and without the Rumble's list of versions the wheel's own lowest Python is required
+    And a Python that is missing or older than the Rumble supports, a failed install or a program without its Python Bot API gives a reason with the version needed and found, and leaves nothing behind
+
+  @RCL-132
+  Scenario: A battle with a Python bot gets its own checked copy through the worker's environment
+    Test-type: Unit
+    Given a session whose Python is set up
+    When a battle runs
+    Then a battle that holds a Python bot gets a copy of the session's Bot API in a new folder of the battle's own that is not the bots' temporary folder, named to the worker on Python's module path with Python told not to write compiled files nor read the user's own packages and `RUMBLE_PYTHON` naming the contributor's Python, and no folder of the Rumble's state is named to it
+    And a battle without a Python bot gets none of it, and a battle whose copy cannot be made does not start and keeps the reason, whatever kind of failure it was
+
+  @RCL-133
+  Scenario: A change to one battle's copy or to the session's folder never reaches another battle
+    Test-type: Unit
+    Given a session whose Python is set up and battles that ran with it
+    When a bot changes its battle's copy, or something changes the session's folder
+    Then the next battle's copy is the session's Bot API as installed, a session's folder that no longer matches its hash is installed again before a battle gets a copy, two sessions never share a folder, and the runtime dependencies installed are exactly what the Python Bot API imports from outside the standard library
+
+  @RCL-134
+  Scenario: One real session in the test Rumble runs a Python catalog bot and its result is accepted
+    Test-type: Integration
+    Given the maintainer's saved sign-in and registration for the test Rumble, the supported Python, and the carried battle worker and Python Bot API
+    When `rumble contribute -e test --battles 1 --format 1v1 --mode only --bot "Orbit 1.0.0"` runs
+    Then Python is set up, a battle holding the Python bot is kept and sent, and the receiving workflow accepts it by its own receipt line
 ```

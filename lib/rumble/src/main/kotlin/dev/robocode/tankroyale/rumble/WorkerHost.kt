@@ -67,7 +67,12 @@ class WorkerHost(
 ) {
     private class Reading(val events: MutableList<WorkerEvent> = mutableListOf())
 
-    fun run(command: WorkerCommand, job: Job, cancel: () -> Boolean = { false }): WorkerOutcome {
+    /**
+     * Runs [job]. [prepare] is given the battle's own new folders before the worker starts and returns variables the worker
+     * gets on top of its usual environment, such as a copy of the Python Bot API made in those folders; a failure there
+     * means the worker could not start.
+     */
+    fun run(command: WorkerCommand, job: Job, cancel: () -> Boolean = { false }, prepare: (WorkerFolders) -> Map<String, String> = { emptyMap() }): WorkerOutcome {
         val base = try {
             runFolders?.also { Files.createDirectories(it) }?.let { Files.createTempDirectory(it, "rumble-worker") }
                 ?: Files.createTempDirectory("rumble-worker")
@@ -75,20 +80,34 @@ class WorkerHost(
             return WorkerOutcome.CouldNotStart("A folder for the worker could not be made.")
         }
         try {
-            val folders = WorkerFolders(
-                work = Files.createDirectory(base.resolve("work")),
-                temp = Files.createDirectory(base.resolve("temp")),
-                home = Files.createDirectory(base.resolve("home")),
-            )
-            return runIn(command, job, folders, cancel)
+            val folders = try {
+                WorkerFolders(
+                    work = Files.createDirectory(base.resolve("work")),
+                    temp = Files.createDirectory(base.resolve("temp")),
+                    home = Files.createDirectory(base.resolve("home")),
+                    battle = Files.createDirectory(base.resolve("battle")),
+                )
+            } catch (e: IOException) {
+                return WorkerOutcome.CouldNotStart("A folder for the worker could not be made.")
+            }
+            // What the battle needs on top, such as its copy of the Python Bot API; its own reason is kept when it fails,
+            // and no failure of it reaches the session as anything but a battle that could not start.
+            val extra = try {
+                prepare(folders)
+            } catch (e: IOException) {
+                return WorkerOutcome.CouldNotStart(e.message ?: "The battle could not be prepared.")
+            } catch (e: RuntimeException) {
+                return WorkerOutcome.CouldNotStart(e.message ?: "The battle could not be prepared.")
+            }
+            return runIn(command, job, folders, cancel, extra)
         } catch (e: IOException) {
-            return WorkerOutcome.CouldNotStart("A folder for the worker could not be made.")
+            return WorkerOutcome.CouldNotStart("The worker could not be started: ${e.message}")
         } finally {
             base.toFile().deleteRecursively()
         }
     }
 
-    private fun runIn(command: WorkerCommand, job: Job, folders: WorkerFolders, cancel: () -> Boolean): WorkerOutcome {
+    private fun runIn(command: WorkerCommand, job: Job, folders: WorkerFolders, cancel: () -> Boolean, extra: Map<String, String>): WorkerOutcome {
         val built = command.build(folders)
         // Behind the shield the shell starts the program, so a program that is not there is found missing here.
         if (shieldFromInterrupt && !programExists(built.firstOrNull().orEmpty())) return WorkerOutcome.CouldNotStart("The worker could not be started.")
@@ -96,6 +115,7 @@ class WorkerHost(
         val builder = ProcessBuilder(shielded.command).directory(folders.work.toFile())
         builder.environment().clear()
         builder.environment().putAll(WorkerEnvironment.build(hostEnvironment(), folders))
+        builder.environment().putAll(extra)
         builder.environment().putAll(shielded.environment)
         val process = try {
             builder.start()
