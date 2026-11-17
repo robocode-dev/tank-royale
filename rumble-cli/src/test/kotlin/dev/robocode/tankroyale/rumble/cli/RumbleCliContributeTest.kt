@@ -34,6 +34,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
+import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Clock
 import java.time.Duration
@@ -57,6 +58,13 @@ class RumbleCliContributeTest {
 
     private val names = listOf("Alpha", "Beta", "Gamma")
 
+    /** The catalog, with a Python bot "Snake" when [python] is true. */
+    private fun catalogText(python: Boolean) = if (!python) catalogText else catalogText.replace(
+        "\"status\": \"retired\" } ] }",
+        "\"status\": \"retired\" },\n{ \"name\": \"Snake\", \"version\": \"1.0\", \"platform\": \"Python\", \"path\": \"bots/python/Snake\", " +
+            "\"sourceHash\": \"${TreeHash.of(files("Snake"))}\", \"owner\": \"owner\", \"authors\": [\"Author\"], \"addedAt\": \"2026-01-01\", \"status\": \"active\" } ] }",
+    )
+
     private val catalogText = """
         { "schemaVersion": 1, "generatedAt": "2026-11-16T10:00:00Z", "commit": "$commit", "bots": [
         ${names.joinToString(",\n") { """{ "name": "$it", "version": "1.0", "platform": "JVM", "path": "bots/java/$it", "sourceHash": "${TreeHash.of(files(it))}",
@@ -65,14 +73,19 @@ class RumbleCliContributeTest {
             "owner": "owner", "authors": ["Author"], "addedAt": "2026-01-01", "status": "retired" } ] }
     """.trimIndent()
 
-    private inner class Catalog(var readable: Boolean = true) : CatalogSource {
-        override fun catalogText(commit: String): String = if (readable) catalogText else throw IOException("The catalog could not be fetched.")
+    private inner class Catalog(var readable: Boolean = true, var python: Boolean = false) : CatalogSource {
+        override fun catalogText(commit: String): String = if (readable) catalogText(python) else throw IOException("The catalog could not be fetched.")
         override fun fileText(commit: String, path: String): String? = null
         override fun archive(commit: String): InputStream {
             val bytes = ByteArrayOutputStream()
             ZipOutputStream(bytes).use { zip ->
                 for (name in names) for ((path, content) in files(name)) {
                     zip.putNextEntry(ZipEntry("rumble-bots-test-$commit/bots/java/$name/$path"))
+                    zip.write(content)
+                    zip.closeEntry()
+                }
+                for ((path, content) in files("Snake")) {
+                    zip.putNextEntry(ZipEntry("rumble-bots-test-$commit/bots/python/Snake/$path"))
                     zip.write(content)
                     zip.closeEntry()
                 }
@@ -159,7 +172,25 @@ class RumbleCliContributeTest {
         val outcome: String get() = last["outcome"]!!.jsonPrimitive.content
     }
 
+    /** Plays the contributor's Python and pip, as the session asks them. */
+    private class FakePython(var version: String? = "3 14") : dev.robocode.tankroyale.rumble.ToolRunner {
+        var installs = 0
+
+        /** Called at the first install, as a person pressing Ctrl+C while pip runs; pip then ends without installing. */
+        var duringInstall: (() -> Boolean)? = null
+        override fun run(command: List<String>, timeout: Duration): dev.robocode.tankroyale.rumble.ToolOutput? {
+            if (command.getOrNull(1) == "-c") return version?.let { dev.robocode.tankroyale.rumble.ToolOutput(0, "$it /usr/bin/python3\n") }
+            if (duringInstall?.invoke() == true) return dev.robocode.tankroyale.rumble.ToolOutput(1, "KeyboardInterrupt")
+            installs++
+            val target = Path.of(command[command.indexOf("--target") + 1])
+            Files.createDirectories(target.resolve("robocode_tank_royale"))
+            Files.writeString(target.resolve("robocode_tank_royale/__init__.py"), "# api $installs\n")
+            return dev.robocode.tankroyale.rumble.ToolOutput(0, "ok")
+        }
+    }
+
     private inner class World(val state: Path) {
+        val python = FakePython()
         val api = Api()
         val catalog = Catalog()
         val pin = Data()
@@ -185,6 +216,16 @@ class RumbleCliContributeTest {
             workerLimits = WorkerLimits(totalTime = Duration.ofSeconds(60)),
             interrupts = { action -> interrupt = action; onInterruptInstalled(action); AutoCloseable { interrupt = null } },
             seed = { 1L },
+            tools = python, runtimeList = { dev.robocode.tankroyale.rumble.RuntimeListSource { "java=25\ndotnet=10\npython=3.14\nnode=24\n" } },
+            pythonBotApi = dev.robocode.tankroyale.rumble.PythonBotApiWheel {
+                val bytes = ByteArrayOutputStream()
+                ZipOutputStream(bytes).use { zip ->
+                    zip.putNextEntry(ZipEntry("robocode_tank_royale-1.4.0.dist-info/METADATA"))
+                    zip.write("Name: robocode-tank-royale\nVersion: 1.4.0\nRequires-Dist: websockets>=15\nRequires-Dist: pycountry>=24\n\n".toByteArray())
+                    zip.closeEntry()
+                }
+                ByteArrayInputStream(bytes.toByteArray())
+            },
         )
 
         fun run(vararg args: String, json: Boolean = true): Run {
@@ -436,5 +477,124 @@ class RumbleCliContributeTest {
             receipt = api.get("$data/issues/$issue/comments", null).body
         }
         assertTrue(receipt.contains(": accepted"), receipt)
+    }
+
+    // RCI-054
+
+    @Test
+    @Tag("Positive")
+    fun testRCI054_UnitPositive_aSessionSetsUpPythonForItsPythonBotsAndSaysSo(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); catalog.python = true }
+
+        val run = world.run("--battles", "1", "--format", "1v1", "--bot", "Snake 1.0", "--mode", "only")
+
+        assertEquals(ExitCodes.DONE, run.exit, run.out)
+        assertTrue(run.events.containsAll(listOf("python-setting-up", "python-ready")), run.events.toString())
+        assertEquals("3.14", run.lines.first { it["event"]?.jsonPrimitive?.content == "python-ready" }["version"]!!.jsonPrimitive.content)
+        val battle = run.lines.first { it["event"]?.jsonPrimitive?.content == "battle-started" }
+        assertTrue(battle["participants"]!!.jsonArray.any { it.jsonPrimitive.content == "Snake 1.0" })
+        assertEquals(2, world.python.installs, "the Bot API and what it needs, once for the session")
+        val ranked = env.stateRoot(dir).resolve("ranked")
+        val sessions = ranked.resolve(dev.robocode.tankroyale.rumble.SessionPython.SESSIONS_FOLDER)
+        assertEquals(0L, Files.list(sessions).use { it.count() }, "the session's Python folder is removed at the end")
+        // The program carries its own Python Bot API.
+        assertTrue(carriedPythonBotApi() != null, "the command line carries the Python Bot API")
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCI054_UnitNegative_withoutAUsablePythonThePythonBotsAreLeftOutAndTheOthersRun(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); catalog.python = true; python.version = "3 12" }
+
+        val run = world.run("--battles", "1", "--format", "1v1")
+        val only = World(dir.resolve("only")).apply { signIn(); catalog.python = true; python.version = null }.run("--battles", "1", "--format", "1v1", "--bot", "Snake 1.0", "--mode", "only")
+
+        assertEquals(ExitCodes.DONE, run.exit, run.out)
+        val unavailable = run.lines.first { it["event"]?.jsonPrimitive?.content == "python-unavailable" }
+        assertEquals("TOO_OLD", unavailable["reason"]!!.jsonPrimitive.content)
+        assertEquals("3.14", unavailable["needed"]!!.jsonPrimitive.content)
+        assertEquals("3.12", unavailable["found"]!!.jsonPrimitive.content)
+        assertTrue(run.lines.filter { it["event"]?.jsonPrimitive?.content == "battle-started" }.none { b -> b["participants"]!!.jsonArray.any { it.jsonPrimitive.content == "Snake 1.0" } })
+        assertEquals(0, world.python.installs)
+        assertEquals("nothing-to-run", only.outcome, "only Python bots chosen and no Python: nothing can run")
+        // Only Java bots chosen in `only` mode: Python is not set up, although the catalog holds a Python bot.
+        val javaChosen = World(dir.resolve("java-chosen")).apply { signIn(); catalog.python = true }
+        val chosen = javaChosen.run("--battles", "1", "--format", "1v1", "--bot", "Alpha 1.0", "--mode", "only")
+        assertEquals(0, javaChosen.python.installs)
+        assertTrue(chosen.events.none { it.startsWith("python-") }, chosen.events.toString())
+        // A catalog without Python bots asks nothing of Python.
+        val javaOnly = World(dir.resolve("java")).apply { signIn() }
+        javaOnly.run("--battles", "1", "--format", "1v1")
+        assertEquals(0, javaOnly.python.installs)
+    }
+
+    // RCL-134
+
+    @Test
+    @Tag("Positive")
+    fun testRCL134_IntegrationPositive_oneRealSessionRunsAPythonCatalogBotAndItsResultIsAccepted() {
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            System.getProperty("rumble.live.send") == "true",
+            "Set -Drumble.live.send=true, with a saved sign-in and registration for the test Rumble and Python, to run one real session with a Python bot",
+        )
+        val out = ByteArrayOutputStream()
+        val io = Io(PrintStream(out, true, Charsets.UTF_8), PrintStream(ByteArrayOutputStream(), true, Charsets.UTF_8))
+
+        val code = RumbleCli.run(arrayOf("contribute", "-e", "test", "--battles", "1", "--format", "1v1", "--mode", "only", "--bot", "Orbit 1.0.0", "--json"), io)
+
+        val run = Run(code, out.toString(Charsets.UTF_8))
+        println(run.out)
+        assertEquals(ExitCodes.DONE, run.exit, run.out)
+        assertTrue(run.events.contains("python-ready"), run.out)
+        assertTrue(run.events.contains("battle-kept"), run.out)
+        val issue = run.lines.first { it["event"]?.jsonPrimitive?.content == "batch-sent" }["issue"]!!.jsonPrimitive.content.toInt()
+        val api = dev.robocode.tankroyale.rumble.HttpGitHubApi()
+        val deadline = Instant.now().plus(Duration.ofMinutes(10))
+        var receipt = ""
+        while (Instant.now().isBefore(deadline) && !receipt.contains("Processed result batch")) {
+            Thread.sleep(15_000)
+            receipt = api.get("$data/issues/$issue/comments", null).body
+        }
+        assertTrue(receipt.contains(": accepted"), receipt)
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCI054_UnitNegative_aCtrlCWhilePythonIsSetUpIsAStopAndNotAnInstallFailure(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); catalog.python = true }
+        world.python.duringInstall = { world.interrupt?.invoke(); true }
+
+        val run = world.run("--battles", "1", "--format", "1v1", "--bot", "Snake 1.0", "--mode", "only")
+
+        assertTrue(run.events.contains("python-stopped"), run.events.toString())
+        assertTrue(run.events.none { it == "python-unavailable" }, "not reported as an install failure")
+        assertEquals("stopped", run.outcome, run.out)
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCI054_UnitPositive_onlyABattleWithAPythonBotGetsACopyAndItIsNotInTheBotsTemporaryFolder(@TempDir dir: Path) {
+        val fake = FakePython()
+        val wheel = World(dir).services().pythonBotApi
+        val session = dev.robocode.tankroyale.rumble.SessionPython(fake, dir.resolve("state"), wheel, "3.14")
+        session.setUp()
+        fun bot(name: String, platform: String) = dev.robocode.tankroyale.rumble.CatalogBot(name, "1.0", platform, "bots/x/$name", "sha256:a", "o", listOf("A"), "2026-01-01", "active")
+        fun folders(name: String) = dev.robocode.tankroyale.rumble.WorkerFolders(
+            Files.createDirectories(dir.resolve("$name/work")), Files.createDirectories(dir.resolve("$name/temp")),
+            Files.createDirectories(dir.resolve("$name/home")), Files.createDirectories(dir.resolve("$name/battle")),
+        )
+
+        val java = folders("java")
+        val python = folders("python")
+        val none = pythonBattleEnvironment(session, listOf(bot("Walls", "JVM"), bot("Fire", "JVM")), java)
+        val some = pythonBattleEnvironment(session, listOf(bot("Walls", "JVM"), bot("Snake", "Python")), python)
+        val withoutPython = pythonBattleEnvironment(null, listOf(bot("Snake", "Python")), folders("off"))
+
+        assertEquals(emptyMap<String, String>(), none, "a battle without a Python bot gets nothing")
+        assertFalse(Files.exists(java.battle.resolve(dev.robocode.tankroyale.rumble.SessionPython.COPY_FOLDER)))
+        assertEquals(python.battle.resolve(dev.robocode.tankroyale.rumble.SessionPython.COPY_FOLDER).toString(), some["PYTHONPATH"])
+        assertFalse(Files.exists(python.temp.resolve(dev.robocode.tankroyale.rumble.SessionPython.COPY_FOLDER)), "not in the bots' temporary folder")
+        assertEquals(emptyMap<String, String>(), withoutPython, "without a usable Python nothing is given")
+        session.close()
     }
 }

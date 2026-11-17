@@ -116,6 +116,11 @@ class SessionSetup(
      * does not change while it runs, such as the command line with its catalog read once. False waits for the request to change.
      */
     val endWhenWaiting: Boolean = false,
+    /**
+     * Variables for the worker of one battle, given every bot of the battle (with a team's members) and the battle's own new
+     * folders, such as a copy of the Python Bot API for a battle with a Python bot.
+     */
+    val battleEnvironment: (List<CatalogBot>, WorkerFolders) -> Map<String, String> = { _, _ -> emptyMap() },
 )
 
 /**
@@ -201,7 +206,7 @@ class SessionRunner(
 
     private sealed interface Placement {
         /** Every bot of the battle is in place; [jobBots] are the participants. */
-        class Ready(val jobBots: List<JobBot>) : Placement
+        class Ready(val jobBots: List<JobBot>, val bots: List<CatalogBot> = emptyList()) : Placement
 
         /** These bots can never be placed from this commit. */
         class LeaveOut(val keys: Set<String>) : Placement
@@ -272,7 +277,7 @@ class SessionRunner(
         // A team that holds a member that is left out is left out with it by the session loop.
         if (leaveOut.isNotEmpty()) return Placement.LeaveOut(leaveOut)
         if (tryAgain || spots.any { it.folder !in ready }) return Placement.TryAgain
-        return Placement.Ready(participants.map { JobBot(it.bot.name, it.bot.version, it.bot.sourceHash, it.folder.toString()) })
+        return Placement.Ready(participants.map { JobBot(it.bot.name, it.bot.version, it.bot.sourceHash, it.folder.toString()) }, spots.map { it.bot })
     }
 
     private class Fetched(val placed: Set<Path>, val leaveOut: Set<String>, val tryAgain: Boolean)
@@ -353,7 +358,7 @@ class SessionRunner(
         }
         val job = Job(jobId = battleId, behaviorVersion = setup.engine.behaviorVersion, gameType = step.gameType, numberOfRounds = rounds, bots = placed.jobBots)
         onEvent(SessionEvent.BattleStarted(battleId, step.gameType, step.participants))
-        val outcome = setup.host.run(setup.command, job) { control.cancelRequested }
+        val outcome = setup.host.run(setup.command, job, { control.cancelRequested }) { folders -> setup.battleEnvironment(placed.bots, folders) }
         val notKept = { reason: NotKeptReason, detail: String ->
             onEvent(SessionEvent.BattleNotKept(battleId, reason, detail))
             Ran.NotKept(reason)

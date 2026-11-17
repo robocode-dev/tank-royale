@@ -443,4 +443,12 @@ Feature: rumble-command-line — Rumble command line
     Given the maintainer's saved sign-in and registration for the test Rumble, the carried battle worker and the runtimes of the chosen bots
     When `rumble contribute -e test --battles 1 --format 1v1` runs
     Then one battle of two catalog bots is kept and sent, and the receiving workflow accepts it by its own receipt line
+
+  @RCI-054
+  Scenario: A contribution session sets up Python for its Python bots, says so, and leaves them out without a usable Python
+    Test-type: Unit
+    Given a catalog with or without an active Python bot, and a Python that is ready, too old or missing
+    When the person runs `rumble contribute`
+    Then the command line carries its own Python Bot API, sets up Python only when the bots the session can choose include an active Python bot, after Ctrl+C can stop the session, and reports setting it up and that it is ready with its version
+    And without a usable Python it reports why with the version needed and found, leaves the Python bots out and runs the others, and choosing only Python bots then ends with nothing to run; a Ctrl+C while Python is set up is a stop and not an install failure, and when a battle's copy can no longer be made the Python bots are left out for the rest of the session
 ```

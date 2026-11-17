@@ -14,6 +14,11 @@ import dev.robocode.tankroyale.rumble.GitHubAuthTransport
 import dev.robocode.tankroyale.rumble.HttpGitHubApi
 import dev.robocode.tankroyale.rumble.HttpGitHubAuthTransport
 import dev.robocode.tankroyale.rumble.GitHubResultDataSource
+import dev.robocode.tankroyale.rumble.GitHubRuntimeListSource
+import dev.robocode.tankroyale.rumble.ProcessToolRunner
+import dev.robocode.tankroyale.rumble.PythonBotApiWheel
+import dev.robocode.tankroyale.rumble.RuntimeListSource
+import dev.robocode.tankroyale.rumble.ToolRunner
 import dev.robocode.tankroyale.rumble.ResultDataSource
 import dev.robocode.tankroyale.rumble.WorkerCommand
 import dev.robocode.tankroyale.rumble.WorkerCommands
@@ -38,6 +43,14 @@ object ExitCodes {
     /** Not finished; run the same command again. */
     const val NOT_FINISHED = 4
 }
+
+/** The program's own Python Bot API wheel, carried as a resource, as a writer to a file; null when it is not carried. */
+internal fun carriedPythonBotApi(): PythonBotApiWheel? {
+    if (Services::class.java.getResource(PYTHON_BOT_API) == null) return null
+    return PythonBotApiWheel { Services::class.java.getResourceAsStream(PYTHON_BOT_API)!! }
+}
+
+private const val PYTHON_BOT_API = "/robocode-tank-royale-bot-api-python.whl"
 
 /** The heap of the battle worker, which runs the server and the battle; the bots are processes of their own. */
 private const val WORKER_HEAP_MEGABYTES = 512
@@ -114,6 +127,12 @@ class Services(
     val interrupts: (() -> Unit) -> AutoCloseable = ::onInterrupt,
     /** The seed of a session's choices among equals. */
     val seed: () -> Long = { System.nanoTime() },
+    /** Runs the tools a session needs on this computer, such as Python and pip. */
+    val tools: ToolRunner = ProcessToolRunner(),
+    /** The Rumble's list of supported runtime versions. */
+    val runtimeList: (GitHubApi) -> RuntimeListSource = { GitHubRuntimeListSource(it) },
+    /** The program's own Python Bot API wheel; null when the program carries none. */
+    val pythonBotApi: PythonBotApiWheel? = carriedPythonBotApi(),
 ) {
     fun submission(env: RumbleEnvironment): BotSending = (makeSubmission ?: { e, a -> BotSubmission(e, a) })(env, api)
 

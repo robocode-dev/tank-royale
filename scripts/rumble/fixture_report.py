@@ -43,6 +43,7 @@ CASES = [
     ("session-running", "Running a session's battles"),
     ("session-pin", "Engine pin and advice for a session"),
     ("result-upload", "Sending results and reading receipts"),
+    ("session-python", "Python for a session's Python bots"),
 ]
 RESULTS_CASE = ("test-results", "Test results")
 
@@ -56,6 +57,7 @@ CLASS_CASES = [
     (re.compile(r"^RumbleSessionRunnerTest$"), "session-running"),
     (re.compile(r"^RumbleSessionPinTest$"), "session-pin"),
     (re.compile(r"^RumbleResultUploadTest$"), "result-upload"),
+    (re.compile(r"^RumbleSessionPythonTest$"), "session-python"),
     (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),
     (re.compile(r"^(RumbleSignIn\w*|RumbleSavedSignInTest|RumbleRegistration\w*|RumbleGitHubApiTest|RumbleTokenSecrecyTest|RumbleAccount\w*Test|RumbleMenuSwitchTest|RumbleSubmit\w*Test|RumbleCliSubmitTextsTest)$"), "sign-in-and-registration"),

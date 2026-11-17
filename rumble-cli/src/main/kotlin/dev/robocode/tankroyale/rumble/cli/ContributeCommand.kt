@@ -9,13 +9,15 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import dev.robocode.tankroyale.rumble.AdviceKeeper
 import dev.robocode.tankroyale.rumble.AutomaticUpload
+import dev.robocode.tankroyale.rumble.BotPlatform
+import dev.robocode.tankroyale.rumble.CatalogBot
 import dev.robocode.tankroyale.rumble.JournalClient
 import dev.robocode.tankroyale.rumble.JournalUnusable
 import dev.robocode.tankroyale.rumble.PinRefusal
 import dev.robocode.tankroyale.rumble.RankedJournal
 import dev.robocode.tankroyale.rumble.RecordState
-import dev.robocode.tankroyale.rumble.Registration
 import dev.robocode.tankroyale.rumble.RegisteredClient
+import dev.robocode.tankroyale.rumble.Registration
 import dev.robocode.tankroyale.rumble.RegistrationRecord
 import dev.robocode.tankroyale.rumble.ResultUploader
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
@@ -30,17 +32,22 @@ import dev.robocode.tankroyale.rumble.SessionEvent
 import dev.robocode.tankroyale.rumble.SessionPin
 import dev.robocode.tankroyale.rumble.SessionPins
 import dev.robocode.tankroyale.rumble.SessionPlanner
+import dev.robocode.tankroyale.rumble.SessionPython
+import dev.robocode.tankroyale.rumble.SessionPythonProblem
+import dev.robocode.tankroyale.rumble.SessionPythonSetup
 import dev.robocode.tankroyale.rumble.SessionRequest
 import dev.robocode.tankroyale.rumble.SessionRunner
 import dev.robocode.tankroyale.rumble.SessionSetup
+import dev.robocode.tankroyale.rumble.SupportedVersions
 import dev.robocode.tankroyale.rumble.UploadEvent
+import dev.robocode.tankroyale.rumble.WorkerFolders
 import dev.robocode.tankroyale.rumble.WorkerHost
+import java.io.IOException
+import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
-import java.io.IOException
-import java.util.concurrent.atomic.AtomicInteger
 
 /** The ranked formats a session runs when none are chosen. */
 private val RANKED_FORMATS = listOf("1v1", "twinduel", "melee")
@@ -146,16 +153,31 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         val advice = AdviceKeeper(data, chosenFormats, clock = { services.clock.instant() })
         val control = SessionControl()
         val kept = AtomicInteger()
+        report(started(env, account, catalog.commit, pin, chosenFormats))
+        val seed = services.seed()
+        // Python bots get the program's own Python Bot API, set up once the session can be stopped with Ctrl+C.
+        var python: SessionPython? = null
         val setup = SessionSetup(
             commit = catalog.commit, source = source, botCache = ranked.resolve("bot-cache"), host = WorkerHost(services.workerLimits),
             command = worker, journal = journal, engine = pin.engine(version, version), client = JournalClient(clientId, version),
             roundsPerFormat = pin.roundsPerFormat, sleep = services.sleep, clock = { services.clock.instant() },
             betweenBattles = { automatic.betweenBattles() },
+            battleEnvironment = { battleBots, folders ->
+                try {
+                    pythonBattleEnvironment(python, battleBots, folders)
+                } catch (e: IOException) {
+                    // The Bot API can no longer be made for a battle, for example because installing it again needs the
+                    // network: the Python bots are left out from now on instead of failing battle after battle.
+                    python?.close()
+                    python = null
+                    report(event("python-unavailable") { put("reason", SessionPythonProblem.INSTALL_FAILED.name) } to
+                        "${io.outside(e.message.orEmpty())} The Python bots are left out of the rest of this session.")
+                    throw e
+                }
+            },
             // The catalog is read once, so a session that cannot choose a battle would wait for ever: it ends instead.
             endWhenWaiting = true,
         )
-        val seed = services.seed()
-        report(started(env, account, catalog.commit, pin, chosenFormats))
         // The Ctrl+C handle stays open until the answer is written, so where a shutdown hook stands in for it the program is
         // held open while the results are sent and the answer is written.
         services.interrupts {
@@ -167,22 +189,83 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
                 report(note("cancelling", "Ending the battle that is running now; nothing of it is kept, and nothing is sent now."))
             }
         }.use {
-            var end = SessionRunner(setup, control) { event ->
-                if (event is SessionEvent.BattleKept) kept.incrementAndGet()
-                report(sessionEvent(event))
-            }.run {
-                SessionRequest(catalog.bots, bots.toSet(), selectionMode, chosenFormats, pin.participantCounts, battles, advice.current(), seed)
-            }
-            // What waits is sent now, unless the person asked to end at once or the journal cannot be written.
-            if (interrupts.get() < 2 && end != SessionEnd.Cancelled && end !is SessionEnd.JournalFailed) {
-                try {
-                    automatic.finish()
-                } catch (e: JournalUnusable) {
-                    end = SessionEnd.JournalFailed(e.message.orEmpty())
+            python = pythonFor(choosable(catalog.activeBots, selectionMode), ranked) { interrupts.get() > 0 }
+            // Without a usable Python the Python bots are left out, and with them every team that holds one.
+            fun entries() = if (python != null) catalog.bots else catalog.bots.filter { !isPython(it) }
+            try {
+                var end = SessionRunner(setup, control) { event ->
+                    if (event is SessionEvent.BattleKept) kept.incrementAndGet()
+                    report(sessionEvent(event))
+                }.run {
+                    SessionRequest(entries(), bots.toSet(), selectionMode, chosenFormats, pin.participantCounts, battles, advice.current(), seed)
                 }
+                // What waits is sent now, unless the person asked to end at once or the journal cannot be written.
+                if (interrupts.get() < 2 && end != SessionEnd.Cancelled && end !is SessionEnd.JournalFailed) {
+                    try {
+                        automatic.finish()
+                    } catch (e: JournalUnusable) {
+                        end = SessionEnd.JournalFailed(e.message.orEmpty())
+                    }
+                }
+                // Written under the same lock as the events, so no late event line follows the answer.
+                synchronized(output) { answer(ended(env, end, kept.get(), journal)) }
+            } finally {
+                python?.close()
             }
-            // Written under the same lock as the events, so no late event line follows the answer.
-            synchronized(output) { answer(ended(env, end, kept.get(), journal)) }
+        }
+    }
+
+
+    /**
+     * The active bots the session can choose: in `only` mode the chosen bots and the members of chosen teams, otherwise
+     * every active bot, since any of them may be chosen.
+     */
+    private fun choosable(active: List<CatalogBot>, mode: SelectionMode): List<CatalogBot> {
+        if (mode != SelectionMode.ONLY) return active
+        val byKey = active.associateBy { SessionPlanner.key(it) }
+        val chosen = bots.mapNotNull { byKey[it] }
+        return chosen + chosen.flatMap { team -> team.teamMembers.mapNotNull { byKey[it] } }
+    }
+
+    /**
+     * Sets up the program's own Python Bot API for the session when the bots it can choose include an active Python bot,
+     * and says how that went. Null when there is none to run or Python cannot be used here; the Python bots are then left
+     * out. A Ctrl+C during the setup, which [stopped] tells, also ends pip, so it is reported as a stop and not as a failure.
+     */
+    private fun pythonFor(choosable: List<CatalogBot>, ranked: java.nio.file.Path, stopped: () -> Boolean): SessionPython? {
+        if (choosable.none { isPython(it) }) return null
+        val needed = try {
+            SupportedVersions.parse(services.runtimeList(services.api).text()).neededFor(BotPlatform.PYTHON)
+        } catch (e: IOException) {
+            null
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+        report(note("python-setting-up", "Setting up Python for the Python bots; the first time this takes a little while."))
+        val python = SessionPython(services.tools, ranked, services.pythonBotApi, needed)
+        return when (val setUp = python.setUp()) {
+            is SessionPythonSetup.Ready -> python.also {
+                report(event("python-ready") { put("version", setUp.version) } to "Python ${setUp.version} is ready for the Python bots.")
+            }
+            is SessionPythonSetup.Unavailable -> {
+                python.close()
+                if (stopped()) {
+                    report(note("python-stopped", "Setting up Python was stopped."))
+                    return null
+                }
+                val why = when (setUp.problem) {
+                    SessionPythonProblem.MISSING -> "No Python was found on the path." + (setUp.needed?.let { " Install Python $it or newer." } ?: "")
+                    SessionPythonProblem.TOO_OLD -> "Python ${setUp.found} is older than the Rumble supports. Install Python ${setUp.needed} or newer."
+                    SessionPythonProblem.INSTALL_FAILED -> "The Python Bot API could not be installed: ${io.outside(setUp.details)}"
+                    SessionPythonProblem.NO_BOT_API -> "This program does not carry the Python Bot API."
+                }
+                report(event("python-unavailable") {
+                    put("reason", setUp.problem.name)
+                    setUp.needed?.let { put("needed", it) }
+                    setUp.found?.let { put("found", it) }
+                } to "$why The Python bots are left out of this session.")
+                null
+            }
         }
     }
 
@@ -309,3 +392,12 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         return Reply(code, json, text)
     }
 }
+
+private fun isPython(bot: CatalogBot) = BotPlatform.of(bot.platform) == BotPlatform.PYTHON
+
+/**
+ * What the worker of one battle gets for its Python bots: a battle that holds one gets its own checked copy of the
+ * session's Python Bot API in the battle's own folder, any other battle nothing.
+ */
+internal fun pythonBattleEnvironment(python: SessionPython?, battleBots: List<CatalogBot>, folders: WorkerFolders): Map<String, String> =
+    if (python != null && battleBots.any { isPython(it) }) python.forBattle(folders.battle) else emptyMap()

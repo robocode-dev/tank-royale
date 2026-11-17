@@ -334,7 +334,7 @@
         },
         {
           "path": "rumble-cli/build.gradle.kts",
-          "sha256": "d7235c7c2350ecd12a5be84376aa1092012e704396ecedd6592b902a492cb6e1"
+          "sha256": "1fa4fd3748d300ef37e410758a12a4fc737b6a0ed2df6acbb15465985ddda9f2"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
@@ -346,7 +346,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "de6d25763b4fdb4d124be3fb7ffd0ecaca0f47f5cf825bea830183afb6acca28"
+          "sha256": "d82fad9900a537673321d5401e8f10745c95a4a35f965721ce41e9fc827f48c2"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -722,6 +722,41 @@
           "id": "RCI-053",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
           "subject": "RumbleCliContributeTest.testRCI053_IntegrationPositive_oneRealSessionInTheTestRumbleKeepsAndSendsAResultThatIsAccepted",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-054",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI054_UnitNegative_aCtrlCWhilePythonIsSetUpIsAStopAndNotAnInstallFailure",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-054",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI054_UnitNegative_withoutAUsablePythonThePythonBotsAreLeftOutAndTheOthersRun",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-054",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI054_UnitPositive_aSessionSetsUpPythonForItsPythonBotsAndSaysSo",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-054",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI054_UnitPositive_onlyABattleWithAPythonBotGetsACopyAndItIsNotInTheBotsTemporaryFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-134",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCL134_IntegrationPositive_oneRealSessionRunsAPythonCatalogBotAndItsResultIsAccepted",
           "type": "Integration",
           "direction": "positive"
         },
@@ -1588,7 +1623,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "b56a098e4313720421ce5ed714cacc9380d8d3a15349261a7f9b6b9cd07ad4f4"
+          "sha256": "62094c95416c8e1d62e2b8d0a2430167ac5edaf5b703534f65ebc7181fac1fd3"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1600,7 +1635,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "1762d3feb3e8ab5a9fdbc039ad5bee66fc443400dadb99f2003fc33f6880a0af"
+          "sha256": "45d84231ac6134d5194570bcf69d64c76c8197a330411769c8edcb2c3b42bffe"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -1891,6 +1926,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "sha256": "9fc1557db9fefcd6b8ec1b67c7cf24f101c51f38edf4a1841e32ce4104389214"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "sha256": "c8a2d2e147f5c5117bd543d02ddfdc8fb48ce50ec780fb5fd8aef4be65d92897"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
@@ -3507,6 +3546,69 @@
           "id": "RCL-107",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "subject": "RumbleSessionPlannerTest.testRCL107_UnitPositive_aTwinDuelBattleHoldsTheSelectedTeamAndAnotherTeamWithDisjointMembers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-131",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL131_UnitNegative_aMissingTooOldOrFailingPythonOrNoBotApiLeavesPythonOutWithAReason",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-131",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL131_UnitNegative_theDigestIsKeptOnlyInMemoryAndLeftoversOfEndedSessionsAreRemovedButNotLiveOnes",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-131",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL131_UnitPositive_theBotApiIsInstalledFreshForTheSessionWithTheSupportedPythonAndRemovedAtTheEnd",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-131",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL131_UnitPositive_theRealWheelNamesItsVersionAndItsRuntimeRequirements",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-132",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL132_UnitNegative_aBattleWhoseCopyCannotBeMadeDoesNotStartWithItsReason",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-132",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL132_UnitPositive_aBattleWithAPythonBotGetsItsOwnCheckedCopyThroughTheWorkersEnvironment",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-133",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL133_UnitNegative_aChangeToABattlesCopyOrToTheSessionsFolderNeverReachesAnotherBattle",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-133",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL133_UnitPositive_theDigestIsReadFileByFileAndSeesEveryChange",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-133",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL133_UnitPositive_theRuntimeImportsAreExactlyWhatThePythonBotApiImportsFromOutside",
           "type": "Unit",
           "direction": "positive"
         },

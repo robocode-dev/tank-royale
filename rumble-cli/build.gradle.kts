@@ -68,12 +68,27 @@ tasks {
         rename(".*", "robocode-tankroyale-rumble-worker.jar")
     }
 
+    // The program's own Python Bot API, built with the engine, which a session installs for its Python bots, the way the
+    // desktop program carries it for the Download bots screen.
+    val copyBotApiPythonWhl by registering(Copy::class) {
+        dependsOn(":bot-api:python:build-dist")
+        // The wheel just built, which is the newest in the folder: the folder keeps the wheels of earlier versions, and the
+        // file name carries the version as Python writes it (1.5.0-rc.1 becomes 1.5.0rc1), so it is found by its age.
+        from(provider {
+            project(":bot-api:python").file("./dist").listFiles { file -> file.name.matches(Regex("robocode_tank_royale-.+-py3-none-any\\.whl")) }
+                ?.maxByOrNull { it.lastModified() }
+                ?: throw GradleException("The Python Bot API wheel was not built.")
+        })
+        into(layout.buildDirectory.dir("classes/kotlin/main"))
+        rename(".*", "robocode-tank-royale-bot-api-python.whl")
+    }
+
     classes {
-        dependsOn(copyWorkerJar)
+        dependsOn(copyWorkerJar, copyBotApiPythonWhl)
     }
 
     val fatJar by registering(FatJar::class) {
-        dependsOn(classes, copyWorkerJar)
+        dependsOn(classes, copyWorkerJar, copyBotApiPythonWhl)
         destinationDirectory.set(layout.buildDirectory.dir("libs"))
         archiveFileName.set(fatJarName)
         title.set("Robocode Tank Royale Rumble Command Line")
