@@ -156,25 +156,15 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         report(started(env, account, catalog.commit, pin, chosenFormats))
         val seed = services.seed()
         // Python bots get the program's own Python Bot API, set up once the session can be stopped with Ctrl+C.
-        var python: SessionPython? = null
+        val python = SessionPythonHolder { reason, detail ->
+            report(event("python-unavailable") { put("reason", reason.name) } to "${io.outside(detail)} The Python bots are left out of the rest of this session.")
+        }
         val setup = SessionSetup(
             commit = catalog.commit, source = source, botCache = ranked.resolve("bot-cache"), host = WorkerHost(services.workerLimits),
             command = worker, journal = journal, engine = pin.engine(version, version), client = JournalClient(clientId, version),
             roundsPerFormat = pin.roundsPerFormat, sleep = services.sleep, clock = { services.clock.instant() },
             betweenBattles = { automatic.betweenBattles() },
-            battleEnvironment = { battleBots, folders ->
-                try {
-                    pythonBattleEnvironment(python, battleBots, folders)
-                } catch (e: IOException) {
-                    // The Bot API can no longer be made for a battle, for example because installing it again needs the
-                    // network: the Python bots are left out from now on instead of failing battle after battle.
-                    python?.close()
-                    python = null
-                    report(event("python-unavailable") { put("reason", SessionPythonProblem.INSTALL_FAILED.name) } to
-                        "${io.outside(e.message.orEmpty())} The Python bots are left out of the rest of this session.")
-                    throw e
-                }
-            },
+            battleEnvironment = { battleBots, folders -> python.environment(battleBots, folders) },
             // The catalog is read once, so a session that cannot choose a battle would wait for ever: it ends instead.
             endWhenWaiting = true,
         )
@@ -189,9 +179,11 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
                 report(note("cancelling", "Ending the battle that is running now; nothing of it is kept, and nothing is sent now."))
             }
         }.use {
-            python = pythonFor(choosable(catalog.activeBots, selectionMode), ranked) { interrupts.get() > 0 }
+            // Any active bot may be chosen as an opponent, also in `only` mode, so Python is set up whenever the catalog holds an
+            // active Python bot.
+            python.python = pythonFor(catalog.activeBots, ranked) { interrupts.get() > 0 }
             // Without a usable Python the Python bots are left out, and with them every team that holds one.
-            fun entries() = if (python != null) catalog.bots else catalog.bots.filter { !isPython(it) }
+            fun entries() = if (python.python != null) catalog.bots else catalog.bots.filter { !isPython(it) }
             try {
                 var end = SessionRunner(setup, control) { event ->
                     if (event is SessionEvent.BattleKept) kept.incrementAndGet()
@@ -210,30 +202,19 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
                 // Written under the same lock as the events, so no late event line follows the answer.
                 synchronized(output) { answer(ended(env, end, kept.get(), journal)) }
             } finally {
-                python?.close()
+                python.close()
             }
         }
     }
 
 
     /**
-     * The active bots the session can choose: in `only` mode the chosen bots and the members of chosen teams, otherwise
-     * every active bot, since any of them may be chosen.
-     */
-    private fun choosable(active: List<CatalogBot>, mode: SelectionMode): List<CatalogBot> {
-        if (mode != SelectionMode.ONLY) return active
-        val byKey = active.associateBy { SessionPlanner.key(it) }
-        val chosen = bots.mapNotNull { byKey[it] }
-        return chosen + chosen.flatMap { team -> team.teamMembers.mapNotNull { byKey[it] } }
-    }
-
-    /**
-     * Sets up the program's own Python Bot API for the session when the bots it can choose include an active Python bot,
+     * Sets up the program's own Python Bot API for the session when the catalog holds an active Python bot,
      * and says how that went. Null when there is none to run or Python cannot be used here; the Python bots are then left
      * out. A Ctrl+C during the setup, which [stopped] tells, also ends pip, so it is reported as a stop and not as a failure.
      */
-    private fun pythonFor(choosable: List<CatalogBot>, ranked: java.nio.file.Path, stopped: () -> Boolean): SessionPython? {
-        if (choosable.none { isPython(it) }) return null
+    private fun pythonFor(active: List<CatalogBot>, ranked: java.nio.file.Path, stopped: () -> Boolean): SessionPython? {
+        if (active.none { isPython(it) }) return null
         val needed = try {
             SupportedVersions.parse(services.runtimeList(services.api).text()).neededFor(BotPlatform.PYTHON)
         } catch (e: IOException) {
@@ -258,6 +239,7 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
                     SessionPythonProblem.TOO_OLD -> "Python ${setUp.found} is older than the Rumble supports. Install Python ${setUp.needed} or newer."
                     SessionPythonProblem.INSTALL_FAILED -> "The Python Bot API could not be installed: ${io.outside(setUp.details)}"
                     SessionPythonProblem.NO_BOT_API -> "This program does not carry the Python Bot API."
+                    SessionPythonProblem.BATTLE_COPY_FAILED -> "A battle's copy of the Python Bot API could not be made."
                 }
                 report(event("python-unavailable") {
                     put("reason", setUp.problem.name)
@@ -401,3 +383,29 @@ private fun isPython(bot: CatalogBot) = BotPlatform.of(bot.platform) == BotPlatf
  */
 internal fun pythonBattleEnvironment(python: SessionPython?, battleBots: List<CatalogBot>, folders: WorkerFolders): Map<String, String> =
     if (python != null && battleBots.any { isPython(it) }) python.forBattle(folders.battle) else emptyMap()
+
+/**
+ * The session's Python Bot API, when it has one. When a battle's copy can no longer be made, for example because installing
+ * it again needs the network or the disk is full, it is closed and dropped, [onUnavailable] is told why, and the battle does
+ * not start; the session then leaves its Python bots out instead of failing battle after battle.
+ */
+internal class SessionPythonHolder(private val onUnavailable: (SessionPythonProblem, String) -> Unit) : AutoCloseable {
+    @Volatile
+    var python: SessionPython? = null
+
+    fun environment(battleBots: List<CatalogBot>, folders: WorkerFolders): Map<String, String> =
+        try {
+            pythonBattleEnvironment(python, battleBots, folders)
+        } catch (e: Exception) {
+            val reason = if (e.message.orEmpty().startsWith("The Python Bot API changed and could not be installed again")) SessionPythonProblem.INSTALL_FAILED
+            else SessionPythonProblem.BATTLE_COPY_FAILED
+            close()
+            onUnavailable(reason, e.message ?: e.javaClass.simpleName)
+            throw if (e is IOException) e else IOException(e.message, e)
+        }
+
+    override fun close() {
+        python?.close()
+        python = null
+    }
+}

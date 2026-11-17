@@ -449,6 +449,6 @@ Feature: rumble-command-line — Rumble command line
     Test-type: Unit
     Given a catalog with or without an active Python bot, and a Python that is ready, too old or missing
     When the person runs `rumble contribute`
-    Then the command line carries its own Python Bot API, sets up Python only when the bots the session can choose include an active Python bot, after Ctrl+C can stop the session, and reports setting it up and that it is ready with its version
+    Then the command line carries its own Python Bot API, sets up Python only when the catalog holds an active Python bot, which any battle may hold as an opponent also in `only` mode, after Ctrl+C can stop the session, and reports setting it up and that it is ready with its version
     And without a usable Python it reports why with the version needed and found, leaves the Python bots out and runs the others, and choosing only Python bots then ends with nothing to run; a Ctrl+C while Python is set up is a stop and not an install failure, and when a battle's copy can no longer be made the Python bots are left out for the rest of the session
 ```

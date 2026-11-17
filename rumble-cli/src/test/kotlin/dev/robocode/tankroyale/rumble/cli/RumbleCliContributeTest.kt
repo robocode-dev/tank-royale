@@ -517,11 +517,11 @@ class RumbleCliContributeTest {
         assertTrue(run.lines.filter { it["event"]?.jsonPrimitive?.content == "battle-started" }.none { b -> b["participants"]!!.jsonArray.any { it.jsonPrimitive.content == "Snake 1.0" } })
         assertEquals(0, world.python.installs)
         assertEquals("nothing-to-run", only.outcome, "only Python bots chosen and no Python: nothing can run")
-        // Only Java bots chosen in `only` mode: Python is not set up, although the catalog holds a Python bot.
+        // Only a Java bot chosen in `only` mode: its opponent may still be a Python bot, so Python is set up.
         val javaChosen = World(dir.resolve("java-chosen")).apply { signIn(); catalog.python = true }
         val chosen = javaChosen.run("--battles", "1", "--format", "1v1", "--bot", "Alpha 1.0", "--mode", "only")
-        assertEquals(0, javaChosen.python.installs)
-        assertTrue(chosen.events.none { it.startsWith("python-") }, chosen.events.toString())
+        assertEquals(2, javaChosen.python.installs)
+        assertTrue(chosen.events.contains("python-ready"), chosen.events.toString())
         // A catalog without Python bots asks nothing of Python.
         val javaOnly = World(dir.resolve("java")).apply { signIn() }
         javaOnly.run("--battles", "1", "--format", "1v1")
@@ -596,5 +596,29 @@ class RumbleCliContributeTest {
         assertFalse(Files.exists(python.temp.resolve(dev.robocode.tankroyale.rumble.SessionPython.COPY_FOLDER)), "not in the bots' temporary folder")
         assertEquals(emptyMap<String, String>(), withoutPython, "without a usable Python nothing is given")
         session.close()
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCI054_UnitNegative_whenABattlesCopyCanNoLongerBeMadeThePythonBotsAreLeftOutForTheRestOfTheSession(@TempDir dir: Path) {
+        val wheel = World(dir).services().pythonBotApi
+        val session = dev.robocode.tankroyale.rumble.SessionPython(FakePython(), dir.resolve("state"), wheel, "3.14").apply { setUp() }
+        val told = mutableListOf<Pair<dev.robocode.tankroyale.rumble.SessionPythonProblem, String>>()
+        val holder = SessionPythonHolder { reason, detail -> told += reason to detail }.apply { python = session }
+        fun bot(name: String, platform: String) = dev.robocode.tankroyale.rumble.CatalogBot(name, "1.0", platform, "bots/x/$name", "sha256:a", "o", listOf("A"), "2026-01-01", "active")
+        fun folders(name: String) = dev.robocode.tankroyale.rumble.WorkerFolders(
+            Files.createDirectories(dir.resolve("$name/work")), Files.createDirectories(dir.resolve("$name/temp")),
+            Files.createDirectories(dir.resolve("$name/home")), dir.resolve("$name/battle-not-made"),
+        )
+        // A battle folder that cannot be written to, as with a full disk: its file is in the way.
+        val blocked = folders("blocked")
+        Files.writeString(blocked.battle, "in the way")
+
+        org.junit.jupiter.api.Assertions.assertThrows(IOException::class.java) { holder.environment(listOf(bot("Snake", "Python")), blocked) }
+
+        assertEquals(dev.robocode.tankroyale.rumble.SessionPythonProblem.BATTLE_COPY_FAILED, told.single().first)
+        assertEquals(null, holder.python, "the session's Python is dropped")
+        assertEquals(emptyMap<String, String>(), holder.environment(listOf(bot("Snake", "Python")), folders("next")), "later battles get nothing")
+        holder.close()
     }
 }

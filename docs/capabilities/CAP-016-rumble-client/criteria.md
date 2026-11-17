@@ -1089,8 +1089,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given the Python on the contributor's path, the version the Rumble supports, and the program's own Python Bot API
     When a session that may run a Python bot sets up Python
-    Then the program's own Bot API and only what it imports when a bot runs are installed into a new folder of the session's own with that Python, the wheel's file name and those requirements' version bounds taken from the wheel's own metadata, the digest is kept in memory and in no file, and the folder is removed when the session ends
-    And the folders of sessions that ended without closing are removed by the next session, while a session that still runs or is just starting keeps its folder and no other session's lock file is removed, and without the Rumble's list of versions the wheel's own lowest Python is required
+    Then the program's own Bot API and only what it imports when a bot runs are installed into a new folder of the session's own with that Python, the wheel's file name and those requirements' version bounds taken from the wheel's own metadata and pip's own cache not used, the digest is kept in memory and in no file, and the folder is removed when the session ends
+    And the folders of sessions that ended without closing are removed by the next session, while a session that still runs or is just starting keeps its folder, no other session's lock file is removed, a folder that could not be removed keeps its lock file so a later session finds it, and without the Rumble's list of versions the wheel's own lowest Python is required
     And a Python that is missing or older than the Rumble supports, a failed install or a program without its Python Bot API gives a reason with the version needed and found, and leaves nothing behind
 
   @RCL-132

@@ -29,6 +29,9 @@ enum class SessionPythonProblem {
 
     /** The program carries no Python Bot API, or the one it carries cannot be read. */
     NO_BOT_API,
+
+    /** A battle's copy of the Bot API could not be made, for example because the disk is full. */
+    BATTLE_COPY_FAILED,
 }
 
 /** How setting up Python for a session ended. */
@@ -66,7 +69,8 @@ class PythonBotApiWheel(private val open: () -> InputStream) {
      * declares more (pip, setuptools, PyYAML, mypy) for building it, which would make every battle's copy many times larger.
      */
     val runtimeRequirements: List<String>
-        get() = field("Requires-Dist").map { it.substringBefore(';').trim() }
+        get() = field("Requires-Dist").filter { !Regex("""\bextra\s*==""").containsMatchIn(it.substringAfter(';', "")) }
+            .map { it.substringBefore(';').trim() }
             .filter { requirement -> requirementName(requirement) in SessionPython.RUNTIME_IMPORTS }
 
     /** The lowest Python the wheel runs on, as `major.minor` from its `Requires-Python`, or null when it names none. */
@@ -79,7 +83,9 @@ class PythonBotApiWheel(private val open: () -> InputStream) {
         metadata.lineSequence().takeWhile { it.isNotEmpty() }.filter { it.startsWith("$name: ") }.map { it.removePrefix("$name: ").trim() }.toList()
 
     companion object {
-        fun requirementName(requirement: String): String = Regex("""^[A-Za-z0-9_.-]+""").find(requirement)?.value?.lowercase()?.replace('_', '-').orEmpty()
+        /** A requirement's name as Python compares names: lower case, with runs of `-`, `_` and `.` as one `-`. */
+        fun requirementName(requirement: String): String =
+            Regex("""^[A-Za-z0-9_.-]+""").find(requirement)?.value?.lowercase()?.replace(Regex("[-_.]+"), "-").orEmpty()
     }
 }
 
@@ -134,6 +140,7 @@ class SessionPython(
             Files.createDirectories(sessions)
             lockChannel = FileChannel.open(sessions.resolve("$id.lock"), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
             lock = lockChannel!!.lock()
+            heldLocks.add(sessions.resolve("$id.lock").toAbsolutePath().normalize())
             removeLeftovers()
             Files.createDirectories(own)
         } catch (e: IOException) {
@@ -187,11 +194,16 @@ class SessionPython(
         }
         lock = null
         lockChannel = null
+        heldLocks.remove(sessions.resolve("$id.lock").toAbsolutePath().normalize())
         removeTree(own)
-        try {
-            Files.deleteIfExists(sessions.resolve("$id.lock"))
-        } catch (e: IOException) {
-            // A later session removes it.
+        // The lock file goes only with its folder: a folder that is still there, held open by something, keeps its now free
+        // lock file, so a later session finds it and removes it.
+        if (!Files.exists(own)) {
+            try {
+                Files.deleteIfExists(sessions.resolve("$id.lock"))
+            } catch (e: IOException) {
+                // Left with nothing to lock.
+            }
         }
     }
 
@@ -240,6 +252,8 @@ class SessionPython(
         for (other in folders) {
             val lockFile = sessions.resolve("${other.fileName}.lock")
             if (!Files.isRegularFile(lockFile)) continue
+            // A session of this program holds it: opening and closing a channel on it here could, on POSIX, let go of its lock.
+            if (lockFile.toAbsolutePath().normalize() in heldLocks) continue
             val free = try {
                 FileChannel.open(lockFile, StandardOpenOption.WRITE).use { channel -> channel.tryLock()?.also { it.release() } != null }
             } catch (e: IOException) {
@@ -252,6 +266,9 @@ class SessionPython(
     }
 
     companion object {
+        /** The lock files the sessions of this program hold, which the search for leftovers never opens. */
+        private val heldLocks: MutableSet<Path> = java.util.concurrent.ConcurrentHashMap.newKeySet()
+
         /** The packages outside the standard library that the Python Bot API imports when a bot runs. */
         val RUNTIME_IMPORTS = setOf("websockets", "pycountry")
 
@@ -264,7 +281,7 @@ class SessionPython(
 
         /** The commands that install the Bot API and what it needs at run time into [target], in order. */
         fun installCommands(python: String, target: Path, wheel: Path, requirements: List<String>): List<List<String>> {
-            val pip = listOf(python, "-m", "pip", "install", "--target", target.toString(), "--no-compile", "--disable-pip-version-check", "--no-input")
+            val pip = listOf(python, "-m", "pip", "install", "--target", target.toString(), "--no-compile", "--disable-pip-version-check", "--no-input", "--no-cache-dir")
             val api = pip + listOf("--no-deps", wheel.toString())
             // pip refuses an install with nothing to install, so a wheel that requires nothing at run time gets one command.
             return if (requirements.isEmpty()) listOf(api) else listOf(api, pip + requirements)

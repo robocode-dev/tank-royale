@@ -88,6 +88,7 @@ class RumbleSessionPythonTest {
         val (first, second) = runner.commands.drop(1)
         assertEquals(listOf("C:\\Python314\\python.exe", "-m", "pip", "install", "--target"), first.take(5))
         assertTrue("--no-deps" in first, "the program's own Bot API, without its build tools")
+        assertTrue("--no-cache-dir" in first && "--no-cache-dir" in second, "pip's own cache, which a bot could have changed, is not used")
         assertEquals(listOf("robocode_tank_royale-1.4.0-py3-none-any.whl"), runner.wheelsSeen, "the wheel's file name comes from its own metadata")
         assertEquals(listOf("pycountry>=24", "websockets>=15"), second.takeLast(2), "only what it imports when a bot runs, with the wheel's own bounds")
         val sessionFolders = entries(root.resolve(SessionPython.SESSIONS_FOLDER))
@@ -145,6 +146,45 @@ class RumbleSessionPythonTest {
         assertTrue(Files.exists(liveFolder), "a session that still runs keeps its folder")
         next.close()
         live.close()
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCL131_UnitNegative_aFolderThatCannotBeRemovedKeepsItsLockFileSoALaterSessionRemovesIt(@TempDir root: Path) {
+        org.junit.jupiter.api.Assumptions.assumeTrue(System.getProperty("os.name").startsWith("Windows"), "Windows refuses to remove a read-only file")
+        val session = python(root, FakePython()).apply { setUp() }
+        // A file that cannot be removed now, as one an indexer or a scanner holds.
+        val held = apiFolder(root).resolve("robocode_tank_royale/bot_api/__init__.py")
+        Files.setAttribute(held, "dos:readonly", true)
+        val sessions = root.resolve(SessionPython.SESSIONS_FOLDER)
+
+        session.close()
+
+        val left = entries(sessions)
+        assertEquals(1, left.count { Files.isDirectory(it) }, "the folder that could not be removed is still there")
+        assertEquals(1, left.count { it.fileName.toString().endsWith(".lock") }, "its lock file stays with it")
+        Files.setAttribute(held, "dos:readonly", false)
+        python(root, FakePython()).apply { setUp() }.close()
+        assertEquals(emptyList<Path>(), entries(sessions).filter { Files.isDirectory(it) }, "a later session removes it")
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCL131_UnitPositive_requirementsForAnExtraAreNotRuntimeRequirementsAndNamesCompareAsPythonCompares() {
+        val metadata = "Name: robocode-tank-royale\nVersion: 1.4.0\nRequires-Dist: WebSockets>=15\nRequires-Dist: py_country>=24; extra == \"docs\"\n" +
+            "Requires-Dist: pycountry>=24 ; python_version >= \"3.10\"\n\n"
+        val wheel = PythonBotApiWheel {
+            val bytes = ByteArrayOutputStream()
+            ZipOutputStream(bytes).use { zip ->
+                zip.putNextEntry(ZipEntry("robocode_tank_royale-1.4.0.dist-info/METADATA"))
+                zip.write(metadata.toByteArray())
+                zip.closeEntry()
+            }
+            ByteArrayInputStream(bytes.toByteArray())
+        }
+
+        assertEquals(listOf("WebSockets>=15", "pycountry>=24"), wheel.runtimeRequirements)
+        assertEquals("py-country", PythonBotApiWheel.requirementName("Py.Country__x>=1").removeSuffix("-x"))
     }
 
     @Test

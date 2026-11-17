@@ -346,7 +346,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "d82fad9900a537673321d5401e8f10745c95a4a35f965721ce41e9fc827f48c2"
+          "sha256": "a4a5e95c51dd0d3596b266b25dd742eeb4a4d7ac9238702cd5bbc2fbe2ba1dad"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -729,6 +729,13 @@
           "id": "RCI-054",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
           "subject": "RumbleCliContributeTest.testRCI054_UnitNegative_aCtrlCWhilePythonIsSetUpIsAStopAndNotAnInstallFailure",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-054",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI054_UnitNegative_whenABattlesCopyCanNoLongerBeMadeThePythonBotsAreLeftOutForTheRestOfTheSession",
           "type": "Unit",
           "direction": "negative"
         },
@@ -1929,7 +1936,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
-          "sha256": "c8a2d2e147f5c5117bd543d02ddfdc8fb48ce50ec780fb5fd8aef4be65d92897"
+          "sha256": "724676bf2bfc737a53717d39c1d3ff4adfdd6f9cf9eb79e26290423a7954e78b"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
@@ -3552,6 +3559,13 @@
         {
           "id": "RCL-131",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL131_UnitNegative_aFolderThatCannotBeRemovedKeepsItsLockFileSoALaterSessionRemovesIt",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-131",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
           "subject": "RumbleSessionPythonTest.testRCL131_UnitNegative_aMissingTooOldOrFailingPythonOrNoBotApiLeavesPythonOutWithAReason",
           "type": "Unit",
           "direction": "negative"
@@ -3562,6 +3576,13 @@
           "subject": "RumbleSessionPythonTest.testRCL131_UnitNegative_theDigestIsKeptOnlyInMemoryAndLeftoversOfEndedSessionsAreRemovedButNotLiveOnes",
           "type": "Unit",
           "direction": "negative"
+        },
+        {
+          "id": "RCL-131",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
+          "subject": "RumbleSessionPythonTest.testRCL131_UnitPositive_requirementsForAnExtraAreNotRuntimeRequirementsAndNamesCompareAsPythonCompares",
+          "type": "Unit",
+          "direction": "positive"
         },
         {
           "id": "RCL-131",
