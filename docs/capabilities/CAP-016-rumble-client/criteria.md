@@ -1114,4 +1114,40 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the maintainer's saved sign-in and registration for the test Rumble, the supported Python, and the carried battle worker and Python Bot API
     When `rumble contribute -e test --battles 1 --format 1v1 --mode only --bot "Orbit 1.0.0"` runs
     Then Python is set up, a battle holding the Python bot is kept and sent, and the receiving workflow accepts it by its own receipt line
+
+  @RCL-135
+  Scenario: The desktop program fetches the command line program only after asking
+    Test-type: Unit
+    Given a desktop program without the command line program of its own version
+    When the Contribute battles screen needs it to start a session
+    Then the screen says what it will fetch and how large it is and asks first, fetches `rumble.jar` of its own version with the checked fetch only when the person agrees, starts nothing when the person declines or the fetch fails, and says why
+
+  @RCL-136
+  Scenario: The Contribute battles screen starts a session without a window and follows and controls it
+    Test-type: Unit
+    Given the screen's choices of mode, bots, formats and a battle count or keep running
+    When the person starts the session and then pauses, resumes, stops or stops it now
+    Then the screen starts `rumble contribute` with those choices as a process without a console window, with the desktop program as owner unless the setting says to keep contributing, follows its status through the session folder and shows the battle running, kept and not kept, why it waits, whether Python is ready and the results, and puts each control request in the session folder
+    And every change reaches the screen through its event queue in order, every text comes from the resource files with the same keys in every language file, and a missing sign-in, registration, a pin this program cannot run under, or a missing Python is shown plainly with the way to fix it where there is one
+
+  @RCL-137
+  Scenario: The desktop program finds a running session again and shows the summary of one that ended
+    Test-type: Unit
+    Given a session of the environment that runs, ended while the desktop program was closed, or ended without closing
+    When the desktop program starts, or the battles of the session it follows are done
+    Then the screen shows the running session again with its controls, or the summary of the last one, or that it ended unexpectedly with what it kept still in the journal, and when the battles are done it shows the summary and the desktop program gives a short notice that does not have to be clicked away
+
+  @RCL-138
+  Scenario: Closing the desktop program while a session runs asks the first time and keeps the answer
+    Test-type: Unit
+    Given a session that the desktop program started and follows
+    When the desktop program closes
+    Then the first time it asks whether to keep contributing in the background or to stop after the running battle and keeps the answer as a setting the person can change, releases the session from its owner before it closes to keep contributing, and otherwise closes so the session stops after its battle; with no session running it asks nothing
+
+  @RCL-139
+  Scenario: One real session started from the screen in the test Rumble is followed, paused, stopped and found again after a restart
+    Test-type: Integration
+    Given the maintainer's saved sign-in and registration for the test Rumble and the desktop program with the developer switch on
+    When the maintainer starts a session from the Contribute battles screen, pauses and resumes it, closes the desktop program to keep contributing, opens it again, stops the session, and once more closes the desktop program choosing to stop
+    Then the screen finds the session again after the restart, the result is accepted by the receiving workflow, and the session started the second time ends after its battle when the desktop program closes
 ```

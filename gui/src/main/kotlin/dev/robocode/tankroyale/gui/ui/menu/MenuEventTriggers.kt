@@ -19,6 +19,7 @@ object MenuEventTriggers {
     val onRumbleAccount = MenuEvent()
     val onRumbleSubmit = MenuEvent()
     val onRumbleDownload = MenuEvent()
+    val onRumbleContribute = MenuEvent()
     val onHelp = MenuEvent()
     val onAbout = MenuEvent()
 }
