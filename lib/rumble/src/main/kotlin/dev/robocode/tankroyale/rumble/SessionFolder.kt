@@ -149,14 +149,15 @@ class SessionFolder(val folder: Path) {
             Files.list(requests).use { paths ->
                 paths.iterator().forEach { file -> if (askedAt(file) < since) Files.deleteIfExists(file) }
             }
-        } catch (e: IOException) {
-            // A folder that cannot be made ready is let go of again, so the lock is never left held.
+        } catch (e: Exception) {
+            // A folder that cannot be made ready is let go of again, so the lock is never left held. Listing the folder
+            // reports its failures unchecked; they are the same failure to use the folder.
             try {
                 lock.release()
             } finally {
                 channel.close()
             }
-            throw e
+            throw if (e is java.io.UncheckedIOException) e.cause ?: IOException(e.message) else e
         }
         return RunningSession(channel, lock)
     }

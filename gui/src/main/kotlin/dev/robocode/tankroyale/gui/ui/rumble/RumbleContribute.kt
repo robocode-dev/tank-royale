@@ -36,8 +36,8 @@ import javax.swing.UIManager
 /**
  * The desktop program's side of a contribution session: one [ContributeController] for the whole program, which the
  * Contribute battles screen shows and which keeps following a session while the screen is closed. It looks for a
- * running session, or one that ended while the program was closed, when the program starts; it gives a short notice when
- * a session's battles are done; and it asks what to do with the session when the program closes. Everything here runs
+ * running session, or one that ended while the program was closed, when the program starts; while the screen is closed
+ * it gives a short notice when a session's battles are done; and it asks what to do with the session when the program closes. Everything here runs
  * on the event thread.
  */
 object RumbleContribute {
