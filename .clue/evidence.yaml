@@ -346,7 +346,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "a4a5e95c51dd0d3596b266b25dd742eeb4a4d7ac9238702cd5bbc2fbe2ba1dad"
+          "sha256": "e76b1b8256ea4443d2ab977135562af2917f10581646963666f85ccbb9872ce1"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -354,7 +354,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "53c190589ffdf7f93a4da86c54ec45fd961a917ba100f881e4a9f93c39fd3ef8"
+          "sha256": "6a770ac04d48b1d4927ab45cc2aeb8f45119f835d65b96d5b2529a7ae26b8b10"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -367,6 +367,10 @@
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliReleaseTest.kt",
           "sha256": "536061ee1fa1a67c78c5aac5068ff36aac03f56279ea0ae3d41bd0e67b7211c9"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
+          "sha256": "11b8466d023a547c9a813fd3e69376117da82b0a45e06ba839bc83e326a81030"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
@@ -761,6 +765,55 @@
           "direction": "positive"
         },
         {
+          "id": "RCI-055",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI055_UnitNegative_aSecondSessionIsRefusedAndASessionThatEndsBeforeItsFirstBattleSaysWhy",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-055",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI055_UnitPositive_aRunningSessionKeepsItsLockStatusAndLogInTheSessionFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI056_UnitNegative_stopNowKeepsNothingAndEachRequestIsActedOnOnce",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI056_UnitPositive_aPauseLiftedBeforeItTookHoldLeavesTheSessionRunning",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-056",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI056_UnitPositive_requestsPauseResumeAndStopARunningSession",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-057",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI057_UnitNegative_anOwnerThatDoesNotRunIsBadInputAndAReusedProcessIdIsNotTheOwner",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-057",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCI057_UnitPositive_aSessionStopsAfterItsBattleWhenItsOwnerIsGoneAndRunsOnWhenReleased",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
           "id": "RCL-134",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
           "subject": "RumbleCliContributeTest.testRCL134_IntegrationPositive_oneRealSessionRunsAPythonCatalogBotAndItsResultIsAccepted",
@@ -826,7 +879,7 @@
         {
           "id": "RCL-081",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "subject": "RumbleCliDownloadTextsTest.testRCL081_UnitNegative_theRumbleMenuHoldsOnlyTheThreeBuiltItems",
+          "subject": "RumbleCliDownloadTextsTest.testRCL081_UnitNegative_theRumbleMenuHoldsOnlyItemsForBuiltScreens",
           "type": "Unit",
           "direction": "negative"
         },
@@ -1009,6 +1062,20 @@
           "id": "RCI-047",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliReleaseTest.kt",
           "subject": "RumbleCliReleaseTest.testRCI047_UnitPositive_theReleaseUploadsTheCommandLineAndItsSmokeTestRunsIt",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-058",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
+          "subject": "RumbleCliSessionTest.testRCI058_UnitNegative_controlCommandsAreRefusedWhenNoSessionRuns",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCI-058",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
+          "subject": "RumbleCliSessionTest.testRCI058_UnitPositive_sessionShowsAndControlsARunningSessionAndReportsOneThatEnded",
           "type": "Unit",
           "direction": "positive"
         },
@@ -1630,7 +1697,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "62094c95416c8e1d62e2b8d0a2430167ac5edaf5b703534f65ebc7181fac1fd3"
+          "sha256": "c8d58d6f8edcc8fcc765be3d46f8cb5ad23c725ed9c44ba2a2cbe6455d37a156"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1642,7 +1709,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "45d84231ac6134d5194570bcf69d64c76c8197a330411769c8edcb2c3b42bffe"
+          "sha256": "9a28404a5ad6c26438c091534f0ace5523d48288c1f12e8bbc25fc7373cc8da5"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
@@ -1861,6 +1928,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
           "sha256": "131123374d7b713f72a19aeecf67eea1fa131ba5da376510e93894558ce20805"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "sha256": "565d79f666ada9b8341c56cdd5d17cc55b70485aeedabbf481b10c6a4b81b068"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
@@ -2265,6 +2336,76 @@
           "id": "RCL-021",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCatalogTest.kt",
           "subject": "RumbleCatalogTest.testRCL021_UnitPositive_entriesAreReadAndOnlyActiveOnesAreCurrent",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-055",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCI055_UnitPositive_aSessionStartingWhileTheFolderIsLookedAtStillTakesItAndAWriteNeverEndsIt",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCI-057",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCI057_UnitPositive_anOwnerWhoseStartTimeIsNotToldIsKnownByItsProcessId",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-135",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL135_UnitNegative_aDeclinedOrFailedFetchStartsNothingAndSaysWhy",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-135",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL135_UnitPositive_theProgramIsFetchedOnlyAfterThePersonAgreesAndThenTheSessionStarts",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-136",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL136_UnitNegative_nothingStartsWithoutUsableChoicesAndAFailedStartSaysWhy",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-136",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL136_UnitPositive_theChoicesStartASessionThatIsFollowedAndControlledThroughTheSessionFolder",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-137",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL137_UnitNegative_aSessionThatEndedUnexpectedlyIsShownSoAndOneStartedElsewhereIsFound",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-137",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL137_UnitPositive_aRunningSessionIsFoundAgainAndItsEndIsShownWithANotice",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-138",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL138_UnitNegative_closingAsksNothingWithoutASessionThisProgramOwns",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-138",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
+          "subject": "RumbleContributeScreenTest.testRCL138_UnitPositive_closingWhileAnOwnedSessionRunsAsksOrFollowsTheKeptAnswer",
           "type": "Unit",
           "direction": "positive"
         },

@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.common.util.Platform.isWindows
 import dev.robocode.tankroyale.common.util.Version
+import dev.robocode.tankroyale.gui.ui.rumble.RumbleContribute
 import dev.robocode.tankroyale.gui.botapi.BotApiScanner
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -83,6 +84,9 @@ fun main(args: Array<String>) {
     if (resolveTheme(ConfigSettings.theme) == "light") RobocodeFlatLight.setup() else RobocodeFlatDark.setup()
 
     MainFrame.isVisible = true
+
+    // A contribution session that runs, or one that ended while the program was closed, is found again.
+    javax.swing.SwingUtilities.invokeLater { RumbleContribute.startUp() }
 
     if (ConfigSettings.checkBotApiUpdates) {
         javax.swing.SwingUtilities.invokeLater {

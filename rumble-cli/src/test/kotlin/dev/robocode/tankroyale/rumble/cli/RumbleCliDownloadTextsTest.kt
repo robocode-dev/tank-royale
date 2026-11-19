@@ -152,11 +152,11 @@ class RumbleCliDownloadTextsTest {
     @Tag("RCL-081")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCL081_UnitNegative_theRumbleMenuHoldsOnlyTheThreeBuiltItems() {
+    fun testRCL081_UnitNegative_theRumbleMenuHoldsOnlyItemsForBuiltScreens() {
         val menu = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/menu/Menu.kt")
         val rumbleMenu = menu.substringAfter("private fun setupRumbleMenu()").substringBefore("private fun setupHelpMenu()")
 
-        assertEquals(listOf("item.rumble_account", "item.rumble_submit", "item.rumble_download"), Regex("item\\.rumble_\\w+").findAll(rumbleMenu).map { it.value }.toList())
+        assertEquals(listOf("item.rumble_account", "item.rumble_submit", "item.rumble_download", "item.rumble_contribute"), Regex("item\\.rumble_\\w+").findAll(rumbleMenu).map { it.value }.toList())
         assertTrue(!code(dialogFile).contains("SignIn"), "the screen asks for no sign-in")
     }
 

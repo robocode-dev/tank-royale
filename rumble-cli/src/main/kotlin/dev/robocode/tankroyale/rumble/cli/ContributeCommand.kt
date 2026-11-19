@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.types.long
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import dev.robocode.tankroyale.rumble.AdviceKeeper
 import dev.robocode.tankroyale.rumble.AutomaticUpload
@@ -32,7 +33,13 @@ import dev.robocode.tankroyale.rumble.SessionEvent
 import dev.robocode.tankroyale.rumble.SessionPin
 import dev.robocode.tankroyale.rumble.SessionPins
 import dev.robocode.tankroyale.rumble.SessionPlanner
+import dev.robocode.tankroyale.rumble.SessionControlRequest
+import dev.robocode.tankroyale.rumble.SessionFolder
+import dev.robocode.tankroyale.rumble.SessionLook
+import dev.robocode.tankroyale.rumble.SessionOwner
 import dev.robocode.tankroyale.rumble.SessionPython
+import dev.robocode.tankroyale.rumble.SessionResults
+import dev.robocode.tankroyale.rumble.SessionTracker
 import dev.robocode.tankroyale.rumble.SessionPythonProblem
 import dev.robocode.tankroyale.rumble.SessionPythonSetup
 import dev.robocode.tankroyale.rumble.SessionRequest
@@ -69,6 +76,14 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         .choice(*RANKED_FORMATS.toTypedArray()).multiple()
     private val battles by option("--battles", help = "How many battles to keep, then stop. Without it the session runs until stopped.")
         .int().restrictTo(min = 1)
+    private val ownerPid by option(
+        "--owner-pid",
+        help = "The process that owns the session. When it is gone, the session finishes the running battle and ends. The desktop program gives its own.",
+    ).long()
+
+    /** The session's folder in the Rumble state, kept up to date from the events reported; null before the lock is taken. */
+    @Volatile
+    private var tracker: SessionTracker? = null
 
     /** Events come from the session and from Ctrl+C on another thread; one line is written whole before the next. */
     private val output = Any()
@@ -85,36 +100,68 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         if (selectionMode != SelectionMode.ALL && bots.isEmpty()) {
             throw BadInput("--mode $mode needs at least one --bot.")
         }
+        val owner = ownerPid?.let { pid ->
+            SessionOwner.of(pid) ?: throw BadInput("--owner-pid $pid names no process that runs.")
+        }
 
+        // One session of an environment at a time: both would write the same journal and send the same results.
+        val folder = SessionFolder.of(env, base())
+        val running = try {
+            folder.claim()
+        } catch (e: IOException) {
+            return answer(reply(env, ExitCodes.FAILED, "session-folder-unusable", "The session folder could not be used: ${e.message}"))
+        } ?: return answer(sessionRunning(env, folder))
+        tracker = SessionTracker(running, env, owner, chosenFormats, battles) { services.clock.instant() }
+        try {
+            contribute(env, stateRoot, chosenFormats, selectionMode, owner)
+        } catch (e: Throwable) {
+            // Bad input found only now, or a fault: the session still ends in its folder with the reason.
+            val t = tracker
+            tracker = null
+            if (t != null) {
+                runCatching { t.end(if (e is BadInput) "bad-input" else "failed", e.message.orEmpty()) }
+                t.close()
+            }
+            throw e
+        }
+    }
+
+    private fun contribute(
+        env: RumbleEnvironment,
+        stateRoot: java.nio.file.Path,
+        chosenFormats: List<String>,
+        selectionMode: SelectionMode,
+        owner: SessionOwner?,
+    ) {
         // The sign-in and the registration.
         val flow = flow(env)
         val renewal = when (val r = flow.renewSaved()) {
             is SavedRenewal.Renewed -> r
-            is SavedRenewal.SignInNeeded -> return answer(reply(env, ExitCodes.SIGN_IN_NEEDED, outcomeOf(r), r.message, "login"))
-            is SavedRenewal.Failed -> return answer(reply(env, ExitCodes.FAILED, "sign-in-failed", "The sign-in could not be renewed: ${r.message} Try again later."))
+            is SavedRenewal.SignInNeeded -> return endWith(reply(env, ExitCodes.SIGN_IN_NEEDED, outcomeOf(r), r.message, "login"))
+            is SavedRenewal.Failed -> return endWith(reply(env, ExitCodes.FAILED, "sign-in-failed", "The sign-in could not be renewed: ${r.message} Try again later."))
         }
         val token = renewal.tokens.accessToken
         val account = renewal.account ?: flow.identify(renewal)
-            ?: return answer(reply(env, ExitCodes.FAILED, "account-unknown", "GitHub did not say who is signed in. Try again later."))
+            ?: return endWith(reply(env, ExitCodes.FAILED, "account-unknown", "GitHub did not say who is signed in. Try again later."))
         val memory = flow.registrationMemory(renewal)
         val clientId = memory.load(account)?.clientId ?: when (val read = Registration(env, services.api, memory).registeredClient(account, token)) {
             is RegisteredClient.Found -> read.clientId.also {
                 // Remembered, so the next session needs no request for it.
                 memory.save(RegistrationRecord(account, it, env.name, services.clock.instant()))
             }
-            RegisteredClient.None -> return answer(reply(env, ExitCodes.SIGN_IN_NEEDED, "not-registered", "The account $account is not registered with this Rumble yet.", "register"))
+            RegisteredClient.None -> return endWith(reply(env, ExitCodes.SIGN_IN_NEEDED, "not-registered", "The account $account is not registered with this Rumble yet.", "register"))
             is RegisteredClient.SignInRefused -> {
                 flow.forgetRefused(renewal)
-                return answer(reply(env, ExitCodes.SIGN_IN_NEEDED, "sign-in-refused", read.message, "login"))
+                return endWith(reply(env, ExitCodes.SIGN_IN_NEEDED, "sign-in-refused", read.message, "login"))
             }
-            is RegisteredClient.Unreadable -> return answer(reply(env, ExitCodes.FAILED, "registration-unreadable", "The account's registration could not be read: ${read.message} Try again later."))
+            is RegisteredClient.Unreadable -> return endWith(reply(env, ExitCodes.FAILED, "registration-unreadable", "The account's registration could not be read: ${read.message} Try again later."))
         }
 
         // The catalog, the engine pin and the battle worker.
         val source = services.catalog(env)
         val snapshot = RumbleSnapshot.read(services.api, env, source, token)
         val catalog = snapshot.catalog
-            ?: return answer(reply(env, ExitCodes.FAILED, "catalog-unreadable", "The Rumble's bot catalog could not be read: ${snapshot.problem.orEmpty()} Try again later."))
+            ?: return endWith(reply(env, ExitCodes.FAILED, "catalog-unreadable", "The Rumble's bot catalog could not be read: ${snapshot.problem.orEmpty()} Try again later."))
         val active = catalog.activeBots.map { SessionPlanner.key(it) }.toSet()
         val known = catalog.bots.map { SessionPlanner.key(it) }.toSet()
         bots.firstOrNull { it !in active }?.let {
@@ -126,12 +173,12 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         val data = services.resultData(env)
         val pin = when (val prepared = SessionPins.prepare(data, chosenFormats)) {
             is SessionPin.Ready -> prepared
-            is SessionPin.Refused -> return answer(pinRefused(env, prepared))
+            is SessionPin.Refused -> return endWith(pinRefused(env, prepared))
         }
         val worker = try {
             services.worker(stateRoot)
         } catch (e: IOException) {
-            return answer(reply(env, ExitCodes.FAILED, "worker-unavailable", "The battle worker could not be put in place: ${e.message}"))
+            return endWith(reply(env, ExitCodes.FAILED, "worker-unavailable", "The battle worker could not be put in place: ${e.message}"))
         }
 
         // The session.
@@ -139,9 +186,10 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         val (journal, sent) = try {
             RankedJournal.open(env, ranked.resolve("journal.jsonl")) to SentBatches.open(ranked.resolve("sent-batches.jsonl"))
         } catch (e: JournalUnusable) {
-            return answer(reply(env, ExitCodes.FAILED, "journal-unusable", e.message.orEmpty()))
+            return endWith(reply(env, ExitCodes.FAILED, "journal-unusable", e.message.orEmpty()))
         }
         val version = programVersion()
+        tracker?.results = { journalResults(journal) }
         val uploader = ResultUploader(
             env, journal, sent, services.api,
             SavedSignInUpload(flow.savedSignIn()) { services.clock.instant() },
@@ -170,15 +218,57 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         )
         // The Ctrl+C handle stays open until the answer is written, so where a shutdown hook stands in for it the program is
         // held open while the results are sent and the answer is written.
-        services.interrupts {
-            if (interrupts.incrementAndGet() == 1) {
+        // Only a stop from the terminal can be followed by a second Ctrl+C; one asked through the session folder or by the
+        // owner being gone says how to end it now from anywhere.
+        fun stopAfterBattle(byCtrlC: Boolean = false) {
+            if (interrupts.compareAndSet(0, 1)) {
                 control.finishAndStop()
-                report(note("stopping", "Stopping after the battle that is running. Press Ctrl+C again to end it now."))
-            } else {
+                report(
+                    note(
+                        "stopping",
+                        if (byCtrlC) "Stopping after the battle that is running. Press Ctrl+C again to end it now."
+                        else "Stopping after the battle that is running. Run rumble session stop-now to end it now.",
+                    ),
+                )
+            }
+        }
+        fun stopNow() {
+            if (interrupts.getAndSet(2) < 2) {
                 control.cancelNow()
                 report(note("cancelling", "Ending the battle that is running now; nothing of it is kept, and nothing is sent now."))
             }
+        }
+        val watcher = SessionWatcher(
+            requests = { tracker?.take().orEmpty() },
+            owner = owner,
+            onRequest = { request ->
+                when (request) {
+                    SessionControlRequest.PAUSE -> if (interrupts.get() == 0 && control.pause()) {
+                        report(note("pausing", "Pausing after the battle that is running."))
+                    }
+                    SessionControlRequest.RESUME -> if (control.resume() && tracker?.status?.state != "paused") {
+                        // A pause that had not taken hold yet is simply lifted; a session that paused says "resumed" itself.
+                        report(note("resuming", "Going on."))
+                    }
+                    SessionControlRequest.STOP -> stopAfterBattle()
+                    SessionControlRequest.STOP_NOW -> stopNow()
+                    SessionControlRequest.RELEASE -> report(note("released", "The session no longer stops when the program that started it ends."))
+                }
+            },
+            onOwnerGone = {
+                if (interrupts.get() == 0) {
+                    report(note("owner-gone", "The program that started the session has ended, so the session stops after the battle that is running."))
+                    stopAfterBattle()
+                } else {
+                    report(note("owner-gone", "The program that started the session has ended."))
+                }
+            },
+        )
+        services.interrupts {
+            if (interrupts.get() == 0) stopAfterBattle(byCtrlC = true) else stopNow()
         }.use {
+          watcher.use {
+            watcher.start()
             // Any active bot may be chosen as an opponent, also in `only` mode, so Python is set up whenever the catalog holds an
             // active Python bot.
             python.python = pythonFor(catalog.activeBots, ranked) { interrupts.get() > 0 }
@@ -200,10 +290,33 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
                     }
                 }
                 // Written under the same lock as the events, so no late event line follows the answer.
-                synchronized(output) { answer(ended(env, end, kept.get(), journal)) }
+                synchronized(output) { endWith(ended(env, end, kept.get(), journal)) }
             } finally {
                 python.close()
             }
+          }
+        }
+    }
+
+    /** Answers [reply] and records it as the session's end in its folder, which lets go of the lock. */
+    private fun endWith(reply: Reply) {
+        val t = tracker
+        tracker = null
+        if (t != null) {
+            val message = (reply.json["message"] as? kotlinx.serialization.json.JsonPrimitive)?.content.orEmpty()
+            val outcome = (reply.json["outcome"] as? kotlinx.serialization.json.JsonPrimitive)?.content.orEmpty()
+            // The answer is written whatever happens to the session folder.
+            runCatching { t.end(outcome, message) }
+            runCatching { t.close() }
+        }
+        answer(reply)
+    }
+
+    private fun sessionRunning(env: RumbleEnvironment, folder: SessionFolder): Reply {
+        val status = (folder.look() as? SessionLook.Running)?.status
+        val by = status?.let { " (process ${it.pid}, started ${it.startedAt})" }.orEmpty()
+        return reply(env, ExitCodes.REFUSED, "session-running", "A contribution session of this environment already runs$by. Follow it with rumble session status.") {
+            status?.let { put("pid", it.pid) }
         }
     }
 
@@ -253,7 +366,10 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
 
     /** Writes one event as a line of text, or as one JSON line. */
     private fun report(event: Pair<JsonObject, String>) {
-        synchronized(output) { if (json) io.event(event.first) else io.say(event.second) }
+        synchronized(output) {
+            tracker?.record(event.first)
+            if (json) io.event(event.first) else io.say(event.second)
+        }
     }
 
     private fun note(kind: String, text: String) = event(kind) { put("message", text) } to text
@@ -407,5 +523,71 @@ internal class SessionPythonHolder(private val onUnavailable: (SessionPythonProb
     override fun close() {
         python?.close()
         python = null
+    }
+}
+
+/** The journal's result counts, as a session shows them. */
+internal fun journalResults(journal: RankedJournal): SessionResults {
+    val states = journal.entries().groupingBy { it.state }.eachCount()
+    return SessionResults(
+        waiting = states[RecordState.WAITING] ?: 0, sent = states[RecordState.HANDED_OVER] ?: 0, accepted = states[RecordState.ACCEPTED] ?: 0,
+        rejected = states[RecordState.REJECTED] ?: 0, setAside = states[RecordState.SET_ASIDE] ?: 0,
+    )
+}
+
+/**
+ * Looks, while a session runs, for the requests asked of it in its session folder, about twice a second, and every few
+ * seconds whether its owner still runs. It stops looking when closed.
+ */
+internal class SessionWatcher(
+    private val requests: () -> List<SessionControlRequest>,
+    private val owner: SessionOwner?,
+    private val onRequest: (SessionControlRequest) -> Unit,
+    private val onOwnerGone: () -> Unit,
+    private val pollMillis: Long = 500,
+    private val ownerEvery: Int = 4,
+) : AutoCloseable {
+    @Volatile
+    private var running = true
+
+    @Volatile
+    private var watchedOwner: SessionOwner? = owner
+
+    private val thread = Thread({ loop() }, "rumble-session-watcher").apply { isDaemon = true }
+
+    fun start() = thread.start()
+
+    private fun loop() {
+        var round = 0
+        while (running) {
+            try {
+                for (request in requests()) {
+                    if (request == SessionControlRequest.RELEASE) watchedOwner = null
+                    try {
+                        onRequest(request)
+                    } catch (e: Exception) {
+                        // The request was taken, so it is not read again; the next one is still acted on.
+                    }
+                }
+                val current = watchedOwner
+                if (current != null && round % ownerEvery == 0 && !current.isAlive()) {
+                    watchedOwner = null
+                    onOwnerGone()
+                }
+            } catch (e: Exception) {
+                // A request that cannot be read now is read at the next look.
+            }
+            round++
+            try {
+                Thread.sleep(pollMillis)
+            } catch (e: InterruptedException) {
+                return
+            }
+        }
+    }
+
+    override fun close() {
+        running = false
+        thread.interrupt()
     }
 }

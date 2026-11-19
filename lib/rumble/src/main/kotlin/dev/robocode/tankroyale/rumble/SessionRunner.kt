@@ -18,10 +18,14 @@ class SessionControl {
     // Changed only by compare-and-set, so a pause from one thread never undoes a stop or a cancel from another.
     private val mode = java.util.concurrent.atomic.AtomicReference(Mode.RUN)
 
-    /** Finish the active battle, then wait until [resume]. */
-    fun pause() { mode.compareAndSet(Mode.RUN, Mode.PAUSE) }
+    /**
+     * Finish the active battle, then wait until [resume]. True when this asked for the pause, false when the session was
+     * already pausing or is stopping.
+     */
+    fun pause(): Boolean = mode.compareAndSet(Mode.RUN, Mode.PAUSE)
 
-    fun resume() { mode.compareAndSet(Mode.PAUSE, Mode.RUN) }
+    /** True when this lifted a pause, false when there was none. */
+    fun resume(): Boolean = mode.compareAndSet(Mode.PAUSE, Mode.RUN)
 
     /** Finish the active battle, keep its result, then end the session. */
     fun finishAndStop() { mode.updateAndGet { if (it == Mode.CANCEL_NOW) it else Mode.FINISH_AND_STOP } }

@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onAbout
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onHelp
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleAccount
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleContribute
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleDownload
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleSubmit
 import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
@@ -141,6 +142,9 @@ object Menu : JMenuBar() {
             }
             addNewMenuItem("item.rumble_download", onRumbleDownload).apply {
                 mnemonic = KeyEvent.VK_D
+            }
+            addNewMenuItem("item.rumble_contribute", onRumbleContribute).apply {
+                mnemonic = KeyEvent.VK_C
             }
         })
     }

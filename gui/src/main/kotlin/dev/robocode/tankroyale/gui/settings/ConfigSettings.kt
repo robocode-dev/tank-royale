@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
 import dev.robocode.tankroyale.rumble.BotFolderSetting
+import dev.robocode.tankroyale.rumble.CloseChoice
 import dev.robocode.tankroyale.rumble.DownloadFolders
 import java.util.*
 
@@ -18,6 +19,8 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val BOOT_TIMEOUT = "boot-timeout"
     private const val TANK_COLOR_MODE = "tank-color-mode"
     private const val THEME = "theme"
+    private const val RUMBLE_CLOSE_CHOICE = "rumble-contribute-on-close"
+    private const val RUMBLE_SEEN_SESSION_END = "rumble-contribute-seen-end"
 
     private const val DEFAULT_CONSOLE_MAX_CHARACTERS = 10000
     const val DEFAULT_BOOT_TIMEOUT = 30
@@ -149,6 +152,20 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         }
         set(value) {
             save(TANK_COLOR_MODE, value.value)
+        }
+
+    /** What closing the program does with a contribution session it started: ask the first time, keep it running, or let it stop. */
+    var rumbleCloseChoice: CloseChoice
+        get() = CloseChoice.entries.firstOrNull { it.name.equals(load(RUMBLE_CLOSE_CHOICE, ""), ignoreCase = true) } ?: CloseChoice.ASK
+        set(value) {
+            save(RUMBLE_CLOSE_CHOICE, value.name.lowercase())
+        }
+
+    /** When the last contribution session that the program told about ended, so a summary is told about only once. */
+    var rumbleSeenSessionEnd: String
+        get() = load(RUMBLE_SEEN_SESSION_END, "")
+        set(value) {
+            save(RUMBLE_SEEN_SESSION_END, value)
         }
 
     var theme: String

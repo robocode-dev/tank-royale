@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.control.ControlEventHandlers
 import dev.robocode.tankroyale.gui.ui.control.ControlPanel
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.gui.ui.rumble.RumbleContribute
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import java.awt.BorderLayout
 import javax.swing.JPanel
@@ -41,7 +42,11 @@ object MainFrame : RcFrame("main_frame") {
         }
         ServerEvents.onStopped.on(MainFrame) { MainPanel.showLogo() }
 
-        onClosing { close() }
+        onClosing {
+            // Asked before anything closes, so a contribution session this program started is let run on or stop as the person chose.
+            RumbleContribute.beforeExit()
+            close()
+        }
         Runtime.getRuntime().addShutdownHook(Thread { close() })
     }
 

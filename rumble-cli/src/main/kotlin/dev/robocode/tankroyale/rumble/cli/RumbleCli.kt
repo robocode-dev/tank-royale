@@ -65,6 +65,7 @@ object RumbleCli {
             VersionCommand(io), EnvironmentsCommand(io), StatusCommand(io, services), LoginCommand(io, services),
             LogoutCommand(io, services), RegisterCommand(io, services), ImportLegacyCommand(io), ContributeCommand(io, services),
             BotGroup().subcommands(BotCheckCommand(io, services), BotSendCommand(io, services), BotStatusCommand(io, services)),
+            SessionGroup().subcommands(SessionGroup.commands(io)),
         ).context { readEnvvar = services.readEnv }
         val commands = root.registeredSubcommandNames()
         val first = args.firstOrNull()

@@ -451,4 +451,34 @@ Feature: rumble-command-line — Rumble command line
     When the person runs `rumble contribute`
     Then the command line carries its own Python Bot API, sets up Python only when the catalog holds an active Python bot, which any battle may hold as an opponent also in `only` mode, after Ctrl+C can stop the session, and reports setting it up and that it is ready with its version
     And without a usable Python it reports why with the version needed and found, leaves the Python bots out and runs the others, and choosing only Python bots then ends with nothing to run; a Ctrl+C while Python is set up is a stop and not an install failure, and when a battle's copy can no longer be made the Python bots are left out for the rest of the session
+
+  @RCI-055
+  Scenario: A running session keeps its lock, status and log in the environment's session folder, and a second session is refused
+    Test-type: Unit
+    Given an environment of the Tank Royale user folder
+    When `rumble contribute` runs, and a second `rumble contribute` of the same environment starts meanwhile
+    Then the running session holds the lock of the environment's session folder for as long as it runs, keeps its process ID, start time, owner and a status that follows its events up to date there, adds each event to the session's log and, when it ends by itself after it took the lock, also before its first battle, records its outcome and message as the summary and lets go of the lock
+    And the second session is refused with exit code 2, the outcome word `session-running` and the running session's process ID, and changes nothing of the running one
+
+  @RCI-056
+  Scenario: Control requests in the session folder pause, resume, stop and stop a running session now, as Ctrl+C does
+    Test-type: Unit
+    Given a running session
+    When a pause, resume, stop, stop-now or release request is put in its session folder
+    Then pause holds the session after the running battle and resume lets it go on, stop finishes the running battle, keeps it, sends what waits and ends with exit code 0, stop now ends the running battle, keeps nothing of it and ends with exit code 4, release clears the owner, each is reported as an event like Ctrl+C's, and each request is acted on once
+
+  @RCI-057
+  Scenario: A session with an owner stops after the running battle when the owner is gone
+    Test-type: Unit
+    Given a session started with `--owner-pid` of a running process, or without it
+    When the owning process ends, or a process is named that does not run
+    Then the session notices within a few seconds, says that its owner is gone, finishes the running battle, keeps and sends it and ends; a session released from its owner or without one runs until its battles are done or it is stopped; an owner is the process with that ID and start time, so a reused process ID is not taken for it; and an owner that does not run is bad input
+
+  @RCI-058
+  Scenario: `rumble session` shows and controls a running session and reports one that ended
+    Test-type: Unit
+    Given an environment whose session runs, ended, ended without closing, or never ran
+    When the person runs `rumble session status`, `pause`, `resume`, `stop`, `stop-now` or `release`
+    Then status shows the running session's state, battle, counts and results, or the summary of the last one, or that its process ended without ending the session, or that none ran, in text or as one JSON document, with exit code 0
+    And each control command puts its request in the session folder and says so with exit code 0, and is refused with exit code 2 and the outcome word `no-session` when no session runs
 ```

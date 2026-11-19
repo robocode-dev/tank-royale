@@ -13,6 +13,11 @@ import dev.robocode.tankroyale.rumble.RegistrationRecord
 import dev.robocode.tankroyale.rumble.ResultDataSource
 import dev.robocode.tankroyale.rumble.RumbleEnvironments
 import dev.robocode.tankroyale.rumble.SentBatches
+import dev.robocode.tankroyale.rumble.SessionControlRequest
+import dev.robocode.tankroyale.rumble.SessionFolder
+import dev.robocode.tankroyale.rumble.SessionLook
+import dev.robocode.tankroyale.rumble.SessionOwner
+import dev.robocode.tankroyale.rumble.SessionStatus
 import dev.robocode.tankroyale.rumble.SignInStore
 import dev.robocode.tankroyale.rumble.WorkerCommand
 import dev.robocode.tankroyale.rumble.WorkerLimits
@@ -620,5 +625,229 @@ class RumbleCliContributeTest {
         assertEquals(null, holder.python, "the session's Python is dropped")
         assertEquals(emptyMap<String, String>(), holder.environment(listOf(bot("Snake", "Python")), folders("next")), "later battles get nothing")
         holder.close()
+    }
+
+    // RCI-055, RCI-056 and RCI-057: the session folder
+
+    private fun folderOf(world: World) = SessionFolder.of(env, world.state)
+
+    /** The event words of the session's log so far; a line still being written is left out. */
+    private fun logged(world: World): List<String> = folderOf(world).events().mapNotNull { line ->
+        try {
+            Json.parseToJsonElement(line).jsonObject["event"]?.jsonPrimitive?.content
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
+     * Plays a person or a program at the session folder while the session runs: each step waits until its event word is
+     * in the session's log, then acts. The steps start when the session can be interrupted, so its folder is taken.
+     */
+    private fun World.drive(vararg steps: Pair<String, () -> Unit>) {
+        onInterruptInstalled = {
+            Thread {
+                for ((event, act) in steps) {
+                    val until = System.nanoTime() + Duration.ofSeconds(60).toNanos()
+                    while (event !in logged(this) && System.nanoTime() < until) Thread.sleep(50)
+                    act()
+                }
+            }.apply { isDaemon = true; start() }
+        }
+    }
+
+    /** A process that runs until it is ended, to own a session. */
+    private fun ownerProcess(): Process =
+        ProcessBuilder(java, "-cp", System.getProperty("java.class.path"), "dev.robocode.tankroyale.rumble.cli.CliFakeWorkerKt", "hang").start()
+
+    @Test
+    @Tag("Positive")
+    fun testRCI055_UnitPositive_aRunningSessionKeepsItsLockStatusAndLogInTheSessionFolder(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); mode = "slow" }
+        val folder = folderOf(world)
+        var seen: SessionLook? = null
+        world.drive("battle-started" to { seen = folder.look() })
+
+        val run = world.run("--battles", "1", "--format", "1v1")
+
+        assertEquals(ExitCodes.DONE, run.exit, run.out)
+        val running = seen as SessionLook.Running
+        val status = running.status!!
+        assertEquals(ProcessHandle.current().pid(), status.pid)
+        assertEquals("test", status.environment)
+        assertEquals("running", status.state)
+        assertEquals("1v1", status.battle!!.gameType)
+        assertEquals(listOf("1v1"), status.formats)
+        assertEquals(1, status.battleLimit)
+
+        val ended = folder.look() as SessionLook.Ended
+        assertEquals("finished", ended.status.ended!!.outcome)
+        assertEquals(1, ended.status.kept)
+        assertEquals(1, ended.status.results.accepted)
+        assertEquals(run.events, logged(world), "every event reported is in the session's log")
+        folder.claim()!!.close() // the lock was let go
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCI055_UnitNegative_aSecondSessionIsRefusedAndASessionThatEndsBeforeItsFirstBattleSaysWhy(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn() }
+        val folder = folderOf(world)
+        val other = folder.claim()!!
+        val otherStatus = SessionStatus(environment = "test", pid = 4242, startedAt = "2026-11-18T10:00:00Z", state = "running", updatedAt = "2026-11-18T10:00:00Z")
+        other.write(otherStatus)
+
+        val second = world.run("--battles", "1", "--format", "1v1")
+
+        assertEquals(ExitCodes.REFUSED, second.exit, second.out)
+        assertEquals("session-running", second.outcome)
+        assertEquals(4242, second.last["pid"]!!.jsonPrimitive.content.toInt())
+        assertFalse(second.events.contains("started"))
+        assertEquals(otherStatus, (folder.look() as SessionLook.Running).status, "the running session is left as it was")
+        other.close()
+
+        // A session that ends before its first battle still records why, and lets go of the lock.
+        val unsigned = World(dir.resolve("unsigned"))
+        unsigned.run("--battles", "1")
+        assertEquals("no-sign-in", ((folderOf(unsigned).look() as SessionLook.Ended).status.ended!!).outcome)
+        val unknown = World(dir.resolve("unknown")).apply { signIn() }
+        unknown.run("--bot", "Nobody 9.9", "--battles", "1")
+        assertEquals("bad-input", ((folderOf(unknown).look() as SessionLook.Ended).status.ended!!).outcome)
+        folderOf(unknown).claim()!!.close()
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCI056_UnitPositive_requestsPauseResumeAndStopARunningSession(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); mode = "slow" }
+        val folder = folderOf(world)
+        world.drive(
+            "battle-started" to { folder.ask(SessionControlRequest.PAUSE) },
+            "paused" to { folder.ask(SessionControlRequest.RESUME) },
+            "resumed" to { folder.ask(SessionControlRequest.STOP) },
+        )
+
+        val run = world.run("--format", "1v1")
+
+        assertEquals(ExitCodes.DONE, run.exit, run.out)
+        assertEquals("stopped", run.outcome)
+        val order = listOf("pausing", "paused", "resumed", "stopping").map { run.events.indexOf(it) }
+        assertTrue(order.all { it >= 0 } && order == order.sorted(), run.out)
+        assertEquals(2, run.events.count { it == "battle-kept" })
+        assertEquals("stopped", (folder.look() as SessionLook.Ended).status.ended!!.outcome)
+        val stopping = run.lines.first { it["event"]?.jsonPrimitive?.content == "stopping" }["message"]!!.jsonPrimitive.content
+        assertFalse(stopping.contains("Ctrl+C"), "a stop asked through the folder does not speak of a terminal: $stopping")
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCI056_UnitPositive_aPauseLiftedBeforeItTookHoldLeavesTheSessionRunning(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); mode = "slow" }
+        val folder = folderOf(world)
+        var afterResume: SessionStatus? = null
+        world.drive(
+            "battle-started" to { folder.ask(SessionControlRequest.PAUSE); folder.ask(SessionControlRequest.PAUSE) },
+            "pausing" to { folder.ask(SessionControlRequest.RESUME) },
+            "resuming" to { afterResume = (folder.look() as SessionLook.Running).status },
+        )
+
+        val run = world.run("--battles", "2", "--format", "1v1")
+
+        assertEquals("finished", run.outcome, run.out)
+        assertEquals(1, run.events.count { it == "pausing" }, "a second pause while pausing changes nothing")
+        assertTrue(afterResume!!.state != "pausing", "the status does not stay pausing")
+        assertEquals("running", (folder.look() as SessionLook.Ended).status.state)
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCI056_UnitNegative_stopNowKeepsNothingAndEachRequestIsActedOnOnce(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); mode = "hang" }
+        val folder = folderOf(world)
+        world.drive(
+            "battle-started" to {
+                folder.ask(SessionControlRequest.STOP_NOW)
+                folder.ask(SessionControlRequest.STOP_NOW)
+                folder.ask(SessionControlRequest.STOP)
+                Files.writeString(folder.folder.resolve("requests/0-x.unknown"), "")
+            },
+        )
+
+        val run = world.run("--format", "1v1")
+
+        assertEquals(ExitCodes.NOT_FINISHED, run.exit, run.out)
+        assertEquals("cancelled", run.outcome)
+        assertEquals(1, run.events.count { it == "cancelling" })
+        assertFalse(run.events.contains("stopping"), "a stop after stop now changes nothing")
+        assertEquals(0, world.journal().entries().size)
+
+        // A request left from an earlier session is not acted on by the next one.
+        val next = World(dir.resolve("next")).apply { signIn() }
+        val requests = folderOf(next).folder.resolve("requests")
+        Files.createDirectories(requests)
+        Files.writeString(requests.resolve("1-a.stop-now"), "")
+        val clean = next.run("--battles", "1", "--format", "1v1")
+        assertEquals("finished", clean.outcome, clean.out)
+        assertFalse(clean.events.contains("cancelling"))
+    }
+
+    @Test
+    @Tag("Positive")
+    fun testRCI057_UnitPositive_aSessionStopsAfterItsBattleWhenItsOwnerIsGoneAndRunsOnWhenReleased(@TempDir dir: Path) {
+        val owner = ownerProcess()
+        try {
+            val world = World(dir).apply { signIn(); mode = "slow" }
+            var seen: SessionStatus? = null
+            world.drive("battle-started" to { seen = (folderOf(world).look() as SessionLook.Running).status; owner.destroyForcibly() })
+
+            val run = world.run("--format", "1v1", "--owner-pid", owner.pid().toString())
+
+            assertEquals(ExitCodes.DONE, run.exit, run.out)
+            assertEquals("stopped", run.outcome)
+            assertEquals(owner.pid(), seen!!.owner!!.pid)
+            assertTrue(run.events.indexOf("owner-gone") in 0 until run.events.indexOf("stopping"), run.out)
+            assertTrue(run.events.count { it == "battle-kept" } >= 1, "the running battle was kept")
+        } finally {
+            owner.destroyForcibly()
+        }
+
+        val released = ownerProcess()
+        try {
+            val world = World(dir.resolve("released")).apply { signIn(); mode = "slow" }
+            val folder = folderOf(world)
+            world.drive(
+                "battle-started" to { folder.ask(SessionControlRequest.RELEASE) },
+                "released" to { released.destroyForcibly() },
+            )
+
+            val run = world.run("--battles", "2", "--format", "1v1", "--owner-pid", released.pid().toString())
+
+            assertEquals("finished", run.outcome, run.out)
+            assertEquals(2, run.events.count { it == "battle-kept" })
+            assertFalse(run.events.contains("owner-gone"))
+            assertEquals(null, (folder.look() as SessionLook.Ended).status.owner)
+        } finally {
+            released.destroyForcibly()
+        }
+    }
+
+    @Test
+    @Tag("Negative")
+    fun testRCI057_UnitNegative_anOwnerThatDoesNotRunIsBadInputAndAReusedProcessIdIsNotTheOwner(@TempDir dir: Path) {
+        val gone = ProcessBuilder(java, "-version").redirectErrorStream(true).start()
+        gone.inputStream.readAllBytes()
+        gone.waitFor()
+        val world = World(dir).apply { signIn() }
+
+        val run = world.run("--battles", "1", "--owner-pid", gone.pid().toString())
+
+        assertEquals(ExitCodes.REFUSED, run.exit, run.out)
+        assertEquals("bad-input", run.outcome)
+        assertEquals(SessionLook.None, folderOf(world).look(), "no session was started")
+
+        val me = SessionOwner.of(ProcessHandle.current().pid())!!
+        assertTrue(me.isAlive())
+        val reused = me.copy(startedAt = Instant.parse(me.startedAt).minusSeconds(3_600).toString())
+        assertFalse(reused.isAlive(), "a process with the same ID that started at another time is not the owner")
     }
 }
