@@ -141,12 +141,22 @@ class SessionFolder(val folder: Path) {
         }
         // From here on a request is asked of this session, so only the requests asked before are earlier ones'.
         val since = System.currentTimeMillis()
-        // The new session starts a new log and no status, so the last session's is never shown as this one's, and it
-        // leaves no request meant for an earlier session.
-        if (Files.exists(eventsFile)) Files.move(eventsFile, previousEventsFile, StandardCopyOption.REPLACE_EXISTING)
-        Files.deleteIfExists(statusFile)
-        Files.list(requests).use { paths ->
-            paths.iterator().forEach { file -> if (askedAt(file) < since) Files.deleteIfExists(file) }
+        try {
+            // The new session starts a new log and no status, so the last session's is never shown as this one's, and it
+            // leaves no request meant for an earlier session.
+            if (Files.exists(eventsFile)) Files.move(eventsFile, previousEventsFile, StandardCopyOption.REPLACE_EXISTING)
+            Files.deleteIfExists(statusFile)
+            Files.list(requests).use { paths ->
+                paths.iterator().forEach { file -> if (askedAt(file) < since) Files.deleteIfExists(file) }
+            }
+        } catch (e: IOException) {
+            // A folder that cannot be made ready is let go of again, so the lock is never left held.
+            try {
+                lock.release()
+            } finally {
+                channel.close()
+            }
+            throw e
         }
         return RunningSession(channel, lock)
     }

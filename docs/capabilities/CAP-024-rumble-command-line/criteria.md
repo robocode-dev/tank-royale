@@ -457,7 +457,7 @@ Feature: rumble-command-line — Rumble command line
     Test-type: Unit
     Given an environment of the Tank Royale user folder
     When `rumble contribute` runs, and a second `rumble contribute` of the same environment starts meanwhile
-    Then the running session holds the lock of the environment's session folder for as long as it runs, keeps its process ID, start time, owner and a status that follows its events up to date there, adds each event to the session's log and, when it ends for any reason, also before its first battle, records its outcome and message as the summary and lets go of the lock
+    Then the running session holds the lock of the environment's session folder for as long as it runs, keeps its process ID, start time, owner and a status that follows its events up to date there, adds each event to the session's log and, when it ends by itself after it took the lock, also before its first battle, records its outcome and message as the summary and lets go of the lock
     And the second session is refused with exit code 2, the outcome word `session-running` and the running session's process ID, and changes nothing of the running one
 
   @RCI-056

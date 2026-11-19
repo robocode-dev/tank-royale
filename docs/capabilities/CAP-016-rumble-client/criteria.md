@@ -1135,7 +1135,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a session of the environment that runs, ended while the desktop program was closed, or ended without closing
     When the desktop program starts, or the battles of the session it follows are done
-    Then the screen shows the running session again with its controls, or the summary of the last one, or that it ended unexpectedly with what it kept still in the journal, and when the battles are done it shows the summary and the desktop program gives a short notice that does not have to be clicked away
+    Then the screen shows the running session again with its controls, or the summary of the last one, or that it ended unexpectedly with what it kept still in the journal, and when the battles are done it shows the summary, and while the screen is closed the desktop program gives a short notice that does not have to be clicked away
 
   @RCL-138
   Scenario: Closing the desktop program while a session runs asks the first time and keeps the answer
