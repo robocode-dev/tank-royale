@@ -735,6 +735,8 @@ class RumbleCliContributeTest {
         assertTrue(order.all { it >= 0 } && order == order.sorted(), run.out)
         assertEquals(2, run.events.count { it == "battle-kept" })
         assertEquals("stopped", (folder.look() as SessionLook.Ended).status.ended!!.outcome)
+        val stopping = run.lines.first { it["event"]?.jsonPrimitive?.content == "stopping" }["message"]!!.jsonPrimitive.content
+        assertFalse(stopping.contains("Ctrl+C"), "a stop asked through the folder does not speak of a terminal: $stopping")
     }
 
     @Test

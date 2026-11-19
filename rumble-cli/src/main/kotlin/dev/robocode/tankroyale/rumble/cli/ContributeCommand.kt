@@ -218,10 +218,18 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         )
         // The Ctrl+C handle stays open until the answer is written, so where a shutdown hook stands in for it the program is
         // held open while the results are sent and the answer is written.
-        fun stopAfterBattle() {
+        // Only a stop from the terminal can be followed by a second Ctrl+C; one asked through the session folder or by the
+        // owner being gone says how to end it now from anywhere.
+        fun stopAfterBattle(byCtrlC: Boolean = false) {
             if (interrupts.compareAndSet(0, 1)) {
                 control.finishAndStop()
-                report(note("stopping", "Stopping after the battle that is running. Press Ctrl+C again to end it now."))
+                report(
+                    note(
+                        "stopping",
+                        if (byCtrlC) "Stopping after the battle that is running. Press Ctrl+C again to end it now."
+                        else "Stopping after the battle that is running. Run rumble session stop-now to end it now.",
+                    ),
+                )
             }
         }
         fun stopNow() {
@@ -257,7 +265,7 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             },
         )
         services.interrupts {
-            if (interrupts.get() == 0) stopAfterBattle() else stopNow()
+            if (interrupts.get() == 0) stopAfterBattle(byCtrlC = true) else stopNow()
         }.use {
           watcher.use {
             watcher.start()
