@@ -42,6 +42,12 @@ object ContributeTexts {
 
     fun forClose(choice: CloseChoice): String = "rumble.contribute.close." + choice.name.lowercase()
 
+    /**
+     * Whether an outcome is one the person asked for or expects, so its text says all there is and the program's own
+     * message, which is in English, is not shown as details.
+     */
+    fun ordinary(outcome: String): Boolean = good(outcome) || outcome == "cancelled"
+
     /** Whether an outcome means the session ended as it should, which the screen shows as good news. */
     fun good(outcome: String): Boolean = outcome == "finished" || outcome == "stopped"
 

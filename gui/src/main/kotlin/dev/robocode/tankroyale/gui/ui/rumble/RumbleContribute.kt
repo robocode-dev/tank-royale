@@ -172,6 +172,8 @@ object RumbleContribute {
 
     /** A short notice at the lower right of the main window that goes away by itself; a click opens the screen. */
     private fun notice(message: String) {
+        // The open screen shows the same already, and a notice would only lie behind it.
+        if (dialog?.isVisible == true) return
         val window = JWindow(MainFrame as Window)
         val panel = JPanel(BorderLayout()).apply {
             border = BorderFactory.createCompoundBorder(

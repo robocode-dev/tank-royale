@@ -158,7 +158,7 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
         } else {
             val outcome = last.ended?.outcome.orEmpty()
             put(status(ContributeTexts.good(outcome), text(ContributeTexts.forOutcome(outcome))))
-            last.ended?.message?.takeIf { it.isNotBlank() && !ContributeTexts.good(outcome) }?.let { put(wrapped(text("rumble.contribute.details", it))) }
+            last.ended?.message?.takeIf { it.isNotBlank() && !ContributeTexts.ordinary(outcome) }?.let { put(wrapped(text("rumble.contribute.details", it))) }
             when (ContributeTexts.fixFor(outcome)) {
                 ContributeFix.ACCOUNT -> put(button("rumble.contribute.button.account") { RumbleAccountDialog.open() })
                 null -> Unit

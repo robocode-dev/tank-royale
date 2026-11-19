@@ -245,6 +245,10 @@ class RumbleContributeScreenTest {
         assertEquals(1, screen.done.size, "the notice is given once")
 
         // A session that ended while the program was closed is shown as a summary, without a notice of its own here.
+        // An ending the person asked for says all there is in its own text; a failure also shows the program's message.
+        assertTrue(listOf("finished", "stopped", "cancelled").all { ContributeTexts.ordinary(it) })
+        assertFalse(listOf("gave-up", "worker-unavailable", "failed").any { ContributeTexts.ordinary(it) })
+
         val later = Screen(FakePort(ownPid).apply { look = SessionLook.Ended(ended) })
         assertEquals(ended, (later.state as ContributeState.Choosing).last)
         assertTrue(later.done.isEmpty())
