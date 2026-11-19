@@ -346,7 +346,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "874cdb0df287cdbd47ab67a452605c3481d3bdec817cdeed3ec7e3f9fd2a2b02"
+          "sha256": "e76b1b8256ea4443d2ab977135562af2917f10581646963666f85ccbb9872ce1"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -1931,7 +1931,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
-          "sha256": "066a3ee935cbc86d2250b0421b177e9ce9b21401ea320360da7271c8553187ac"
+          "sha256": "565d79f666ada9b8341c56cdd5d17cc55b70485aeedabbf481b10c6a4b81b068"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
