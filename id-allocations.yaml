@@ -560,6 +560,11 @@ claims:
       state: reserved
       prefix: ARCH
       component: "29"
+    - id: BFD-001
+      kind: numeric
+      state: reserved
+      prefix: BFD
+      component: "1"
     - id: BR-001
       kind: numeric
       state: reserved
@@ -3166,6 +3171,11 @@ high-water:
       state: reserved
       prefix: ARCH
       component: "29"
+    - id: BR-002
+      kind: numeric
+      state: reserved
+      prefix: BR
+      component: "2"
     - id: C-004
       kind: numeric
       state: reserved
