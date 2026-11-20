@@ -560,6 +560,16 @@ claims:
       state: reserved
       prefix: ARCH
       component: "29"
+    - id: BR-001
+      kind: numeric
+      state: reserved
+      prefix: BR
+      component: "1"
+    - id: BR-002
+      kind: numeric
+      state: reserved
+      prefix: BR
+      component: "2"
     - id: C-001
       kind: numeric
       state: reserved
@@ -3141,11 +3151,11 @@ claims:
       prefix: UD
       component: "8"
 high-water:
-    - id: ADR-057
+    - id: ADR-058
       kind: numeric
       state: reserved
       prefix: ADR
-      component: "57"
+      component: "58"
     - id: AN-025
       kind: numeric
       state: reserved
