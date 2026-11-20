@@ -2855,6 +2855,11 @@ claims:
       state: reserved
       prefix: RCL
       component: "139"
+    - id: RCL-140
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "140"
     - id: RDA-001
       kind: numeric
       state: reserved
@@ -3206,6 +3211,11 @@ high-water:
       state: reserved
       prefix: G
       component: "4"
+    - id: GBP-001
+      kind: numeric
+      state: reserved
+      prefix: GBP
+      component: "1"
     - id: GTD-001
       kind: numeric
       state: reserved
