@@ -1,6 +1,6 @@
 ---
 cliewen-skill: true
-version: 0.33.0
+version: 0.33.1
 type: skill
 title: clue-verify
 name: clue-verify
