@@ -655,6 +655,11 @@ claims:
       state: reserved
       prefix: BFD
       component: "7"
+    - id: BFD-008
+      kind: numeric
+      state: reserved
+      prefix: BFD
+      component: "8"
     - id: BR-001
       kind: numeric
       state: reserved
@@ -4561,11 +4566,11 @@ high-water:
       state: reserved
       prefix: BFD
       component: "7"
-    - id: BR-049
+    - id: BR-051
       kind: numeric
       state: reserved
       prefix: BR
-      component: "49"
+      component: "51"
     - id: C-004
       kind: numeric
       state: reserved
