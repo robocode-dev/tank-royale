@@ -1145,6 +1145,11 @@ claims:
       state: reserved
       prefix: G
       component: "4"
+    - id: GBP-001
+      kind: numeric
+      state: reserved
+      prefix: GBP
+      component: "1"
     - id: GTD-001
       kind: numeric
       state: reserved
@@ -3171,6 +3176,11 @@ high-water:
       state: reserved
       prefix: ARCH
       component: "29"
+    - id: BFD-001
+      kind: numeric
+      state: reserved
+      prefix: BFD
+      component: "1"
     - id: BR-002
       kind: numeric
       state: reserved
