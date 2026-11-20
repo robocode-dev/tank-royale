@@ -1570,6 +1570,11 @@ claims:
       state: reserved
       prefix: GBP
       component: "9"
+    - id: GBP-010
+      kind: numeric
+      state: reserved
+      prefix: GBP
+      component: "10"
     - id: GTD-001
       kind: numeric
       state: reserved
@@ -4561,11 +4566,11 @@ high-water:
       state: reserved
       prefix: BAU
       component: "12"
-    - id: BFD-007
+    - id: BFD-008
       kind: numeric
       state: reserved
       prefix: BFD
-      component: "7"
+      component: "8"
     - id: BR-051
       kind: numeric
       state: reserved
