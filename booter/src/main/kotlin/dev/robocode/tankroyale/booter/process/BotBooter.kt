@@ -2,6 +2,8 @@ package dev.robocode.tankroyale.booter.process
 
 import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.util.Log
+import dev.robocode.tankroyale.common.util.TeamMemberMatch
+import dev.robocode.tankroyale.common.util.TeamMembers
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicLong
@@ -77,11 +79,14 @@ internal class BotBooter(
      * @return a map of started processes to their bot directories.
      */
     private fun bootTeam(bootDir: Path, team: Team, getBootEntry: (Path) -> BootEntry?): Map<Process, Path> {
-        val parentPath = bootDir.parent
         val result = HashMap<Process, Path>()
         try {
-            team.members.forEach { botName ->
-                bootTeamMember(parentPath, botName, team, getBootEntry, result)
+            team.members.forEach { entry ->
+                // A member is named by its folder or by its bot's name and version, found the one way the whole engine does.
+                when (val match = TeamMembers.find(bootDir, entry) { dir -> memberIdentity(dir, getBootEntry) }) {
+                    is TeamMemberMatch.Found -> bootTeamMember(match.folder, team, getBootEntry, result)
+                    else -> Log.error(TeamMembers.problem(bootDir, match).orEmpty(), bootDir)
+                }
             }
         } catch (ex: Exception) {
             Log.error(ex, bootDir)
@@ -89,14 +94,18 @@ internal class BotBooter(
         return result
     }
 
+    /** The name and version of the bot in [dir], read only when it has a bot file, so other folders cause no error. */
+    private fun memberIdentity(dir: Path, getBootEntry: (Path) -> BootEntry?): Pair<String, String>? {
+        if (!Files.isRegularFile(dir.resolve("${dir.fileName}.json"))) return null
+        return getBootEntry(dir)?.let { it.name to it.version }
+    }
+
     private fun bootTeamMember(
-        parentPath: Path,
-        botName: String,
+        botDir: Path,
         team: Team,
         getBootEntry: (Path) -> BootEntry?,
         result: MutableMap<Process, Path>
     ) {
-        val botDir = parentPath.resolve(botName)
         try {
             val process = bootBot(botDir, team, getBootEntry) ?: run {
                 Log.error("Failed to boot team member bot", botDir)

@@ -144,4 +144,41 @@ class BotIdentityReaderTest : FunSpec({
             }
         }
     }
+
+    context("GBP-010: members named by name and version") {
+        fun rumbleTeam(root: java.nio.file.Path): java.nio.file.Path {
+            for (name in listOf("Corners", "Crazy")) {
+                val dir = Files.createDirectories(root.resolve(name))
+                dir.resolve("$name.json").toFile().writeText("""{"name": "$name", "version": "1.0.0", "authors": ["A"]}""")
+            }
+            val team = Files.createDirectories(root.resolve("CornersCrazy"))
+            team.resolve("CornersCrazy.json").toFile().writeText(
+                """{"name": "CornersCrazy", "version": "1.0.0", "authors": ["A"], "teamMembers": ["Corners 1.0.0", "Crazy 1.0.0"]}"""
+            )
+            return team
+        }
+
+        test("testGBP010_UnitPositive_bootProgressWaitsForTheIdentitiesOfMembersNamedByNameAndVersion") {
+            val root = Files.createTempDirectory("gbp010-positive")
+            try {
+                BotIdentityReader.readIdentities(rumbleTeam(root)) shouldBe listOf(BotIdentity("Corners", "1.0.0"), BotIdentity("Crazy", "1.0.0"))
+            } finally {
+                root.toFile().deleteRecursively()
+            }
+        }
+
+        test("testGBP010_UnitNegative_aMemberFoundInTwoFoldersIsRefusedWithBothNamed") {
+            val root = Files.createTempDirectory("gbp010-negative")
+            try {
+                val team = rumbleTeam(root)
+                val copy = Files.createDirectories(root.resolve("CornersCopy"))
+                copy.resolve("CornersCopy.json").toFile().writeText("""{"name": "Corners", "version": "1.0.0", "authors": ["A"]}""")
+                val ex = shouldThrow<IllegalArgumentException> { BotIdentityReader.readIdentities(team) }
+                ex.message shouldContain "Corners 1.0.0"
+                ex.message shouldContain "CornersCopy"
+            } finally {
+                root.toFile().deleteRecursively()
+            }
+        }
+    }
 })

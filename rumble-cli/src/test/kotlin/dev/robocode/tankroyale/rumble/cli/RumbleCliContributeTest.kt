@@ -563,6 +563,37 @@ class RumbleCliContributeTest {
         assertTrue(receipt.contains(": accepted"), receipt)
     }
 
+    // RCL-140
+
+    @Test
+    @Tag("RCL-140")
+    @Tag("Positive")
+    fun testRCL140_IntegrationPositive_oneRealTwinDuelSessionRunsRumbleTeamsAndItsResultIsAccepted() {
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            System.getProperty("rumble.live.send") == "true",
+            "Set -Drumble.live.send=true, with a saved sign-in and registration for the test Rumble, to run one real TwinDuel session",
+        )
+        val out = ByteArrayOutputStream()
+        val io = Io(PrintStream(out, true, Charsets.UTF_8), PrintStream(ByteArrayOutputStream(), true, Charsets.UTF_8))
+
+        val code = RumbleCli.run(arrayOf("contribute", "-e", "test", "--battles", "1", "--format", "twinduel", "--json"), io)
+
+        val run = Run(code, out.toString(Charsets.UTF_8))
+        println(run.out)
+        assertEquals(ExitCodes.DONE, run.exit, run.out)
+        assertTrue(run.lines.any { it["event"]?.jsonPrimitive?.content == "battle-started" && it["gameType"]?.jsonPrimitive?.content == "twinduel" }, run.out)
+        assertTrue(run.events.contains("battle-kept"), run.out)
+        val issue = run.lines.first { it["event"]?.jsonPrimitive?.content == "batch-sent" }["issue"]!!.jsonPrimitive.content.toInt()
+        val api = dev.robocode.tankroyale.rumble.HttpGitHubApi()
+        val deadline = Instant.now().plus(Duration.ofMinutes(10))
+        var receipt = ""
+        while (Instant.now().isBefore(deadline) && !receipt.contains("Processed result batch")) {
+            Thread.sleep(15_000)
+            receipt = api.get("$data/issues/$issue/comments", null).body
+        }
+        assertTrue(receipt.contains(": accepted"), receipt)
+    }
+
     @Test
     @Tag("Negative")
     fun testRCI054_UnitNegative_aCtrlCWhilePythonIsSetUpIsAStopAndNotAnInstallFailure(@TempDir dir: Path) {

@@ -346,7 +346,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "e76b1b8256ea4443d2ab977135562af2917f10581646963666f85ccbb9872ce1"
+          "sha256": "900698343e30d21363607bdd10bc9bef2f3703ae0b8d12cf5a57ad2d8ee7f701"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -817,6 +817,13 @@
           "id": "RCL-134",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
           "subject": "RumbleCliContributeTest.testRCL134_IntegrationPositive_oneRealSessionRunsAPythonCatalogBotAndItsResultIsAccepted",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-140",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCL140_IntegrationPositive_oneRealTwinDuelSessionRunsRumbleTeamsAndItsResultIsAccepted",
           "type": "Integration",
           "direction": "positive"
         },

@@ -1,5 +1,9 @@
 package dev.robocode.tankroyale.runner.internal
 
+import dev.robocode.tankroyale.common.util.TeamMemberMatch
+import dev.robocode.tankroyale.common.util.TeamMembers
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.runner.BattleException
@@ -215,20 +219,40 @@ internal class BooterManager(
                 return // malformed JSON will be caught later by readBotIdentities
             }
             val teamMembers = json["teamMembers"]?.jsonArray ?: return
-            val parentDir = botDir.parent
             for (memberElement in teamMembers) {
                 val memberName = try {
                     memberElement.jsonPrimitive.content
                 } catch (_: Exception) {
                     continue
                 }
-                val memberDir = parentDir.resolve(memberName)
-                if (!memberDir.toFile().isDirectory) {
-                    throw BattleException(
-                        "Team member directory not found: $memberName (expected at $memberDir)"
-                    )
-                }
+                memberFolder(botDir, memberName)
             }
+        }
+
+        /**
+         * The folder of the team member [entry] of the team in [teamDir], found by its folder name or by its bot's name and
+         * version, the one way every part of the engine finds team members.
+         *
+         * @throws BattleException when no folder, or several, are the member
+         */
+        fun memberFolder(teamDir: Path, entry: String): Path =
+            when (val match = TeamMembers.find(teamDir, entry, ::folderIdentity)) {
+                is TeamMemberMatch.Found -> match.folder
+                else -> throw BattleException(TeamMembers.problem(teamDir, match).orEmpty())
+            }
+
+        /** The name and version of the bot in [dir] from its `<dir>/<dir>.json`, or null when it has none that can be read. */
+        private fun folderIdentity(dir: Path): Pair<String, String>? {
+            val file = dir.resolve("${dir.fileName}.json")
+            if (!file.exists()) return null
+            val obj = try {
+                Json.parseToJsonElement(file.toFile().readText()).jsonObject
+            } catch (_: Exception) {
+                return null
+            }
+            val name = (obj["name"] as? JsonPrimitive)?.contentOrNull ?: return null
+            val version = (obj["version"] as? JsonPrimitive)?.contentOrNull ?: return null
+            return name to version
         }
 
         /**
@@ -260,15 +284,14 @@ internal class BooterManager(
             // Team directory: expand teamMembers into individual identities
             val teamMembers = json["teamMembers"]?.jsonArray
             if (teamMembers != null) {
-                val parentDir = botDir.parent
                 return teamMembers.map { memberElement ->
                     val memberName = try {
                         memberElement.jsonPrimitive.content
                     } catch (e: Exception) {
                         throw BattleException("Malformed teamMembers entry in: $configFile", e)
                     }
-                    val memberDir = parentDir.resolve(memberName)
-                    val memberConfig = memberDir.resolve("$memberName.json")
+                    val memberDir = memberFolder(botDir, memberName)
+                    val memberConfig = memberDir.resolve("${memberDir.fileName}.json")
                     if (!memberConfig.exists()) {
                         throw BattleException(
                             "Team member configuration file not found: $memberConfig"

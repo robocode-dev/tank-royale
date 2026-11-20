@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.gui.booter
 
+import dev.robocode.tankroyale.common.util.TeamMemberMatch
+import dev.robocode.tankroyale.common.util.TeamMembers
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.nio.file.Files
@@ -34,10 +36,11 @@ object BotIdentityReader {
         return if (botJson.teamMembers != null) {
             // Team directory: expand to member identities
             botJson.teamMembers.map { memberDirName ->
-                val memberDir = botDir.parent?.resolve(memberDirName)
-                    ?: throw IllegalArgumentException(
-                        "Cannot resolve member directory '$memberDirName' relative to '$botDir'"
-                    )
+                // A member is named by its folder or by its bot's name and version, found the one way the whole engine does.
+                val memberDir = when (val match = TeamMembers.find(botDir, memberDirName, ::folderIdentity)) {
+                    is TeamMemberMatch.Found -> match.folder
+                    else -> throw IllegalArgumentException(TeamMembers.problem(botDir, match))
+                }
                 val memberJson = readBotJson(memberDir)
                 BotIdentity(
                     name = memberJson.name
@@ -56,6 +59,18 @@ object BotIdentityReader {
                 )
             )
         }
+    }
+
+    /** The name and version of the bot in [dir], or null when it has no bot file that can be read. */
+    private fun folderIdentity(dir: Path): Pair<String, String>? {
+        val botJson = try {
+            readBotJson(dir)
+        } catch (e: IllegalArgumentException) {
+            return null
+        }
+        val name = botJson.name ?: return null
+        val version = botJson.version ?: return null
+        return name to version
     }
 
     private fun readBotJson(dir: Path): BotJson {
