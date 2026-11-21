@@ -24,7 +24,7 @@ The change loop, the review boundary, and all process gates live in the corpus a
 
 ## Communication Standards
 
-- One-sentence response after completing a task — no summaries or rationale
+- Keep the response after a task short, with no rationale beyond what the maintainer needs; a tracked change's handoff follows the `clue-delta` skill (what changed, what was checked, what remains uncertain)
 - **NEVER create summary/documentation files** (`*_Fix.md`, `*_Summary.md`, etc.) unless asked
 - Temporary scripts must be cleaned up after the task; ask if they should be kept permanently
 - Brief explanation format: "Changed X in file Y because Z"

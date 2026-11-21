@@ -1,6 +1,6 @@
 # Documentation Standards
 
-<!-- KEYWORDS: docs, README, CHANGELOG.md, Javadoc, docstring, changelog, user-visible, mermaid, diagram, flowchart, sequence diagram -->
+<!-- KEYWORDS: docs, README, CHANGELOG.md, Javadoc, docstring, changelog, user-visible, public docs, web/docs, internal IDs, long dashes, em dash, mermaid, diagram, flowchart, sequence diagram -->
 
 ## When to Update
 
@@ -12,12 +12,19 @@ Update for user-visible changes: new features, breaking changes, behavior modifi
 - Module-specific `README.md` files
 - API docs: Javadoc (Java) · docstrings (Python) · XML comments (C#)
 
+## Public-Facing Writing
+
+These rules apply to everything an end user, contributor or outsider reads: `web/docs/`, README files, `CONTRIBUTING.md`, `CHANGELOG.md`, release notes, GitHub issues and comments, and GUI texts. They do not apply to the internal corpus under `docs/` and `changes/`.
+
+- **No internal corpus identifiers.** Never write acceptance-criterion, change, decision, capability, plan, milestone or goal identifiers (for example `BR-049`, `CH-033`, `ADR-058`, `CAP-016`, `P-003`, `M-009`, `G-001`) in public-facing text. End users cannot know what they mean. Describe what the identifier stands for in plain language instead, even when that is a little longer. Before finishing, search the changed public files for ID-shaped tokens (`[A-Z]{2,5}-\d+`) and rewrite every hit.
+- **No long dashes.** Do not use the em dash (`—`) or en dash (`–`) in new public-facing text. Use a hyphen, comma, colon, parentheses, or two sentences. For a bold lead-in in a list item, write `**Term.** Sentence follows.` Before finishing, search the changed lines for `[—–]` and remove the ones you introduced. Long dashes are fine in corpus artifacts under `docs/` and `changes/`, where titles and index rows use them structurally.
+
 ## CHANGELOG.md Format
 
 Follows [Keep a Changelog](https://keepachangelog.com/) with project-specific emoji sub-sections.
 
 ```markdown
-## [X.Y.Z] - YYYY-MM-DD – Release Title
+## [X.Y.Z] - YYYY-MM-DD - Release Title
 
 ### ✨ Features
 - ...
