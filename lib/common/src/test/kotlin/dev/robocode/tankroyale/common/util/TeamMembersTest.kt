@@ -76,6 +76,9 @@ class TeamMembersTest : FunSpec({
             TeamMembers.problem(team, TeamMemberMatch.NotFound("Nobody 1.0.0")).orEmpty() shouldContain "Nobody 1.0.0"
             // The team itself and folders outside the team's own folder are never members.
             TeamMembers.find(team, "Pair 1.0.0", ::identity) shouldBe TeamMemberMatch.NotFound("Pair 1.0.0")
+            TeamMembers.find(team, "Pair", ::identity) shouldBe TeamMemberMatch.NotFound("Pair")
+            // A path inside the entry never reaches a folder, also not one beside the team.
+            TeamMembers.find(team, "NoFile/.", ::identity) shouldBe TeamMemberMatch.NotFound("NoFile/.")
             Files.createDirectories(root.parent.resolve("outside-${root.fileName}"))
             TeamMembers.find(team, "../outside-${root.fileName}", ::identity).shouldBeInstanceOf<TeamMemberMatch.NotFound>()
             root.parent.resolve("outside-${root.fileName}").toFile().deleteRecursively()

@@ -35,10 +35,11 @@ object TeamMembers {
      * 3. Otherwise no folder, or several, match, and nothing is guessed.
      */
     fun find(teamFolder: Path, entry: String, identityOf: (Path) -> Pair<String, String>?): TeamMemberMatch {
-        val parent = teamFolder.toAbsolutePath().normalize().parent ?: return TeamMemberMatch.NotFound(entry)
-        exactFolder(parent, entry)?.let { return TeamMemberMatch.Found(it) }
-
         val self = teamFolder.toAbsolutePath().normalize()
+        val parent = self.parent ?: return TeamMemberMatch.NotFound(entry)
+        // The team's own folder is never one of its members, by its folder name or by its identity.
+        exactFolder(parent, entry)?.takeIf { it != self }?.let { return TeamMemberMatch.Found(it) }
+
         val siblings = try {
             Files.list(parent).use { paths -> paths.iterator().asSequence().filter { Files.isDirectory(it) && it.normalize() != self }.sorted().toList() }
         } catch (e: IOException) {
@@ -78,7 +79,8 @@ object TeamMembers {
             return null
         }
         // Only a folder directly beside the team counts, never one reached through a path inside the entry.
-        if (candidate.normalize().parent != parent.normalize()) return null
-        return candidate.takeIf { Files.isDirectory(it) }
+        val folder = candidate.normalize()
+        if (folder.parent != parent.normalize() || folder.fileName.toString() != entry) return null
+        return folder.takeIf { Files.isDirectory(it) }
     }
 }
