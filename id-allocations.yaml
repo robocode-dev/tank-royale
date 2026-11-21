@@ -1585,6 +1585,11 @@ claims:
       state: reserved
       prefix: GTD
       component: "2"
+    - id: GTD-003
+      kind: numeric
+      state: reserved
+      prefix: GTD
+      component: "3"
     - id: HIST-001
       kind: numeric
       state: reserved
@@ -4611,11 +4616,11 @@ high-water:
       state: reserved
       prefix: GBP
       component: "10"
-    - id: GTD-001
+    - id: GTD-002
       kind: numeric
       state: reserved
       prefix: GTD
-      component: "1"
+      component: "2"
     - id: HIST-001
       kind: numeric
       state: reserved
