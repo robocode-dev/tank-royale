@@ -80,7 +80,8 @@ object TeamMembers {
         }
         // Only a folder directly beside the team counts, never one reached through a path inside the entry.
         val folder = candidate.normalize()
-        if (folder.parent != parent.normalize() || folder.fileName.toString() != entry) return null
+        // A trailing separator, as in a hand-written `Corners/`, still names the folder `Corners`.
+        if (folder.parent != parent.normalize() || folder.fileName.toString() != entry.trimEnd('/', '\\')) return null
         return folder.takeIf { Files.isDirectory(it) }
     }
 }

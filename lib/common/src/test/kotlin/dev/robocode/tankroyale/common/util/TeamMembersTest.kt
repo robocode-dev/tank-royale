@@ -47,6 +47,7 @@ class TeamMembersTest : FunSpec({
             bot(root, "Crazy", "Crazy")
 
             TeamMembers.find(team, "Corners", ::identity) shouldBe TeamMemberMatch.Found(corners.toAbsolutePath().normalize())
+            TeamMembers.find(team, "Corners/", ::identity) shouldBe TeamMemberMatch.Found(corners.toAbsolutePath().normalize())
             TeamMembers.find(team, "Corners 1.0.0", ::identity) shouldBe TeamMemberMatch.Found(corners)
             TeamMembers.find(team, "My Bot 2.1", ::identity) shouldBe TeamMemberMatch.Found(spaced)
             TeamMembers.find(team, "Crazy 1.0.0", ::identity) shouldBe TeamMemberMatch.Found(exact.toAbsolutePath().normalize())
