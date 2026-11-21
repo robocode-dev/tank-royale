@@ -15,6 +15,12 @@ files as UTF-8 by default. Write non-ASCII characters directly (e.g. `å`, `ö`,
 `\uXXXX` escape sequences for readable text. The `\uXXXX` syntax is still valid for symbols and emoji
 (e.g. `\u2192` for →, `\uD83D\uDC1B` for 🐛) where the raw character would be harder to read.
 
+### Converting a file to UTF-8
+
+- Read the file in its **actual** encoding (for example ISO-8859-1 or Windows-1252) and write it as UTF-8. Never let a tool replace characters it cannot read: that turns every non-ASCII letter into the replacement character U+FFFD, shown as a question mark in a box, and the original letter is lost.
+- Afterwards, check that the file holds no U+FFFD and that the letters look right in the diff (`æ`, `ø`, `å`, `é`, `ñ` and so on).
+- The desktop program's `ResourceTextEncodingTest` fails when one of its `.properties` files is not UTF-8 or holds U+FFFD.
+
 ## File Handling
 
 - Strip terminal sequences from output before writing to files
