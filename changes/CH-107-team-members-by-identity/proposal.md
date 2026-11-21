@@ -55,4 +55,11 @@ The change, the decision and the criteria were allocated with the repository's c
 
 ## Human evidence
 
-The maintainer starts a Rumble team downloaded with Download bots in New Battle, and sees a contribution session in the test Rumble run a TwinDuel battle with Rumble teams whose result is accepted.
+On 2026-11-20 and 2026-11-21 the maintainer tried Rumble teams downloaded with Download bots in New Battle on Windows, with the desktop program built from this change.
+
+- With the game type TwinDuel, the maintainer started the teams RetconTwins and OrbitVector from the `rumble-bots` folder: all four members started and joined, each listed with its team (Retcon 0.2.0 twice as RetconTwins, Orbit 1.0.0 and Vector 1.0.0 as OrbitVector), and the bot information showed each team's members as `Retcon 0.2.0, Retcon 0.2.0`. Before the change these teams could not start at all.
+- Start Battle then stayed off, because New Battle counted each team as one participant against the four TwinDuel places; after that was changed, Start Battle was on, but the battle did not start, because the desktop program's own server was started without the TwinDuel game type and refused it. Both were fixed in this change and proven by unit tests.
+
+A real contribution session in the test Rumble ran a TwinDuel battle of the Rumble teams CornersCrazy and OrbitVector through the command line, kept it and sent it as issue 32, which the receiving workflow accepted; this was run by the agent through the change's integration test, not watched by the maintainer.
+
+Not observed: a TwinDuel battle actually running in New Battle after the last fix, since the maintainer has not started the desktop program again since; and the contribution session's TwinDuel battle seen by the maintainer.
