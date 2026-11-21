@@ -1708,6 +1708,8 @@ events:
     - {id: GTD-002, kind: numeric, state: live, prefix: GTD, component: "2"}
     - {id: GTD-003, kind: numeric, state: reserved, prefix: GTD, component: "3"}
     - {id: GTD-003, kind: numeric, state: live, prefix: GTD, component: "3"}
+    - {id: CH-107, kind: numeric, state: retired, prefix: CH, component: "107"}
+    - {id: CH-107-tasks, kind: opaque, state: retired}
 high-water:
     - {id: ADR-047, kind: numeric, state: reserved, prefix: ADR, component: "47"}
     - {id: AN-001, kind: numeric, state: reserved, prefix: AN, component: "1"}
