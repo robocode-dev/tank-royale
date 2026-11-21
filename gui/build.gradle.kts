@@ -42,6 +42,7 @@ dependencies {
 
     testImplementation(platform(testLibs.junit.bom))
     testImplementation(testLibs.kotest.junit6)
+    testImplementation(testLibs.bundles.junit)
 }
 
 // The desktop program calls the shared Rumble libraries in its own process and never depends on the Rumble command

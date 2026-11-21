@@ -14,3 +14,4 @@ title: Find team members by folder or by name and version everywhere
 - [x] Search every module for other readers of `teamMembers` and use the function there too.
 - [x] Run a real contribution session with TwinDuel in the test Rumble (RCL-140).
 - [x] Prove each criterion in both directions, and update the designs, the decision index and the plan item.
+- [x] Count every bot as a participant in New Battle, as the server does (GTD-002).

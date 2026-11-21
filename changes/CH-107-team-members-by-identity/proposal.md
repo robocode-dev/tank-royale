@@ -2,7 +2,7 @@
 id: CH-107
 type: change
 status: open
-links: [P-007, CAP-001, CAP-002, CAP-004, CAP-016, ADR-058, ADR-047]
+links: [P-007, CAP-001, CAP-002, CAP-004, CAP-016, CAP-017, ADR-058, ADR-047]
 title: Find a team's members by their folder or by their name and version, the same way everywhere, so Rumble teams boot
 ---
 
@@ -21,6 +21,7 @@ Without it no Rumble team boots anywhere, so TwinDuel cannot be ranked by any co
 - **The battle runner's check** of a team folder and **its list of expected identities** use it, and its error names the entry and the folders.
 - **The booter** starts each member from the folder the function finds, and logs a member it cannot find with the same reason.
 - **The desktop program's boot progress** reads the identities it waits for through it.
+- **New Battle counts every bot as a participant**, also a team's members, as the server does. It counted each team as one participant, so two teams of two bots never filled the four TwinDuel places and Start Battle stayed off; this was found when the maintainer tried two Rumble teams in New Battle. The desktop program's tests now also run its JUnit tests: until now only its Kotest specs ran, so the existing TwinDuel preset tests had never run.
 - **A contribution session** needs no change of its own: its team and members already lie side by side in the bot cache, each checked against the catalog's hash.
 
 ## Challenge
@@ -43,6 +44,7 @@ Test class Unit unless stated.
 - **BR-051: The shared rule follows the decision exactly**: exact folder first, whole-text identity match without splitting, a bot without a bot file only by folder, and an error naming the entry and every matching folder.
 - **BFD-008: The booter starts a member named by name and version** from the folder the rule finds, and logs one it cannot find with the reason.
 - **GBP-010: The desktop program's boot progress waits for the identities of members named by name and version.**
+- **GTD-002: Two teams of two bots fill the four TwinDuel places in New Battle**, and fewer or more bots cannot start it.
 - **RCL-140: A contribution session's TwinDuel battle with Rumble teams runs and its result is accepted** in the test Rumble. (Integration, needs the saved sign-in; skipped without it.)
 
 ## Identity allocation
