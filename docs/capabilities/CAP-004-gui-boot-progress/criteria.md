@@ -81,4 +81,12 @@ Feature: gui-boot-progress — TBD - created by archiving change add-gui-boot-pr
     When a battle is started on an external server that has pre-existing bots
     Then the progress dialog SHALL only track bots that were booted for this battle
     And pre-existing bots SHALL NOT appear in the progress display
+
+  @GBP-010
+  Scenario: Boot progress waits for members named by name and version
+    Test-type: Unit
+    Given a team whose `teamMembers` name its members as `<name> <version>`
+    When the boot progress reads the identities it waits for
+    Then it SHALL expect the identities of the bots in the folders the shared rule finds
+    And a member that more than one folder holds SHALL be reported with every such folder named instead of being guessed
 ```

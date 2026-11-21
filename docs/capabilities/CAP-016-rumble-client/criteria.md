@@ -1150,4 +1150,11 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the maintainer's saved sign-in and registration for the test Rumble and the desktop program with the developer switch on
     When the maintainer starts a session from the Contribute battles screen, pauses and resumes it, closes the desktop program to keep contributing, opens it again, stops the session, and once more closes the desktop program choosing to stop
     Then the screen finds the session again after the restart, the result is accepted by the receiving workflow, and the session started the second time ends after its battle when the desktop program closes
+
+  @RCL-140
+  Scenario: One real TwinDuel session in the test Rumble runs Rumble teams and its result is accepted
+    Test-type: Integration
+    Given the maintainer's saved sign-in and registration for the test Rumble, whose teams name their members as `<name> <version>`
+    When `rumble contribute -e test --battles 1 --format twinduel` runs
+    Then a TwinDuel battle of two catalog teams is kept and sent, and the receiving workflow accepts it by its own receipt line
 ```

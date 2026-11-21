@@ -45,4 +45,70 @@ class GameTypeDropdownTest {
             GameType.from("twin-duel")
         }
     }
+
+    private fun member(name: String, team: String, teamId: Int, port: Int) = dev.robocode.tankroyale.client.model.BotInfo(
+        name = name, version = "1.0.0", authors = listOf("A"), countryCodes = emptyList(), gameTypes = setOf("twinduel"),
+        teamId = teamId, teamName = team, teamVersion = "1.0.0", host = "localhost", port = port,
+    )
+
+    private fun twinDuelStartable(bots: List<dev.robocode.tankroyale.client.model.BotInfo>): Boolean {
+        val setup = GamesSettings.games["twinduel"] ?: error("TwinDuel must have a game setup")
+        return BattleParticipants.startable(bots, setup.minNumberOfParticipants, setup.maxNumberOfParticipants)
+    }
+
+    @Test
+    @Tag("GTD-002")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testGTD002_UnitPositive_twoTeamsOfTwoBotsFillTheFourTwinDuelPlaces() {
+        val teams = listOf(
+            member("Corners", "CornersCrazy", 1, 1), member("Crazy", "CornersCrazy", 1, 2),
+            member("Retcon", "RetconTwins", 2, 3), member("Retcon", "RetconTwins", 2, 4),
+        )
+
+        assertEquals(4, BattleParticipants.count(teams))
+        assertTrue(twinDuelStartable(teams))
+    }
+
+    @Test
+    @Tag("GTD-002")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testGTD002_UnitNegative_fewerOrMoreThanFourBotsCannotStartATwinDuel() {
+        val two = listOf(member("Corners", "CornersCrazy", 1, 1), member("Crazy", "CornersCrazy", 1, 2))
+        val six = two + listOf(
+            member("Retcon", "RetconTwins", 2, 3), member("Retcon", "RetconTwins", 2, 4),
+            member("Orbit", "OrbitVector", 3, 5), member("Vector", "OrbitVector", 3, 6),
+        )
+
+        org.junit.jupiter.api.Assertions.assertFalse(twinDuelStartable(two))
+        org.junit.jupiter.api.Assertions.assertFalse(twinDuelStartable(six))
+    }
+
+    @Test
+    @Tag("GTD-003")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testGTD003_UnitPositive_theLocalServerAcceptsEveryGameTypeNewBattleOffers() {
+        val accepted = GameType.serverGamesArgument().split(",").toSet()
+        var offered = emptyList<String>()
+        SwingUtilities.invokeAndWait {
+            val dropdown = GameTypeDropdown()
+            offered = (0 until dropdown.itemCount).map(dropdown::getItemAt)
+        }
+
+        assertTrue("twinduel" in accepted)
+        assertTrue(accepted.containsAll(offered), "offered $offered, accepted $accepted")
+    }
+
+    @Test
+    @Tag("GTD-003")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testGTD003_UnitNegative_theLocalServerIsGivenNoGameTypeThatIsNotKnown() {
+        val accepted = GameType.serverGamesArgument().split(",")
+
+        assertEquals(accepted.distinct(), accepted, "no game type is given twice")
+        assertTrue(accepted.all { name -> GameType.entries.any { it.displayName == name } }, "only known game types: $accepted")
+    }
 }

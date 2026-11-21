@@ -69,4 +69,12 @@ Feature: booter-fallback-discovery — TBD - created by change support-bot-disco
     When a maintainer inspects every maintained sample-bot configuration
     Then each configuration SHALL declare an SPDX `license` identifier
     And every maintained bot-configuration example and guide SHALL show the field
+
+  @BFD-008
+  Scenario: The booter starts team members named by name and version
+    Test-type: Unit
+    Given a team whose `teamMembers` name members by folder or as `<name> <version>`
+    When the booter boots the team
+    Then it SHALL start each member from the folder the shared rule finds
+    And a member that no folder, or more than one folder, holds SHALL NOT be started and SHALL be logged with the reason, while the other members still start
 ```

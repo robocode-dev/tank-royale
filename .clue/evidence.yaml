@@ -262,11 +262,11 @@
         },
         {
           "path": "gui/build.gradle.kts",
-          "sha256": "c18269a38dc7da9fd2dad7df4eb5134a8fd5614b037f2731c17b23e86d2ac730"
+          "sha256": "fce99fea58207af81b0134aefbf885d87608d65137efcb919fd93d013f65e046"
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
-          "sha256": "857364790d703e1c25edc35e27e1565403d912a6bebfc95315e6095993b6f10a"
+          "sha256": "091c23d4841917addca468d4ab4380cbe89917717b11fa6998f94c5a09e3e2c1"
         }
       ],
       "references": [
@@ -281,6 +281,34 @@
           "id": "GTD-001",
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
           "subject": "GameTypeDropdownTest.testGTD001_UnitPositive_twinDuelIsSelectableWithTheCommonPreset",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "GTD-002",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD002_UnitNegative_fewerOrMoreThanFourBotsCannotStartATwinDuel",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "GTD-002",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD002_UnitPositive_twoTeamsOfTwoBotsFillTheFourTwinDuelPlaces",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "GTD-003",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD003_UnitNegative_theLocalServerIsGivenNoGameTypeThatIsNotKnown",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "GTD-003",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD003_UnitPositive_theLocalServerAcceptsEveryGameTypeNewBattleOffers",
           "type": "Unit",
           "direction": "positive"
         }
@@ -346,7 +374,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "e76b1b8256ea4443d2ab977135562af2917f10581646963666f85ccbb9872ce1"
+          "sha256": "900698343e30d21363607bdd10bc9bef2f3703ae0b8d12cf5a57ad2d8ee7f701"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -817,6 +845,13 @@
           "id": "RCL-134",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
           "subject": "RumbleCliContributeTest.testRCL134_IntegrationPositive_oneRealSessionRunsAPythonCatalogBotAndItsResultIsAccepted",
+          "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-140",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCL140_IntegrationPositive_oneRealTwinDuelSessionRunsRumbleTeamsAndItsResultIsAccepted",
           "type": "Integration",
           "direction": "positive"
         },

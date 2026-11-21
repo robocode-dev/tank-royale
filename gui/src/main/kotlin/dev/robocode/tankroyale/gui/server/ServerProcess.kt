@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.server
 
+import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
@@ -45,7 +46,7 @@ object ServerProcess {
                 "-jar",
                 getServerJar(),
                 "--port=${localPort}",
-                "--games=classic,melee,1v1",
+                "--games=${GameType.serverGamesArgument()}",
                 "--tps=${ConfigSettings.tps}",
                 "--controller-secrets=${controllerSecrets.joinToString(",")}",
                 "--bot-secrets=${botSecrets.joinToString(",")}"

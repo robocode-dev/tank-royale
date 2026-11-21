@@ -92,7 +92,7 @@ class BooterManagerTest {
         assertThatThrownBy { BooterManager.validateBotDir(teamDir) }
             .isInstanceOf(BattleException::class.java)
             .hasMessageContaining("MissingBot")
-            .hasMessageContaining("Team member directory not found")
+            .hasMessageContaining("Team member not found")
     }
 
     @Tag("Unit")
@@ -235,5 +235,52 @@ class BooterManagerTest {
         assertThatThrownBy { BooterManager.readBotIdentities(teamDir) }
             .isInstanceOf(BattleException::class.java)
             .hasMessageContaining("not found")
+    }
+
+    // BR-050: a team that names its members by name and version, as the Rumble writes them
+
+    private fun rumbleTeam(): Path {
+        createBotDir(tempDir, "Corners", "Corners", "1.0.0", "Author")
+        createBotDir(tempDir, "Crazy", "Crazy", "1.0.0", "Author")
+        val teamDir = tempDir.resolve("CornersCrazy").createDirectory()
+        teamDir.resolve("CornersCrazy.json").writeText(
+            """{"name":"CornersCrazy","version":"1.0.0","authors":"Author","teamMembers":["Corners 1.0.0","Crazy 1.0.0"]}"""
+        )
+        return teamDir
+    }
+
+    @Test
+    @Tag("BR-050")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testBR050_UnitPositive_aTeamThatNamesItsMembersByNameAndVersionIsAcceptedAndExpandedToThem() {
+        val teamDir = rumbleTeam()
+
+        BooterManager.validateBotDir(teamDir)
+
+        assertThat(BooterManager.readBotIdentities(teamDir))
+            .containsExactly(BotIdentity("Corners", "1.0.0", "Author"), BotIdentity("Crazy", "1.0.0", "Author"))
+    }
+
+    @Test
+    @Tag("BR-050")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testBR050_UnitNegative_aMemberFoundInTwoFoldersOrInNoneRefusesTheTeamAndSaysWhich() {
+        val teamDir = rumbleTeam()
+        createBotDir(tempDir, "CornersCopy", "Corners", "1.0.0", "Author")
+
+        for (check in listOf<(Path) -> Unit>({ BooterManager.validateBotDir(it) }, { BooterManager.readBotIdentities(it) })) {
+            assertThatThrownBy { check(teamDir) }
+                .isInstanceOf(BattleException::class.java)
+                .hasMessageContaining("Corners 1.0.0")
+                .hasMessageContaining("CornersCopy")
+        }
+
+        val lonely = tempDir.resolve("Lonely").createDirectory()
+        lonely.resolve("Lonely.json").writeText("""{"name":"Lonely","version":"1.0","authors":"Author","teamMembers":["Nobody 9.9"]}""")
+        assertThatThrownBy { BooterManager.readBotIdentities(lonely) }
+            .isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("Nobody 9.9")
     }
 }

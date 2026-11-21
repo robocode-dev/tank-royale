@@ -372,4 +372,24 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     Then both handshakes SHALL advertise the same behavior version
     And the advertised value SHALL equal the expected version before the Runner starts any requested bot process
     And a missing, inconsistent, or mismatched value SHALL fail the battle with a descriptive `BattleException`
+
+  # Requirement: Team Members by Folder or by Name and Version
+  # A team names each member by its folder or by its bot's name and version, and the Runner finds it by the one shared rule.
+
+  @BR-050
+  Scenario: A team that names its members by name and version is checked and expanded to them
+    Test-type: Unit
+    Given a team directory whose `teamMembers` name its members as `<name> <version>`, such as `Corners 1.0.0`, beside folders named `Corners` and `Crazy`
+    When a battle is started with it
+    Then the Runner SHALL accept the team and expect the identities of the bots in those folders, in the team's order
+    And a member that no folder, or more than one folder, holds SHALL fail the battle with a `BattleException` naming the member and every folder that holds it
+
+  @BR-051
+  Scenario: The shared rule finds a team member by its folder first, else by its whole name and version
+    Test-type: Unit
+    Given a team folder and the folders beside it
+    When a member entry is looked up
+    Then a folder beside the team with exactly the entry's name SHALL be the member
+    And otherwise the one folder beside it whose bot's name and version, joined by one space, equal the whole entry SHALL be the member, without splitting or trimming the entry
+    And a folder without a bot file SHALL be found only by its name, the team's own folder and folders outside the team's parent SHALL never be members, and no match or several SHALL name no member and say which
 ```
