@@ -5,19 +5,30 @@ title: Tank Royale agent instructions
 
 # Tank Royale — AI Agent Instructions
 
+## Critical rules
+
+1. Before your first tool call, run `clue latest --quiet`. If it reports that this repository is behind, ask whether to run the coordinated `clue-upgrade` workflow.
+2. Before editing, recommend `direct` when the accepted contract remains unchanged, or `tracked` when acceptance-criterion, capability, decision, policy, plan-promise, methodology, or uncovered-behavior meaning changes. Paths and diff size never decide the route. See [Choosing the route](#choosing-the-route).
+3. Never push a change branch, open a PR, or push accepted `main` unless the maintainer explicitly requests that action. Direct work requires explicit per-change integration/push authority, and authorized direct pushes carry an `Authorized-Push:` trailer naming it.
+4. A tracked change reaches `main` only through exact-candidate local human acceptance under `clue accept`. Agents may execute only the human's explicitly recorded approval bound to the candidate, base and complete brief. The [human integration boundary](docs/constraints/C-002-review-boundary.md) applies, and `.clue/acceptance.yaml` selects local acceptance on `main`.
+5. `clue validate` judges the corpus. Markdown prose is never hard-wrapped (one line per paragraph).
+6. Releases are repository-owned administrative work, not a Cliewen route. A release must provide clear end-user value. Corrective releases for defects, security, compatibility, or urgent operational problems may ship without a new user-facing capability. Never release solely to unblock internal or downstream development; use local builds until a value-bearing or corrective release is warranted.
+
 ## System of record
 
-**Start at [`docs/README.md`](docs/README.md)** — the corpus is the permanent truth about this system (Cliewen conventions since CH-001; see [AN-001](docs/analysis/AN-001-openspec-extraction.md)). Requirements live as Gherkin acceptance criteria under `docs/capabilities/*/criteria.md`. Before editing, recommend `direct` when the accepted contract remains unchanged or `tracked` when acceptance-criterion, capability, decision, policy, plan-promise, methodology, or uncovered-behavior meaning changes; paths and diff size never decide the route. Direct work uses no Cliewen workspace; chosen tracked work runs the change loop (`clue-delta` skill): branch → `/changes/CH-xxx-slug/` proposal → implement → digest → verified local acceptance brief. Reassess when semantic scope grows, and if the user declines a tracked recommendation, record the route, recommendation, and risk in the final commit trailers. `clue validate` judges the corpus; markdown prose is never hard-wrapped (one line per paragraph). A tracked change reaches `main` only through exact-candidate local human acceptance under `clue accept`; agents may execute only the human's explicitly recorded approval bound to the candidate, base and complete brief. Direct work requires explicit per-change integration/push authority; authorized direct pushes carry an `Authorized-Push:` trailer naming it. The [human integration boundary](docs/constraints/C-002-review-boundary.md) applies; `.clue/acceptance.yaml` selects local acceptance on `main`. Do not push a change branch, open a PR, or push accepted `main` unless the maintainer explicitly requests that action; coordinated identity reservations remain separate from publishing the change.
+**Start at [`docs/README.md`](docs/README.md)**: the corpus is the permanent truth about this system (Cliewen conventions since CH-001; see [AN-001](docs/analysis/AN-001-openspec-extraction.md)). Requirements live as Gherkin acceptance criteria under `docs/capabilities/*/criteria.md`.
 
-For local acceptance, `proposal.md` uses the canonical change identity in frontmatter (`id: CH-xxx`, `type: change`, `status: open`); task and question files use suffixed identities. This repository-specific header rule takes precedence over the generated skill's proposal suffix convention because `clue accept` checks the historical proposal for the canonical change identity. Commit that proposal before implementation and retain its history after digest.
+AC IDs are namespaced per capability via `ac-prefix` frontmatter (registry in `docs/README.md`); the corpus is the registry, IDs are meaning-immutable. Test purpose tags (every test carries exactly one AC ID or Unit/Sanity/Arch tag) are being introduced capability by capability, see P-001/M-002. Extracted criteria sit at `status: draft` until their tests are wired.
 
 Write the meaning of referenced goals, decisions, criteria, and rules in the sentence itself; use descriptive links for optional detail and keep IDs secondary.
 
-Before your first tool call, run `clue latest --quiet`; if it reports that this repository is behind, ask whether to run the coordinated `clue-upgrade` workflow. Releases are repository-owned administrative work, not a Cliewen route. A release must provide clear end-user value; corrective releases for defects, security, compatibility, or urgent operational problems may ship without a new user-facing capability. Never release solely to unblock internal or downstream development; use local builds until a value-bearing or corrective release is warranted.
+## Choosing the route
 
-AC IDs are namespaced per capability via `ac-prefix` frontmatter (registry in `docs/README.md`); the corpus is the registry, IDs are meaning-immutable. Test purpose tags (every test carries exactly one AC ID or Unit/Sanity/Arch tag) are being introduced capability by capability — see P-001/M-002; extracted criteria sit at `status: draft` until their tests are wired.
+Direct work uses no Cliewen workspace. Chosen tracked work runs the change loop (`clue-delta` skill): branch → `/changes/CH-xxx-slug/` proposal → implement → digest → verified local acceptance brief. Reassess when semantic scope grows, and if the user declines a tracked recommendation, record the route, recommendation, and risk in the final commit trailers. Coordinated identity reservations remain separate from publishing the change.
 
-## Repo-local conventions
+For local acceptance, `proposal.md` uses the canonical change identity in frontmatter (`id: CH-xxx`, `type: change`, `status: open`); task and question files use suffixed identities. This repository-specific header rule takes precedence over the generated skill's proposal suffix convention because `clue accept` checks the historical proposal for the canonical change identity. Commit that proposal before implementation and retain its history after digest.
+
+## Task-specific instructions
 
 Load the file(s) matching your task type before starting work:
 
@@ -33,22 +44,22 @@ Load the file(s) matching your task type before starting work:
 | File encoding, UTF-8 | `.agents/instructions/standards.md` |
 | Product facts, clean-code baseline | `.agents/instructions/core-principles.md` |
 
-## GitHub PR descriptions
-
-When creating or updating pull requests through the GitHub API or CLI, send real newline characters in the Markdown body; never send literal `\n` escape sequences. Prefer a real multiline body or `--body-file`, and inspect the stored body before considering the PR description complete.
-
 ## Skills
 
 Reusable task instructions live in `.agents/skills/`. When the user runs a slash command, read the skill file and follow it exactly.
 
 | Skill | Purpose |
 |---|---|
-| `clue-delta` | The change loop — use for every tracked change |
+| `clue-delta` | The change loop, use for every tracked change |
 | `clue-plan` | Create or revise a plan with verifiable milestones |
-| `clue-analysis` | Spikes and findings — every analysis ends in a `docs/analysis` document |
+| `clue-analysis` | Spikes and findings, every analysis ends in a `docs/analysis` document |
 | `clue-verify` | Pre-acceptance verification and bounded agentic review, alongside `clue validate` |
 | `clue-extract` | Brownfield adoption (already executed here as CH-001) |
 | `/release` · `/update-deps` · `/deploy-sample-bots [dir]` · `/structurizr` | Release, dependency, sample-bot, and diagram workflows |
+
+## GitHub PR descriptions
+
+When creating or updating pull requests through the GitHub API or CLI, send real newline characters in the Markdown body; never send literal `\n` escape sequences. Prefer a real multiline body or `--body-file`, and inspect the stored body before considering the PR description complete.
 
 <!-- CODEGRAPH_START -->
 ## CodeGraph
