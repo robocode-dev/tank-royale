@@ -20,7 +20,7 @@ All architecture docs in [`docs/architecture/`](../../docs/architecture/README.m
 
 ## Creating New ADRs
 
-See [`docs/decisions/README.md`](../../docs/decisions/README.md) for format, numbering, and status vocabulary. New ADRs are born inside a change (`/changes/CH-xxx/`, `clue-delta` skill) with `status: inferred`; the human-merged PR is the review gate (constraint [C-002](../../docs/constraints/C-002-review-boundary.md)), and a human promotes to `verified` by adding `accepted-by`. Keep ADRs product-centered — no tooling or process ADRs.
+See [`docs/decisions/README.md`](../../docs/decisions/README.md) for format, numbering, and status vocabulary. New ADRs are born inside a change (`/changes/CH-xxx/`, `clue-delta` skill) with `status: inferred`; the maintainer's local acceptance of the exact candidate with `clue accept` is the review gate ([human integration boundary](../../docs/constraints/C-002-review-boundary.md)), and a human promotes to `verified` by adding `accepted-by`. Keep ADRs product-centered — no tooling or process ADRs.
 
 ## Relationship to Capabilities
 
