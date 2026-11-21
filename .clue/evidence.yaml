@@ -266,7 +266,7 @@
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
-          "sha256": "c91aac73ededaed65776170a0531bfbeb405b960bc4a8b116de97bd8f2e31877"
+          "sha256": "091c23d4841917addca468d4ab4380cbe89917717b11fa6998f94c5a09e3e2c1"
         }
       ],
       "references": [
@@ -295,6 +295,20 @@
           "id": "GTD-002",
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
           "subject": "GameTypeDropdownTest.testGTD002_UnitPositive_twoTeamsOfTwoBotsFillTheFourTwinDuelPlaces",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "GTD-003",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD003_UnitNegative_theLocalServerIsGivenNoGameTypeThatIsNotKnown",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "GTD-003",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+          "subject": "GameTypeDropdownTest.testGTD003_UnitPositive_theLocalServerAcceptsEveryGameTypeNewBattleOffers",
           "type": "Unit",
           "direction": "positive"
         }

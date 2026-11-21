@@ -22,6 +22,7 @@ Without it no Rumble team boots anywhere, so TwinDuel cannot be ranked by any co
 - **The booter** starts each member from the folder the function finds, and logs a member it cannot find with the same reason.
 - **The desktop program's boot progress** reads the identities it waits for through it.
 - **New Battle counts every bot as a participant**, also a team's members, as the server does. It counted each team as one participant, so two teams of two bots never filled the four TwinDuel places and Start Battle stayed off; this was found when the maintainer tried two Rumble teams in New Battle. The desktop program's tests now also run its JUnit tests: until now only its Kotest specs ran, so the existing TwinDuel preset tests had never run.
+- **The desktop program's own server accepts TwinDuel.** It was started with the game types classic, melee and 1v1 only, so it silently refused a TwinDuel from New Battle; it now accepts every game type New Battle offers. This too was found in the maintainer's trial.
 - **A contribution session** needs no change of its own: its team and members already lie side by side in the bot cache, each checked against the catalog's hash.
 
 ## Challenge
@@ -45,6 +46,7 @@ Test class Unit unless stated.
 - **BFD-008: The booter starts a member named by name and version** from the folder the rule finds, and logs one it cannot find with the reason.
 - **GBP-010: The desktop program's boot progress waits for the identities of members named by name and version.**
 - **GTD-002: Two teams of two bots fill the four TwinDuel places in New Battle**, and fewer or more bots cannot start it.
+- **GTD-003: The desktop program's own server accepts every game type New Battle offers, TwinDuel among them.**
 - **RCL-140: A contribution session's TwinDuel battle with Rumble teams runs and its result is accepted** in the test Rumble. (Integration, needs the saved sign-in; skipped without it.)
 
 ## Identity allocation

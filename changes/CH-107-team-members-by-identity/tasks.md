@@ -15,3 +15,4 @@ title: Find team members by folder or by name and version everywhere
 - [x] Run a real contribution session with TwinDuel in the test Rumble (RCL-140).
 - [x] Prove each criterion in both directions, and update the designs, the decision index and the plan item.
 - [x] Count every bot as a participant in New Battle, as the server does (GTD-002).
+- [x] Let the desktop program's own server accept every game type New Battle offers (GTD-003).

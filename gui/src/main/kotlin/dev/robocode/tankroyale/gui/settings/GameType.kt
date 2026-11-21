@@ -8,6 +8,12 @@ enum class GameType(val displayName: String) {
     TWIN_DUEL("twinduel");
 
     companion object {
+        /**
+         * The game types the desktop program's local server accepts: every one New Battle offers, so a battle of any of
+         * them, TwinDuel too, is not refused by the server it is started on.
+         */
+        fun serverGamesArgument(): String = entries.joinToString(",") { it.displayName }
+
         fun from(displayName: String): GameType {
             entries.forEach { if (it.displayName == displayName) return it }
 

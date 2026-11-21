@@ -84,4 +84,31 @@ class GameTypeDropdownTest {
         org.junit.jupiter.api.Assertions.assertFalse(twinDuelStartable(two))
         org.junit.jupiter.api.Assertions.assertFalse(twinDuelStartable(six))
     }
+
+    @Test
+    @Tag("GTD-003")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testGTD003_UnitPositive_theLocalServerAcceptsEveryGameTypeNewBattleOffers() {
+        val accepted = GameType.serverGamesArgument().split(",").toSet()
+        var offered = emptyList<String>()
+        SwingUtilities.invokeAndWait {
+            val dropdown = GameTypeDropdown()
+            offered = (0 until dropdown.itemCount).map(dropdown::getItemAt)
+        }
+
+        assertTrue("twinduel" in accepted)
+        assertTrue(accepted.containsAll(offered), "offered $offered, accepted $accepted")
+    }
+
+    @Test
+    @Tag("GTD-003")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testGTD003_UnitNegative_theLocalServerIsGivenNoGameTypeThatIsNotKnown() {
+        val accepted = GameType.serverGamesArgument().split(",")
+
+        assertEquals(accepted.distinct(), accepted, "no game type is given twice")
+        assertTrue(accepted.all { name -> GameType.entries.any { it.displayName == name } }, "only known game types: $accepted")
+    }
 }
