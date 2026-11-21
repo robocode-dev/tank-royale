@@ -708,6 +708,7 @@ class RumbleCliContributeTest {
         assertEquals("test", status.environment)
         assertEquals("running", status.state)
         assertEquals("1v1", status.battle!!.gameType)
+        assertTrue(status.battle!!.startedAt.isNotBlank(), "the battle running says when it started")
         assertEquals(listOf("1v1"), status.formats)
         assertEquals(1, status.battleLimit)
 

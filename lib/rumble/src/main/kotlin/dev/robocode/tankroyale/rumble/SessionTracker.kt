@@ -45,7 +45,11 @@ class SessionTracker(
             "battle-started" -> now.copy(
                 state = if (now.state == "pausing" || now.state == "stopping" || now.state == "cancelling") now.state else "running",
                 waitingFor = null,
-                battle = SessionBattle(text("battleId").orEmpty(), text("gameType").orEmpty(), (event["participants"] as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.contentOrNull }.orEmpty()),
+                battle = SessionBattle(
+                    text("battleId").orEmpty(), text("gameType").orEmpty(),
+                    (event["participants"] as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.contentOrNull }.orEmpty(),
+                    startedAt = clock().toString(),
+                ),
             )
             "battle-kept" -> now.copy(kept = now.kept + 1, battle = null)
             "battle-not-kept" -> now.copy(notKept = now.notKept + 1, battle = null)

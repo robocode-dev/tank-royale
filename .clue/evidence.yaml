@@ -374,7 +374,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "900698343e30d21363607bdd10bc9bef2f3703ae0b8d12cf5a57ad2d8ee7f701"
+          "sha256": "2bb685096622375578f8ac76b2a159f0a236c2734cf4b7ce6fbb1bc62629e9f2"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",

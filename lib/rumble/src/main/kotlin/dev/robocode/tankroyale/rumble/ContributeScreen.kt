@@ -212,6 +212,11 @@ class ContributeController(
     var state: ContributeState = ContributeState.Looking
         private set
 
+    /** When the session folder was last looked at successfully, so a screen can show that it keeps looking. */
+    @Volatile
+    var lastLook: Instant? = null
+        private set
+
     /** The first look: a running session is shown again, or else the catalog is read and the last summary shown. */
     fun start() = post.execute {
         if (state != ContributeState.Looking || looking) return@execute
@@ -233,6 +238,7 @@ class ContributeController(
         looking = true
         work({ port.look() }) { look ->
             looking = false
+            lastLook = clock()
             when (val now = state) {
                 is ContributeState.Running -> showLook(look, seenRunning = true)
                 is ContributeState.Starting -> starting(now, look)

@@ -58,7 +58,13 @@ data class SessionResults(val waiting: Int = 0, val sent: Int = 0, val accepted:
 
 /** The battle a session runs now. */
 @Serializable
-data class SessionBattle(val battleId: String, val gameType: String, val participants: List<String>)
+data class SessionBattle(
+    val battleId: String,
+    val gameType: String,
+    val participants: List<String>,
+    /** When the battle started, so a screen can show how long it has run; empty in a status written before it was kept. */
+    val startedAt: String = "",
+)
 
 /** How a session ended: its outcome word and when. */
 @Serializable

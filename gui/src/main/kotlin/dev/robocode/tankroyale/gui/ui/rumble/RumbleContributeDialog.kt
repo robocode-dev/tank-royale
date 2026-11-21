@@ -20,7 +20,15 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.GridLayout
 import java.awt.Point
+import java.awt.Font
+import java.time.Duration
+import java.time.Instant
 import java.util.Locale
+import javax.swing.BorderFactory
+import javax.swing.JLabel
+import javax.swing.JProgressBar
+import javax.swing.Timer
+import javax.swing.UIManager
 import javax.swing.AbstractButton
 import javax.swing.ButtonGroup
 import javax.swing.JButton
@@ -45,6 +53,16 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     private val content = WindowWidthPanel()
     private val scroll = JScrollPane(content, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER).apply { border = null }
     private val actions = JPanel(GridLayout(1, 0, 8, 0)).apply { border = EmptyBorder(6, 12, 12, 12) }
+
+    /** The battle running, when it started (from the session, or when this screen first saw it), and the clocks showing it. */
+    private var battleStartedAt: Instant? = null
+    private var battleSeen: String? = null
+    private var battleSeenAt: Instant? = null
+    private val elapsedLabel = JLabel()
+    private val checkedLabel = JLabel().apply { font = font.deriveFont(font.size2D * 0.85f) }
+
+    /** Moves the clocks on every second while the screen is shown, so it is plain that the status is followed live. */
+    private val clock = Timer(1000) { if (isVisible) tick() }.apply { start() }
 
     /** The state the screen shows now, and its Start button while it is choosing. */
     private var shown: ContributeState? = null
@@ -170,16 +188,30 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     private fun renderRunning(state: ContributeState.Running) {
         val status = state.status
         if (status == null) {
-            put(wrapped(text("rumble.contribute.starting")))
+            put(headline(text("rumble.contribute.starting"), stateColor("starting")))
+            put(JProgressBar().apply { isIndeterminate = true })
         } else {
-            put(wrapped(text(ContributeTexts.forState(status.state)), bold = true))
+            // What the session is doing, in its colour, first; then how far it is, the battle running and the counts.
+            put(headline("\u25CF " + text(ContributeTexts.forState(status.state)), stateColor(status.state)))
             if (status.state == "waiting") put(wrapped(text(ContributeTexts.forWaiting(status.waitingFor))))
-            status.battle?.let { put(wrapped(text("rumble.contribute.battle", it.gameType, it.participants.joinToString(" vs ")))) }
-            ContributeTexts.forPython(status.python)?.let { put(wrapped(text(it))) }
-            put(wrapped(text(if (status.battleLimit != null) "rumble.contribute.limit" else "rumble.contribute.no_limit", status.formats.joinToString(), status.battleLimit ?: 0)))
-            counts(status)
-            put(wrapped(text(if (state.ownedHere) "rumble.contribute.owned_here" else "rumble.contribute.runs_on_its_own")))
+            put(progress(status))
+            status.battle?.let { battle ->
+                put(wrapped(text("rumble.contribute.current", battle.gameType, battle.participants.joinToString(" vs ")), bold = true))
+                battleStartedAt = battle.startedAt.takeIf { it.isNotBlank() }?.let { runCatching { Instant.parse(it) }.getOrNull() }
+                    ?: battleSeenAt.takeIf { battleSeen == battle.battleId } ?: Instant.now()
+                if (battleSeen != battle.battleId) {
+                    battleSeen = battle.battleId
+                    battleSeenAt = battleStartedAt
+                }
+                put(elapsedLabel)
+            } ?: run { battleStartedAt = null }
+            put(tiles(status))
+            ContributeTexts.forPython(status.python)?.let { put(small(text(it))) }
+            put(small(text(if (status.battleLimit != null) "rumble.contribute.limit" else "rumble.contribute.no_limit", status.formats.joinToString(), status.battleLimit ?: 0)))
+            put(small(text(if (state.ownedHere) "rumble.contribute.owned_here" else "rumble.contribute.runs_on_its_own")))
         }
+        put(checkedLabel)
+        tick()
         state.asked?.let { put(wrapped(text(ContributeTexts.forRequest(it)))) }
         if (state.ownedHere && state.asked != SessionControlRequest.RELEASE) {
             put(button("rumble.contribute.button.release") { controller.release() })
@@ -194,6 +226,82 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
             button("rumble.contribute.button.stop_now") { controller.stopNow() }.apply { isEnabled = status?.state != "cancelling" },
             button("rumble.contribute.button.close") { isVisible = false },
         )
+    }
+
+    /** The session's state in large letters and its colour, which tells at a glance that it runs, waits, pauses or stops. */
+    private fun headline(message: String, color: Color) = JLabel(message).apply {
+        font = font.deriveFont(Font.BOLD, font.size2D * 1.5f)
+        foreground = color
+    }
+
+    /** How far the session is: "Battle X of N" with a bar, or the battles kept so far for a session that runs until stopped. */
+    private fun progress(status: SessionStatus): JProgressBar {
+        val limit = status.battleLimit
+        return if (limit != null) {
+            val current = (status.kept + if (status.battle != null) 1 else 0).coerceAtMost(limit).coerceAtLeast(1)
+            JProgressBar(0, limit).apply {
+                value = status.kept
+                isStringPainted = true
+                string = text("rumble.contribute.progress", current, limit)
+            }
+        } else {
+            JProgressBar().apply {
+                isIndeterminate = status.state == "running"
+                isStringPainted = true
+                string = text("rumble.contribute.progress_open", status.kept)
+            }
+        }
+    }
+
+    /** The counts as small tiles that can be read at a glance. */
+    private fun tiles(status: SessionStatus): JPanel {
+        val r = status.results
+        val counts = listOfNotNull(
+            "rumble.contribute.tile.kept" to status.kept,
+            "rumble.contribute.tile.not_kept" to status.notKept,
+            "rumble.contribute.tile.waiting" to r.waiting,
+            "rumble.contribute.tile.sent" to r.sent,
+            "rumble.contribute.tile.accepted" to r.accepted,
+            "rumble.contribute.tile.rejected" to r.rejected,
+            ("rumble.contribute.tile.set_aside" to r.setAside).takeIf { r.setAside > 0 },
+        )
+        return JPanel(MigLayout("insets 0, gap 6, wrap 4", "[grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile]")).apply {
+            counts.forEach { (key, count) ->
+                add(JPanel(MigLayout("insets 6, wrap 1, alignx center", "[center]")).apply {
+                    border = BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor") ?: Color.GRAY)
+                    add(JLabel(count.toString()).apply { font = font.deriveFont(Font.BOLD, font.size2D * 1.4f) })
+                    add(JLabel(text(key)).apply { font = font.deriveFont(font.size2D * 0.9f) })
+                })
+            }
+        }
+    }
+
+    private fun small(message: String) = wrapped(message).apply { font = font.deriveFont(font.size2D * 0.9f) }
+
+    /** Colours for the session's states that can be read on both the light and the dark theme. */
+    private fun stateColor(state: String): Color {
+        val dark = FlatLaf.isLafDark()
+        return when (state) {
+            "running" -> if (dark) Color(0x6FCF73) else Color(0x1B7F2A)
+            "waiting", "pausing", "paused" -> if (dark) Color(0xE6C35C) else Color(0x8A6D00)
+            "stopping", "cancelling" -> if (dark) Color(0xF0A060) else Color(0xA14A00)
+            else -> UIManager.getColor("Label.foreground") ?: Color.GRAY
+        }
+    }
+
+    /** Moves the clocks on: how long the battle has run, and how long ago the session was last looked at. */
+    private fun tick() {
+        val now = Instant.now()
+        val started = battleStartedAt
+        elapsedLabel.text = if (started != null) text("rumble.contribute.elapsed", duration(Duration.between(started, now))) else ""
+        val looked = controller.lastLook
+        checkedLabel.text = if (looked != null) text("rumble.contribute.checked", Duration.between(looked, now).seconds.coerceAtLeast(0)) else ""
+    }
+
+    private fun duration(d: Duration): String {
+        val seconds = d.seconds.coerceAtLeast(0)
+        return if (seconds >= 3600) String.format(Locale.ROOT, "%d:%02d:%02d", seconds / 3600, seconds / 60 % 60, seconds % 60)
+        else String.format(Locale.ROOT, "%d:%02d", seconds / 60, seconds % 60)
     }
 
     private fun counts(status: SessionStatus) {
