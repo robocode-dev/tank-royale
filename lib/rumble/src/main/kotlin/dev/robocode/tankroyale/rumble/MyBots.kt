@@ -43,27 +43,24 @@ object MyBots {
 
     /**
      * True for a row that is done with: a retired bot, or a sent bot whose pull request was closed without being
-     * merged. My bots hides these unless the person asks to see them. A disqualified bot is never hidden.
+     * merged. My bots hides these unless the person asks to see them. Every other row shows, a disqualified bot too.
      */
     fun isInactive(row: MyBotRow): Boolean =
-        (row.standing as? MyBotStanding.NotActive)?.status in setOf("retired", "superseded") ||
-            row.standing == MyBotStanding.Progress(BotProgress.Closed)
+        row.standing == MyBotStanding.NotActive("retired") || row.standing == MyBotStanding.Progress(BotProgress.Closed)
 
     /** The rows to show: all of them, or without the inactive ones. */
     fun shown(rows: List<MyBotRow>, showInactive: Boolean): List<MyBotRow> = if (showInactive) rows else rows.filterNot { isInactive(it) }
 
     /**
      * The bot name and version of a pull request the program sent: read from its title, and only when its branch is
-     * the one the program names for them, `submit/<name>-<version>` with or without a number added after a dash.
-     * Null for any other pull request.
+     * one the program names for that bot, `submit/<name>-` followed by the version it was first sent with. Sending a
+     * new version while the pull request is open changes the title and keeps the branch, so the title holds the
+     * version. A pull request whose title was changed by hand is not recognised. Null for any other pull request.
      */
     fun nameAndVersion(branch: String, title: String): Pair<String, String>? {
         val match = ADD.matchEntire(title) ?: UPDATE.matchEntire(title) ?: return null
         val (name, version) = match.groupValues[1] to match.groupValues[2]
-        val base = "submit/$name-$version"
-        val suffix = branch.removePrefix("$base-")
-        val ours = branch == base || (branch.startsWith("$base-") && suffix.isNotEmpty() && suffix.all { it.isDigit() })
-        return if (ours) name to version else null
+        return if (branch.startsWith("submit/$name-") && branch.length > "submit/$name-".length) name to version else null
     }
 
     /**
@@ -320,9 +317,12 @@ internal fun MyBots.pullRequestCount(body: String): Int =
     ((try { Json.parseToJsonElement(body) } catch (e: Exception) { null }) as? JsonArray)?.size ?: 0
 
 /**
- * The names the catalog may give [account] as owner: the login itself and the id of every owner record that lists the
- * login among its accounts, so a person signed in with another account of the same owner, or after renaming the
- * account, still finds the bots.
+ * The names the catalog may give [account] as owner: the id of every owner record that lists the login among its
+ * accounts, so a person signed in with another account of the same owner still finds the bots, and the login itself,
+ * as for a bot whose owner has no record yet, unless another owner's record has that id without listing the login.
  */
-fun MyBots.ownersOf(account: String, records: List<OwnerRecord>): Set<String> =
-    setOf(account) + records.filter { record -> record.accounts.any { it.equals(account, ignoreCase = true) } }.map { it.ownerId }
+fun MyBots.ownersOf(account: String, records: List<OwnerRecord>): Set<String> {
+    val listing = records.filter { record -> record.accounts.any { it.equals(account, ignoreCase = true) } }.map { it.ownerId }.toSet()
+    val takenByAnother = records.any { it.ownerId.equals(account, ignoreCase = true) && it.ownerId !in listing }
+    return if (takenByAnother) listing else listing + account
+}

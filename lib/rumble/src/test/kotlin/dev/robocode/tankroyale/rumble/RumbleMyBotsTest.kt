@@ -49,12 +49,19 @@ class RumbleMyBotsTest {
         // The newest catalog entry is the one added last, whatever the catalog's order.
         val old = bot("Old", "0.2.0", status = "retired").copy(addedAt = "2026-11-05")
         val older = bot("Old", "0.1.0", status = "retired").copy(addedAt = "2026-10-01", platform = "Python")
-        assertEquals("0.2.0", rows(catalog(old, older), emptyList()).single().version)
+        val newestRow = rows(catalog(old.copy(platform = "C#"), older), emptyList()).single()
+        assertEquals("0.2.0", newestRow.version)
+        assertEquals("C#", newestRow.language, "the language too is the one of the entry added last")
+        // A login that is another owner's id, in a record that does not list the login, finds none of that owner's bots.
+        assertEquals(emptySet<String>(), MyBots.ownersOf("bob", listOf(OwnerRecord("bob", listOf("robert"), listOf("Walls")))))
 
         // The program's own pull requests are read by their title and branch, whatever the name and version hold.
         assertEquals("Raven-2" to "3", MyBots.nameAndVersion("submit/Raven-2-3", "Add Raven-2 3"))
         assertEquals("Bot" to "1.0-beta", MyBots.nameAndVersion("submit/Bot-1.0-beta-2", "Update Bot to 1.0-beta"))
         assertEquals("Bot" to "v2", MyBots.nameAndVersion("submit/Bot-v2", "Add Bot v2"))
+        // Sending a new version while the pull request is open changes its title and keeps its branch.
+        assertEquals("Orbit" to "1.0.2", MyBots.nameAndVersion("submit/Orbit-1.0.1", "Update Orbit to 1.0.2"))
+        assertEquals("Orbit" to "1.0.1", MyBots.nameAndVersion("submit/Orbit-1.0.0", "Add Orbit 1.0.1"))
     }
 
     @Test
@@ -74,7 +81,6 @@ class RumbleMyBotsTest {
         assertEquals(listOf(1, 4), sent.map { it.number })
         assertEquals(SentPullRequest(4, "My-Bot", "2.0.0", open = false, merged = true, url = "https://github.com/robocode-dev/rumble-bots-test/pull/4"), sent[1])
         assertNull(MyBots.nameAndVersion("submit/NoVersion", "Add NoVersion"))
-        assertNull(MyBots.nameAndVersion("submit/Bot-1.0.0-x", "Add Bot 1.0.0"), "a suffix that is not a number")
         assertNull(MyBots.nameAndVersion("submit/Bot-1.0.0", "Add Other 1.0.0"), "a title that does not match its branch")
         assertEquals(0, MyBots.pullRequestCount("{not a list"))
         val refused = try {
@@ -115,6 +121,8 @@ class RumbleMyBotsTest {
         val disqualified = rows(catalog(bot("Cheat", "1.0.0", status = "disqualified")), emptyList()).single()
         assertEquals(MyBotStanding.NotActive("disqualified"), disqualified.standing)
         assertEquals(listOf(disqualified), MyBots.shown(listOf(disqualified), showInactive = false), "a disqualified bot is never hidden")
+        val superseded = MyBotRow("Old", "1.0.0", null, MyBotStanding.NotActive("superseded"), null, null)
+        assertEquals(listOf(superseded), MyBots.shown(listOf(superseded), showInactive = false), "only retired bots and closed submissions are hidden")
         val waiting = rows(catalog(bot("Scout", "1.0.3")), listOf(pull(8, "Scout", "1.0.4"), pull(12, "Scout", "1.0.5", open = false))).single()
         assertEquals("1.0.4", waiting.version, "an older open pull request is shown before a newer closed one")
     }
