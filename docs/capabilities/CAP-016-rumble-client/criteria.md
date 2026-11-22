@@ -1210,7 +1210,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a catalog with entries owned by the signed-in account and by another account, and pull requests the account sent with the program's branch names, other branches and pull requests of another account
     When My bots builds its rows
-    Then there is one row per bot name of the account, from the catalog entries owned by its login or by an owner record that lists the login, and from the pull requests it sent, read by their title `Add <name> <version>` or `Update <name> to <version>` on the branch the program names for them, sorted by name, with the newest version, the language of the catalog entry added last when the catalog knows the bot, and Open's page as the pull request shown or else the bot's folder in the bot repository
+    Then there is one row per bot name of the account, from the catalog entries owned by an owner record that lists the login, or by the login itself unless another owner's record has that id without listing the login, and from the pull requests it sent, read by their title `Add <name> <version>` or `Update <name> to <version>` on the branch the program names for them, sorted by name, with the newest version, the language of the catalog entry added last when the catalog knows the bot, and Open's page as the pull request shown or else the bot's folder in the bot repository
     And entries and pull requests of another account, a pull request whose title or branch is not the program's, and a pull request page that is not on github.com are never used, and an answer from GitHub that is not a list is a failure, not an empty list
 
   @RCL-148
