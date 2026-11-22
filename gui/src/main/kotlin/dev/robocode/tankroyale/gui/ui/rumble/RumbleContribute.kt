@@ -25,9 +25,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
-import javax.swing.BorderFactory
 import javax.swing.JOptionPane
-import javax.swing.JPanel
 import javax.swing.JWindow
 import javax.swing.SwingUtilities
 import javax.swing.Timer
@@ -175,12 +173,7 @@ object RumbleContribute {
         // The open screen shows the same already, and a notice would only lie behind it.
         if (dialog?.isVisible == true) return
         val window = JWindow(MainFrame as Window)
-        val panel = JPanel(BorderLayout()).apply {
-            border = BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor") ?: UIManager.getColor("Separator.foreground")),
-                BorderFactory.createEmptyBorder(10, 14, 10, 14),
-            )
-            background = UIManager.getColor("Panel.background")
+        val panel = RumbleCard(BorderLayout(), CardTone.BLUE, padding = 12).apply {
             add(wrappedText(message).apply { columns = 30 }, BorderLayout.CENTER)
         }
         val click = object : MouseAdapter() {
@@ -191,6 +184,8 @@ object RumbleContribute {
         }
         panel.addMouseListener(click)
         panel.components.forEach { it.addMouseListener(click) }
+        // The card's rounded corners show the window behind it, so that has the theme's background.
+        window.background = UIManager.getColor("Panel.background")
         window.contentPane = panel
         window.pack()
         val frame = MainFrame.bounds

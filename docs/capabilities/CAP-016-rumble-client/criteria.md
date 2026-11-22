@@ -1157,4 +1157,28 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the maintainer's saved sign-in and registration for the test Rumble, whose teams name their members as `<name> <version>`
     When `rumble contribute -e test --battles 1 --format twinduel` runs
     Then a TwinDuel battle of two catalog teams is kept and sent, and the receiving workflow accepts it by its own receipt line
+
+  @RCL-141
+  Scenario: Get started is the first entry of the Rumble menu and its texts are in every language
+    Test-type: Unit
+    Given the desktop program's Rumble menu and its resource files in English, Danish, Spanish and Catalan
+    When the menu's source and the screen's texts are read
+    Then Get started is the Rumble menu's first entry and is added only once
+    And every text of the screen, its three cards (title, what it needs and its button), its Beta line, its window title and its menu entry is in every language's resource file, and none of them holds a long dash
+
+  @RCL-142
+  Scenario: Each Get started button leads to the right page or screen, and signing in comes first when it is needed
+    Test-type: Unit
+    Given the Get started screen for a Rumble environment
+    When a button is pressed with and without a saved sign-in for that environment on this computer
+    Then Make a bot opens the "My first bot" tutorial on robocode.dev and the feedback button opens the repository's Rumble feedback form, whether signed in or not
+    And Submit a bot opens Submit or update bot and Contribute battles opens Contribute battles when a saved sign-in exists, and both open the GitHub account screen when none exists
+    And a saved sign-in for another environment does not count, signing out removes it, and a saved file that cannot be read still counts as one, because only whether the file is there is looked at
+
+  @RCL-143
+  Scenario: The maintainer tries the Get started screen in a light and a dark theme
+    Test-type: Human
+    Given the desktop program with the Rumble menu, in a light and in a dark theme
+    When the maintainer opens Rumble, Get started and presses each button
+    Then the cards are readable in both themes and every button leads where the buttons' criterion says
 ```
