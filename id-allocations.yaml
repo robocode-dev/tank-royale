@@ -1465,6 +1465,11 @@ claims:
       state: reserved
       prefix: CH
       component: "107"
+    - id: CH-108
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "108"
     - id: G-001
       kind: numeric
       state: reserved
@@ -4616,11 +4621,11 @@ high-water:
       state: reserved
       prefix: GBP
       component: "10"
-    - id: GTD-002
+    - id: GTD-003
       kind: numeric
       state: reserved
       prefix: GTD
-      component: "2"
+      component: "3"
     - id: HIST-001
       kind: numeric
       state: reserved
