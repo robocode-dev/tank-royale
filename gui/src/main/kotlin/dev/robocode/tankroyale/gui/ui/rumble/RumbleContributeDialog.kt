@@ -189,12 +189,12 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
         val status = state.status
         if (status == null) {
             put(headline(text("rumble.contribute.starting"), stateColor("starting")))
-            put(JProgressBar().apply { isIndeterminate = true })
+            putBar(JProgressBar().apply { isIndeterminate = true })
         } else {
             // What the session is doing, in its colour, first; then how far it is, the battle running and the counts.
             put(headline("\u25CF " + text(ContributeTexts.forState(status.state)), stateColor(status.state)))
             if (status.state == "waiting") put(wrapped(text(ContributeTexts.forWaiting(status.waitingFor))))
-            put(progress(status))
+            putBar(progress(status))
             status.battle?.let { battle ->
                 put(wrapped(text("rumble.contribute.current", battle.gameType, battle.participants.joinToString(" vs ")), bold = true))
                 battleStartedAt = battle.startedAt.takeIf { it.isNotBlank() }?.let { runCatching { Instant.parse(it) }.getOrNull() }
@@ -205,7 +205,7 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
                 }
                 put(elapsedLabel)
             } ?: run { battleStartedAt = null }
-            put(tiles(status))
+            tiles(status)
             ContributeTexts.forPython(status.python)?.let { put(small(text(it))) }
             put(small(text(if (status.battleLimit != null) "rumble.contribute.limit" else "rumble.contribute.no_limit", status.formats.joinToString(), status.battleLimit ?: 0)))
             put(small(text(if (state.ownedHere) "rumble.contribute.owned_here" else "rumble.contribute.runs_on_its_own")))
@@ -237,35 +237,50 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     /** How far the session is: "Battle X of N" with a bar, or the battles kept so far for a session that runs until stopped. */
     private fun progress(status: SessionStatus): JProgressBar {
         val limit = status.battleLimit
+        // While no battle runs yet, such as while the session starts or sets up Python, the bar keeps moving.
+        val busy = status.battle == null && (status.state == "starting" || status.python == "setting-up")
         return if (limit != null) {
             val current = (status.kept + if (status.battle != null) 1 else 0).coerceAtMost(limit).coerceAtLeast(1)
             JProgressBar(0, limit).apply {
                 value = status.kept
+                isIndeterminate = busy
                 isStringPainted = true
                 string = text("rumble.contribute.progress", current, limit)
             }
         } else {
             JProgressBar().apply {
-                isIndeterminate = status.state == "running"
+                isIndeterminate = busy || status.state == "running"
                 isStringPainted = true
                 string = text("rumble.contribute.progress_open", status.kept)
             }
         }
     }
 
-    /** The counts as small tiles that can be read at a glance. */
-    private fun tiles(status: SessionStatus): JPanel {
+    /** A progress bar tall enough to be seen at a glance. */
+    private fun putBar(bar: JProgressBar) {
+        content.add(bar, "growx, wmin 10, h 22!")
+    }
+
+    /**
+     * The counts as small tiles that can be read at a glance, in two groups: the battles of this session, and the
+     * results on this computer from every session, which is where waiting, sent and accepted results are counted.
+     */
+    private fun tiles(status: SessionStatus) {
         val r = status.results
-        val counts = listOfNotNull(
-            "rumble.contribute.tile.kept" to status.kept,
-            "rumble.contribute.tile.not_kept" to status.notKept,
+        put(small(text("rumble.contribute.tiles.session")).apply { font = font.deriveFont(Font.BOLD) })
+        put(tileRow(listOf("rumble.contribute.tile.kept" to status.kept, "rumble.contribute.tile.not_kept" to status.notKept)))
+        put(small(text("rumble.contribute.tiles.all")).apply { font = font.deriveFont(Font.BOLD) })
+        put(tileRow(listOfNotNull(
             "rumble.contribute.tile.waiting" to r.waiting,
             "rumble.contribute.tile.sent" to r.sent,
             "rumble.contribute.tile.accepted" to r.accepted,
             "rumble.contribute.tile.rejected" to r.rejected,
             ("rumble.contribute.tile.set_aside" to r.setAside).takeIf { r.setAside > 0 },
-        )
-        return JPanel(MigLayout("insets 0, gap 6, wrap 4", "[grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile]")).apply {
+        )))
+    }
+
+    private fun tileRow(counts: List<Pair<String, Int>>): JPanel {
+        return JPanel(MigLayout("insets 0, gap 6, wrap 5", "[grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile]")).apply {
             counts.forEach { (key, count) ->
                 add(JPanel(MigLayout("insets 6, wrap 1, alignx center", "[center]")).apply {
                     border = BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor") ?: Color.GRAY)
