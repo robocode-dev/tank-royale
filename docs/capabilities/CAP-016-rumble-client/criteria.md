@@ -1181,4 +1181,27 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the desktop program with the Rumble menu, in a light and in a dark theme
     When the maintainer opens Rumble, Get started and presses each button
     Then the cards are readable in both themes and every button leads where the buttons' criterion says
+
+  @RCL-144
+  Scenario: Rankings opens the selected environment's dashboard and Help opens the Rumble guide
+    Test-type: Unit
+    Given the environment list with the public Beta and the development Rumble
+    When the Rumble menu's Rankings or Help decides which page to open
+    Then Rankings opens the dashboard of the environment the menu talks to, https://robocode-dev.github.io/rumble-data/ for the public Beta, which is used unless a developer names the development Rumble, and https://robocode-dev.github.io/rumble-data-test/ only for the development Rumble, and Help opens https://robocode.dev/rumble/
+    And a program whose environment variable is unset or blank opens the public Beta's rankings and never a test page, and a dashboard address that is not an https page with a host and no user part is never opened
+
+  @RCL-145
+  Scenario: The Rumble menu lists its entries in the mockups' order
+    Test-type: Unit
+    Given the desktop program's Rumble menu and its menu texts in English, Danish, Spanish and Catalan
+    When the menu's source is read
+    Then the built entries follow the mockups' order, Get started, Submit or update bot, My bots, Download bots, Contribute battles, Results and queue, Rankings, GitHub account and Help, with the entries not yet built left out, and the last three are Rankings, GitHub account and Help
+    And no entry is outside that order or listed twice, and every entry has its text in every language
+
+  @RCL-146
+  Scenario: The maintainer opens Rankings and Help from the Rumble menu
+    Test-type: Human
+    Given the desktop program with the Rumble menu
+    When the maintainer chooses Rumble, Rankings and then Rumble, Help
+    Then the browser opens the selected environment's rankings and then the Rumble guide
 ```

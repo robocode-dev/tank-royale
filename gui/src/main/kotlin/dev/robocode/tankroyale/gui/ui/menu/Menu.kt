@@ -19,6 +19,8 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleAccount
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleContribute
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleDownload
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleGetStarted
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleHelp
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleRankings
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleSubmit
 import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
@@ -140,9 +142,7 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.rumble_get_started", onRumbleGetStarted).apply {
                 mnemonic = KeyEvent.VK_T
             }
-            addNewMenuItem("item.rumble_account", onRumbleAccount).apply {
-                mnemonic = KeyEvent.VK_G
-            }
+            // The order of the mockups: My bots comes after Submit, and Results and queue after Contribute, once built.
             addNewMenuItem("item.rumble_submit", onRumbleSubmit).apply {
                 mnemonic = KeyEvent.VK_S
             }
@@ -151,6 +151,15 @@ object Menu : JMenuBar() {
             }
             addNewMenuItem("item.rumble_contribute", onRumbleContribute).apply {
                 mnemonic = KeyEvent.VK_C
+            }
+            addNewMenuItem("item.rumble_rankings", onRumbleRankings).apply {
+                mnemonic = KeyEvent.VK_R
+            }
+            addNewMenuItem("item.rumble_account", onRumbleAccount).apply {
+                mnemonic = KeyEvent.VK_G
+            }
+            addNewMenuItem("item.rumble_help", onRumbleHelp).apply {
+                mnemonic = KeyEvent.VK_H
             }
         })
     }

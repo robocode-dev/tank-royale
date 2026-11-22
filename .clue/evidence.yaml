@@ -280,6 +280,10 @@
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleLicensePanelTest.kt",
           "sha256": "4c19d456dd0e190d29e125eee1ccde1010dcd80b9f78acfbc67a702ed772cd29"
+        },
+        {
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMenuOrderTest.kt",
+          "sha256": "777b0570df201453ab5aacd51b7b5241315332ec912abcead52269aecf74bcba"
         }
       ],
       "references": [
@@ -336,6 +340,20 @@
           "id": "RCL-141",
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleGetStartedTextsTest.kt",
           "subject": "RumbleGetStartedTextsTest.testRCL141_UnitPositive_everyTextOfTheScreenItsTitleAndItsMenuEntryIsInEveryLanguage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-145",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMenuOrderTest.kt",
+          "subject": "RumbleMenuOrderTest.testRCL145_UnitNegative_noEntryIsOutsideTheMockupsOrListedTwice",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-145",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMenuOrderTest.kt",
+          "subject": "RumbleMenuOrderTest.testRCL145_UnitPositive_theBuiltEntriesFollowTheMockupsOrderAndHaveTheirTextInEveryLanguage",
           "type": "Unit",
           "direction": "positive"
         }
@@ -2048,6 +2066,10 @@
           "sha256": "9c0a3e60ed3c519bece674901bcb55f97284563d35275be9c0c2a1de48bfa9a0"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankingsAndHelpTest.kt",
+          "sha256": "77f0b66ca708f9e42c5db6c0d5c5403b9476641bcd82fa0318cb3cc1f9c8edb0"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRegistrationLiveTest.kt",
           "sha256": "4b8365125f6944f6b88ba17a2ac235b2dc994275d94f26958cbfae5a1b50d00b"
         },
@@ -3417,6 +3439,20 @@
           "id": "RCL-114",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
           "subject": "RumbleRankedJournalTest.testRCL114_UnitPositive_theOnlyOperationsAreTheOnesTiedToBatchesReceiptsAndTheEngineEpoch",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-144",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankingsAndHelpTest.kt",
+          "subject": "RumbleRankingsAndHelpTest.testRCL144_UnitNegative_withoutTestModeNoTestPageIsOpenedAndNoAddressThatIsNotAnHttpsPage",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-144",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankingsAndHelpTest.kt",
+          "subject": "RumbleRankingsAndHelpTest.testRCL144_UnitPositive_rankingsOpensTheSelectedEnvironmentsDashboardAndHelpOpensTheGuide",
           "type": "Unit",
           "direction": "positive"
         },
