@@ -13,6 +13,8 @@ import dev.robocode.tankroyale.gui.ui.extensions.JMenuExt.addNewMenuItem
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onAbout
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onHelp
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onReportProblem
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSuggestFeature
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleAccount
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleContribute
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleDownload
@@ -160,6 +162,15 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.help", onHelp).apply {
                 mnemonic = KeyEvent.VK_H
             }
+            add(JMenu(MenuTitles.get("menu.feedback")).apply {
+                mnemonic = KeyEvent.VK_F
+                addNewMenuItem("item.report_problem", onReportProblem).apply {
+                    mnemonic = KeyEvent.VK_R
+                }
+                addNewMenuItem("item.suggest_feature", onSuggestFeature).apply {
+                    mnemonic = KeyEvent.VK_S
+                }
+            })
             addNewMenuItem("item.about", onAbout).apply {
                 mnemonic = KeyEvent.VK_A
             }

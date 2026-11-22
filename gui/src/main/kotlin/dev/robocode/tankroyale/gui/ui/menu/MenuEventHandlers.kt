@@ -28,6 +28,12 @@ object MenuEventHandlers {
 
     private const val HELP_URL = "https://robocode.dev/"
 
+    /** The repository's issue form for a bug report. */
+    private const val REPORT_PROBLEM_URL = "https://github.com/robocode-dev/tank-royale/issues/new?template=bug_report.yml"
+
+    /** The repository's issue form for a feature request. */
+    private const val SUGGEST_FEATURE_URL = "https://github.com/robocode-dev/tank-royale/issues/new?template=feature_request.yml"
+
     init {
         MenuEventTriggers.apply {
             onSetupRules.on(this) {
@@ -85,6 +91,12 @@ object MenuEventHandlers {
             }
             onHelp.on(this) {
                 Browser.browse(HELP_URL)
+            }
+            onReportProblem.on(this) {
+                Browser.browse(REPORT_PROBLEM_URL)
+            }
+            onSuggestFeature.on(this) {
+                Browser.browse(SUGGEST_FEATURE_URL)
             }
             onAbout.on(this) {
                 AboutBox.isVisible = true

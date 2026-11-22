@@ -22,6 +22,8 @@ object MenuEventTriggers {
     val onRumbleDownload = MenuEvent()
     val onRumbleContribute = MenuEvent()
     val onHelp = MenuEvent()
+    val onReportProblem = MenuEvent()
+    val onSuggestFeature = MenuEvent()
     val onAbout = MenuEvent()
 }
 

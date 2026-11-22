@@ -2,6 +2,7 @@
 
 ### ✨ Features
 
+- GUI: Help → Feedback has Report a Problem... and Suggest a New Feature..., which open the issue form on GitHub for a bug report or a feature request.
 - Bot API (Java, .NET, Python, TypeScript): Colour text is now read in all four forms `#RGB`, `#RGBA`, `#RRGGBB` and `#RRGGBBAA`, in capital or small letters, by every Bot API. The short forms double each digit, and a form without transparency is fully opaque.
 
 ### 📚 Documentation
