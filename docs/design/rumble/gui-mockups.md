@@ -10,7 +10,7 @@ reversal-cost: low
 
 # Rumble menu mockups and participant journeys
 
-These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **Get started** screen, the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request), **Download bots** and **Contribute battles** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
+These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **Get started** screen, the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request), **Download bots**, **Contribute battles**, **Rankings** and **Help** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
 
 The menu bar gains one entry between Config and Help:
 
@@ -304,7 +304,7 @@ Results are saved before they are sent, so an interrupted program loses none of 
 
 ## Rankings and Help
 
-**Rankings** opens the selected environment's dashboard in the default browser and needs no sign-in. **Help** opens the central participant documentation at `https://robocode.dev/rumble/`. Neither has a screen of its own.
+**Rankings** opens the selected environment's dashboard in the default browser and needs no sign-in. That is the public Beta's dashboard unless a developer has set the program to the development Rumble; a program not set to test mode never opens a test page (the maintainer's rule of 2026-11-22). **Help** opens the central participant documentation at `https://robocode.dev/rumble/`. Neither has a screen of its own. Both are built behind the developer switch: Rankings opens the dashboard that the environment list names for the Rumble the menu talks to, and either is opened only when it is an https page. The built menu keeps the order drawn above, with My bots and Results and queue to come in their places.
 
 ## Who does what
 
