@@ -21,6 +21,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val THEME = "theme"
     private const val RUMBLE_CLOSE_CHOICE = "rumble-contribute-on-close"
     private const val RUMBLE_SEEN_SESSION_END = "rumble-contribute-seen-end"
+    private const val RUMBLE_MY_BOTS_SHOW_INACTIVE = "rumble-my-bots-show-inactive"
 
     private const val DEFAULT_CONSOLE_MAX_CHARACTERS = 10000
     const val DEFAULT_BOOT_TIMEOUT = 30
@@ -166,6 +167,13 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         get() = load(RUMBLE_SEEN_SESSION_END, "")
         set(value) {
             save(RUMBLE_SEEN_SESSION_END, value)
+        }
+
+    /** Whether My bots also lists retired bots and sent bots that were closed. Off unless the person turned it on. */
+    var rumbleMyBotsShowInactive: Boolean
+        get() = load(RUMBLE_MY_BOTS_SHOW_INACTIVE)?.lowercase() == "true"
+        set(value) {
+            save(RUMBLE_MY_BOTS_SHOW_INACTIVE, if (value) "true" else "false")
         }
 
     var theme: String

@@ -10,7 +10,7 @@ reversal-cost: low
 
 # Rumble menu mockups and participant journeys
 
-These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **Get started** screen, the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request), **Download bots**, **Contribute battles**, **Rankings** and **Help** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
+These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **Get started** screen, the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request), **My bots**, **Download bots**, **Contribute battles**, **Rankings** and **Help** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
 
 The menu bar gains one entry between Config and Help:
 
@@ -180,7 +180,7 @@ Checks, review, publication and visibility in the rankings are separate states, 
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
-The list reads from the Rumble and from the local projects, and shows each bot's state in the same four separate states as the Track step. Withdrawing a bot is a later milestone and is not on this screen yet.
+The list reads from the Rumble and from the local projects, and shows each bot's state in the same four separate states as the Track step. Withdrawing a bot is a later milestone and is not on this screen yet. **What is built**, behind the developer switch: the list is read through the saved sign-in from the Rumble's catalog, by the login or an owner record that lists it, and from the pull requests the account sent, known by the program's titles and branch names, one row per bot with its newest version, language and where it stands in the Submit wizard's own words, an open update shown before the version in the rankings. It does not read local projects: Update opens Submit or update bot, where the folder is chosen. Open opens the pull request the row shows, which is an open one when there is one, or else the bot's folder, only on github.com. A pull request is known by the title the program gives it, `Add <name> <version>` or `Update <name> to <version>`, on a branch the program names `submit/<name>-...`; one whose title was changed by hand is not listed until its bot is in the catalog. Retired bots and closed submissions are hidden unless the person ticks to see them, and the program remembers the choice; a disqualified bot is always shown; Open and Update have tooltips that say what they open. The list is read when the screen opens, with no refresh button.
 
 ## Download bots
 

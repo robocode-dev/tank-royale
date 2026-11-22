@@ -284,6 +284,10 @@
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMenuOrderTest.kt",
           "sha256": "d769a6c8eb83b8ca7f9eee0db9574187800ad219a3bc2fa94c763cdc711ac0d1"
+        },
+        {
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMyBotsTextsTest.kt",
+          "sha256": "0a56dad66c954dbe19771c0130d5192778e0c0b17685ca14444ad4764307845c"
         }
       ],
       "references": [
@@ -354,6 +358,20 @@
           "id": "RCL-145",
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMenuOrderTest.kt",
           "subject": "RumbleMenuOrderTest.testRCL145_UnitPositive_theBuiltEntriesFollowTheMockupsOrderAndHaveTheirTextInEveryLanguage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-149",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMyBotsTextsTest.kt",
+          "subject": "RumbleMyBotsTextsTest.testRCL149_UnitNegative_openNeverOpensAPageThatIsNotOnGitHubAndTheScreenWaitsForASignIn",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-149",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMyBotsTextsTest.kt",
+          "subject": "RumbleMyBotsTextsTest.testRCL149_UnitPositive_myBotsFollowsSubmitInTheMenuAndEveryTextIsInEveryLanguage",
           "type": "Unit",
           "direction": "positive"
         }
@@ -2058,6 +2076,10 @@
           "sha256": "e0b131f80cccb1e9f5d13178a1733373184aa6c4a1c66b642bfb1aabde1e275d"
         },
         {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
+          "sha256": "2c630d0bb4df4ef4470189e30abfc49ffd273fd1738def4e21e2a0f1ab185b6a"
+        },
+        {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",
           "sha256": "6acb93d9fc0beebe3a7e5f0580fa59173c402789f7d690880be32f8bc2fd5cdd"
         },
@@ -3215,6 +3237,34 @@
           "id": "RCL-055",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
           "subject": "RumbleMenuSwitchTest.testRCL055_UnitPositive_theMenuIsShownForATrueWordInThePropertyOrTheVariable",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-147",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
+          "subject": "RumbleMyBotsTest.testRCL147_UnitNegative_botsOfAnotherAccountAndBranchesNotSentByTheProgramAreNotListed",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-147",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
+          "subject": "RumbleMyBotsTest.testRCL147_UnitPositive_oneRowPerBotOfTheAccountFromItsCatalogEntriesAndSentPullRequestsWithTheNewestVersion",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-148",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
+          "subject": "RumbleMyBotsTest.testRCL148_UnitNegative_aReadingThatFailedIsSaidAndNeverShownAsAnEmptyListAndALateOneIsThrownAway",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-148",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
+          "subject": "RumbleMyBotsTest.testRCL148_UnitPositive_anOpenPullRequestShowsItsStateBeforeTheVersionInTheRumble",
           "type": "Unit",
           "direction": "positive"
         },
