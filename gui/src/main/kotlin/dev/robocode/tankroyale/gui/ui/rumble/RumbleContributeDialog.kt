@@ -24,7 +24,6 @@ import java.awt.Font
 import java.time.Duration
 import java.time.Instant
 import java.util.Locale
-import javax.swing.BorderFactory
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 import javax.swing.Timer
@@ -324,8 +323,7 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     private fun tileRow(counts: List<Pair<String, Int>>): JPanel {
         return JPanel(MigLayout("insets 0, gap 6, wrap 5", "[grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile][grow, fill, sg tile]")).apply {
             counts.forEach { (key, count) ->
-                add(JPanel(MigLayout("insets 6, wrap 1, alignx center", "[center]")).apply {
-                    border = BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor") ?: Color.GRAY)
+                add(RumbleCard(MigLayout("insets 0, wrap 1, alignx center", "[center]"), tileTone(key, count), padding = 6).apply {
                     add(JLabel(count.toString()).apply {
                         font = font.deriveFont(Font.BOLD, font.size2D * 1.4f)
                         // Good news in green and bad news in red, but only when there is any: a red zero would alarm for nothing.
@@ -338,6 +336,18 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
                 })
             }
         }
+    }
+
+    /**
+     * A tile's colour by what it counts. A tile that counts nothing stays neutral, for the same reason as its number: a
+     * red tile for no rejected results would alarm for nothing.
+     */
+    private fun tileTone(key: String, count: Int): CardTone = if (count == 0) CardTone.NEUTRAL else when (key) {
+        "rumble.contribute.tile.accepted" -> CardTone.GREEN
+        "rumble.contribute.tile.rejected", "rumble.contribute.tile.not_kept" -> CardTone.RED
+        "rumble.contribute.tile.waiting" -> CardTone.AMBER
+        "rumble.contribute.tile.kept", "rumble.contribute.tile.sent" -> CardTone.BLUE
+        else -> CardTone.NEUTRAL
     }
 
     private fun small(message: String) = wrapped(message).apply { font = font.deriveFont(font.size2D * 0.9f) }
