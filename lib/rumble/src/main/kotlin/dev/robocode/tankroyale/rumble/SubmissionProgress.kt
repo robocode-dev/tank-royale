@@ -81,24 +81,26 @@ class SubmissionProgress(
         }
 
     /**
-     * Finds the newest pull request that [account] opened for the bot [name], open or not. The program names its
-     * branches `submit/<name>-<version>`, which is how the version is found. Anything not found is null; a problem
-     * with GitHub throws [IOException] with a plain message.
+     * Finds the newest pull request that [account] opened for the bot [name], open or not. The bot and its version
+     * are read from the title the program gives the pull request, `Add <name> <version>` or `Update <name> to
+     * <version>`, on a branch the program names `submit/<name>-...`, the same way My bots reads them: sending a new
+     * version while the pull request is open changes the title and keeps the branch, and a bot `Bot` is not taken for
+     * `Bot-2`. Anything not found is null; a problem with GitHub throws [IOException] with a plain message.
      */
     override fun find(tokens: GitHubTokens, account: String, name: String): SentBot? {
         val answer = api.get("$upstream/pulls?state=all&sort=created&direction=desc&per_page=100", tokens.accessToken)
         if (answer.status == 401) throw SignInRefused()
         if (answer.status != 200) throw IOException("GitHub gave an unexpected answer (HTTP ${answer.status}). Try again later.")
         val pulls = (parse(answer.body) as? JsonArray) ?: throw IOException(NOT_UNDERSTOOD)
-        val prefix = "submit/$name-"
         for (element in pulls) {
             val pull = element as? JsonObject ?: continue
             val author = (pull["user"] as? JsonObject)?.string("login")
             val branch = (pull["head"] as? JsonObject)?.string("ref") ?: continue
-            if (!account.equals(author, ignoreCase = true) || !branch.startsWith(prefix)) continue
+            if (!account.equals(author, ignoreCase = true)) continue
+            val (sentName, version) = MyBots.nameAndVersion(branch, pull.string("title").orEmpty()) ?: continue
+            if (sentName != name) continue
             val number = (pull["number"] as? JsonPrimitive)?.contentOrNull?.toIntOrNull() ?: continue
-            val version = branch.removePrefix(prefix).replace(Regex("-\\d+$"), "")
-            if (version.isNotEmpty()) return SentBot(number, version)
+            return SentBot(number, version)
         }
         return null
     }

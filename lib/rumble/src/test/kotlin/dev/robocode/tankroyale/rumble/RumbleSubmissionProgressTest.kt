@@ -56,6 +56,44 @@ class RumbleSubmissionProgressTest {
 
     private fun read(fake: Fake, catalog: Catalog? = null) = SubmissionProgress(env, fake).read(tokens(), 5, "Scout", "1.0.3", catalog)
 
+    /** A bot repository that answers only its list of pull requests, newest first, with [pulls] as `number|title|branch|author`. */
+    private fun listing(vararg pulls: String) = object : GitHubApi {
+        override fun get(path: String, token: String?): ApiResponse =
+            if (path.startsWith("$up/pulls?state=all")) ApiResponse(200, pulls.joinToString(",", "[", "]") { line ->
+                val (number, title, branch, author) = line.split("|")
+                """{"number":$number,"title":"$title","head":{"ref":"$branch"},"user":{"login":"$author"}}"""
+            }) else ApiResponse(404, "{}")
+
+        override fun postJson(path: String, token: String, json: String): ApiResponse = error("finding must not write")
+        override fun patchJson(path: String, token: String, json: String): ApiResponse = error("finding must not write")
+    }
+
+    @Test
+    @Tag("RCL-072")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL072_UnitPositive_anUpdatedPullRequestIsFoundWithTheVersionItsTitleNowCarries() {
+        // Sending 1.0.4 while the pull request for 1.0.3 is open changes its title and keeps its branch.
+        val api = listing("9|Update Scout to 1.0.4|submit/Scout-1.0.3|alice")
+        assertEquals(SentBot(9, "1.0.4"), SubmissionProgress(env, api).find(tokens(), "alice", "Scout"))
+        val dashed = listing("4|Add Raven-2 3|submit/Raven-2-3|alice")
+        assertEquals(SentBot(4, "3"), SubmissionProgress(env, dashed).find(tokens(), "alice", "Raven-2"))
+    }
+
+    @Test
+    @Tag("RCL-072")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL072_UnitNegative_aBotIsNotTakenForAnotherWhoseNameStartsTheSameNorForAnotherAccountsPullRequest() {
+        val api = listing(
+            "12|Add Scout-2 1.0.0|submit/Scout-2-1.0.0|alice",
+            "11|Add Scout 1.0.9|submit/Scout-1.0.9|bob",
+            "10|Fix the readme|submit/Scout-readme|alice",
+        )
+        assertEquals(null, SubmissionProgress(env, api).find(tokens(), "alice", "Scout"))
+        assertEquals(SentBot(12, "1.0.0"), SubmissionProgress(env, api).find(tokens(), "alice", "Scout-2"))
+    }
+
     // RBC-035
 
     @Test

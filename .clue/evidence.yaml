@@ -2145,7 +2145,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
-          "sha256": "76b91ea5e1b7e7b5451edb290eedad91ae406e7b2085d9399df26383732d2531"
+          "sha256": "7276bddb2dd33308a5e6f35b00fba284e95eb9c13c926dd98bb6887a99e3a7ce"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmitScreenTest.kt",
@@ -4329,6 +4329,20 @@
           "id": "RBC-036",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
           "subject": "RumbleSubmissionProgressTest.testRBC036_UnitPositive_aMergedPullRequestWaitsForTheCatalogAndThenIsInIt",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-072",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
+          "subject": "RumbleSubmissionProgressTest.testRCL072_UnitNegative_aBotIsNotTakenForAnotherWhoseNameStartsTheSameNorForAnotherAccountsPullRequest",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-072",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSubmissionProgressTest.kt",
+          "subject": "RumbleSubmissionProgressTest.testRCL072_UnitPositive_anUpdatedPullRequestIsFoundWithTheVersionItsTitleNowCarries",
           "type": "Unit",
           "direction": "positive"
         },
