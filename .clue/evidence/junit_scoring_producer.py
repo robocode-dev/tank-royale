@@ -1,4 +1,4 @@
-"""Export scoring, GUI TwinDuel, shared Rumble library, bot project library and Rumble battle worker JUnit methods with stable JVM identities."""
+"""Export scoring, GUI TwinDuel, GUI Rumble screen, shared Rumble library, bot project library and Rumble battle worker JUnit methods with stable JVM identities."""
 
 import json
 from pathlib import Path
@@ -26,6 +26,8 @@ def collect(root, files):
         if not name.endswith(".kt") or not (
             ("Scoring" in Path(name).name and "Test" in Path(name).name)
             or Path(name).name == "GameTypeDropdownTest.kt"
+            or (name.startswith("gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/") and Path(name).name.startswith("Rumble")
+                and Path(name).name.endswith("Test.kt"))
             or (name.startswith("lib/rumble/src/test/") and Path(name).name.startswith("Rumble")
                 and Path(name).name.endswith("Test.kt"))
             or (name.startswith("lib/bot-project/src/test/") and Path(name).name.startswith("BotProject")

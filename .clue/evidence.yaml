@@ -21,11 +21,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
+          "sha256": "1d752cc6893b4452551b1796b0f465d2219c187b547dc72fb94526d359bf0851"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
+          "sha256": "01fbc09d6f0b950c5036d5a829ee6efeb77122c4699a8b5f1ea73ff25d193687"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -240,7 +240,8 @@
         ".clue/evidence/producers.json",
         ".clue/evidence/test_junit_producer.py",
         "gui/build.gradle.kts",
-        "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt"
+        "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
+        "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/Rumble*Test.kt"
       ],
       "exclude": [],
       "inputs": [
@@ -250,11 +251,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
+          "sha256": "1d752cc6893b4452551b1796b0f465d2219c187b547dc72fb94526d359bf0851"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
+          "sha256": "01fbc09d6f0b950c5036d5a829ee6efeb77122c4699a8b5f1ea73ff25d193687"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -267,6 +268,18 @@
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
           "sha256": "091c23d4841917addca468d4ab4380cbe89917717b11fa6998f94c5a09e3e2c1"
+        },
+        {
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleContributeTextsTest.kt",
+          "sha256": "631a06ca798d805a84560b6d2c656a24016f780a7ac07d64c096bd4d802a2169"
+        },
+        {
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleGetStartedTextsTest.kt",
+          "sha256": "2f9e893ef101acc33984ab7bb067a0f5786fe6017449d4a910f49b6e6d6c7ad4"
+        },
+        {
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleLicensePanelTest.kt",
+          "sha256": "4c19d456dd0e190d29e125eee1ccde1010dcd80b9f78acfbc67a702ed772cd29"
         }
       ],
       "references": [
@@ -311,6 +324,20 @@
           "subject": "GameTypeDropdownTest.testGTD003_UnitPositive_theLocalServerAcceptsEveryGameTypeNewBattleOffers",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-141",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleGetStartedTextsTest.kt",
+          "subject": "RumbleGetStartedTextsTest.testRCL141_UnitNegative_noOtherRumbleEntryComesBeforeGetStarted",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-141",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleGetStartedTextsTest.kt",
+          "subject": "RumbleGetStartedTextsTest.testRCL141_UnitPositive_everyTextOfTheScreenItsTitleAndItsMenuEntryIsInEveryLanguage",
+          "type": "Unit",
+          "direction": "positive"
         }
       ]
     },
@@ -338,11 +365,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
+          "sha256": "1d752cc6893b4452551b1796b0f465d2219c187b547dc72fb94526d359bf0851"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
+          "sha256": "01fbc09d6f0b950c5036d5a829ee6efeb77122c4699a8b5f1ea73ff25d193687"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -1724,7 +1751,7 @@
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
+          "sha256": "01fbc09d6f0b950c5036d5a829ee6efeb77122c4699a8b5f1ea73ff25d193687"
         },
         {
           "path": ".clue/evidence/python_unittest_producer.py",
@@ -1922,11 +1949,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
+          "sha256": "1d752cc6893b4452551b1796b0f465d2219c187b547dc72fb94526d359bf0851"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
+          "sha256": "01fbc09d6f0b950c5036d5a829ee6efeb77122c4699a8b5f1ea73ff25d193687"
         },
         {
           "path": ".clue/evidence/test_junit_producer.py",
@@ -1995,6 +2022,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
           "sha256": "fdb8d7ee1ecad4657bc5ea2af4e21ea909f71852d1d1bf24027cb82bc2971a7c"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGetStartedTest.kt",
+          "sha256": "459500d55f6877ba4771280266ef317e84731c85985ea92544f8137f29f95a5a"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGitHubApiTest.kt",
@@ -2959,6 +2990,27 @@
           "id": "RCL-019",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleEnvironmentTest.kt",
           "subject": "RumbleEnvironmentTest.testRCL019_UnitPositive_eachEnvironmentGetsItsOwnStateFolderAndItsOwnQueue",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-142",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGetStartedTest.kt",
+          "subject": "RumbleGetStartedTest.testRCL142_UnitNegative_withoutASavedSignInSubmittingAndContributingLeadToTheAccountScreenButThePagesDoNot",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-142",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGetStartedTest.kt",
+          "subject": "RumbleGetStartedTest.testRCL142_UnitPositive_aSavedSignInIsSeenOnlyForItsOwnEnvironment",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-142",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGetStartedTest.kt",
+          "subject": "RumbleGetStartedTest.testRCL142_UnitPositive_withASavedSignInEachButtonLeadsToItsOwnPlaceOrScreen",
           "type": "Unit",
           "direction": "positive"
         },
@@ -4572,11 +4624,11 @@
         },
         {
           "path": ".clue/evidence/junit_scoring_producer.py",
-          "sha256": "8e49ff678714b9d2c3aed670062f9085c13c1cfc09aff9669e6fdb528cb60874"
+          "sha256": "1d752cc6893b4452551b1796b0f465d2219c187b547dc72fb94526d359bf0851"
         },
         {
           "path": ".clue/evidence/producers.json",
-          "sha256": "7df6ebf38bcff9f3b7d2ea17a7bfccfb3c09ef9df473505f417881bfdf4fa9a8"
+          "sha256": "01fbc09d6f0b950c5036d5a829ee6efeb77122c4699a8b5f1ea73ff25d193687"
         },
         {
           "path": "server/build.gradle.kts",
