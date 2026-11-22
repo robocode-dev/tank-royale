@@ -75,6 +75,15 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
         contentPane.add(actions, BorderLayout.SOUTH)
         setSize(620, 680)
         setLocationRelativeTo(owner)
+        // The colours of the state and the counts are chosen for the theme, so the screen is drawn again when it changes.
+        UIManager.addPropertyChangeListener { event ->
+            if (event.propertyName == "lookAndFeel") SwingUtilities.invokeLater {
+                shown?.let { state ->
+                    shown = null
+                    render(state)
+                }
+            }
+        }
     }
 
     private fun text(key: String, vararg arguments: Any): String = String.format(Messages.get(key), *arguments)
