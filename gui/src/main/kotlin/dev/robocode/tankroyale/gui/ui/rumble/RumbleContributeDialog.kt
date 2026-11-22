@@ -317,7 +317,14 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
             counts.forEach { (key, count) ->
                 add(JPanel(MigLayout("insets 6, wrap 1, alignx center", "[center]")).apply {
                     border = BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor") ?: Color.GRAY)
-                    add(JLabel(count.toString()).apply { font = font.deriveFont(Font.BOLD, font.size2D * 1.4f) })
+                    add(JLabel(count.toString()).apply {
+                        font = font.deriveFont(Font.BOLD, font.size2D * 1.4f)
+                        // Good news in green and bad news in red, but only when there is any: a red zero would alarm for nothing.
+                        if (count > 0) when (key) {
+                            "rumble.contribute.tile.accepted" -> foreground = statusColor(true)
+                            "rumble.contribute.tile.rejected", "rumble.contribute.tile.not_kept" -> foreground = statusColor(false)
+                        }
+                    })
                     add(JLabel(text(key)).apply { font = font.deriveFont(font.size2D * 0.9f) })
                 })
             }
