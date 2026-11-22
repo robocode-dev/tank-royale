@@ -283,7 +283,7 @@
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMenuOrderTest.kt",
-          "sha256": "777b0570df201453ab5aacd51b7b5241315332ec912abcead52269aecf74bcba"
+          "sha256": "d769a6c8eb83b8ca7f9eee0db9574187800ad219a3bc2fa94c763cdc711ac0d1"
         }
       ],
       "references": [

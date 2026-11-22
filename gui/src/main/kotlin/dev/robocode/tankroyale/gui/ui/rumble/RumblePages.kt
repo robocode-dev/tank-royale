@@ -22,6 +22,8 @@ object RumblePages {
         }
     }
 
-    /** Opens the Rumble guide, which is the same for every environment. */
-    fun openHelp() = Browser.browse(RumbleLinks.GUIDE)
+    /** Opens the Rumble guide, which is the same for every environment, only as an https page like Rankings. */
+    fun openHelp() {
+        RumbleLinks.GUIDE.takeIf { RumbleLinks.isHttpsPage(it) }?.let { Browser.browse(it) }
+    }
 }

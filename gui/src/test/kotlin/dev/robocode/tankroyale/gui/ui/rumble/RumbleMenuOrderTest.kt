@@ -34,6 +34,8 @@ class RumbleMenuOrderTest {
     @Tag("Positive")
     fun testRCL145_UnitPositive_theBuiltEntriesFollowTheMockupsOrderAndHaveTheirTextInEveryLanguage() {
         val built = entries()
+        // Reading the menu's source must find the entries; an empty list would agree with any order.
+        assertEquals(listOf("item.rumble_get_started", "item.rumble_submit"), built.take(2))
         assertEquals(mockup.filter { it in built }, built)
         assertEquals(listOf("item.rumble_rankings", "item.rumble_account", "item.rumble_help"), built.takeLast(3))
         for (language in listOf("", "_da", "_es", "_ca")) {
