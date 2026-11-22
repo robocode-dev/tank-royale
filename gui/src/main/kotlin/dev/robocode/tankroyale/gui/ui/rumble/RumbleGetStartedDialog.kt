@@ -76,8 +76,14 @@ class RumbleGetStartedDialog private constructor(private val environment: Rumble
         fun open() {
             when (val choice = RumbleMenuSwitch.environment(System.getenv(RumbleMenuSwitch.ENVIRONMENT_VARIABLE))) {
                 is EnvironmentChoice.Unknown -> JOptionPane.showMessageDialog(MainFrame, String.format(Messages.get("rumble.account.unknown_environment"), choice.name))
-                is EnvironmentChoice.Chosen -> RumbleGetStartedDialog(choice.environment).isVisible = true
+                is EnvironmentChoice.Chosen -> {
+                    // One Get started window at a time: choosing it again brings the open one to the front.
+                    val shown = open?.takeIf { it.isDisplayable }
+                    if (shown != null) shown.toFront() else open = RumbleGetStartedDialog(choice.environment).apply { isVisible = true }
+                }
             }
         }
+
+        private var open: RumbleGetStartedDialog? = null
     }
 }

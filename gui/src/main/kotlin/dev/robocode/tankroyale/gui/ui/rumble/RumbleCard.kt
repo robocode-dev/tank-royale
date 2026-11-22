@@ -62,7 +62,8 @@ class RumbleCard(layout: LayoutManager, tone: CardTone = CardTone.NEUTRAL, priva
             g2.fillRoundRect(0, 0, w, h, ARC, ARC)
             g2.color = mix(base, accent, if (dark) 0.45 else 0.35)
             g2.drawRoundRect(0, 0, w, h, ARC, ARC)
-            g2.clip = java.awt.geom.RoundRectangle2D.Float(0f, 0f, w.toFloat(), h.toFloat() + 1, ARC.toFloat(), ARC.toFloat())
+            // Narrows the clip Swing gave, so a card partly scrolled out of view never paints outside the view.
+            g2.clip(java.awt.geom.RoundRectangle2D.Float(0f, 0f, w.toFloat(), h.toFloat() + 1, ARC.toFloat(), ARC.toFloat()))
             g2.color = accent
             g2.fillRect(0, 0, STRIPE, height)
         } finally {
