@@ -244,13 +244,14 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
             JProgressBar(0, limit).apply {
                 value = status.kept
                 isIndeterminate = busy
-                isStringPainted = true
+                // No "Battle X of N" while no battle has started; the headline says that the session starts.
+                isStringPainted = !busy
                 string = text("rumble.contribute.progress", current, limit)
             }
         } else {
             JProgressBar().apply {
                 isIndeterminate = busy || status.state == "running"
-                isStringPainted = true
+                isStringPainted = !busy
                 string = text("rumble.contribute.progress_open", status.kept)
             }
         }
