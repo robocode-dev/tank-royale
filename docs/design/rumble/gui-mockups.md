@@ -10,7 +10,7 @@ reversal-cost: low
 
 # Rumble menu mockups and participant journeys
 
-These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request) and **Download bots** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
+These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **Get started** screen, the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request) , **Download bots** and **Contribute battles** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
 
 The menu bar gains one entry between Config and Help:
 
@@ -51,7 +51,7 @@ Local bot creation and normal battles never need a GitHub account. A screen that
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-"Create bot" opens the existing Battle, Create bot wizard. The other two buttons open the screens below and start the sign-in first if the person is not signed in.
+"Create bot" was drawn to open a Battle, Create bot wizard, which the program does not have; the maintainer chose on 2026-11-22 that the button opens the "My first bot" tutorial on robocode.dev in the browser until bot creation (M-031) brings a wizard, and the built screen calls it "Open the tutorial". The other two buttons open the screens below, or the GitHub account screen first when this computer holds no saved sign-in for the environment. "Open feedback page" opens the repository's Rumble feedback form.
 
 ## GitHub account
 

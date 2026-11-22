@@ -21,6 +21,7 @@ A person who opens the Rumble menu for the first time meets eight entries and no
 - **Make a bot opens the "My first bot" tutorial** on robocode.dev in the browser. The mockup's Create bot wizard does not exist in the program; the maintainer chose on 2026-11-22 that the button opens the tutorial in this release, and the wizard stays with the bot creation milestone (M-031). The mockup is updated to say so.
 - **Submit a bot and Contribute battles** open the Submit or update bot screen and the Contribute battles screen. When this computer holds no saved sign-in for the Rumble, the button opens the GitHub account screen instead, so the person signs in first, as the mockup says.
 - **A Beta line** says that the Rumble is a Beta and has a button that opens the repository's Rumble feedback form in the browser.
+- **The cards have colour**, asked for by the maintainer on 2026-11-22: one shared card for the Rumble screens with a soft tint of its colour, a thin edge and a coloured stripe, worked out for the light or dark theme each time it is painted. Get started's cards are blue, green and amber; the count tiles of Contribute battles take green for accepted, red for rejected or not kept, amber for waiting and blue for kept and sent, and stay neutral at zero; the session's short notice in the main window is a blue card.
 - **Every text** is in the resource files in all four languages, and the behaviour (which screen or page each button leads to) is a plain class without a window, so it is tested without one.
 
 ## Challenge
@@ -49,4 +50,4 @@ The change and the criteria were allocated with the repository's coordinated all
 
 ## Human evidence
 
-To be written after the maintainer's trial, before the digest.
+On 2026-11-22 the maintainer opened Rumble, Get started in the desktop program against the test Rumble, in the light theme and in the dark theme, and sent a screenshot of each. Get started was the menu's first entry, the title read "Kom i gang (Development)", and the three cards showed in blue, green and amber with readable text on both themes; after the first light screenshot the window was made lower to remove empty space below the Beta line, and the dark screenshot shows the lower window. The maintainer pressed the buttons and reported that everything works ("Det virker rigtig fint"). The maintainer had asked for the colour on the cards after the first trial, saw it on both themes and said the cards look much better.
