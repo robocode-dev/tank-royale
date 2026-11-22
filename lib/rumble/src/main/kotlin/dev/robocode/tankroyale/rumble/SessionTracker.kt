@@ -60,6 +60,7 @@ class SessionTracker(
             "resuming" -> if (now.state == "pausing") now.copy(state = "running") else now
             "stopping" -> now.copy(state = "stopping")
             "cancelling" -> now.copy(state = "cancelling")
+            "finishing" -> now.copy(state = "sending", battle = null)
             "released" -> now.copy(owner = null)
             "python-setting-up" -> now.copy(python = "setting-up")
             "python-ready" -> now.copy(python = "ready")

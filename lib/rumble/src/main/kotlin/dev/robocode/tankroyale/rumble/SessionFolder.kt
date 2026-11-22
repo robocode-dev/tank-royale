@@ -81,7 +81,7 @@ data class SessionStatus(
     val pid: Long,
     val startedAt: String,
     val owner: SessionOwner? = null,
-    /** `starting`, `running`, `waiting`, `pausing`, `paused`, `stopping` or `cancelling`. */
+    /** `starting`, `running`, `waiting`, `pausing`, `paused`, `stopping`, `cancelling`, or `sending` when its battles are over and it sends what waits before it ends. */
     val state: String = "starting",
     val formats: List<String> = emptyList(),
     val battleLimit: Int? = null,

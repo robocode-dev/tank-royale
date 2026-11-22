@@ -717,6 +717,7 @@ class RumbleCliContributeTest {
         assertEquals(1, ended.status.kept)
         assertEquals(1, ended.status.results.accepted)
         assertEquals(run.events, logged(world), "every event reported is in the session's log")
+        assertTrue(run.events.indexOf("finishing") in run.events.lastIndexOf("battle-kept") + 1 until run.events.size, "it says that it sends what waits after its last battle")
         folder.claim()!!.close() // the lock was let go
     }
 
@@ -788,7 +789,7 @@ class RumbleCliContributeTest {
         assertEquals("finished", run.outcome, run.out)
         assertEquals(1, run.events.count { it == "pausing" }, "a second pause while pausing changes nothing")
         assertTrue(afterResume!!.state != "pausing", "the status does not stay pausing")
-        assertEquals("running", (folder.look() as SessionLook.Ended).status.state)
+        assertTrue((folder.look() as SessionLook.Ended).status.state != "pausing", "the status ends without being stuck at pausing")
     }
 
     @Test

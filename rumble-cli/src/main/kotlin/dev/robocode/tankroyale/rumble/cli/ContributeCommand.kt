@@ -283,6 +283,7 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
                 }
                 // What waits is sent now, unless the person asked to end at once or the journal cannot be written.
                 if (interrupts.get() < 2 && end != SessionEnd.Cancelled && end !is SessionEnd.JournalFailed) {
+                    report(note("finishing", "Sending the results that wait and reading their receipts before the session ends."))
                     try {
                         automatic.finish()
                     } catch (e: JournalUnusable) {

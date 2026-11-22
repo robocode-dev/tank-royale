@@ -238,7 +238,7 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     private fun progress(status: SessionStatus): JProgressBar {
         val limit = status.battleLimit
         // While no battle runs yet, such as while the session starts or sets up Python, the bar keeps moving.
-        val busy = status.battle == null && (status.state == "starting" || status.python == "setting-up")
+        val busy = status.battle == null && (status.state == "starting" || status.state == "sending" || status.python == "setting-up")
         return if (limit != null) {
             val current = (status.kept + if (status.battle != null) 1 else 0).coerceAtMost(limit).coerceAtLeast(1)
             JProgressBar(0, limit).apply {
@@ -298,7 +298,7 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     private fun stateColor(state: String): Color {
         val dark = FlatLaf.isLafDark()
         return when (state) {
-            "running" -> if (dark) Color(0x6FCF73) else Color(0x1B7F2A)
+            "running", "sending" -> if (dark) Color(0x6FCF73) else Color(0x1B7F2A)
             "waiting", "pausing", "paused" -> if (dark) Color(0xE6C35C) else Color(0x8A6D00)
             "stopping", "cancelling" -> if (dark) Color(0xF0A060) else Color(0xA14A00)
             else -> UIManager.getColor("Label.foreground") ?: Color.GRAY

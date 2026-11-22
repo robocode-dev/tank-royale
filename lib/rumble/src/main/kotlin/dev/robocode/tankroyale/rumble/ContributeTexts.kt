@@ -18,7 +18,7 @@ object ContributeTexts {
     )
 
     /** The states a running session reports. */
-    val STATES = listOf("starting", "running", "waiting", "pausing", "paused", "stopping", "cancelling")
+    val STATES = listOf("starting", "running", "waiting", "pausing", "paused", "stopping", "cancelling", "sending")
 
     /** Whether Python is ready, as a running session reports it; `none` is not shown. */
     val PYTHON = listOf("setting-up", "ready", "unavailable", "stopped")
