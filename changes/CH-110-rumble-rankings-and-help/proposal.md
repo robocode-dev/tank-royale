@@ -48,4 +48,4 @@ The change and the criteria were allocated with the repository's coordinated all
 
 ## Human evidence
 
-To be written after the maintainer's trial, before the digest.
+On 2026-11-22 the maintainer tried the Rumble menu in the desktop program. With the program set to the development Rumble, the menu showed the entries in the mockups' order (Kom i gang, Indsend eller opdater bot, Hent bots, Bidrag med kampe, Ranglister, GitHub-konto, Hjælp, in a screenshot), Help opened `https://robocode.dev/rumble/`, and Rankings opened `https://robocode-dev.github.io/rumble-data-test/`. The maintainer then stated the rule that a program set to test mode may read from and send to the test Rumble, but a program not set to test mode, which is the default, must never show a test Rumble page. Test mode is only the developer variable `RUMBLE_ENVIRONMENT=test`, so the behaviour already followed the rule; a test now proves that an unset or blank variable opens the public rankings, and the mockup and the participation design state the rule. With the program started without the variable, the maintainer confirmed that Rankings opened `https://robocode-dev.github.io/rumble-data/`.
