@@ -1,0 +1,66 @@
+name: Bug report
+description: Something in Tank Royale does not work as it should, outside the Rumble. For the Rumble, use the Rumble feedback form.
+labels:
+  - potential bug
+assignees:
+  - flemming-n-larsen
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and short description of what is wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click on ...
+        3. See the error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error details
+      description: If an error is shown, paste it here, with the essential part of a stack trace if there is one.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Tank Royale version
+      description: Shown in Help > About.
+      placeholder: e.g. 1.4.0
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. Windows 11, macOS 15, Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    id: java
+    attributes:
+      label: Java version and vendor
+      description: Run `java -version` from the command line.
+      placeholder: e.g. 25.0.1, Eclipse Adoptium
+  - type: input
+    id: bot-api
+    attributes:
+      label: Bot API and language, if it is about a bot
+      placeholder: e.g. Java Bot API 1.4.0, Python Bot API 1.4.0
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or additional context

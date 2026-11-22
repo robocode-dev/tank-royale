@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Rumble guide
+    url: https://robocode.dev/rumble/
+    about: How to take part in the Rumble, submit a bot and contribute battles.
+  - name: Questions and discussions
+    url: https://github.com/robocode-dev/tank-royale/discussions
+    about: Ask a question or discuss an idea before opening an issue.

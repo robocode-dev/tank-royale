@@ -1,0 +1,83 @@
+name: Rumble feedback
+description: Tell us how the Rumble works for you, from the Rumble menu in Tank Royale or the rumble command line, whether something went wrong or could be better.
+title: "[Rumble] "
+assignees:
+  - flemming-n-larsen
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for trying the Rumble! Every report helps make it better, also a small one about a confusing text.
+
+        **Never paste a GitHub token, a sign-in code, the `signin.bin` file or any other secret here.** Nothing in this form needs one.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of feedback is it?
+      options:
+        - Something went wrong
+        - Something was confusing or hard to find
+        - An idea for something better
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where was it?
+      description: The screen in the Rumble menu, or the command you ran.
+      options:
+        - Get started
+        - Submit or update bot
+        - My bots
+        - Download bots
+        - Contribute battles
+        - Results and queue
+        - Rankings
+        - GitHub account
+        - Help
+        - rumble command line
+        - Somewhere else
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What did you do, and what happened?
+      description: The steps that led to it, and the text the screen or the command showed.
+      placeholder: |
+        1. I opened Rumble > Contribute battles
+        2. I chose twinduel and 10 battles and pressed Start
+        3. The screen said ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+  - type: input
+    id: version
+    attributes:
+      label: Tank Royale version
+      description: Shown in Help > About, or by `rumble version`.
+      placeholder: e.g. 1.4.0
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. Windows 11, macOS 15, Ubuntu 24.04
+    validations:
+      required: true
+  - type: textarea
+    id: session
+    attributes:
+      label: Session status or log (if it is about contributing battles)
+      description: |
+        Run `rumble session status` and paste what it prints. The session's own log is `events.jsonl` in the session folder of your Tank Royale user folder, under `environments/public/session/`; paste the last lines that matter. Neither holds a secret.
+      render: text
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: A screenshot of the screen often says more than words. Make sure no code or token is visible in it.

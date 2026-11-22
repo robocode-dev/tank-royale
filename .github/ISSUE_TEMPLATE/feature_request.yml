@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest an idea for Tank Royale, outside the Rumble. For the Rumble, use the Rumble feedback form.
+assignees:
+  - flemming-n-larsen
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would it solve?
+      description: A clear and short description of the problem, for example "I'm always frustrated when ...".
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you have considered
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context or screenshots
