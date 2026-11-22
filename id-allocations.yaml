@@ -1820,6 +1820,11 @@ claims:
       state: reserved
       prefix: M
       component: "38"
+    - id: M-039
+      kind: numeric
+      state: reserved
+      prefix: M
+      component: "39"
     - id: OQ-001
       kind: numeric
       state: reserved
@@ -4601,11 +4606,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "24"
-    - id: CH-107
+    - id: CH-108
       kind: numeric
       state: reserved
       prefix: CH
-      component: "107"
+      component: "108"
     - id: G-004
       kind: numeric
       state: reserved
