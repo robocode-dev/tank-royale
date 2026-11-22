@@ -287,7 +287,7 @@
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMyBotsTextsTest.kt",
-          "sha256": "917d59514cfd9368743da2d35900d3f8e3719ae9fc250bccd45b42b409c9ae84"
+          "sha256": "0a56dad66c954dbe19771c0130d5192778e0c0b17685ca14444ad4764307845c"
         }
       ],
       "references": [
@@ -2077,7 +2077,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
-          "sha256": "774acced6bd45647dc131d18b3452e15e39cdaa431ba48cca8daaeda82251c1d"
+          "sha256": "18b2091266f03da171b0bf3df856184e13354a49ecdfdf1ed605025001f818f3"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleProgramTest.kt",

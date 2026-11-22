@@ -37,44 +37,64 @@ data class MyBotRow(
 
 /** Builds the rows of My bots from the two readings, without a window and without GitHub. */
 object MyBots {
-    private val BRANCH = Regex("^submit/(.+?)-(\\d[0-9A-Za-z.+]*)(?:-\\d+)?$")
+    // The program titles its pull requests "Add <name> <version>" or "Update <name> to <version>"; names and versions have no spaces.
+    private val ADD = Regex("^Add (\\S+) (\\S+)$")
+    private val UPDATE = Regex("^Update (\\S+) to (\\S+)$")
 
     /**
-     * True for a row that is done with: a bot no longer in the rankings, or a sent bot whose pull request was closed
-     * without being merged. My bots hides these unless the person asks to see them.
+     * True for a row that is done with: a retired bot, or a sent bot whose pull request was closed without being
+     * merged. My bots hides these unless the person asks to see them. A disqualified bot is never hidden.
      */
     fun isInactive(row: MyBotRow): Boolean =
-        row.standing is MyBotStanding.NotActive || row.standing == MyBotStanding.Progress(BotProgress.Closed)
+        (row.standing as? MyBotStanding.NotActive)?.status in setOf("retired", "superseded") ||
+            row.standing == MyBotStanding.Progress(BotProgress.Closed)
 
     /** The rows to show: all of them, or without the inactive ones. */
     fun shown(rows: List<MyBotRow>, showInactive: Boolean): List<MyBotRow> = if (showInactive) rows else rows.filterNot { isInactive(it) }
 
-    /** The bot name and version of a branch the program names, or null for any other branch. */
-    fun nameAndVersion(branch: String): Pair<String, String>? = BRANCH.matchEntire(branch)?.let { it.groupValues[1] to it.groupValues[2] }
+    /**
+     * The bot name and version of a pull request the program sent: read from its title, and only when its branch is
+     * the one the program names for them, `submit/<name>-<version>` with or without a number added after a dash.
+     * Null for any other pull request.
+     */
+    fun nameAndVersion(branch: String, title: String): Pair<String, String>? {
+        val match = ADD.matchEntire(title) ?: UPDATE.matchEntire(title) ?: return null
+        val (name, version) = match.groupValues[1] to match.groupValues[2]
+        val base = "submit/$name-$version"
+        val suffix = branch.removePrefix("$base-")
+        val ours = branch == base || (branch.startsWith("$base-") && suffix.isNotEmpty() && suffix.all { it.isDigit() })
+        return if (ours) name to version else null
+    }
 
     /**
      * One row per bot name of [account]: its own catalog entries and the pull requests it sent. An open pull request
      * shows its state, read by [progressOf], before the version in the Rumble; with none open, an active catalog entry
      * shows that it is in the Rumble, a merged pull request newer than the catalog shows that it is merged, a catalog
      * entry that is not active shows its status, and a pull request that was closed shows that. Entries of other
-     * accounts are never listed. Rows are sorted by name.
+     * accounts are never listed. [owners] are the names the catalog may give the account as owner: its login and the
+     * owner records that list it. Rows are sorted by name.
      */
     fun rows(
-        account: String,
+        owners: Set<String>,
         catalog: Catalog,
         pulls: List<SentPullRequest>,
         botsRepositoryPage: String,
         progressOf: (SentPullRequest) -> BotProgress,
     ): List<MyBotRow> {
-        val owned = catalog.bots.filter { it.owner.equals(account, ignoreCase = true) }
+        val owned = catalog.bots.filter { bot -> owners.any { it.equals(bot.owner, ignoreCase = true) } }
+        // The catalog's newest entry of a bot is the one added last; the catalog's order breaks a tie.
+        val position = catalog.bots.withIndex().associate { (index, bot) -> bot to index }
         val names = (owned.map { it.name } + pulls.map { it.name }).toSortedSet(String.CASE_INSENSITIVE_ORDER)
         return names.map { name ->
             val entries = owned.filter { it.name.equals(name, ignoreCase = true) }
             val active = entries.lastOrNull { it.isActive }
-            val newest = pulls.filter { it.name.equals(name, ignoreCase = true) }.maxByOrNull { it.number }
-            val language = entries.lastOrNull()?.platform
-            val folder = (active ?: entries.lastOrNull())?.let { "$botsRepositoryPage/tree/${catalog.commit}/${it.path}" }
-            val displayName = active?.name ?: entries.lastOrNull()?.name ?: newest!!.name
+            val latest = entries.maxWithOrNull(compareBy<CatalogBot>({ it.addedAt }, { position[it] ?: 0 }))
+            // An open pull request is shown before a newer one that was closed or merged.
+            val sent = pulls.filter { it.name.equals(name, ignoreCase = true) }.sortedByDescending { it.number }
+            val newest = sent.firstOrNull { it.open } ?: sent.firstOrNull()
+            val language = latest?.platform
+            val folder = (active ?: latest)?.let { "$botsRepositoryPage/tree/${catalog.commit}/${it.path}" }
+            val displayName = active?.name ?: latest?.name ?: newest!!.name
             val newestInCatalog = newest != null && entries.any { it.version == newest.version }
             when {
                 newest != null && newest.open ->
@@ -83,7 +103,7 @@ object MyBots {
                     MyBotRow(displayName, newest.version, language, MyBotStanding.Progress(BotProgress.Merged), active?.version, newest.url)
                 active != null ->
                     MyBotRow(displayName, active.version, language, MyBotStanding.Progress(BotProgress.InCatalog(active.version)), null, folder)
-                entries.isNotEmpty() -> entries.last().let { last ->
+                latest != null -> latest.let { last ->
                     MyBotRow(displayName, last.version, language, MyBotStanding.NotActive(last.status), null, folder)
                 }
                 else -> MyBotRow(displayName, newest!!.version, null, MyBotStanding.Progress(if (newest.merged) BotProgress.Merged else BotProgress.Closed), null, newest.url)
@@ -133,7 +153,8 @@ class LibraryMyBotsPort(
             val snapshot = RumbleSnapshot.read(api, environment, catalogSource, tokens.accessToken)
             val catalog = snapshot.catalog ?: return MyBotsReading.Failed(snapshot.problem ?: "The Rumble's catalog could not be read.")
             val pulls = sentPullRequests(tokens.accessToken, account)
-            val rows = MyBots.rows(account, catalog, pulls, "https://github.com/$repository") { pull ->
+            val owners = MyBots.ownersOf(account, snapshot.rules?.owners.orEmpty())
+            val rows = MyBots.rows(owners, catalog, pulls, "https://github.com/$repository") { pull ->
                 progress.read(tokens, pull.number, pull.name, pull.version, catalog)
             }
             MyBotsReading.Read(account, rows)
@@ -151,15 +172,27 @@ class LibraryMyBotsPort(
         return (json(answer.body) as? JsonObject)?.string("login") ?: throw IOException("GitHub did not say which account is signed in.")
     }
 
-    /** The newest hundred pull requests of the bot repository that [account] sent with the program's branch names. */
+    /**
+     * The pull requests of the bot repository that [account] sent with the program, newest first: up to [MAX_PAGES]
+     * pages of a hundred of the whole repository's pull requests, read until a page is not full.
+     */
     private fun sentPullRequests(token: String, account: String): List<SentPullRequest> {
-        val answer = api.get("/repos/$repository/pulls?state=all&sort=created&direction=desc&per_page=100", token)
-        if (answer.status == 401) throw SignInRefused()
-        if (answer.status == 429 || (answer.status == 403 && answer.body.contains("rate limit", ignoreCase = true))) {
-            throw IOException("GitHub is limiting requests. Try again later.")
+        val found = mutableListOf<SentPullRequest>()
+        for (page in 1..MAX_PAGES) {
+            val answer = api.get("/repos/$repository/pulls?state=all&sort=created&direction=desc&per_page=100&page=$page", token)
+            if (answer.status == 401) throw SignInRefused()
+            if (answer.status == 429 || (answer.status == 403 && answer.body.contains("rate limit", ignoreCase = true))) {
+                throw IOException("GitHub is limiting requests. Try again later.")
+            }
+            if (answer.status != 200) throw IOException(unexpected(answer.status))
+            found += MyBots.sentPullRequests(answer.body, account, repository)
+            if (MyBots.pullRequestCount(answer.body) < 100) break
         }
-        if (answer.status != 200) throw IOException(unexpected(answer.status))
-        return MyBots.sentPullRequests(answer.body, account, repository)
+        return found
+    }
+
+    private companion object {
+        const val MAX_PAGES = 10
     }
 
     private fun unexpected(status: Int) = "GitHub gave an unexpected answer (HTTP $status). Try again later."
@@ -179,15 +212,15 @@ internal fun MyBots.sentPullRequests(body: String, account: String, repository: 
     val pulls = (try { Json.parseToJsonElement(body) } catch (e: Exception) { null }) as? JsonArray
         ?: throw IOException("GitHub's list of pull requests could not be understood.")
     return pulls.mapNotNull { element ->
-            val pull = element as? JsonObject ?: return@mapNotNull null
-            val author = (pull["user"] as? JsonObject)?.string("login")
-            if (!account.equals(author, ignoreCase = true)) return@mapNotNull null
-            val branch = (pull["head"] as? JsonObject)?.string("ref") ?: return@mapNotNull null
-            val (name, version) = MyBots.nameAndVersion(branch) ?: return@mapNotNull null
-            val number = (pull["number"] as? JsonPrimitive)?.contentOrNull?.toIntOrNull() ?: return@mapNotNull null
-            val url = pull.string("html_url")?.takeIf { RumbleLinks.isGitHubPage(it) } ?: "https://github.com/$repository/pull/$number"
-            val merged = pull.string("merged_at") != null || (pull["merged"] as? JsonPrimitive)?.booleanOrNull == true
-            SentPullRequest(number, name, version, open = pull.string("state") == "open", merged = merged, url = url)
+        val pull = element as? JsonObject ?: return@mapNotNull null
+        val author = (pull["user"] as? JsonObject)?.string("login")
+        if (!account.equals(author, ignoreCase = true)) return@mapNotNull null
+        val branch = (pull["head"] as? JsonObject)?.string("ref") ?: return@mapNotNull null
+        val (name, version) = MyBots.nameAndVersion(branch, pull.string("title").orEmpty()) ?: return@mapNotNull null
+        val number = (pull["number"] as? JsonPrimitive)?.contentOrNull?.toIntOrNull() ?: return@mapNotNull null
+        val url = pull.string("html_url")?.takeIf { RumbleLinks.isGitHubPage(it) } ?: "https://github.com/$repository/pull/$number"
+        val merged = pull.string("merged_at") != null || (pull["merged"] as? JsonPrimitive)?.booleanOrNull == true
+        SentPullRequest(number, name, version, open = pull.string("state") == "open", merged = merged, url = url)
     }
 }
 
@@ -281,3 +314,15 @@ object MyBotsTexts {
         "rumble.submit.progress_sign_in", "rumble.submit.progress_failed",
     )
 }
+
+/** How many pull requests a page of GitHub's list holds, to know whether another page may follow. */
+internal fun MyBots.pullRequestCount(body: String): Int =
+    ((try { Json.parseToJsonElement(body) } catch (e: Exception) { null }) as? JsonArray)?.size ?: 0
+
+/**
+ * The names the catalog may give [account] as owner: the login itself and the id of every owner record that lists the
+ * login among its accounts, so a person signed in with another account of the same owner, or after renaming the
+ * account, still finds the bots.
+ */
+fun MyBots.ownersOf(account: String, records: List<OwnerRecord>): Set<String> =
+    setOf(account) + records.filter { record -> record.accounts.any { it.equals(account, ignoreCase = true) } }.map { it.ownerId }

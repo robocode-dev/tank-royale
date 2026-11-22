@@ -42,12 +42,16 @@ class RumbleMyBotsTextsTest {
             assertFalse(texts("UI titles$language.properties").getProperty("rumble_my_bots_dialog").isNullOrBlank(), "title in $language")
             assertFalse(texts("Menu$language.properties").getProperty("item.rumble_my_bots").isNullOrBlank(), "menu entry in $language")
             val hints = texts("Hints$language.properties")
-            for (key in listOf("rumble.my_bots.open_pull", "rumble.my_bots.open_folder", "rumble.my_bots.update")) {
+            val hintKeys = listOf("rumble.my_bots.open_pull", "rumble.my_bots.open_folder", "rumble.my_bots.update")
+            for (key in hintKeys) {
                 assertFalse(hints.getProperty(key).isNullOrBlank(), "$key in Hints$language")
             }
-            for (key in wanted) {
-                val text = messages.getProperty(key).orEmpty()
-                assertFalse('\u2014' in text || '\u2013' in text, "long dash in $key$language")
+            // No long dash in any text of the screen: its messages, title, menu entry and tooltips.
+            val all = wanted.map { messages.getProperty(it).orEmpty() } + hintKeys.map { hints.getProperty(it).orEmpty() } +
+                texts("UI titles$language.properties").getProperty("rumble_my_bots_dialog").orEmpty() +
+                texts("Menu$language.properties").getProperty("item.rumble_my_bots").orEmpty()
+            for (text in all) {
+                assertFalse('\u2014' in text || '\u2013' in text, "long dash in \"$text\" ($language)")
             }
         }
     }

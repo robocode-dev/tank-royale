@@ -1210,16 +1210,16 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a catalog with entries owned by the signed-in account and by another account, and pull requests the account sent with the program's branch names, other branches and pull requests of another account
     When My bots builds its rows
-    Then there is one row per bot name of the account, from its own catalog entries and the pull requests it sent, sorted by name, with the newest version, the catalog's language when the catalog knows the bot, and Open's page as the newest pull request or else the bot's folder in the bot repository
-    And entries and pull requests of another account, branches the program does not name submit/<name>-<version>, and a pull request page that is not on github.com are never used, and an answer from GitHub that is not a list is a failure, not an empty list
+    Then there is one row per bot name of the account, from the catalog entries owned by its login or by an owner record that lists the login, and from the pull requests it sent, read by their title `Add <name> <version>` or `Update <name> to <version>` on the branch the program names for them, sorted by name, with the newest version, the language of the catalog entry added last when the catalog knows the bot, and Open's page as the pull request shown or else the bot's folder in the bot repository
+    And entries and pull requests of another account, a pull request whose title or branch is not the program's, and a pull request page that is not on github.com are never used, and an answer from GitHub that is not a list is a failure, not an empty list
 
   @RCL-148
   Scenario: Each row of My bots says where the bot stands, and a failed reading is said
     Test-type: Unit
     Given bots in the catalog, sent and still open, merged, closed, and no longer active
     When My bots builds its rows and shows the reading
-    Then an open pull request shows its state, such as sent back with the reason, before the version in the Rumble, which the row then also names, a merged pull request newer than the catalog shows that it is merged, an active catalog entry shows that it is in the rankings, an entry that is not active shows its status, and a closed pull request shows that it was closed
-    And retired bots and sent bots whose pull request was closed are hidden unless the person ticks to see them, which the program remembers, while every other row always shows
+    Then an open pull request, also an older one than a closed one, shows its state, such as sent back with the reason, before the version in the Rumble, which the row then also names, a merged pull request newer than the catalog shows that it is merged, an active catalog entry shows that it is in the rankings, an entry that is not active shows its status, and a closed pull request shows that it was closed
+    And retired bots and sent bots whose pull request was closed are hidden unless the person asks to see them, while every other row, a disqualified bot too, always shows
     And a reading that failed, or that needs a sign-in, is shown as such and never as an empty list, and a reading that arrives after the screen is closed is thrown away
 
   @RCL-149
@@ -1228,7 +1228,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the desktop program's Rumble menu, the My bots screen's source and its resource files in English, Danish, Spanish and Catalan
     When they are read
     Then My bots is the entry right after Submit or update bot, and every text of the screen, its title and its menu entry is in every language without a long dash
-    And Open opens a row's page only when it is an https page on github.com and is switched off otherwise, and without a sign-in the screen offers the GitHub account screen
+    And Open opens a row's page only when it is an https page on github.com and is switched off otherwise, its buttons show the program's own tooltip with texts from the hint files in every language, and the screen's code offers the GitHub account screen when a sign-in is needed
 
   @RCL-150
   Scenario: The maintainer opens My bots against the test Rumble
