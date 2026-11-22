@@ -83,6 +83,11 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     fun render(state: ContributeState) {
         val before = shown
         shown = state
+        // A session that ended while this screen followed it stays shown as done until the person asks for a new one.
+        val ended = (state as? ContributeState.Choosing)?.last
+        if (before is ContributeState.Running && ended != null) {
+            doneSession = sessionKey(ended)
+        }
         // A new battle count from the spinner is already shown by the spinner itself; building the screen again would
         // replace the spinner under the person's hand and stop a held arrow after one step.
         if (before is ContributeState.Choosing && state is ContributeState.Choosing && before.choices.battles != null && state.choices.battles != null &&
@@ -96,7 +101,8 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
         actions.removeAll()
         when (state) {
             ContributeState.Looking -> put(wrapped(text("rumble.contribute.looking")))
-            is ContributeState.Choosing -> renderChoosing(state)
+            is ContributeState.Choosing ->
+                if (ended != null && doneSession == sessionKey(ended)) renderDone(state, ended) else renderChoosing(state)
             is ContributeState.AskingForProgram -> {
                 put(wrapped(text("rumble.contribute.program.ask", state.plan.fileName, megabytes(state.plan.size))))
                 act(button("rumble.contribute.button.fetch") { controller.fetchProgram() }, button("rumble.contribute.button.cancel") { controller.declineProgram() })
@@ -183,6 +189,32 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
             }
         }
         counts(last)
+    }
+
+    /** The session this screen followed and that ended, shown as done until the person asks for a new session. */
+    private var doneSession: String? = null
+
+    private fun sessionKey(status: SessionStatus) = "${status.pid}@${status.startedAt}"
+
+    /** How the session this screen followed ended, in the same look as while it ran, with its counts. */
+    private fun renderDone(state: ContributeState.Choosing, last: SessionStatus) {
+        val outcome = last.ended?.outcome.orEmpty()
+        val good = !state.lastUnexpected && ContributeTexts.good(outcome)
+        put(headline("\u25CF " + text("rumble.contribute.done"), statusColor(good)))
+        put(wrapped(text(if (state.lastUnexpected) "rumble.contribute.ended_unexpectedly" else ContributeTexts.forOutcome(outcome))))
+        if (!state.lastUnexpected) {
+            last.ended?.message?.takeIf { it.isNotBlank() && !ContributeTexts.ordinary(outcome) }?.let { put(small(text("rumble.contribute.details", it))) }
+            if (ContributeTexts.fixFor(outcome) == ContributeFix.ACCOUNT) put(button("rumble.contribute.button.account") { RumbleAccountDialog.open() })
+        }
+        tiles(last)
+        act(
+            button("rumble.contribute.button.new_session") {
+                doneSession = null
+                shown = null
+                render(controller.state)
+            },
+            button("rumble.contribute.button.close") { isVisible = false },
+        )
     }
 
     private fun renderRunning(state: ContributeState.Running) {
