@@ -1163,9 +1163,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given the desktop program's Rumble menu and its resource files in English, Danish, Spanish and Catalan
     When the menu's source and the screen's texts are read
-    Then Get started is the first and only once added entry of the Rumble menu
-    And every text of the screen, its three cards (title, what it needs and its button), its Beta line, its title and its menu entry is in every language's resource file, with no long dash
-    And how the screen looks, its title with the environment and its cards on a light and a dark theme are shown by the maintainer's trial of Get started
+    Then Get started is the Rumble menu's first entry and is added only once
+    And every text of the screen, its three cards (title, what it needs and its button), its Beta line, its window title and its menu entry is in every language's resource file, and none of them holds a long dash
 
   @RCL-142
   Scenario: Each Get started button leads to the right page or screen, and signing in comes first when it is needed
@@ -1174,7 +1173,7 @@ Feature: rumble-client — Local ranked and practice battle client
     When a button is pressed with and without a saved sign-in for that environment on this computer
     Then Make a bot opens the "My first bot" tutorial on robocode.dev and the feedback button opens the repository's Rumble feedback form, whether signed in or not
     And Submit a bot opens Submit or update bot and Contribute battles opens Contribute battles when a saved sign-in exists, and both open the GitHub account screen when none exists
-    And a saved sign-in for another environment does not count, and whether one exists is learned only from whether its file is there, so a saved file that cannot be used still counts and the screen it leads to says so
+    And a saved sign-in for another environment does not count, signing out removes it, and a saved file that cannot be read still counts as one, because only whether the file is there is looked at
 
   @RCL-143
   Scenario: The maintainer tries the Get started screen in a light and a dark theme

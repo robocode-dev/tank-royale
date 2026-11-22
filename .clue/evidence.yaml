@@ -275,7 +275,7 @@
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleGetStartedTextsTest.kt",
-          "sha256": "2f9e893ef101acc33984ab7bb067a0f5786fe6017449d4a910f49b6e6d6c7ad4"
+          "sha256": "2fd5ee9bf9b4986a6daf0c2c99b2fa90ef8ddbae423f34894dcb11f840918a09"
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleLicensePanelTest.kt",
@@ -2025,7 +2025,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGetStartedTest.kt",
-          "sha256": "459500d55f6877ba4771280266ef317e84731c85985ea92544f8137f29f95a5a"
+          "sha256": "3660d9ff519c425fca60c43cf19428f9d645e9e95637f0b8e1e60bd74363e251"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGitHubApiTest.kt",
@@ -2992,6 +2992,13 @@
           "subject": "RumbleEnvironmentTest.testRCL019_UnitPositive_eachEnvironmentGetsItsOwnStateFolderAndItsOwnQueue",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-142",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleGetStartedTest.kt",
+          "subject": "RumbleGetStartedTest.testRCL142_UnitNegative_aSavedFileThatCannotBeReadStillCountsBecauseOnlyItsPresenceIsLookedAt",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-142",

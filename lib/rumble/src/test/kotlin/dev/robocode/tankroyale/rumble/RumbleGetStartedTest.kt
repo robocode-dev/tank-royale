@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.rumble
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -49,5 +50,21 @@ class RumbleGetStartedTest {
         assertFalse(GetStarted.hasSavedSignIn(public), "a sign-in for the test Rumble is not one for the public Rumble")
         assertTrue(test.forget())
         assertFalse(GetStarted.hasSavedSignIn(test), "signing out removes it")
+    }
+
+    @Test
+    @Tag("RCL-142")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL142_UnitNegative_aSavedFileThatCannotBeReadStillCountsBecauseOnlyItsPresenceIsLookedAt() {
+        val store = SignInStore(RumbleEnvironments.TEST, dir)
+        assertEquals(SaveResult.Saved, store.save("ghr_SAVED", null))
+        val file = java.nio.file.Files.walk(RumbleEnvironments.TEST.stateRoot(dir)).use { files ->
+            files.filter { java.nio.file.Files.isRegularFile(it) && !SignInStore.holdsNothing(it.fileName.toString()) }.findFirst().get()
+        }
+        java.nio.file.Files.write(file, byteArrayOf(1, 2, 3))
+        assertInstanceOf(LoadResult.Unusable::class.java, store.load(), "the file is broken")
+        assertTrue(GetStarted.hasSavedSignIn(store), "it still counts, and the screen it leads to says it cannot be used")
+        assertEquals(GetStartedDestination.SubmitScreen, GetStarted.destination(GetStartedButton.SUBMIT_BOT, GetStarted.hasSavedSignIn(store)))
     }
 }

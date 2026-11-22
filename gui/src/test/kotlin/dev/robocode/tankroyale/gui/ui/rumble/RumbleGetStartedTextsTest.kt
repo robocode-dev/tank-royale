@@ -32,12 +32,13 @@ class RumbleGetStartedTextsTest {
         for (language in listOf("", "_da", "_es", "_ca")) {
             val messages = texts("Messages$language.properties")
             assertEquals(emptySet<String>(), (cardKeys + sourceKeys).toSet() - messages.stringPropertyNames(), "missing in Messages$language")
-            assertFalse(texts("UI titles$language.properties").getProperty("rumble_get_started_dialog").isNullOrBlank(), "title in $language")
-            assertFalse(texts("Menu$language.properties").getProperty("item.rumble_get_started").isNullOrBlank(), "menu entry in $language")
+            val title = texts("UI titles$language.properties").getProperty("rumble_get_started_dialog")
+            val entry = texts("Menu$language.properties").getProperty("item.rumble_get_started")
+            assertFalse(title.isNullOrBlank(), "title in $language")
+            assertFalse(entry.isNullOrBlank(), "menu entry in $language")
             // No long dashes in texts a person reads.
-            for (key in cardKeys + sourceKeys) {
-                val text = messages.getProperty(key).orEmpty()
-                assertFalse('—' in text || '–' in text, "long dash in $key$language")
+            for (text in (cardKeys + sourceKeys).map { messages.getProperty(it).orEmpty() } + title.orEmpty() + entry.orEmpty()) {
+                assertFalse('—' in text || '–' in text, "long dash in \"$text\" ($language)")
             }
         }
     }
