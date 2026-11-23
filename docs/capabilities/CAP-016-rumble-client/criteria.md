@@ -1242,8 +1242,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a journal of ranked results and a list of sent batches as a contribution session leaves them, a last line still being written in each, a journal of another Rumble, a file that is not a journal, and no files at all
     When Results and queue reads them
-    Then every result and batch written before the reading is read, with each result's state, its last reason and detail and when it was handed over to be sent, and neither file changes by a single byte
-    And a last line without its newline is left out and never cut off, a journal of another Rumble and a file that is not a journal are a failure the screen says, and missing files mean nothing is kept yet and are not created
+    Then every result and batch written before the reading is read, with each result's state, its last reason and detail and every time it was handed over to be sent, and neither file changes by a single byte
+    And a last line without its newline is left out and never cut off, a journal of another Rumble, a file that is not a journal and a journal of a schema the program does not know are a failure the screen says, and missing files mean nothing is kept yet and are not created
 
   @RCL-152
   Scenario: Results and queue counts the results and lists the batches newest first with where each stands
@@ -1251,7 +1251,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Given results waiting, sent, accepted, rejected with the Rumble's reason and set aside, in batches answered and still waiting for their receipt
     When Results and queue builds what it shows
     Then it counts the results kept, waiting, sent, accepted, rejected and set aside, and lists the batches newest first by when they were sent, each with its number of battles, when it was sent, whether it waits for the receipt or how many were accepted, rejected and not answered in it, where a result sent again belongs to the last batch that lists it and each batch keeps the time of its own sending, the Rumble's reasons for its rejected results, and its issue's page in the Rumble's data repository
-    And a batch without an issue has no page, a journal of a schema the program does not know is refused, a reading that failed is said and never shown as an empty list, and a reading that arrives after the screen is closed is thrown away
+    And a batch whose receipt was not taken yet waits for it, also when its results wait to be sent again, a batch without an issue has no page, a reading that failed is said and never shown as an empty list, and a reading that arrives after the screen is closed is thrown away
 
   @RCL-153
   Scenario: Results and queue says what holds results back, follows Contribute battles in the menu and opens only GitHub pages

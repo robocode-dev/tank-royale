@@ -15,7 +15,7 @@ data class ResultCounts(
 
 /** Where a sent batch stands. */
 sealed interface BatchStanding {
-    /** Some of its results still wait for the Rumble's receipt. */
+    /** Its receipt was not taken yet: it waits for the Rumble's receipt, or a session sends it again. */
     data object WaitingForReceipt : BatchStanding
 
     /**
@@ -78,7 +78,8 @@ object ResultsQueue {
             }.minByOrNull { instant(it) }
             val mine = batch.battleIds.filter { lastBatch[it] == index }.mapNotNull { byId[it] }
             val states = mine.groupingBy { it.state }.eachCount()
-            val standing = if (batch.batchId !in sent.done && ((states[RecordState.HANDED_OVER] ?: 0) > 0 || mine.isEmpty())) {
+            // A batch whose receipt was not taken yet either waits for it or is about to be sent again.
+            val standing = if (batch.batchId !in sent.done) {
                 BatchStanding.WaitingForReceipt
             } else {
                 val accepted = states[RecordState.ACCEPTED] ?: 0

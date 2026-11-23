@@ -88,6 +88,9 @@ class RumbleResultsQueueTest {
         assertInstanceOf(ResultsReading.Failed::class.java, other, "a journal of the test Rumble is not read as the public one's")
         Files.writeString(journalFile, "not a journal\n")
         assertInstanceOf(ResultsReading.Failed::class.java, read())
+        // A journal of a schema this program does not know is refused, not read as if it were known.
+        Files.writeString(journalFile, """{"kind":"header","schemaVersion":2,"environment":"test"}""" + "\n")
+        assertInstanceOf(ResultsReading.Failed::class.java, read())
     }
 
     @Test
@@ -108,9 +111,12 @@ class RumbleResultsQueueTest {
     @Tag("Unit")
     @Tag("Negative")
     fun testRCL152_UnitNegative_aBatchWithoutAnIssueHasNoPageAndAFailedReadingIsSaidAndALateOneThrownAway() {
+        // A batch begun but not sent yet, whose results still wait, has no issue page and is not shown as answered.
+        val waitingResult = KeptResult("x", RecordState.WAITING, null, emptyList(), emptyList())
         val sent = SentBatchesRead(listOf(SentBatches.Batch("b9", listOf("x"), null)), emptySet(), null)
-        val row = ResultsQueue.overview(emptyList(), sent, page, signedIn = true).batches.single()
+        val row = ResultsQueue.overview(listOf(waitingResult), sent, page, signedIn = true).batches.single()
         assertNull(row.issuePage)
+        assertNull(row.sentAt)
         assertEquals(BatchStanding.WaitingForReceipt, row.standing)
 
         // Results the Rumble refused in b1 are sent again in b2 and accepted there: b1 does not claim them, keeps its own
@@ -130,10 +136,6 @@ class RumbleResultsQueueTest {
         assertEquals(BatchStanding.Answered(2, 0, 0), rows[0].standing)
         assertEquals(BatchStanding.Answered(0, 0, 2), rows[2].standing, "the refused batch does not claim the results accepted later")
 
-        // A journal of a schema this program does not know is refused, not read as if it were known.
-        Files.createDirectories(ranked)
-        Files.writeString(journalFile, """{"kind":"header","schemaVersion":2,"environment":"test"}""" + "\n")
-        assertInstanceOf(ResultsReading.Failed::class.java, read())
 
         val now = Executor { it.run() }
         val shown = mutableListOf<ResultsState>()
