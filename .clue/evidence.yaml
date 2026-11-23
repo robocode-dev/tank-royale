@@ -2119,7 +2119,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
-          "sha256": "fc9c90d2998c72acc33c601cc8b763ecdaf37426d1a3caaeee096e924d44d175"
+          "sha256": "59f13306c55486e713193f8d7cf617e7c02f4d37d2c4c1e1853735c9e804679b"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
@@ -3639,6 +3639,13 @@
           "subject": "RumbleResultUploadTest.testRCL125_UnitPositive_everyWaitingRecordIsInExactlyOneBatchInTheShapeTheResultDataValidates",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-126",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
+          "subject": "RumbleResultUploadTest.testRCL126_UnitNegative_aCrashAfterABatchWasClosedAndBeforeItsRecordsWaitedAgainNeverLosesARecord",
+          "type": "Unit",
+          "direction": "negative"
         },
         {
           "id": "RCL-126",

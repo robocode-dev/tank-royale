@@ -234,6 +234,47 @@ class RumbleResultUploadTest {
 
     @Test
     @Tag("Negative")
+    fun testRCL126_UnitNegative_aCrashAfterABatchWasClosedAndBeforeItsRecordsWaitedAgainNeverLosesARecord(@TempDir dir: Path) {
+        // The issue was deleted, or the Rumble refused the batch: the batch was closed, and the program stopped before
+        // its records were returned to waiting, so they stood handed over with no open batch to send them.
+        for (refused in listOf(false, true)) {
+            val crashed = dir.resolve(if (refused) "refused" else "gone")
+            val a = record()
+            val before = setup(crashed, records = listOf(a))
+            before.sent.begin("batch-old", listOf(a.battleId))
+            before.journal.handOver(a.battleId)
+            before.sent.sentAs("batch-old", 7)
+            before.sent.finish("batch-old")
+            if (refused) before.sent.refuse("validation failed")
+            assertEquals(RecordState.HANDED_OVER, states(before.journal)[a.battleId])
+
+            val github = FakeGitHub()
+            val after = setup(crashed, github)
+            after.uploader.send()
+            if (refused) {
+                assertEquals(RecordState.WAITING, states(after.journal)[a.battleId], "it waits again, also while sending is stopped")
+                assertTrue(github.posted.isEmpty(), "nothing is sent while a refusal stands")
+            } else {
+                assertEquals(listOf(a.battleId), github.battleIds(1), "it is sent again in a new batch")
+                assertEquals(RecordState.HANDED_OVER, states(after.journal)[a.battleId])
+            }
+        }
+        // A record handed over in a batch that is still open is left to that batch.
+        val open = dir.resolve("open")
+        val b = record()
+        val s = setup(open, records = listOf(b))
+        s.sent.begin("batch-open", listOf(b.battleId))
+        s.journal.handOver(b.battleId)
+        s.sent.sentAs("batch-open", 8)
+        val github = FakeGitHub()
+        val again = setup(open, github)
+        again.uploader.send()
+        assertTrue(github.posted.isEmpty(), "an open batch with an issue is not sent again")
+        assertEquals(RecordState.HANDED_OVER, states(again.journal)[b.battleId])
+    }
+
+    @Test
+    @Tag("Negative")
     fun testRCL126_UnitNegative_aFailedSendOrACrashBeforeTheIssueWasRecordedNeverLosesARecord(@TempDir dir: Path) {
         // GitHub said no, so no issue was opened: the records wait again.
         for ((status, body, reason) in listOf(

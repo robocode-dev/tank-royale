@@ -304,6 +304,7 @@ class ResultUploader(
      */
     @Synchronized
     fun send(stop: () -> Boolean = { false }): Int {
+        reclaimStranded()
         sent.refusal?.let {
             onEvent(UploadEvent.NotSent(UploadProblem.BATCH_REFUSED, listOf(it)))
             return 0
@@ -428,6 +429,18 @@ class ResultUploader(
                     sent.finish(batch.batchId)
                 }
             }
+        }
+    }
+
+    /**
+     * A record is handed over only while an open batch lists it. A batch is closed before its records are returned to
+     * waiting, so a crash between the two never leaves a record counted by two open batches; but it leaves records handed
+     * over that no open batch will ever send or answer. They wait again here, so a crash never loses a record.
+     */
+    private fun reclaimStranded() {
+        val listed = sent.open().flatMap { it.battleIds }.toSet()
+        for (entry in journal.entries()) {
+            if (entry.state == RecordState.HANDED_OVER && entry.record.battleId !in listed) journal.returnToWaiting(entry.record.battleId)
         }
     }
 
