@@ -49,7 +49,7 @@ One program runs every session, so the desktop program and the command line cann
 - A session started by the desktop program is visible to, and can be stopped by, anything running as the same user that can write the session folder, as the saved sign-in already is.
 - The desktop program needs the command line program to start a session; it fetches it as the participation design describes, after asking.
 - The session program carries the desktop program's look and feel for its own windows, which makes it somewhat larger; a session without a screen never loads it.
-- The tray and the session's own windows come in a later change than the session folder and the screen; until then the screen and the command line are the ways to see and control a session.
+- The tray and the session's own windows came in a later change than the session folder and the screen (CH-113); the screen and the command line remain ways to see and control a session, and the tray and windows are a convenience over the session folder.
 
 ## References
 
