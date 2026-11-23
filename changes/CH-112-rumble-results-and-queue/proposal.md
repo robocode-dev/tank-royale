@@ -21,6 +21,7 @@ A contributor's battles become ranked results that wait on the computer, are sen
 - **A summary line** counts the results: kept in all, waiting to be sent, sent and waiting for the receipt, accepted, rejected, and set aside because the engine changed under them.
 - **A list of batches**, newest first: the batch, its number of battles, when it was sent, and where it stands, waiting for the receipt, accepted, or how many were rejected with the Rumble's reasons. Open opens the batch's issue on GitHub, only as an https page on github.com.
 - **The situations of the mockup that this computer can tell**: results waiting to be sent, with the note that a contribution session sends them, and without a saved sign-in, that signing in is needed and a button for the GitHub account screen; sending stopped because the Rumble refused a batch, with its reason; results set aside, with why they are kept apart.
+- **The ranked journal's criterion** that its operations are exactly the listed ones also names the new reading of its records without writing, which neither changes nor chooses a record; its guard test is widened to it.
 - **The list is read when the screen opens**, away from the screen's event thread, with no refresh button, and the behaviour is a plain class in the shared library, proved without a window. Every text is in the resource files in all four languages, and tooltips use the program's own tooltip.
 
 ## Challenge
@@ -50,4 +51,4 @@ The change and the criteria were allocated with the repository's coordinated all
 
 ## Human evidence
 
-To be written after the maintainer's trial, before the digest.
+On 2026-11-23 the maintainer opened Rumble, Resultater og kø in the desktop program set to the development Rumble, on a computer whose journal held results from earlier contribution sessions, in the dark theme (screenshot). The tiles showed 41 kept, 0 waiting, 2 sent, 39 accepted, 0 rejected and 0 set aside, and the batches were listed newest first with their battles, when they were sent and, in green, how many were accepted. The newest batch, sent on 2026-11-22 at 16:42, showed that it waited for the receipt; its issue (robocode-dev/rumble-data-test#39) was found closed with both results accepted, because no session had run since to read the receipt. The maintainer agreed to two changes from this: the waiting text now says that a session reads the receipt the next time it runs, and the list shows the first eight characters of a batch id with the whole id in the program's own tooltip. The maintainer then said the screen looks right and that Open on the waiting batch opened https://github.com/robocode-dev/rumble-data-test/issues/39.
