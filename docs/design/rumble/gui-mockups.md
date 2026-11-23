@@ -29,7 +29,7 @@ Battle   Server   Config   Rumble   Help
                            └──────────────────────┘
 ```
 
-Local bot creation and normal battles never need a GitHub account. A screen that needs one says so on the screen and offers the sign-in right there, instead of failing later. Every screen shows the environment it is talking to in its title bar, for example `Rumble (public Beta)`, and an advanced setting can switch to the development Rumble with a persistent warning, as the participation design requires.
+The built menu keeps this order without submenus and puts a line between the groups of who uses the entries: Get started; the author's Submit or update bot and My bots; Download bots; the contributor's Contribute battles and Results and queue; and Rankings, GitHub account and Help. Local bot creation and normal battles never need a GitHub account. A screen that needs one says so on the screen and offers the sign-in right there, instead of failing later. Every screen shows the environment it is talking to in its title bar, for example `Rumble (public Beta)`, and an advanced setting can switch to the development Rumble with a persistent warning, as the participation design requires.
 
 ## Get started
 

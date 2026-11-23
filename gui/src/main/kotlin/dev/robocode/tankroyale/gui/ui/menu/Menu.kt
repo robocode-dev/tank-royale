@@ -144,22 +144,27 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.rumble_get_started", onRumbleGetStarted).apply {
                 mnemonic = KeyEvent.VK_T
             }
-            // The order of the mockups.
+            // The order of the mockups, with a line between the groups of who uses them: authors, everyone who tries
+            // other bots, contributors, and then rankings, the account and help.
+            addSeparator()
             addNewMenuItem("item.rumble_submit", onRumbleSubmit).apply {
                 mnemonic = KeyEvent.VK_S
             }
             addNewMenuItem("item.rumble_my_bots", onRumbleMyBots).apply {
                 mnemonic = KeyEvent.VK_M
             }
+            addSeparator()
             addNewMenuItem("item.rumble_download", onRumbleDownload).apply {
                 mnemonic = KeyEvent.VK_D
             }
+            addSeparator()
             addNewMenuItem("item.rumble_contribute", onRumbleContribute).apply {
                 mnemonic = KeyEvent.VK_C
             }
             addNewMenuItem("item.rumble_results", onRumbleResults).apply {
                 mnemonic = KeyEvent.VK_Q
             }
+            addSeparator()
             addNewMenuItem("item.rumble_rankings", onRumbleRankings).apply {
                 mnemonic = KeyEvent.VK_R
             }

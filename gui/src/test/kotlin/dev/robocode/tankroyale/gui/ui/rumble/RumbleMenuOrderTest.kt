@@ -45,6 +45,21 @@ class RumbleMenuOrderTest {
     }
 
     @Test
+    @Tag("Unit")
+    fun theGroupsAreSeparatedByLinesWithoutSubmenus() {
+        val menu = sources.resolve("dev/robocode/tankroyale/gui/ui/menu/Menu.kt").toFile().readText()
+        val rumble = menu.substringAfter("private fun setupRumbleMenu()").substringBefore("private fun setupHelpMenu()")
+        // The menu read in order, with a line where a separator is added.
+        val read = Regex("addSeparator\\(\\)|addNewMenuItem\\(\"(item\\.rumble_[a-z_]+)\"").findAll(rumble)
+            .map { if (it.value.startsWith("addSeparator")) "|" else it.groupValues[1].removePrefix("item.rumble_") }.toList()
+        assertEquals(
+            listOf("get_started", "|", "submit", "my_bots", "|", "download", "|", "contribute", "results", "|", "rankings", "account", "help"),
+            read,
+        )
+        assertEquals(1, Regex("JMenu\\(").findAll(rumble).count(), "no submenu in the Rumble menu")
+    }
+
+    @Test
     @Tag("RCL-145")
     @Tag("Unit")
     @Tag("Negative")
