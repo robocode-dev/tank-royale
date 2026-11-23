@@ -48,7 +48,7 @@ class RumbleResultsTextsTest {
             val title = texts("UI titles$language.properties").getProperty("rumble_results_dialog")
             val entry = texts("Menu$language.properties").getProperty("item.rumble_results")
             for ((what, value) in listOf("hint" to hint, "title" to title, "menu entry" to entry)) assertFalse(value.isNullOrBlank(), "$what in $language")
-            for (text in wanted.map { messages.getProperty(it).orEmpty() } + listOf(hint, title, entry).map { it.orEmpty() }) {
+            for (text in wanted.map { messages.getProperty(it).orEmpty() } + listOf(hint, idHint, title, entry).map { it.orEmpty() }) {
                 assertFalse('—' in text || '–' in text, "long dash in \"$text\" ($language)")
             }
         }

@@ -1250,8 +1250,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given results waiting, sent, accepted, rejected with the Rumble's reason and set aside, in batches answered and still waiting for their receipt
     When Results and queue builds what it shows
-    Then it counts the results kept, waiting, sent, accepted, rejected and set aside, and lists the batches newest first by when they were sent, each with its number of battles, when it was sent, whether it waits for the receipt or how many were accepted, rejected and not sent, the Rumble's reasons for its rejected results, and its issue's page in the Rumble's data repository
-    And a batch without an issue has no page, a reading that failed is said and never shown as an empty list, and a reading that arrives after the screen is closed is thrown away
+    Then it counts the results kept, waiting, sent, accepted, rejected and set aside, and lists the batches newest first by when they were sent, each with its number of battles, when it was sent, whether it waits for the receipt or how many were accepted, rejected and not answered in it, where a result sent again belongs to the last batch that lists it and each batch keeps the time of its own sending, the Rumble's reasons for its rejected results, and its issue's page in the Rumble's data repository
+    And a batch without an issue has no page, a journal of a schema the program does not know is refused, a reading that failed is said and never shown as an empty list, and a reading that arrives after the screen is closed is thrown away
 
   @RCL-153
   Scenario: Results and queue says what holds results back, follows Contribute battles in the menu and opens only GitHub pages

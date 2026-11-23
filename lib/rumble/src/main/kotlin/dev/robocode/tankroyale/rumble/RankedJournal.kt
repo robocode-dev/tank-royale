@@ -93,9 +93,10 @@ data class JournalEntry(val record: RankedRecord, val state: RecordState, val re
 
 /**
  * A result as the journal keeps it, read without opening the journal for writing: its state, the reason and detail of
- * its last move, and when it was last handed over to be sent, as an ISO-8601 instant, or null when it never was.
+ * its last move, and every time it was handed over to be sent, oldest first, as ISO-8601 instants. A result is handed
+ * over again when it is sent again in a later batch, so the n-th time belongs to the n-th batch that lists it.
  */
-data class KeptResult(val battleId: String, val state: RecordState, val reason: String?, val detail: List<String>, val sentAt: String?)
+data class KeptResult(val battleId: String, val state: RecordState, val reason: String?, val detail: List<String>, val handedOver: List<String>)
 
 /** What adding a record did. */
 sealed interface AddResult {
@@ -320,6 +321,7 @@ class RankedJournal private constructor(
                 throw JournalUnusable("The file does not start like a Rumble journal.", e)
             }
             if (header.kind != "header" || header.environment == null) throw JournalUnusable("The file does not start like a Rumble journal.")
+            if (header.schemaVersion != 1) throw JournalUnusable("The journal uses schema version ${header.schemaVersion}, which this program does not know. Update the program.")
             if (header.environment != environment.name) {
                 throw EnvironmentRefused("This journal belongs to the ${header.environment} Rumble, not the ${environment.displayName} Rumble.")
             }
@@ -336,13 +338,13 @@ class RankedJournal private constructor(
                 when (line.kind) {
                     "record" -> line.record?.takeIf { it.battleId !in kept }?.let {
                         order += it.battleId
-                        kept[it.battleId] = KeptResult(it.battleId, RecordState.WAITING, null, emptyList(), null)
+                        kept[it.battleId] = KeptResult(it.battleId, RecordState.WAITING, null, emptyList(), emptyList())
                     }
                     "move" -> {
                         val state = line.state?.let { s -> RecordState.entries.firstOrNull { it.name == s } } ?: continue
                         val before = kept[line.battleId ?: continue] ?: continue
-                        val sentAt = if (state == RecordState.HANDED_OVER) line.at ?: before.sentAt else before.sentAt
-                        kept[before.battleId] = KeptResult(before.battleId, state, line.reason, line.detail, sentAt)
+                        val handedOver = if (state == RecordState.HANDED_OVER) before.handedOver + line.at.orEmpty() else before.handedOver
+                        kept[before.battleId] = KeptResult(before.battleId, state, line.reason, line.detail, handedOver)
                     }
                 }
             }

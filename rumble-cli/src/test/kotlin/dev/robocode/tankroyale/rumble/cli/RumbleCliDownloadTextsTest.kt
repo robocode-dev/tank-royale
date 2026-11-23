@@ -156,7 +156,12 @@ class RumbleCliDownloadTextsTest {
         val menu = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/menu/Menu.kt")
         val rumbleMenu = menu.substringAfter("private fun setupRumbleMenu()").substringBefore("private fun setupHelpMenu()")
 
-        assertEquals(listOf("item.rumble_account", "item.rumble_submit", "item.rumble_download", "item.rumble_contribute"), Regex("item\\.rumble_\\w+").findAll(rumbleMenu).map { it.value }.toList())
+        // Every item of the mockups now has its screen, in the mockups' order.
+        val built = listOf(
+            "item.rumble_get_started", "item.rumble_submit", "item.rumble_my_bots", "item.rumble_download", "item.rumble_contribute",
+            "item.rumble_results", "item.rumble_rankings", "item.rumble_account", "item.rumble_help",
+        )
+        assertEquals(built, Regex("item\\.rumble_\\w+").findAll(rumbleMenu).map { it.value }.toList())
         assertTrue(!code(dialogFile).contains("SignIn"), "the screen asks for no sign-in")
     }
 

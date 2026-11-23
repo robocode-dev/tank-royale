@@ -18,7 +18,10 @@ sealed interface BatchStanding {
     /** Some of its results still wait for the Rumble's receipt. */
     data object WaitingForReceipt : BatchStanding
 
-    /** The receipt was taken: [accepted] results were accepted and [rejected] rejected; [other] went back to wait or were set aside. */
+    /**
+     * The receipt was taken: [accepted] of its results were accepted and [rejected] rejected; [other] were not answered in
+     * this batch, because they were sent again in a later batch, went back to wait, were set aside or are not in the journal.
+     */
     data class Answered(val accepted: Int, val rejected: Int, val other: Int) : BatchStanding
 }
 
@@ -63,10 +66,19 @@ object ResultsQueue {
             setAside = byState[RecordState.SET_ASIDE] ?: 0,
         )
         val byId = results.associateBy { it.battleId }
+        // A result sent again belongs to the last batch that lists it; its earlier batches did not answer it.
+        val lastBatch = mutableMapOf<String, Int>()
+        sent.batches.forEachIndexed { index, batch -> batch.battleIds.forEach { lastBatch[it] = index } }
+        // The n-th batch that lists a result was sent at the result's n-th hand-over.
+        val listedBefore = mutableMapOf<String, Int>()
         val rows = sent.batches.withIndex().map { (index, batch) ->
-            val mine = batch.battleIds.mapNotNull { byId[it] }
+            val sentAt = batch.battleIds.mapNotNull { id ->
+                val n = listedBefore.getOrDefault(id, 0).also { listedBefore[id] = it + 1 }
+                byId[id]?.handedOver?.getOrNull(n)?.takeIf { it.isNotEmpty() }
+            }.minByOrNull { instant(it) }
+            val mine = batch.battleIds.filter { lastBatch[it] == index }.mapNotNull { byId[it] }
             val states = mine.groupingBy { it.state }.eachCount()
-            val standing = if ((states[RecordState.HANDED_OVER] ?: 0) > 0 || (batch.batchId !in sent.done && mine.isEmpty())) {
+            val standing = if (batch.batchId !in sent.done && ((states[RecordState.HANDED_OVER] ?: 0) > 0 || mine.isEmpty())) {
                 BatchStanding.WaitingForReceipt
             } else {
                 val accepted = states[RecordState.ACCEPTED] ?: 0
@@ -76,11 +88,19 @@ object ResultsQueue {
             val reasons = mine.filter { it.state == RecordState.REJECTED }.map { it.detail.firstOrNull() ?: it.reason.orEmpty() }
                 .filter { it.isNotBlank() }.distinct()
             val issue = batch.issue?.let { "$dataRepositoryPage/issues/$it" }
-            index to BatchRow(batch.batchId, batch.battleIds.size, mine.mapNotNull { it.sentAt }.minOrNull(), standing, reasons, issue)
+            index to BatchRow(batch.batchId, batch.battleIds.size, sentAt, standing, reasons, issue)
         }
         // Newest first: by when it was sent, and by the order of the list when that is not known.
-        val newestFirst = rows.sortedWith(compareByDescending<Pair<Int, BatchRow>> { it.second.sentAt ?: "" }.thenByDescending { it.first }).map { it.second }
+        val newestFirst = rows.sortedWith(
+            compareByDescending<Pair<Int, BatchRow>> { it.second.sentAt?.let(::instant) ?: java.time.Instant.MIN }.thenByDescending { it.first },
+        ).map { it.second }
         return ResultsOverview(counts, newestFirst, sent.refusal, signedIn)
+    }
+
+    private fun instant(text: String): java.time.Instant = try {
+        java.time.Instant.parse(text)
+    } catch (e: java.time.format.DateTimeParseException) {
+        java.time.Instant.MIN
     }
 
     /** True when results wait to be sent, which only a contribution session does. */

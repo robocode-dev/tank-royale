@@ -60,7 +60,7 @@ class RumbleResultsQueueTest {
         assertEquals(listOf("a", "b", "c", "d", "e", "f", "old"), results.map { it.battleId })
         assertEquals(RecordState.REJECTED, results[1].state)
         assertEquals(listOf("duplicate battle"), results[1].detail)
-        assertEquals("2026-11-22T10:00:00Z", results[0].sentAt)
+        assertEquals(listOf("2026-11-22T10:00:00Z"), results[0].handedOver)
         assertEquals(listOf("b1", "b2"), SentBatches.read(sentFile).batches.map { it.batchId })
         assertInstanceOf(ResultsReading.Read::class.java, read())
         assertArrayEquals(before.first, Files.readAllBytes(journalFile), "the journal is not changed")
@@ -112,6 +112,28 @@ class RumbleResultsQueueTest {
         val row = ResultsQueue.overview(emptyList(), sent, page, signedIn = true).batches.single()
         assertNull(row.issuePage)
         assertEquals(BatchStanding.WaitingForReceipt, row.standing)
+
+        // Results the Rumble refused in b1 are sent again in b2 and accepted there: b1 does not claim them, keeps its own
+        // time, and the list stays newest first.
+        val resent = listOf(
+            KeptResult("p", RecordState.ACCEPTED, null, emptyList(), listOf("2026-11-22T10:00:00Z", "2026-11-22T12:00:00.5Z")),
+            KeptResult("q", RecordState.ACCEPTED, null, emptyList(), listOf("2026-11-22T10:00:00Z", "2026-11-22T12:00:00.5Z")),
+            KeptResult("r", RecordState.ACCEPTED, null, emptyList(), listOf("2026-11-22T11:00:00Z")),
+        )
+        val batches = SentBatchesRead(
+            listOf(SentBatches.Batch("b1", listOf("p", "q"), 41), SentBatches.Batch("bx", listOf("r"), 43), SentBatches.Batch("b2", listOf("p", "q"), 44)),
+            setOf("b1", "bx", "b2"), null,
+        )
+        val rows = ResultsQueue.overview(resent, batches, page, signedIn = true).batches
+        assertEquals(listOf("b2", "bx", "b1"), rows.map { it.batchId })
+        assertEquals(listOf("2026-11-22T12:00:00.5Z", "2026-11-22T11:00:00Z", "2026-11-22T10:00:00Z"), rows.map { it.sentAt })
+        assertEquals(BatchStanding.Answered(2, 0, 0), rows[0].standing)
+        assertEquals(BatchStanding.Answered(0, 0, 2), rows[2].standing, "the refused batch does not claim the results accepted later")
+
+        // A journal of a schema this program does not know is refused, not read as if it were known.
+        Files.createDirectories(ranked)
+        Files.writeString(journalFile, """{"kind":"header","schemaVersion":2,"environment":"test"}""" + "\n")
+        assertInstanceOf(ResultsReading.Failed::class.java, read())
 
         val now = Executor { it.run() }
         val shown = mutableListOf<ResultsState>()
