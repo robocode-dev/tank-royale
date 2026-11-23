@@ -17,6 +17,7 @@ import dev.robocode.tankroyale.gui.ui.rumble.RumbleDownloadDialog
 import dev.robocode.tankroyale.gui.ui.rumble.RumbleGetStartedDialog
 import dev.robocode.tankroyale.gui.ui.rumble.RumbleMyBotsDialog
 import dev.robocode.tankroyale.gui.ui.rumble.RumblePages
+import dev.robocode.tankroyale.gui.ui.rumble.RumbleResultsDialog
 import dev.robocode.tankroyale.gui.ui.rumble.RumbleSubmitDialog
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.ui.server.Server
@@ -93,6 +94,9 @@ object MenuEventHandlers {
             }
             onRumbleContribute.on(this) {
                 RumbleContribute.open()
+            }
+            onRumbleResults.on(this) {
+                RumbleResultsDialog.open()
             }
             onRumbleRankings.on(this) {
                 RumblePages.openRankings()

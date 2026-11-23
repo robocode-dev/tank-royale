@@ -955,7 +955,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given the public interface of the ranked journal
     When it is inspected
-    Then its operations are exactly adding a record, reading the records and the read report, the moves tied to batches, receipts and the engine epoch, and opening a journal; none of them removes, hides or filters a record, none takes a function, predicate or comparator, and none takes anything but a battle ID, a reason code with its details, a version number or a whole record to add, so a record can only be chosen by its identity and never by how well the battle went
+    Then its operations are exactly adding a record, reading the records and the read report, the moves tied to batches, receipts and the engine epoch, opening a journal, and reading a journal's records without writing to it; none of them removes, hides or filters a record, none takes a function, predicate or comparator, and none takes anything but a battle ID, a reason code with its details, a version number or a whole record to add, so a record can only be chosen by its identity and never by how well the battle went
 
   @RCL-115
   Scenario: A completed battle of a contribution session becomes exactly one record in the journal, made from what was run
@@ -1236,4 +1236,36 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the desktop program set to the development Rumble with the maintainer's saved sign-in
     When the maintainer opens Rumble, My bots and presses Open and Update on a row
     Then the screen lists the account's bots with where each stands, Open opens the bot's page on GitHub and Update opens Submit or update bot
+
+  @RCL-151
+  Scenario: The results kept on this computer are read without being changed
+    Test-type: Unit
+    Given a journal of ranked results and a list of sent batches as a contribution session leaves them, a last line still being written in each, a journal of another Rumble, a file that is not a journal, and no files at all
+    When Results and queue reads them
+    Then every result and batch written before the reading is read, with each result's state, its last reason and detail and when it was handed over to be sent, and neither file changes by a single byte
+    And a last line without its newline is left out and never cut off, a journal of another Rumble and a file that is not a journal are a failure the screen says, and missing files mean nothing is kept yet and are not created
+
+  @RCL-152
+  Scenario: Results and queue counts the results and lists the batches newest first with where each stands
+    Test-type: Unit
+    Given results waiting, sent, accepted, rejected with the Rumble's reason and set aside, in batches answered and still waiting for their receipt
+    When Results and queue builds what it shows
+    Then it counts the results kept, waiting, sent, accepted, rejected and set aside, and lists the batches newest first by when they were sent, each with its number of battles, when it was sent, whether it waits for the receipt or how many were accepted, rejected and not sent, the Rumble's reasons for its rejected results, and its issue's page in the Rumble's data repository
+    And a batch without an issue has no page, a reading that failed is said and never shown as an empty list, and a reading that arrives after the screen is closed is thrown away
+
+  @RCL-153
+  Scenario: Results and queue says what holds results back, follows Contribute battles in the menu and opens only GitHub pages
+    Test-type: Unit
+    Given results waiting with and without a saved sign-in, a batch the Rumble refused, results set aside, the desktop program's Rumble menu and its resource files in English, Danish, Spanish and Catalan
+    When Results and queue is built
+    Then it knows that results wait and that a contribution session sends them, that a sign-in is needed when none is saved, with the GitHub account screen offered in the screen's code, the Rumble's reason for a refused batch, and how many results are set aside
+    And it is the entry right after Contribute battles, every text of the screen, its title, its menu entry and its tooltip is in every language without a long dash, Open opens a batch's issue only when it is an https page on github.com, shows the program's own tooltip and is switched off otherwise, and the Rumble's reasons follow their batch
+
+  @RCL-154
+  Scenario: The maintainer opens Results and queue against the test Rumble
+    Test-type: Human
+    Given the desktop program set to the development Rumble on the maintainer's computer, which keeps results from earlier contribution sessions
+    When the maintainer opens Rumble, Results and queue and presses Open on a batch
+    Then the screen shows the counts and the batches with where each stands, and Open opens the batch's issue on GitHub
+
 ```

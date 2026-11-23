@@ -288,6 +288,10 @@
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMyBotsTextsTest.kt",
           "sha256": "0a56dad66c954dbe19771c0130d5192778e0c0b17685ca14444ad4764307845c"
+        },
+        {
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleResultsTextsTest.kt",
+          "sha256": "0f05d90c646fc069e83dd613990f4f995683c86d7b4fd208cfc5ad561c57ede0"
         }
       ],
       "references": [
@@ -372,6 +376,20 @@
           "id": "RCL-149",
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleMyBotsTextsTest.kt",
           "subject": "RumbleMyBotsTextsTest.testRCL149_UnitPositive_myBotsFollowsSubmitInTheMenuAndEveryTextIsInEveryLanguage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-153",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleResultsTextsTest.kt",
+          "subject": "RumbleResultsTextsTest.testRCL153_UnitNegative_openNeverOpensAPageThatIsNotOnGitHubAndRejectedResultsShowTheirReasons",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-153",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleResultsTextsTest.kt",
+          "subject": "RumbleResultsTextsTest.testRCL153_UnitPositive_resultsFollowsContributeInTheMenuAndEveryTextIsInEveryLanguage",
           "type": "Unit",
           "direction": "positive"
         }
@@ -2085,7 +2103,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
-          "sha256": "9c0a3e60ed3c519bece674901bcb55f97284563d35275be9c0c2a1de48bfa9a0"
+          "sha256": "5c7127b8a1bccbfabefd1ef309ad33a96ff0b6f57c0113e063396721c3a59ef4"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankingsAndHelpTest.kt",
@@ -2102,6 +2120,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
           "sha256": "fc9c90d2998c72acc33c601cc8b763ecdaf37426d1a3caaeee096e924d44d175"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
+          "sha256": "480f3e255edb73d5cd163d397eb19dbfb25701a1b30d07b4a5022b27837a498e"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
@@ -3686,6 +3708,41 @@
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
           "subject": "RumbleResultUploadTest.testRCL130_IntegrationPositive_oneRealBatchIsSentAndReceiptedInTheTestRumble",
           "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-151",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
+          "subject": "RumbleResultsQueueTest.testRCL151_UnitNegative_aTornLastLineIsLeftOutAndKeptAnotherRumblesJournalIsRefusedAndNoFilesMeanNothingKept",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-151",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
+          "subject": "RumbleResultsQueueTest.testRCL151_UnitPositive_theJournalAndTheSentBatchesAreReadWithoutAByteChanging",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-152",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
+          "subject": "RumbleResultsQueueTest.testRCL152_UnitNegative_aBatchWithoutAnIssueHasNoPageAndAFailedReadingIsSaidAndALateOneThrownAway",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-152",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
+          "subject": "RumbleResultsQueueTest.testRCL152_UnitPositive_theResultsAreCountedAndTheBatchesListedNewestFirstWithWhereEachStands",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-153",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
+          "subject": "RumbleResultsQueueTest.testRCL153_UnitPositive_whatHoldsResultsBackIsKnown",
+          "type": "Unit",
           "direction": "positive"
         },
         {
