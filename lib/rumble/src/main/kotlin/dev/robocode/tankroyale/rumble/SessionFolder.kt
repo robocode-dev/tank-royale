@@ -124,6 +124,7 @@ class SessionFolder(val folder: Path) {
     private val eventsFile = folder.resolve("events.jsonl")
     private val previousEventsFile = folder.resolve("events.previous.jsonl")
     private val requests = folder.resolve("requests")
+    private val showDesktopFile = folder.resolve("show-desktop.request")
 
     /** Takes the lock for a new session, or gives null when a session of this environment already runs. */
     fun claim(): RunningSession? {
@@ -185,6 +186,31 @@ class SessionFolder(val folder: Path) {
         val name = String.format("%015d-%09d-%s.%s", System.currentTimeMillis(), sequence.incrementAndGet(), UUID.randomUUID(), request.name.lowercase())
         writeWhole(requests.resolve(name), "")
         return true
+    }
+
+    /**
+     * Asks a desktop program that follows this session to come to the front and show it. The session writes the
+     * request; a desktop program takes it with [takeDesktopRequest]. False when it could not be written.
+     */
+    fun askDesktopToShow(): Boolean = try {
+        Files.createDirectories(folder)
+        writeWhole(showDesktopFile, System.currentTimeMillis().toString())
+        true
+    } catch (e: IOException) {
+        false
+    }
+
+    /** Whether the request to show a desktop program is gone, because a desktop program took it. */
+    fun desktopRequestTaken(): Boolean = Files.notExists(showDesktopFile)
+
+    /**
+     * Takes the request to show a desktop program, if there is one: true for exactly one taker, since only one can
+     * remove the file, so two desktop programs never both come to the front for one request.
+     */
+    fun takeDesktopRequest(): Boolean = try {
+        Files.deleteIfExists(showDesktopFile)
+    } catch (e: IOException) {
+        false
     }
 
     /** The lines of the running or last session's event log. */

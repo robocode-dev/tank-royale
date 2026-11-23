@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.gui.booter.BotIdentity
 import dev.robocode.tankroyale.gui.booter.BotMatcher
 import dev.robocode.tankroyale.gui.client.ClientEvents
-import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatDark
+import dev.robocode.tankroyale.look.RobocodeFlatDark
 import net.miginfocom.swing.MigLayout
 import java.awt.BorderLayout
 import java.awt.Dimension

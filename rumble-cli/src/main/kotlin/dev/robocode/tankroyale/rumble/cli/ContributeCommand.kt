@@ -52,6 +52,9 @@ import dev.robocode.tankroyale.rumble.WorkerHost
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.serialization.json.JsonObject
+import dev.robocode.tankroyale.rumble.DesktopSettings
+import dev.robocode.tankroyale.rumble.OpenTankRoyale
+import dev.robocode.tankroyale.rumble.SessionShow
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
@@ -80,6 +83,18 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         "--owner-pid",
         help = "The process that owns the session. When it is gone, the session finishes the running battle and ends. The desktop program gives its own.",
     ).long()
+    private val show by option(
+        "--show",
+        help = "How the session shows itself while it runs: tray (an icon, or its window where there is no tray), window, or none. Defaults to none.",
+    ).choice("tray", "window", "none").default("none")
+    private val openCommand by option(
+        "--open-command",
+        help = "One part of the command that starts Tank Royale, for the session's Open Tank Royale. Give it again for each part. The desktop program gives its own.",
+    ).multiple()
+
+    /** The session's tray icon or window, as chosen; null when it shows nothing. */
+    @Volatile
+    private var display: SessionDisplay? = null
 
     /** The session's folder in the Rumble state, kept up to date from the events reported; null before the lock is taken. */
     @Volatile
@@ -112,6 +127,9 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             return answer(reply(env, ExitCodes.FAILED, "session-folder-unusable", "The session folder could not be used: ${e.message}"))
         } ?: return answer(sessionRunning(env, folder))
         tracker = SessionTracker(running, env, owner, chosenFormats, battles) { services.clock.instant() }
+        display = SessionDisplay(
+            SessionShow.of(show) ?: SessionShow.NONE, { tracker?.status }, folder, OpenTankRoyale(folder, openCommand), DesktopSettings(base()),
+        ).also { it.start() }
         try {
             contribute(env, stateRoot, chosenFormats, selectionMode, owner)
         } catch (e: Throwable) {
@@ -121,6 +139,7 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             if (t != null) {
                 runCatching { t.end(if (e is BadInput) "bad-input" else "failed", e.message.orEmpty()) }
                 t.close()
+                display?.ended(t.status)
             }
             throw e
         }
@@ -309,6 +328,10 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             // The answer is written whatever happens to the session folder.
             runCatching { t.end(outcome, message) }
             runCatching { t.close() }
+            answer(reply)
+            // The tray's notice and an open window come after the session let go of its folder, so it can be started again.
+            display?.ended(t.status)
+            return
         }
         answer(reply)
     }

@@ -11,9 +11,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.Strings
-import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatDark
-import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatLight
-import dev.robocode.tankroyale.gui.resolveTheme
+import dev.robocode.tankroyale.look.RobocodeLook
 import com.formdev.flatlaf.FlatLaf
 import net.miginfocom.swing.MigLayout
 import java.awt.Window
@@ -135,7 +133,7 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         val newCode = (themeCombo.selectedItem as? ThemeOption)?.code ?: return
         if (newCode == ConfigSettings.theme) return
         ConfigSettings.theme = newCode
-        if (resolveTheme(newCode) == "light") RobocodeFlatLight.setup() else RobocodeFlatDark.setup()
+        RobocodeLook.setup(newCode)
         FlatLaf.updateUI()
         Window.getWindows().forEach { SwingUtilities.updateComponentTreeUI(it) }
     }

@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.rumble
 
+import java.lang.management.ManagementFactory
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -35,17 +36,24 @@ data class ContributeChoices(
     val bots: Set<String> = emptySet(),
     val formats: Set<String> = RANKED_FORMATS.toSet(),
     val battles: Int? = DEFAULT_BATTLES,
+    /** How the session shows itself while it runs: in the tray unless the person chose otherwise. */
+    val show: SessionShow = SessionShow.TRAY,
 ) {
     /** Whether a session can be started with these choices. */
     val startable: Boolean get() = formats.isNotEmpty() && (mode == ContributeMode.ALL || bots.isNotEmpty()) && (battles == null || battles > 0)
 
-    /** The command line's arguments for these choices in [environment], owned by [ownerPid] when it is not null. */
-    fun arguments(environment: RumbleEnvironment, ownerPid: Long?): List<String> = buildList {
+    /**
+     * The command line's arguments for these choices in [environment], owned by [ownerPid] when it is not null, with
+     * [openCommand], the command that starts this desktop program, so the session can open Tank Royale.
+     */
+    fun arguments(environment: RumbleEnvironment, ownerPid: Long?, openCommand: List<String> = emptyList()): List<String> = buildList {
         add("contribute"); add("-e"); add(environment.name); add("--mode"); add(mode.option)
         if (mode != ContributeMode.ALL) bots.sorted().forEach { add("--bot"); add(it) }
         RANKED_FORMATS.filter { it in formats }.forEach { add("--format"); add(it) }
         battles?.let { add("--battles"); add(it.toString()) }
         ownerPid?.let { add("--owner-pid"); add(it.toString()) }
+        add("--show"); add(show.option)
+        openCommand.forEach { add("--open-command"); add(it) }
     }
 
     companion object {
@@ -103,6 +111,9 @@ interface ContributePort {
     /** This program's own process ID, which a session it starts is owned by. */
     val ownPid: Long
 
+    /** The command that starts this program again, which a session uses to open Tank Royale; empty when not known. */
+    val openCommand: List<String> get() = emptyList()
+
     fun look(): SessionLook
 
     /** The keys ("name version") of the catalog's active bots. Throws [IOException] or [CatalogUnreadable] when the catalog cannot be read. */
@@ -137,6 +148,13 @@ class LibraryContributePort(
     private val errorsFile = folder.folder.resolve("errors.log")
 
     override val ownPid: Long = ProcessHandle.current().pid()
+
+    // The command that starts this very program again: the installed launcher, or Java with its settings and the jar.
+    override val openCommand: List<String> = OpenCommand.of(
+        ProcessHandle.current().info().command().orElse(null),
+        ManagementFactory.getRuntimeMXBean().inputArguments,
+        runCatching { Path.of(LibraryContributePort::class.java.protectionDomain.codeSource.location.toURI()) }.getOrNull(),
+    )
 
     override fun look(): SessionLook = folder.look()
 
@@ -258,6 +276,9 @@ class ContributeController(
     /** [battles] null keeps the session running until it is stopped. */
     fun setBattles(battles: Int?) = change { it.copy(battles = battles) }
 
+    /** How the session shows itself while it runs: in the tray, in its own window, or not at all. */
+    fun setShow(show: SessionShow) = change { it.copy(show = show) }
+
     /** Reads the catalog again after it could not be read. */
     fun readAgain() = post.execute {
         val choosing = state as? ContributeState.Choosing ?: return@execute
@@ -342,7 +363,7 @@ class ContributeController(
     }
 
     private fun launch(choosing: ContributeState.Choosing, jar: Path, keepOnClose: Boolean) {
-        val arguments = choosing.choices.arguments(environment, if (keepOnClose) null else port.ownPid)
+        val arguments = choosing.choices.arguments(environment, if (keepOnClose) null else port.ownPid, port.openCommand)
         show(ContributeState.Preparing(choosing, fetching = false))
         work({ port.start(jar, arguments) }) { pid -> show(ContributeState.Starting(choosing, pid, clock(), ownedHere = !keepOnClose)) }
     }

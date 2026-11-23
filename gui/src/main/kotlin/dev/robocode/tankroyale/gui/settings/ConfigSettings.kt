@@ -22,6 +22,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val RUMBLE_CLOSE_CHOICE = "rumble-contribute-on-close"
     private const val RUMBLE_SEEN_SESSION_END = "rumble-contribute-seen-end"
     private const val RUMBLE_MY_BOTS_SHOW_INACTIVE = "rumble-my-bots-show-inactive"
+    private const val RUMBLE_SESSION_SHOW = "rumble-session-show"
 
     private const val DEFAULT_CONSOLE_MAX_CHARACTERS = 10000
     const val DEFAULT_BOOT_TIMEOUT = 30
@@ -167,6 +168,13 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         get() = load(RUMBLE_SEEN_SESSION_END, "")
         set(value) {
             save(RUMBLE_SEEN_SESSION_END, value)
+        }
+
+    /** How a contribution session shows itself while it runs: `tray` unless the person chose `window` or `none`. */
+    var rumbleSessionShow: String
+        get() = load(RUMBLE_SESSION_SHOW, "tray").lowercase().takeIf { it in setOf("tray", "window", "none") } ?: "tray"
+        set(value) {
+            save(RUMBLE_SESSION_SHOW, value)
         }
 
     /** Whether My bots also lists retired bots and sent bots that were closed. Off unless the person turned it on. */
