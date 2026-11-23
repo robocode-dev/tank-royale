@@ -22,6 +22,7 @@ object MenuEventTriggers {
     val onRumbleMyBots = MenuEvent()
     val onRumbleDownload = MenuEvent()
     val onRumbleContribute = MenuEvent()
+    val onRumbleResults = MenuEvent()
     val onRumbleRankings = MenuEvent()
     val onRumbleHelp = MenuEvent()
     val onHelp = MenuEvent()

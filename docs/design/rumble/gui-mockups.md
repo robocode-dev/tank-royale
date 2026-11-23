@@ -10,7 +10,7 @@ reversal-cost: low
 
 # Rumble menu mockups and participant journeys
 
-These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **Get started** screen, the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request), **My bots**, **Download bots**, **Contribute battles**, **Rankings** and **Help** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
+These text mockups show what a person sees in the planned **Rumble** menu and how they move through it. They are for the maintainer's review before any screen is built; they fix what each screen says and does, not its pixels. The [target participation design](participation.md) owns the shared interfaces and the sign-in rules these screens rely on. Nothing here describes shipped functionality, except that the **Get started** screen, the **GitHub account** screen and all six steps of **Submit or update bot** (choose, check, review, your copy on GitHub, send and follow the pull request), **My bots**, **Download bots**, **Contribute battles**, **Results and queue**, **Rankings** and **Help** are built behind a developer switch; the [participation design](participation.md) says what it does and does not yet prove.
 
 The menu bar gains one entry between Config and Help:
 
@@ -300,7 +300,7 @@ The three bot modes follow the participation design: **All bots** lets the Rumbl
 | Part of a batch is rejected | The rejected battles with GitHub's reasons | [Details] |
 | The engine changed under queued results | "These results are from an older engine and are kept apart." | [Learn more] |
 
-Results are saved before they are sent, so an interrupted program loses none of them.
+Results are saved before they are sent, so an interrupted program loses none of them. **What is built**, behind the developer switch: the screen reads, and never writes, the journal and the list of sent batches that contribution sessions keep for the Rumble it talks to, so it can be open while a session runs. It shows the counts kept, waiting, sent, accepted, rejected and set aside as tiles, the batches newest first with their battles, when they were sent, where they stand and the Rumble's reasons, and Open for each batch's issue on github.com. It says when results wait and that a session sends them, offers the GitHub account screen when no sign-in is saved, and says why sending is stopped and why results are set aside. It has no Retry now and no In rankings count: sending belongs to contribution sessions, which retry by themselves, and this computer cannot know the rankings, which Rankings opens.
 
 ## Rankings and Help
 

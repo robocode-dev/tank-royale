@@ -22,6 +22,7 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleGetStarted
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleHelp
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleMyBots
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleRankings
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleResults
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleSubmit
 import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
@@ -143,7 +144,7 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.rumble_get_started", onRumbleGetStarted).apply {
                 mnemonic = KeyEvent.VK_T
             }
-            // The order of the mockups: Results and queue comes after Contribute, once built.
+            // The order of the mockups.
             addNewMenuItem("item.rumble_submit", onRumbleSubmit).apply {
                 mnemonic = KeyEvent.VK_S
             }
@@ -155,6 +156,9 @@ object Menu : JMenuBar() {
             }
             addNewMenuItem("item.rumble_contribute", onRumbleContribute).apply {
                 mnemonic = KeyEvent.VK_C
+            }
+            addNewMenuItem("item.rumble_results", onRumbleResults).apply {
+                mnemonic = KeyEvent.VK_Q
             }
             addNewMenuItem("item.rumble_rankings", onRumbleRankings).apply {
                 mnemonic = KeyEvent.VK_R

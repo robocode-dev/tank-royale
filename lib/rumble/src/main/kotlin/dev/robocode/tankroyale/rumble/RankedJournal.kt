@@ -91,6 +91,13 @@ object MoveReason {
 /** A record together with where it stands. */
 data class JournalEntry(val record: RankedRecord, val state: RecordState, val reason: String?, val detail: List<String>)
 
+/**
+ * A result as the journal keeps it, read without opening the journal for writing: its state, the reason and detail of
+ * its last move, and every time it was handed over to be sent, oldest first, as ISO-8601 instants. A result is handed
+ * over again when it is sent again in a later batch, so the n-th time belongs to the n-th batch that lists it.
+ */
+data class KeptResult(val battleId: String, val state: RecordState, val reason: String?, val detail: List<String>, val handedOver: List<String>)
+
 /** What adding a record did. */
 sealed interface AddResult {
     /** The record is written, flushed to the disk and kept. */
@@ -288,6 +295,60 @@ class RankedJournal private constructor(
         private fun headerLine(environment: RumbleEnvironment): ByteArray {
             val header = JournalLine(kind = "header", schemaVersion = 1, environment = environment.name)
             return (json.encodeToString(JournalLine.serializer(), header) + "\n").toByteArray(StandardCharsets.UTF_8)
+        }
+
+        /**
+         * Reads the journal of [environment] in [file] and never writes to it, so it can be read while a contribution
+         * session adds to it: a last line without its newline is one still being written and is left out, a line that
+         * cannot be read is skipped, and a missing file is an empty journal. A journal made for another environment is
+         * refused with [EnvironmentRefused]; a file that is not a journal with [JournalUnusable].
+         */
+        fun read(environment: RumbleEnvironment, file: Path): List<KeptResult> {
+            if (Files.notExists(file)) return emptyList()
+            val bytes = try {
+                Files.readAllBytes(file)
+            } catch (e: IOException) {
+                throw JournalUnusable("The journal could not be read: ${e.message}", e)
+            }
+            val whole = bytes.lastIndexOf('\n'.code.toByte()) + 1
+            val lines = String(bytes, 0, whole, StandardCharsets.UTF_8).split('\n').filter { it.isNotBlank() }
+            if (lines.isEmpty()) return emptyList()
+            val header = try {
+                json.decodeFromString(JournalLine.serializer(), lines.first())
+            } catch (e: SerializationException) {
+                throw JournalUnusable("The file does not start like a Rumble journal.", e)
+            } catch (e: IllegalArgumentException) {
+                throw JournalUnusable("The file does not start like a Rumble journal.", e)
+            }
+            if (header.kind != "header" || header.environment == null) throw JournalUnusable("The file does not start like a Rumble journal.")
+            if (header.schemaVersion != 1) throw JournalUnusable("The journal uses schema version ${header.schemaVersion}, which this program does not know. Update the program.")
+            if (header.environment != environment.name) {
+                throw EnvironmentRefused("This journal belongs to the ${header.environment} Rumble, not the ${environment.displayName} Rumble.")
+            }
+            val order = mutableListOf<String>()
+            val kept = mutableMapOf<String, KeptResult>()
+            for (raw in lines.drop(1)) {
+                val line = try {
+                    json.decodeFromString(JournalLine.serializer(), raw)
+                } catch (e: SerializationException) {
+                    continue
+                } catch (e: IllegalArgumentException) {
+                    continue
+                }
+                when (line.kind) {
+                    "record" -> line.record?.takeIf { it.battleId !in kept }?.let {
+                        order += it.battleId
+                        kept[it.battleId] = KeptResult(it.battleId, RecordState.WAITING, null, emptyList(), emptyList())
+                    }
+                    "move" -> {
+                        val state = line.state?.let { s -> RecordState.entries.firstOrNull { it.name == s } } ?: continue
+                        val before = kept[line.battleId ?: continue] ?: continue
+                        val handedOver = if (state == RecordState.HANDED_OVER) before.handedOver + line.at.orEmpty() else before.handedOver
+                        kept[before.battleId] = KeptResult(before.battleId, state, line.reason, line.detail, handedOver)
+                    }
+                }
+            }
+            return order.map { kept.getValue(it) }
         }
 
         /**

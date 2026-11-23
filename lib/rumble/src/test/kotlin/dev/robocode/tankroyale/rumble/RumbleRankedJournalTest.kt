@@ -378,7 +378,7 @@ class RumbleRankedJournalTest {
             setOf("add", "handOver", "returnToWaiting", "accept", "reject", "setAsideOtherEpochs", "entries", "waiting", "readReport", "getEnvironment"),
             operations,
         )
-        assertEquals(setOf("open"), opening)
+        assertEquals(setOf("open", "read"), opening)
     }
 
     @Test

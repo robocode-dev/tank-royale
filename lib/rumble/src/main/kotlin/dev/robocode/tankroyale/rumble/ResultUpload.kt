@@ -112,6 +112,9 @@ private data class OutboxLine(
     val reason: String? = null,
 )
 
+/** The list of sent batches as read without opening it for writing: the batches in the order sent, those whose receipt was taken, and the refusal. */
+class SentBatchesRead(val batches: List<SentBatches.Batch>, val done: Set<String>, val refusal: String?)
+
 /**
  * The batches this computer has sent or is about to send, and the issue each became, so receipts are found again after
  * a crash; and whether sending is stopped because the Rumble refused a batch. Like the journal it is only added to, each
@@ -196,6 +199,38 @@ class SentBatches private constructor(private val file: Path) {
 
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
+
+        /**
+         * Reads the file and never writes to it, so it can be read while a contribution session adds to it: a last line
+         * without its newline is left out, a line that cannot be read is skipped, and a missing file holds no batches.
+         */
+        fun read(file: Path): SentBatchesRead {
+            if (Files.notExists(file)) return SentBatchesRead(emptyList(), emptySet(), null)
+            val bytes = try {
+                Files.readAllBytes(file)
+            } catch (e: IOException) {
+                throw JournalUnusable("The list of sent batches at $file cannot be read: ${e.message}", e)
+            }
+            val whole = bytes.lastIndexOf('\n'.code.toByte()) + 1
+            val batches = LinkedHashMap<String, Batch>()
+            val done = mutableSetOf<String>()
+            var refusal: String? = null
+            for (raw in String(bytes, 0, whole, Charsets.UTF_8).lineSequence().filter { it.isNotBlank() }) {
+                val line = try {
+                    json.decodeFromString(OutboxLine.serializer(), raw)
+                } catch (e: IllegalArgumentException) {
+                    continue
+                }
+                when (line.kind) {
+                    "batch" -> batches[line.batchId] = Batch(line.batchId, line.battleIds, null)
+                    "issue" -> batches[line.batchId]?.let { batches[line.batchId] = Batch(it.batchId, it.battleIds, line.issue) }
+                    "done" -> done += line.batchId
+                    "refused" -> refusal = line.reason ?: "The Rumble refused a batch."
+                    "lifted" -> refusal = null
+                }
+            }
+            return SentBatchesRead(batches.values.toList(), done, refusal)
+        }
 
         /** Opens the file, or starts it. A torn last line is cut off; any other line that cannot be read is skipped. */
         fun open(file: Path): SentBatches {
