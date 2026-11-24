@@ -194,4 +194,12 @@ Feature: rumble-battle-worker — Rumble battle worker
     When the host runs the job with a listener for them
     Then the listener SHALL be called with each boot event as it is read, in order
     And the outcome SHALL be the same as without a listener, the events SHALL NOT be kept in the host's list of events, and a listener that throws SHALL NOT change the outcome
+
+  @RBW-026
+  Scenario: The worker names the bots that did not connect
+    Test-type: Unit
+    Given a battle that could not start because bots did not connect, in time or at all
+    When the worker reports it
+    Then the failure SHALL carry the code `bots-did-not-connect` and the names and versions of those bots, and nothing else about them
+    And every other failure SHALL carry its own code and no bots
 ```

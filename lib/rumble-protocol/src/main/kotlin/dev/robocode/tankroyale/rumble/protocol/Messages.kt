@@ -94,7 +94,10 @@ sealed interface WorkerEvent {
         val message: String,
     ) : WorkerEvent
 
-    /** The job was accepted but the battle did not complete: see [ErrorCode]. */
+    /**
+     * The job was accepted but the battle did not complete: see [ErrorCode]. With [ErrorCode.BOTS_DID_NOT_CONNECT], [bots]
+     * names the bots that had not connected, as "name version" from the job, and nothing else about them.
+     */
     @Serializable
     @SerialName("failed")
     data class Failed(
@@ -102,6 +105,7 @@ sealed interface WorkerEvent {
         val jobId: String?,
         val code: String,
         val message: String,
+        val bots: List<String> = emptyList(),
     ) : WorkerEvent
 
     /** The last event of a run that completed; nothing follows it. */
@@ -117,6 +121,9 @@ object ErrorCode {
     const val UNKNOWN_GAME_TYPE = "unknown-game-type"
     const val PIN_MISMATCH = "pin-mismatch"
     const val BATTLE_FAILED = "battle-failed"
+
+    /** The battle could not start because bots did not connect, in time or at all; the failure names them. */
+    const val BOTS_DID_NOT_CONNECT = "bots-did-not-connect"
     const val INTERNAL_ERROR = "internal-error"
 }
 

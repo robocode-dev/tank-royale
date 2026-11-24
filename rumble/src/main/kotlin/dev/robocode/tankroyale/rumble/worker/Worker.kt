@@ -12,8 +12,16 @@ import java.io.PrintStream
 /** The engine could not be used for this job because of what the job asked, for example a wrong engine pin. */
 class EngineRefused(val code: String, message: String) : Exception(message, null, false, false)
 
-/** The engine started the job but the battle did not complete. */
-class EngineFailed(message: String, cause: Throwable? = null) : Exception(message, cause)
+/**
+ * The engine started the job but the battle did not complete. [code] is an [ErrorCode]; with
+ * [ErrorCode.BOTS_DID_NOT_CONNECT], [bots] names the bots that had not connected as "name version".
+ */
+class EngineFailed(
+    message: String,
+    cause: Throwable? = null,
+    val code: String = ErrorCode.BATTLE_FAILED,
+    val bots: List<String> = emptyList(),
+) : Exception(message, cause)
 
 /** Runs one battle. The real engine is the Battle Runner; tests use a fake. */
 fun interface BattleEngine {
@@ -76,7 +84,7 @@ object Worker {
             emit(WorkerEvent.Refused(jobId = job.jobId, code = refused.code, message = refused.message.orEmpty()))
             ExitCode.REFUSED
         } catch (failed: EngineFailed) {
-            emit(WorkerEvent.Failed(jobId = job.jobId, code = ErrorCode.BATTLE_FAILED, message = failed.message.orEmpty()))
+            emit(WorkerEvent.Failed(jobId = job.jobId, code = failed.code, message = failed.message.orEmpty(), bots = failed.bots))
             ExitCode.FAILED
         } catch (e: Exception) {
             emit(WorkerEvent.Failed(jobId = job.jobId, code = ErrorCode.INTERNAL_ERROR, message = "The worker failed unexpectedly."))

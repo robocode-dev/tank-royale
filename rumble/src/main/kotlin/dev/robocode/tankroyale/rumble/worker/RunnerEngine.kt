@@ -64,8 +64,18 @@ object RunnerEngine : BattleEngine {
                 )
             }
         } catch (e: BattleException) {
-            if (isPinMismatch(e)) throw EngineRefused(ErrorCode.PIN_MISMATCH, e.message.orEmpty())
-            throw EngineFailed(e.message.orEmpty(), e)
+            throw failureOf(e)
         }
+    }
+
+    /**
+     * What the worker reports for the runner's [e]: a refusal for a wrong engine pin, a failure naming the bots that did not
+     * connect by their name and version only, or a failed battle.
+     */
+    internal fun failureOf(e: BattleException): Exception = when {
+        isPinMismatch(e) -> EngineRefused(ErrorCode.PIN_MISMATCH, e.message.orEmpty())
+        e.notConnected.isNotEmpty() ->
+            EngineFailed(e.message.orEmpty(), e, ErrorCode.BOTS_DID_NOT_CONNECT, e.notConnected.map { "${it.name} ${it.version}" }.distinct())
+        else -> EngineFailed(e.message.orEmpty(), e)
     }
 }

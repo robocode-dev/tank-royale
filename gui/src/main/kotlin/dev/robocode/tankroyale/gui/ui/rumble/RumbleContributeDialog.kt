@@ -269,6 +269,10 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
                 }
             } ?: run { battleStartedAt = null }
             tiles(status)
+            // The bots left out for the rest of the session, and why, so a missing bot is never a mystery.
+            if (status.leftOut.isNotEmpty()) {
+                put(wrapped(text("rumble.contribute.left_out_heading", status.leftOut.joinToString("; ") { "${it.bot} (${text(ContributeTexts.forLeftOut(it.reason))})" })))
+            }
             ContributeTexts.forPython(status.python)?.let { put(small(text(it))) }
             put(small(text(if (status.battleLimit != null) "rumble.contribute.limit" else "rumble.contribute.no_limit", status.formats.joinToString(), status.battleLimit ?: 0)))
             put(small(text(if (state.ownedHere) "rumble.contribute.owned_here" else "rumble.contribute.runs_on_its_own")))

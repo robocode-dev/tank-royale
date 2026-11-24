@@ -155,4 +155,71 @@ class WaitForBotsTest {
             assertThat(result).doesNotContain(BotAddress("localhost", 7000))
         }
     }
+
+    // -------------------------------------------------------------------------------------
+    // BR-053 — a bot whose process ended before it connected
+    // -------------------------------------------------------------------------------------
+
+    private fun botFolder(root: java.nio.file.Path, name: String, version: String): java.nio.file.Path =
+        java.nio.file.Files.createDirectories(root.resolve(name)).also {
+            java.nio.file.Files.writeString(it.resolve("$name.json"), """{"name":"$name","version":"$version","authors":["Author"]}""")
+        }
+
+    @Tag("BR-053")
+    @Tag("Unit")
+    @Tag("Positive")
+    @Test
+    fun `a bot whose process ended before it connected ends the wait at once and is named`(@org.junit.jupiter.api.io.TempDir dir: java.nio.file.Path) {
+        val conn = conn()
+        val alpha = BotIdentity("Alpha", "1.0", "Author")
+        val beta = BotIdentity("Beta", "2.0", "Author")
+        val betaDir = botFolder(dir, "Beta", "2.0")
+        val ended = java.util.concurrent.CopyOnWriteArrayList<String>()
+
+        val started = System.currentTimeMillis()
+        runner(timeoutMs = 20_000L).use { r ->
+            assertThatThrownBy {
+                r.waitForBots(conn, emptySet(), listOf(alpha, beta), 2, onSubscribed = {
+                    emitBots(conn, botInfo("Alpha", "1.0", "Author", "localhost", 7001))
+                    ended += betaDir.toString()
+                }, exitedDirs = { ended })
+            }.isInstanceOf(BattleException::class.java)
+                .satisfies({ assertThat((it as BattleException).notConnected).containsExactly(beta) })
+                .hasMessageContaining("ended before it connected")
+        }
+        assertThat(System.currentTimeMillis() - started).isLessThan(5_000L)
+
+        // The booter's line for a process that ended by itself names its folder; one it stopped does not.
+        val booter = dev.robocode.tankroyale.runner.internal.BooterManager("ws://localhost:1", "s")
+        val latch = java.util.concurrent.CountDownLatch(2)
+        booter.parseLine("41;${betaDir}", latch)
+        booter.parseLine("42;${dir.resolve("Alpha")}", latch)
+        booter.parseLine("exited 41", latch)
+        booter.parseLine("stopped 42", latch)
+        assertThat(booter.exitedDirs).containsExactly(betaDir.toString())
+    }
+
+    @Tag("BR-053")
+    @Tag("Unit")
+    @Tag("Negative")
+    @Test
+    fun `a bot that runs without connecting is waited for until the limit, and an ended bot that had connected changes nothing`(@org.junit.jupiter.api.io.TempDir dir: java.nio.file.Path) {
+        val conn = conn()
+        val alpha = BotIdentity("Alpha", "1.0", "Author")
+        val beta = BotIdentity("Beta", "2.0", "Author")
+        val alphaDir = botFolder(dir, "Alpha", "1.0")
+
+        val started = System.currentTimeMillis()
+        runner(timeoutMs = 1_500L).use { r ->
+            assertThatThrownBy {
+                // Alpha connected and then its process ended; Beta never connects but its process runs.
+                r.waitForBots(conn, emptySet(), listOf(alpha, beta), 2, onSubscribed = {
+                    emitBots(conn, botInfo("Alpha", "1.0", "Author", "localhost", 7001))
+                }, exitedDirs = { listOf(alphaDir.toString()) })
+            }.isInstanceOf(BattleException::class.java)
+                .satisfies({ assertThat((it as BattleException).notConnected).containsExactly(beta) })
+                .hasMessageContaining("connect timeout")
+        }
+        assertThat(System.currentTimeMillis() - started).isGreaterThanOrEqualTo(1_400L)
+    }
 }

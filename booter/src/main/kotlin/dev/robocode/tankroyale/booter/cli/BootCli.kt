@@ -23,6 +23,7 @@ internal class BootCli : CliktCommand(name = "boot") {
               stop {pid}  Stops the bot running with the specific process id.
               stopped {pid} is written out when the bot was stopped.
               lost {pid}    is written out if the process id could not be found.
+              exited {pid}  is written out when the bot's process ended by itself.
         """.trimIndent()
 
     private val botDirs by argument("BOT_DIRS").multiple()

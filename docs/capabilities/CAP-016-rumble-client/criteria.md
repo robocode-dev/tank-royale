@@ -1330,4 +1330,19 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the desktop program on Windows set to the development Rumble and Java catalog bots
     When a session is started from Contribute battles and a battle starts its bots
     Then the screen, the session's window and the tray's tip are seen to show the bots connecting one after the other, and after they all connected the progress is gone
+
+  @RCL-163
+  Scenario: A session leaves out a bot that did not connect in two battles in a row
+    Test-type: Unit
+    Given a session in which a bot does not connect when it is in a battle
+    When it has not connected in two battles in a row
+    Then the session SHALL leave it out for the rest of the session, with every team that holds it, report it as left out because it did not connect, and run on with the others
+    And the battle that left it out SHALL not count toward giving up, a bot that missed one battle and then connected SHALL stay in, and the next session SHALL choose it again
+
+  @RCL-164
+  Scenario: A real bot that cannot start ends its battle at once, and the official starters are not taken for ended bots
+    Test-type: Human
+    Given the Battle Runner with the real booter, a bot that cannot start on the computer and the official starters of the Rumble
+    When a battle with the bot that cannot start is run, and battles with each starter
+    Then the first is seen to end within seconds instead of after the connect limit, naming that bot, and every starter's battle completes
 ```

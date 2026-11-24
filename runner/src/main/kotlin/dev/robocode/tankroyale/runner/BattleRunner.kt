@@ -312,6 +312,8 @@ class BattleRunner private constructor(
         expectedIdentities: List<BotIdentity>,
         expectedBotCount: Int = expectedIdentities.size,
         bootProgressEvent: dev.robocode.tankroyale.common.event.Event<BootProgress>? = null,
+        /** The folders of the bot processes that ended by themselves, which end the wait for a bot that had not connected. */
+        exitedDirs: () -> List<String> = { booterManager?.exitedDirs.orEmpty() },
         onSubscribed: () -> Unit = {},
     ): List<BotAddress> {
         val timeoutMs = config.botConnectTimeoutMs
@@ -351,6 +353,7 @@ class BattleRunner private constructor(
             // Poll every 500ms to fire periodic progress events
             val pollMs = 500L
             var remaining = timeoutMs
+            val exitedIdentities = HashMap<String, List<BotIdentity>>()
             while (remaining > 0) {
                 val waited = pollMs.coerceAtMost(remaining)
                 if (botsReadyLatch.await(waited, TimeUnit.MILLISECONDS)) {
@@ -358,6 +361,17 @@ class BattleRunner private constructor(
                 }
                 remaining -= waited
                 fireProgress(latestResult)
+                // A bot whose process ended before it connected never will: the battle ends now instead of at the limit.
+                val ended = exitedDirs()
+                    .flatMap { dir -> exitedIdentities.getOrPut(dir) { runCatching { BooterManager.readBotIdentities(java.nio.file.Path.of(dir)) }.getOrDefault(emptyList()) } }
+                    .filter { (latestResult.pending[it] ?: 0) > 0 }
+                    .distinct()
+                if (ended.isNotEmpty()) {
+                    throw BattleException(
+                        "Bot ended before it connected: [${ended.joinToString(", ")}]",
+                        notConnected = ended,
+                    )
+                }
             }
             val totalExpected = matcher.expectedMultiset.values.sum()
             val totalConnected = latestResult.connected.values.sum()
@@ -366,7 +380,8 @@ class BattleRunner private constructor(
                     if (count > 1) "$id (×$count)" else "$id"
                 }
             throw BattleException(
-                "Bot connect timeout (${timeoutMs}ms): connected $totalConnected of $totalExpected. Pending: [$pendingDesc]"
+                "Bot connect timeout (${timeoutMs}ms): connected $totalConnected of $totalExpected. Pending: [$pendingDesc]",
+                notConnected = latestResult.pending.keys.toList(),
             )
         } finally {
             conn.onBotListUpdate.off(botOwner)

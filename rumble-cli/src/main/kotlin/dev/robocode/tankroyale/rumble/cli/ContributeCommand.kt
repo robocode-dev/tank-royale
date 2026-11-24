@@ -28,6 +28,7 @@ import dev.robocode.tankroyale.rumble.SavedSignInUpload
 import dev.robocode.tankroyale.rumble.SelectionMode
 import dev.robocode.tankroyale.rumble.SentBatches
 import dev.robocode.tankroyale.rumble.StartingLog
+import dev.robocode.tankroyale.rumble.NotPlacedReason
 import dev.robocode.tankroyale.rumble.SessionControl
 import dev.robocode.tankroyale.rumble.SessionEnd
 import dev.robocode.tankroyale.rumble.SessionEvent
@@ -457,7 +458,8 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         } to "  not kept (${event.reason.name.lowercase()})" + if (event.detail.isNotBlank()) ": ${io.outside(event.detail)}" else ""
         is SessionEvent.BotNotPlaced -> event("bot-not-placed") {
             put("bot", event.bot); put("reason", event.reason.name); put("detail", event.detail)
-        } to "Bot ${event.bot} could not be put in place (${event.reason.name.lowercase()})" + if (event.detail.isNotBlank()) ": ${io.outside(event.detail)}" else ""
+        } to if (event.reason == NotPlacedReason.DID_NOT_CONNECT) "Bot ${event.bot} is left out of this session: it did not connect in two battles in a row"
+        else "Bot ${event.bot} could not be put in place (${event.reason.name.lowercase()})" + if (event.detail.isNotBlank()) ": ${io.outside(event.detail)}" else ""
         is SessionEvent.Waiting -> event("waiting") {
             put("reason", event.reason.name)
             putJsonArray("values") { event.values.forEach { add(kotlinx.serialization.json.JsonPrimitive(it)) } }

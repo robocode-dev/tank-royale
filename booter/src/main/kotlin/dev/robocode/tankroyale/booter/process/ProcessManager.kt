@@ -23,6 +23,9 @@ internal class ProcessManager(private val bootMaker: BotBooter = BotBooter()) {
 
     private val processes = ConcurrentSkipListMap<Pid, Process>()
 
+    /** The processes this booter is stopping, whose end it reports as `stopped` rather than `exited`. */
+    private val stopping = java.util.concurrent.ConcurrentHashMap.newKeySet<Pid>()
+
     /**
      * Register a shutdown hook to clean up processes when JVM exits.
      */
@@ -65,6 +68,7 @@ internal class ProcessManager(private val bootMaker: BotBooter = BotBooter()) {
     private fun stopProcess(process: Process) {
         val pid = process.pid()
 
+        stopping += pid
         registerProcessCleanup(process, pid)
         terminateProcessTree(process)
         verifyAndForceTermination(process, pid)
@@ -141,6 +145,12 @@ internal class ProcessManager(private val bootMaker: BotBooter = BotBooter()) {
         val pid = process.pid()
         println("$pid;${botDir.absolutePathString()}")
         processes[pid] = process
+        // A bot process that ends by itself, such as one whose build fails, is reported, so a caller waiting for it to
+        // connect need not wait for its whole limit. One that this booter stops is reported as stopped instead.
+        process.onExit().thenAccept {
+            // The process stays known, so a later stop of it is answered with `stopped` as before.
+            if (pid !in stopping) println("exited $pid")
+        }
     }
 
     /**
