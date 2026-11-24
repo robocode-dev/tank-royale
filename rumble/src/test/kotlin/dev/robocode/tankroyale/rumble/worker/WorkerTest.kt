@@ -197,4 +197,38 @@ class WorkerTest {
         val quiet = run(MessageCodec.write(job) + "\n", BattleEngine { result })
         assertTrue(quiet.events.none { it is WorkerEvent.Booting })
     }
+
+    // RBW-026
+
+    @Test
+    @Tag("RBW-026")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRBW026_UnitPositive_aBattleWhoseBotsDidNotConnectNamesThemByNameAndVersion() {
+        val walls = dev.robocode.tankroyale.runner.BotIdentity("Walls", "1.0.0", "Ann, Bo")
+        val notConnected = dev.robocode.tankroyale.runner.BattleException("Bot ended before it connected: [Walls 1.0.0 (Ann, Bo)]", notConnected = listOf(walls, walls))
+        val run = run(MessageCodec.write(job) + "\n", BattleEngine { throw RunnerEngine.failureOf(notConnected) })
+
+        assertEquals(ExitCode.FAILED, run.exit)
+        val failed = run.events.last() as WorkerEvent.Failed
+        assertEquals(ErrorCode.BOTS_DID_NOT_CONNECT, failed.code)
+        // Each bot once, by its name and version only: its authors stay out.
+        assertEquals(listOf("Walls 1.0.0"), failed.bots)
+    }
+
+    @Test
+    @Tag("RBW-026")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRBW026_UnitNegative_everyOtherFailureCarriesItsOwnCodeAndNoBots() {
+        val other = RunnerEngine.failureOf(dev.robocode.tankroyale.runner.BattleException("The game was aborted"))
+        val run = run(MessageCodec.write(job) + "\n", BattleEngine { throw other })
+
+        val failed = run.events.last() as WorkerEvent.Failed
+        assertEquals(ErrorCode.BATTLE_FAILED, failed.code)
+        assertEquals(emptyList<String>(), failed.bots)
+        // An older worker's failure, without the field, is read with no bots.
+        val old = MessageCodec.readEvent("""{"type":"failed","schemaVersion":1,"jobId":"j","code":"battle-failed","message":"x"}""")
+        assertEquals(emptyList<String>(), (old as WorkerEvent.Failed).bots)
+    }
 }

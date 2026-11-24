@@ -31,7 +31,7 @@ sealed interface WorkerOutcome {
     data class Refused(val code: String, val message: String) : WorkerOutcome
 
     /** The worker accepted the job but the battle did not complete; [code] is an `ErrorCode`. */
-    data class Failed(val code: String, val message: String) : WorkerOutcome
+    data class Failed(val code: String, val message: String, val bots: List<String> = emptyList()) : WorkerOutcome
 
     /** The worker did not finish within the total time; it and everything it started were stopped. */
     data class TimedOut(val limit: Duration) : WorkerOutcome
@@ -209,7 +209,7 @@ class WorkerHost(
     private fun decide(reading: Reading, exitCode: Int): WorkerOutcome {
         val events = reading.events
         events.filterIsInstance<WorkerEvent.Refused>().firstOrNull()?.let { return WorkerOutcome.Refused(it.code, it.message) }
-        events.filterIsInstance<WorkerEvent.Failed>().firstOrNull()?.let { return WorkerOutcome.Failed(it.code, it.message) }
+        events.filterIsInstance<WorkerEvent.Failed>().firstOrNull()?.let { return WorkerOutcome.Failed(it.code, it.message, it.bots) }
         val result = events.filterIsInstance<WorkerEvent.Result>().singleOrNull()
         val finished = events.any { it is WorkerEvent.Finished }
         if (result != null && finished && exitCode == 0 && events.last() is WorkerEvent.Finished) return WorkerOutcome.Completed(result)

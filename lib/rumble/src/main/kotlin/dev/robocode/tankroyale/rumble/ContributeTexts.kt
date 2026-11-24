@@ -32,6 +32,10 @@ object ContributeTexts {
     fun forWaiting(reason: String?): String =
         "rumble.contribute.waiting." + (WaitReason.entries.firstOrNull { it.name == reason }?.name?.lowercase() ?: "other")
 
+    /** Why a bot is left out of the session, from the reason word its event and status carry. */
+    fun forLeftOut(reason: String): String =
+        "rumble.contribute.left_out." + (NotPlacedReason.entries.firstOrNull { it.name == reason && it != NotPlacedReason.SOURCE_UNAVAILABLE }?.name?.lowercase() ?: "other")
+
     fun forProblem(problem: ContributeProblem): String = "rumble.contribute.problem." + problem.name.lowercase()
 
     fun forProgram(problem: ProgramProblem): String = "rumble.contribute.program." + problem.name.lowercase()
@@ -62,5 +66,6 @@ object ContributeTexts {
         OUTCOMES.map { forOutcome(it) } + forOutcome("other") + STATES.map { forState(it) } + PYTHON.mapNotNull { forPython(it) } +
             WaitReason.entries.map { forWaiting(it.name) } + forWaiting(null) + ContributeProblem.entries.map { forProblem(it) } +
             ProgramProblem.entries.map { forProgram(it) } + SessionControlRequest.entries.map { forRequest(it) } +
-            ContributeMode.entries.map { forMode(it) } + CloseChoice.entries.map { forClose(it) }
+            ContributeMode.entries.map { forMode(it) } + CloseChoice.entries.map { forClose(it) } +
+            NotPlacedReason.entries.map { forLeftOut(it.name) }.distinct() + forLeftOut("other")
 }

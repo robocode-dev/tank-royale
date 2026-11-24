@@ -65,6 +65,15 @@ fun main(args: Array<String>) {
         return "$own\u0002user.home=${System.getProperty("user.home")}\u0002cwd=${File(".").canonicalPath}"
     }
 
+    if (mode.startsWith("noconnect:")) {
+        // The named bot never connects when it is in the battle; every other battle completes.
+        val missing = job.bots.filter { it.name == mode.substringAfter(":") }
+        if (missing.isEmpty()) return finishNormally()
+        emit(WorkerEvent.Started(jobId = id))
+        emit(WorkerEvent.Failed(jobId = id, code = ErrorCode.BOTS_DID_NOT_CONNECT, message = "Bot ended before it connected", bots = missing.map { "${it.name} ${it.version}" }))
+        exitProcess(1)
+    }
+
     when (mode) {
         "ok" -> finishNormally()
         "booting" -> {

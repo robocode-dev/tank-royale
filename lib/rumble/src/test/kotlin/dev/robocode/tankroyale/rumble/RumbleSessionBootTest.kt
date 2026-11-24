@@ -104,4 +104,23 @@ class RumbleSessionBootTest {
         log.reset()
         assertTrue(log.isNews(2), "the next battle's first report is news also when it has the same count")
     }
+
+    @Test
+    @Tag("RCL-163")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL163_UnitPositive_theStatusListsEachBotLeftOutOnceWithWhyAndABotThatIsOnlyUnreachableIsNotListed() {
+        val folder = SessionFolder(dir.resolve("left-out"))
+        tracker(folder).use { tracker ->
+            tracker.record(event("bot-not-placed", "bot" to "Beta 1.0", "reason" to "DID_NOT_CONNECT"))
+            tracker.record(event("bot-not-placed", "bot" to "Beta 1.0", "reason" to "DID_NOT_CONNECT"))
+            tracker.record(event("bot-not-placed", "bot" to "Gamma 1.0", "reason" to "SOURCE_UNAVAILABLE"))
+            tracker.record(event("bot-not-placed", "bot" to "Delta 1.0", "reason" to "HASH_MISMATCH"))
+            assertEquals(listOf(SessionLeftOut("Beta 1.0", "DID_NOT_CONNECT"), SessionLeftOut("Delta 1.0", "HASH_MISMATCH")), tracker.status.leftOut)
+        }
+        // Every reason has a text, and a reason the screen does not know gets the general one.
+        assertEquals("rumble.contribute.left_out.did_not_connect", ContributeTexts.forLeftOut("DID_NOT_CONNECT"))
+        assertEquals("rumble.contribute.left_out.other", ContributeTexts.forLeftOut("SOURCE_UNAVAILABLE"))
+        assertEquals("rumble.contribute.left_out.other", ContributeTexts.forLeftOut("SOMETHING_NEW"))
+    }
 }

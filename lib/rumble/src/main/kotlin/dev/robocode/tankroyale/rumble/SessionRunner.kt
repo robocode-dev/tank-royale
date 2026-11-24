@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.rumble
 
 import dev.robocode.tankroyale.botproject.TreeHash
 import dev.robocode.tankroyale.rumble.protocol.BotOutcome
+import dev.robocode.tankroyale.rumble.protocol.ErrorCode
 import dev.robocode.tankroyale.rumble.protocol.Job
 import dev.robocode.tankroyale.rumble.protocol.JobBot
 import dev.robocode.tankroyale.rumble.protocol.WorkerEvent
@@ -47,6 +48,9 @@ enum class NotKeptReason {
 
     /** The result does not match the bots that were run. */
     RESULT_MISMATCH,
+
+    /** Bots of the battle did not connect, in time or at all; the event's detail names them. */
+    BOTS_DID_NOT_CONNECT,
 }
 
 /** Why a bot could not be put in place. */
@@ -58,6 +62,9 @@ enum class NotPlacedReason {
 
     /** A team and one of its members, or two of its members, have the same folder name, so they cannot stand side by side. */
     FOLDER_NAME_CLASH,
+
+    /** The bot did not connect in two battles in a row of this session; the next session tries it again. */
+    DID_NOT_CONNECT,
 }
 
 /** What a session reports as it goes, in plain codes. The screens and the command line turn these into text. */
@@ -139,11 +146,18 @@ class SessionRunner(
     private val control: SessionControl,
     private val onEvent: (SessionEvent) -> Unit,
 ) {
+    private companion object {
+        /** How many battles in a row a bot may not connect in before the session leaves it out. */
+        const val LEAVE_OUT_AFTER = 2
+    }
+
     /** Runs until the battle count is reached, the contributor stops it, or it cannot go on. [request] is read before each battle. */
     fun run(request: () -> SessionRequest): SessionEnd {
         var history = SessionHistory()
         var failures = 0
         val excluded = mutableSetOf<String>()
+        // How many battles in a row each bot did not connect in; a battle it is kept from resets its count.
+        val missed = HashMap<String, Int>()
         var lastWait: SessionEvent.Waiting? = null
         while (true) {
             if (control.cancelRequested) return SessionEnd.Cancelled
@@ -186,12 +200,28 @@ class SessionRunner(
                     if (control.cancelRequested) return SessionEnd.Cancelled
                     if (control.stopRequested) return SessionEnd.Stopped
                     when (val result = runBattle(step, battle)) {
-                        is Ran.Kept -> { history = history.after(step); failures = 0 }
+                        is Ran.Kept -> {
+                            history = history.after(step)
+                            failures = 0
+                            battle.bots.forEach { missed.remove(SessionPlanner.key(it)) }
+                        }
                         is Ran.NotKept -> {
                             if (result.reason == NotKeptReason.CANCELLED) return SessionEnd.Cancelled
                             // The same battle is likely to fail again, so the next choice moves on to another where there is one.
                             history = history.afterNotCompleted(step)
-                            if (++failures >= setup.maxConsecutiveFailures) return SessionEnd.GaveUp(failures)
+                            // A bot that did not connect in two battles in a row is left out for the rest of the session, with
+                            // every team that holds it; the battle that left it out does not count toward giving up.
+                            val leftOut = result.notConnected.filter { bot ->
+                                val times = (missed[bot] ?: 0) + 1
+                                missed[bot] = times
+                                times >= LEAVE_OUT_AFTER
+                            }
+                            leftOut.forEach { bot ->
+                                excluded += bot
+                                missed.remove(bot)
+                                onEvent(SessionEvent.BotNotPlaced(bot, NotPlacedReason.DID_NOT_CONNECT))
+                            }
+                            if (leftOut.isEmpty() && ++failures >= setup.maxConsecutiveFailures) return SessionEnd.GaveUp(failures)
                         }
                         is Ran.JournalFailed -> return SessionEnd.JournalFailed(result.message)
                     }
@@ -351,7 +381,7 @@ class SessionRunner(
 
     private sealed interface Ran {
         data object Kept : Ran
-        data class NotKept(val reason: NotKeptReason) : Ran
+        data class NotKept(val reason: NotKeptReason, val notConnected: List<String> = emptyList()) : Ran
         data class JournalFailed(val message: String) : Ran
     }
 
@@ -373,7 +403,12 @@ class SessionRunner(
         return when (outcome) {
             is WorkerOutcome.Completed -> keep(job, outcome.result, notKept)
             is WorkerOutcome.Refused -> notKept(NotKeptReason.WORKER_REFUSED, "${outcome.code}: ${outcome.message}")
-            is WorkerOutcome.Failed -> notKept(NotKeptReason.WORKER_FAILED, "${outcome.code}: ${outcome.message}")
+            is WorkerOutcome.Failed -> if (outcome.code == ErrorCode.BOTS_DID_NOT_CONNECT && outcome.bots.isNotEmpty()) {
+                onEvent(SessionEvent.BattleNotKept(battleId, NotKeptReason.BOTS_DID_NOT_CONNECT, outcome.bots.joinToString(", ")))
+                Ran.NotKept(NotKeptReason.BOTS_DID_NOT_CONNECT, outcome.bots)
+            } else {
+                notKept(NotKeptReason.WORKER_FAILED, "${outcome.code}: ${outcome.message}")
+            }
             is WorkerOutcome.TimedOut -> notKept(NotKeptReason.TIMED_OUT, outcome.limit.toString())
             is WorkerOutcome.LimitExceeded -> notKept(NotKeptReason.LIMIT_EXCEEDED, outcome.message)
             is WorkerOutcome.EndedWithoutFinish -> notKept(NotKeptReason.ENDED_WITHOUT_FINISH, outcome.exitCode?.toString().orEmpty())

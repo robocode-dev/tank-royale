@@ -523,7 +523,7 @@
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
-          "sha256": "c86a33daf38296b86f9dc6057858d441d77b184fecbcfc942e92aa486b736a23"
+          "sha256": "72d87bd6f4933380be73cf00ffaffb3a9bf05a23b973c4e40c872e7bbc1dbcdc"
         }
       ],
       "references": [
@@ -1835,6 +1835,20 @@
           "subject": "WorkerTest.testRBW024_UnitPositive_theWorkerReportsTheStartingBotsWhenTheCountChangesAndAboutOnceASecondBetweenStartedAndResult",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RBW-026",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW026_UnitNegative_everyOtherFailureCarriesItsOwnCodeAndNoBots",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RBW-026",
+          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
+          "subject": "WorkerTest.testRBW026_UnitPositive_aBattleWhoseBotsDidNotConnectNamesThemByNameAndVersion",
+          "type": "Unit",
+          "direction": "positive"
         }
       ]
     },
@@ -2184,7 +2198,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionBootTest.kt",
-          "sha256": "33a94645627c4a5dedc1ed9e7d49d0ee91ec5090cc6f27e611dd51c9c7198e0c"
+          "sha256": "ade8248791c3bbfd0a625a54a12dfb909e700a39b54572a5831e6623c7c18665"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
@@ -2200,7 +2214,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
-          "sha256": "433bbf12a522591bb80fe302952efde57d2d3fd1765663ee7352c4c1bd15041e"
+          "sha256": "a089c0bbe1ce41611ad3a32cc569abcd8a02e0eb4a8dcfa3c6ddc9aa00906ac2"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
@@ -3877,6 +3891,13 @@
           "direction": "positive"
         },
         {
+          "id": "RCL-163",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionBootTest.kt",
+          "subject": "RumbleSessionBootTest.testRCL163_UnitPositive_theStatusListsEachBotLeftOutOnceWithWhyAndABotThatIsOnlyUnreachableIsNotListed",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
           "id": "RCL-121",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
           "subject": "RumbleSessionPinTest.testRCL121_UnitNegative_aPinThatCannotBeReadOrUnderstoodRefusesTheSessionWithItsReason",
@@ -4209,6 +4230,20 @@
           "id": "RCL-123",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
           "subject": "RumbleSessionRunnerTest.testRCL123_UnitPositive_anAdvisedBattleIsRunFirstAndWithoutAdviceTheSessionRunsByCoverage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-163",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL163_UnitNegative_oneBattleWithoutConnectingLeavesNoBotOutAndTheNextSessionTriesItAgain",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-163",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
+          "subject": "RumbleSessionRunnerTest.testRCL163_UnitPositive_aBotThatDidNotConnectInTwoBattlesInARowIsLeftOutAndTheSessionRunsOn",
           "type": "Unit",
           "direction": "positive"
         },

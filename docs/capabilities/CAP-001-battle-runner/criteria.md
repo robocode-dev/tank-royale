@@ -403,4 +403,15 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     When the battle starts, also through the synchronous run
     Then the listener SHALL be called with the connected and the missing bots, the time waited and the connect limit, on every change of the connected bots and about every half second while it waits
     And the last call SHALL show every expected bot connected, a runner without a listener SHALL behave as before, and a listener that throws SHALL NOT stop the battle
+
+  # Requirement: A Bot That Ended Before It Connected
+  # A battle does not wait its whole connect limit for a bot whose process has already ended.
+
+  @BR-053
+  Scenario: A booted bot whose process ended before it connected ends the start of the battle at once
+    Test-type: Unit
+    Given a battle whose bots are booted, one of which the booter reports as ended by itself before it connected
+    When the runner waits for the bots to connect
+    Then the runner SHALL end the start at once with a `BattleException` whose `notConnected` names the bots that had not connected
+    And a bot whose process runs without connecting SHALL be waited for until the connect limit, which then names it the same way, and a bot that connected and then ended SHALL change nothing
 ```

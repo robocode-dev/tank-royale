@@ -73,6 +73,10 @@ data class SessionBattle(
 @Serializable
 data class SessionBoot(val connected: Int, val expected: Int, val elapsedSeconds: Int, val limitSeconds: Int)
 
+/** A bot the session left out for the rest of the session, as "name version", and why, as a [NotPlacedReason] word. */
+@Serializable
+data class SessionLeftOut(val bot: String, val reason: String)
+
 /** How a session ended: its outcome word and when. */
 @Serializable
 data class SessionEnded(val outcome: String, val at: String, val message: String = "")
@@ -97,6 +101,8 @@ data class SessionStatus(
     val boot: SessionBoot? = null,
     val kept: Int = 0,
     val notKept: Int = 0,
+    /** The bots left out for the rest of the session, in the order they were left out; empty in a status written before it existed. */
+    val leftOut: List<SessionLeftOut> = emptyList(),
     /** The planner's reason while the session waits, as a code. */
     val waitingFor: String? = null,
     /** `none`, `setting-up`, `ready`, `unavailable` or `stopped`. */

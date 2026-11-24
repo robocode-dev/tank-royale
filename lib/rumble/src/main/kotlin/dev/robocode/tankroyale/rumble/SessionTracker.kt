@@ -77,6 +77,13 @@ class SessionTracker(
                     startedAt = clock().toString(),
                 ),
             )
+            // A bot that cannot be placed now is tried again; every other reason leaves it out for the rest of the session.
+            "bot-not-placed" -> {
+                val bot = text("bot").orEmpty()
+                val reason = text("reason").orEmpty()
+                if (bot.isEmpty() || reason == NotPlacedReason.SOURCE_UNAVAILABLE.name || now.leftOut.any { it.bot == bot }) now
+                else now.copy(leftOut = now.leftOut + SessionLeftOut(bot, reason))
+            }
             "battle-kept" -> now.copy(kept = now.kept + 1, battle = null, boot = null)
             "battle-not-kept" -> now.copy(notKept = now.notKept + 1, battle = null, boot = null)
             "waiting" -> now.copy(state = "waiting", waitingFor = text("reason"), battle = null, boot = null)

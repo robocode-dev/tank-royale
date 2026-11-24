@@ -50,6 +50,13 @@ internal class BooterManager(
     val isRunning: Boolean
         get() = processRef.get()?.isAlive == true
 
+    /** The folders of bot processes that ended by themselves, as the booter reported them. */
+    private val exited = java.util.concurrent.ConcurrentLinkedQueue<String>()
+
+    /** The folders of the bot processes that ended by themselves since the booter started, in the order they ended. */
+    val exitedDirs: List<String>
+        get() = exited.toList()
+
     /** Returns a snapshot of currently booted bot PIDs. */
     val botPids: Set<Long>
         get() = bootedBots.keys.toSet()
@@ -126,7 +133,7 @@ internal class BooterManager(
         stdoutThread = thread
     }
 
-    private fun parseLine(line: String, botsReadyLatch: CountDownLatch) {
+    internal fun parseLine(line: String, botsReadyLatch: CountDownLatch) {
         if (line.isBlank()) return
 
         when {
@@ -134,6 +141,11 @@ internal class BooterManager(
             line.startsWith("stopped ") -> {
                 val pid = line.substringAfter("stopped ").trim().toLongOrNull() ?: return
                 bootedBots.remove(pid)
+            }
+            // "exited <pid>" — bot process ended by itself, such as when it could not start
+            line.startsWith("exited ") -> {
+                val pid = line.substringAfter("exited ").trim().toLongOrNull() ?: return
+                bootedBots.remove(pid)?.let { exited += it }
             }
             // "lost <pid>" — bot process no longer found
             line.startsWith("lost ") -> {

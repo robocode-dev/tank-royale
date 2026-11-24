@@ -503,6 +503,47 @@ class RumbleSessionRunnerTest {
 
     // RCL-122 and RCL-123: a session made from the Rumble's pin and advice
 
+    // RCL-163
+
+    @Test
+    @Tag("RCL-163")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL163_UnitPositive_aBotThatDidNotConnectInTwoBattlesInARowIsLeftOutAndTheSessionRunsOn(@TempDir dir: Path) {
+        val entries = listOf(bot("Alpha"), bot("Beta"), bot("Gamma"))
+
+        // Beta never connects; with only two failed battles allowed in a row the session still finishes, because the
+        // battle that leaves Beta out does not count toward giving up.
+        val run = session(dir, sourceFor("Alpha", "Beta", "Gamma"), command("noconnect:Beta"), { request(entries, limit = 3) }, maxFailures = 2)
+
+        assertEquals(SessionEnd.Finished, run.end)
+        assertEquals(listOf(SessionEvent.BotNotPlaced("Beta 1.0", NotPlacedReason.DID_NOT_CONNECT)), run.events.filterIsInstance<SessionEvent.BotNotPlaced>())
+        val leftOutAt = run.events.indexOfFirst { it is SessionEvent.BotNotPlaced }
+        assertTrue(run.events.drop(leftOutAt).filterIsInstance<SessionEvent.BattleStarted>().none { "Beta 1.0" in it.participants }, "no battle with Beta after it was left out")
+        assertEquals(2, run.events.count { it is SessionEvent.BattleNotKept && it.reason == NotKeptReason.BOTS_DID_NOT_CONNECT && it.detail == "Beta 1.0" })
+        assertEquals(3, run.journal.entries().size)
+    }
+
+    @Test
+    @Tag("RCL-163")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL163_UnitNegative_oneBattleWithoutConnectingLeavesNoBotOutAndTheNextSessionTriesItAgain(@TempDir dir: Path) {
+        val entries = listOf(bot("Alpha"), bot("Beta"))
+
+        // Beta misses one battle, then connects: it stays in the session.
+        val once = session(dir, sourceFor("Alpha", "Beta"), command("noconnect:Beta", "ok"), { request(entries, limit = 2) })
+        assertEquals(SessionEnd.Finished, once.end)
+        assertTrue(once.events.none { it is SessionEvent.BotNotPlaced })
+
+        // Left out in one session after two battles, Beta is chosen again by the next session, which starts afresh.
+        val three = entries + bot("Gamma")
+        val first = session(dir.resolve("first"), sourceFor("Alpha", "Beta", "Gamma"), command("noconnect:Beta"), { request(three, limit = 3) }, maxFailures = 5)
+        assertTrue(first.events.contains(SessionEvent.BotNotPlaced("Beta 1.0", NotPlacedReason.DID_NOT_CONNECT)))
+        val next = session(dir.resolve("next"), sourceFor("Alpha", "Beta"), command("ok"), { request(entries, limit = 1) })
+        assertTrue(next.events.filterIsInstance<SessionEvent.BattleStarted>().any { "Beta 1.0" in it.participants })
+    }
+
     private class PinData(vararg files: Pair<String, String>) : ResultDataSource {
         private val files = mapOf(*files)
         override fun fileText(path: String) = files[path]
