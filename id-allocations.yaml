@@ -3650,6 +3650,11 @@ claims:
       state: reserved
       prefix: RCL
       component: "166"
+    - id: RCL-167
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "167"
     - id: RCV-001
       kind: numeric
       state: reserved
@@ -4896,11 +4901,11 @@ high-water:
       state: reserved
       prefix: RCI
       component: "58"
-    - id: RCL-165
+    - id: RCL-166
       kind: numeric
       state: reserved
       prefix: RCL
-      component: "165"
+      component: "166"
     - id: RCV-002
       kind: numeric
       state: reserved
