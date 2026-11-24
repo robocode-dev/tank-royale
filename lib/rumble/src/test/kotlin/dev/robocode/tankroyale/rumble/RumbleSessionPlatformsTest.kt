@@ -84,6 +84,11 @@ class RumbleSessionPlatformsTest {
         assertFalse("java" in tools.asked, "a Java that is not on the path is never asked")
         assertNull(PlatformChecker.onPath("java", windows = true, path = dir.toString()))
         assertNull(PlatformChecker.onPath("java", windows = true, path = null))
+        // A path folder this system cannot read as a path, such as one with a stray space or character, is skipped.
+        val bin = Files.createDirectories(dir.resolve("jdk/bin"))
+        val exe = Files.createFile(bin.resolve("java.exe"))
+        val odd = listOf("C:/Foo ", " C:/Bar", "C:/a<b", "  ", " $bin ").joinToString(java.io.File.pathSeparator)
+        assertEquals(exe.toString(), PlatformChecker.onPath("java", windows = true, path = odd))
         // Only the Java bots, and the teams that hold one, are left out; the others run.
         assertEquals(setOf("Walls 1.0", "SharpTeam 1.0", "MixedTeam 1.0"), found.leftOut)
     }

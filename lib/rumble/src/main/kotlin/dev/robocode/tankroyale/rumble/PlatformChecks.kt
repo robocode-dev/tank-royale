@@ -241,8 +241,10 @@ class PlatformChecker(
     companion object {
         /** The full path of [name] in the folders of the path, with `.exe` on Windows, or null when no folder holds it. */
         fun onPath(name: String, windows: Boolean, path: String? = System.getenv("PATH")): String? =
-            path.orEmpty().split(java.io.File.pathSeparatorChar).filter { it.isNotBlank() }
-                .map { Path.of(it.trim('"')).resolve(if (windows) "$name.exe" else name) }
+            path.orEmpty().split(java.io.File.pathSeparatorChar)
+                .map { it.trim().trim('"').trim() }.filter { it.isNotEmpty() }
+                // A folder the path names but this system cannot read as a path, such as one with a stray character, is skipped.
+                .mapNotNull { runCatching { Path.of(it).resolve(if (windows) "$name.exe" else name) }.getOrNull() }
                 .firstOrNull { Files.isRegularFile(it) && (windows || Files.isExecutable(it)) }
                 ?.toString()
 

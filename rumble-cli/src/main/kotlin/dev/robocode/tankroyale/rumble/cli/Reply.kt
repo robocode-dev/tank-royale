@@ -120,7 +120,7 @@ class Services(
     /** Where the result repository's engine pin and advice are read. */
     val resultData: (RumbleEnvironment) -> ResultDataSource = { GitHubResultDataSource(it) },
     /** How a session starts the battle worker, given the environment's state folder: the carried worker by default. */
-    val worker: (Path) -> WorkerCommand = { stateRoot -> WorkerCommands.javaJar(EmbeddedWorker.extract(stateRoot), WORKER_HEAP_MEGABYTES, ownJava()) },
+    val worker: (Path) -> WorkerCommand = { stateRoot -> WorkerCommands.javaJar(EmbeddedWorker.extract(stateRoot), WORKER_HEAP_MEGABYTES) },
     /** The limits of one battle's worker. */
     val workerLimits: WorkerLimits = WorkerLimits(totalTime = java.time.Duration.ofMinutes(30)),
     /** Calls the given action at each Ctrl+C for as long as the returned handle is open. */
@@ -242,16 +242,4 @@ class Io(
         is JsonNull -> element
         is JsonPrimitive -> if (element.isString) JsonPrimitive(redaction.paths(element.content)) else element
     }
-}
-
-/**
- * The Java this program runs on, by its full path: the worker runs on it, so a session needs no Java on the path for
- * its battles, also when the program was started from the desktop program's own Java. On Windows it is the variant
- * without a console window.
- */
-internal fun ownJava(): String {
-    val bin = java.nio.file.Path.of(System.getProperty("java.home"), "bin")
-    val windows = dev.robocode.tankroyale.common.util.Platform.isWindows
-    val quiet = bin.resolve(if (windows) "javaw.exe" else "java")
-    return (if (java.nio.file.Files.isRegularFile(quiet)) quiet else bin.resolve(if (windows) "java.exe" else "java")).toString()
 }

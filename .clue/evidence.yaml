@@ -2224,7 +2224,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlatformsTest.kt",
-          "sha256": "dc73527614e14d486507b85c01447e2bdf45f9bdb4c1a3eda68df48786f857a5"
+          "sha256": "b7961b97153e08a4e6646b5fbb4386ec049fb98d813295fff0b2e6a493e8f83f"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",

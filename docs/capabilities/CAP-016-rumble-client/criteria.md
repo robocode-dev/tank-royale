@@ -1351,7 +1351,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a contribution session started by the desktop program or from a terminal
     When it starts the battle worker, and when it checks the Java its Java bots need
-    Then the worker is started with the full path of the Java the session program runs on, so no Java on the path is needed for the battles
+    Then the worker is started with the full path of the Java the session program runs on, and the worker starts its server and booter with the full path of its own Java, so no Java on the path is needed for the battles on any operating system
     And Java for the bots is looked for in the folders of the path, as the bots' launchers find it, and run by its full path, so the program's own Java never answers for a Java the path does not hold; the Download bots screen checks Java the same way
   @RCL-166
   Scenario: A session leaves out from the start the bots of every platform that cannot run here

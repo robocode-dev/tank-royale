@@ -58,7 +58,8 @@ object InterruptShield {
 
 object WorkerCommands {
     /**
-     * The usual command: the Java program from the shared Java helper, a heap limit, the worker's home and temporary
+     * The usual command: the Java program from the shared Java helper, which is the full path of the Java this program
+     * runs on, so the worker, and the server and booter it starts the same way, need no Java on the path; a heap limit, the worker's home and temporary
      * folder settings, `-jar`, [jar] and the argument that selects worker mode. [javaProgram] is the program to run.
      */
     fun javaJar(jar: Path, heapMegabytes: Int, javaProgram: String = JavaExec.java()): WorkerCommand = WorkerCommand { folders ->
