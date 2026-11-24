@@ -1495,6 +1495,11 @@ claims:
       state: reserved
       prefix: CH
       component: "113"
+    - id: CH-114
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "114"
     - id: G-001
       kind: numeric
       state: reserved
@@ -3545,6 +3550,26 @@ claims:
       state: reserved
       prefix: RCL
       component: "155"
+    - id: RCL-156
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "156"
+    - id: RCL-157
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "157"
+    - id: RCL-158
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "158"
+    - id: RCL-159
+      kind: numeric
+      state: reserved
+      prefix: RCL
+      component: "159"
     - id: RCV-001
       kind: numeric
       state: reserved
@@ -4791,11 +4816,11 @@ high-water:
       state: reserved
       prefix: RCI
       component: "58"
-    - id: RCL-154
+    - id: RCL-159
       kind: numeric
       state: reserved
       prefix: RCL
-      component: "154"
+      component: "159"
     - id: RCV-002
       kind: numeric
       state: reserved
