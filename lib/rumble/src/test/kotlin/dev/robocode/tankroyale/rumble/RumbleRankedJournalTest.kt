@@ -25,6 +25,8 @@ class RumbleRankedJournalTest {
     // RCL-108
 
     @Test
+    @Tag("RCL-108")
+    @Tag("Integration")
     @Tag("Positive")
     fun testRCL108_IntegrationPositive_everyRecordTheStoppedProcessReportedKeptIsReadBackExactly(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -50,6 +52,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-108")
+    @Tag("Integration")
     @Tag("Negative")
     fun testRCL108_IntegrationNegative_aRecordIsNotKeptWhenTheFileCannotBeWrittenAndTheJournalSaysSo(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -63,6 +67,8 @@ class RumbleRankedJournalTest {
 
 
     @Test
+    @Tag("RCL-108")
+    @Tag("Integration")
     @Tag("Negative")
     fun testRCL108_IntegrationNegative_aWriteThatFailsHalfWayIsTakenBackAndNeverGluesAKeptRecordOntoIt(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -94,6 +100,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-108")
+    @Tag("Integration")
     @Tag("Negative")
     fun testRCL108_IntegrationNegative_aFlushThatFailsLeavesNoLineAndAMoveThatFailsChangesNoState(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -118,6 +126,8 @@ class RumbleRankedJournalTest {
     // RCL-109
 
     @Test
+    @Tag("RCL-109")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL109_UnitPositive_aLastLineCutAtAnyPositionNeverCostsAnEarlierRecord(@TempDir dir: Path) {
         val source = dir.resolve("source.jsonl")
@@ -152,6 +162,8 @@ class RumbleRankedJournalTest {
 
 
     @Test
+    @Tag("RCL-109")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL109_UnitPositive_aHeaderCutAtAnyPositionIsWrittenAgainAndTheJournalIsUsable(@TempDir dir: Path) {
         val whole = dir.resolve("whole.jsonl")
@@ -170,6 +182,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-109")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL109_UnitPositive_aMoveLineCutAtAnyPositionLeavesTheStateAsItWasAndCostsNoRecord(@TempDir dir: Path) {
         val source = dir.resolve("source.jsonl")
@@ -192,6 +206,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-109")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL109_UnitNegative_theNextRecordAfterATornEndIsOnALineOfItsOwnAndAForeignFileIsRefused(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -223,6 +239,8 @@ class RumbleRankedJournalTest {
     // RCL-110
 
     @Test
+    @Tag("RCL-110")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL110_UnitPositive_aJournalOpensForItsOwnEnvironmentAndKeepsItsRecordsThere(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -232,6 +250,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-110")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL110_UnitNegative_aJournalIsRefusedForTheOtherEnvironmentAndNothingIsWritten(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -252,6 +272,8 @@ class RumbleRankedJournalTest {
     // RCL-111
 
     @Test
+    @Tag("RCL-111")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL111_UnitPositive_theSameBattleIsKeptOnceInTheSameRunAndAfterReopening(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -267,6 +289,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-111")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL111_UnitNegative_aDifferentBattleIsKeptAndARecordOfAnUnknownSchemaIsRefused(@TempDir dir: Path) {
         val journal = open(dir.resolve("journal.jsonl"))
@@ -280,6 +304,8 @@ class RumbleRankedJournalTest {
     // RCL-112
 
     @Test
+    @Tag("RCL-112")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL112_UnitPositive_aMoveIsALineAddedAfterTheOthersAndTheStateSurvivesReopening(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -308,6 +334,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-112")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL112_UnitNegative_aMoveThatDoesNotFitOrNamesNoRecordIsRefusedAndWritesNothing(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -330,6 +358,8 @@ class RumbleRankedJournalTest {
     // RCL-113
 
     @Test
+    @Tag("RCL-113")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL113_UnitPositive_recordsOfAnotherEpochAreSetAsideWithTheirReasonAndStayListed(@TempDir dir: Path) {
         val file = dir.resolve("journal.jsonl")
@@ -351,6 +381,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-113")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL113_UnitNegative_recordsOfTheCurrentEpochAndRecordsAlreadyOnTheirWayAreNotSetAside(@TempDir dir: Path) {
         val journal = open(dir.resolve("journal.jsonl"))
@@ -369,6 +401,8 @@ class RumbleRankedJournalTest {
         type.methods.filter { it.declaringClass == type && !it.isSynthetic && !it.name.contains('$') }
 
     @Test
+    @Tag("RCL-114")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL114_UnitPositive_theOnlyOperationsAreTheOnesTiedToBatchesReceiptsAndTheEngineEpoch() {
         val operations = publicMethods(RankedJournal::class.java).map { it.name }.toSet()
@@ -382,6 +416,8 @@ class RumbleRankedJournalTest {
     }
 
     @Test
+    @Tag("RCL-114")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL114_UnitNegative_noOperationTakesAnythingButAnIdentityAReasonOrAWholeRecordToAdd() {
         val allowed = setOf<Class<*>>(String::class.java, Int::class.javaPrimitiveType!!, List::class.java, RankedRecord::class.java)

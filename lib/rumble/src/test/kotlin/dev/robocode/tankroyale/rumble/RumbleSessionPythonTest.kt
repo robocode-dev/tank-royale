@@ -75,6 +75,8 @@ class RumbleSessionPythonTest {
     // RCL-131
 
     @Test
+    @Tag("RCL-131")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL131_UnitPositive_theBotApiIsInstalledFreshForTheSessionWithTheSupportedPythonAndRemovedAtTheEnd(@TempDir root: Path) {
         val runner = FakePython()
@@ -100,6 +102,8 @@ class RumbleSessionPythonTest {
     }
 
     @Test
+    @Tag("RCL-131")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL131_UnitNegative_aMissingTooOldOrFailingPythonOrNoBotApiLeavesPythonOutWithAReason(@TempDir root: Path) {
         assertEquals(SessionPythonSetup.Unavailable(SessionPythonProblem.MISSING, "3.14"), python(root.resolve("a"), FakePython(version = null)).setUp())
@@ -121,6 +125,8 @@ class RumbleSessionPythonTest {
     }
 
     @Test
+    @Tag("RCL-131")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL131_UnitNegative_theDigestIsKeptOnlyInMemoryAndLeftoversOfEndedSessionsAreRemovedButNotLiveOnes(@TempDir root: Path) {
         val live = python(root, FakePython()).apply { setUp() }
@@ -149,6 +155,8 @@ class RumbleSessionPythonTest {
     }
 
     @Test
+    @Tag("RCL-131")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL131_UnitNegative_aFolderThatCannotBeRemovedKeepsItsLockFileSoALaterSessionRemovesIt(@TempDir root: Path) {
         org.junit.jupiter.api.Assumptions.assumeTrue(System.getProperty("os.name").startsWith("Windows"), "Windows refuses to remove a read-only file")
@@ -169,6 +177,8 @@ class RumbleSessionPythonTest {
     }
 
     @Test
+    @Tag("RCL-131")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL131_UnitPositive_requirementsForAnExtraAreNotRuntimeRequirementsAndNamesCompareAsPythonCompares() {
         val metadata = "Name: robocode-tank-royale\nVersion: 1.4.0\nRequires-Dist: WebSockets>=15\nRequires-Dist: py_country>=24; extra == \"docs\"\n" +
@@ -188,6 +198,8 @@ class RumbleSessionPythonTest {
     }
 
     @Test
+    @Tag("RCL-131")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL131_UnitPositive_theRealWheelNamesItsVersionAndItsRuntimeRequirements() {
         val dist = Path.of(System.getProperty("user.dir")).resolve("../../bot-api/python/dist").normalize()
@@ -202,6 +214,8 @@ class RumbleSessionPythonTest {
     // RCL-132
 
     @Test
+    @Tag("RCL-132")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL132_UnitPositive_aBattleWithAPythonBotGetsItsOwnCheckedCopyThroughTheWorkersEnvironment(@TempDir root: Path) {
         val session = python(root.resolve("state"), FakePython()).apply { setUp() }
@@ -228,6 +242,8 @@ class RumbleSessionPythonTest {
     }
 
     @Test
+    @Tag("RCL-132")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL132_UnitNegative_aBattleWhoseCopyCannotBeMadeDoesNotStartWithItsReason(@TempDir dir: Path) {
         val host = WorkerHost(WorkerLimits(totalTime = Duration.ofSeconds(30)))
@@ -253,6 +269,8 @@ class RumbleSessionPythonTest {
     // RCL-133
 
     @Test
+    @Tag("RCL-133")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL133_UnitNegative_aChangeToABattlesCopyOrToTheSessionsFolderNeverReachesAnotherBattle(@TempDir root: Path) {
         val runner = FakePython()
@@ -286,6 +304,8 @@ class RumbleSessionPythonTest {
     }
 
     @Test
+    @Tag("RCL-133")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL133_UnitPositive_theRuntimeImportsAreExactlyWhatThePythonBotApiImportsFromOutside() {
         val source = Path.of(System.getProperty("user.dir")).resolve("../../bot-api/python/src/robocode_tank_royale").normalize()
@@ -307,6 +327,8 @@ class RumbleSessionPythonTest {
     )
 
     @Test
+    @Tag("RCL-133")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL133_UnitPositive_theDigestIsReadFileByFileAndSeesEveryChange(@TempDir root: Path) {
         val folder = Files.createDirectories(root.resolve("f"))

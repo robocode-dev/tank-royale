@@ -46,6 +46,8 @@ class RumbleSessionPlannerTest {
     // RCL-102
 
     @Test
+    @Tag("RCL-102")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL102_UnitPositive_allBotsIgnoresTheSelectionAndNeverUsesAnEntryThatIsNotActive() {
         val entries = individuals(5) + bot("Gone", status = "retired") + bot("Bad", status = "disqualified")
@@ -59,6 +61,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-102")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL102_UnitNegative_noGameFormatGivesAWaitAndNoBattle() {
         val step = SessionPlanner.next(request(individuals(5), formats = emptyList()), SessionHistory())
@@ -69,6 +73,8 @@ class RumbleSessionPlannerTest {
     // RCL-103
 
     @Test
+    @Tag("RCL-103")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL103_UnitPositive_preferTakesASelectedEntryWhenAValidBattleHoldsOne() {
         val request = request(individuals(6), selected = setOf("Bot2 1.0"), mode = SelectionMode.PREFER)
@@ -79,6 +85,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-103")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL103_UnitNegative_preferFallsBackToAnyValidBattleWhenNoSelectedEntryIsUsable() {
         val entries = individuals(4) + bot("Gone", status = "retired")
@@ -99,6 +107,8 @@ class RumbleSessionPlannerTest {
     // RCL-104
 
     @Test
+    @Tag("RCL-104")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL104_UnitPositive_onlySelectedBotsHoldsASelectedEntryInEveryBattle() {
         val request = request(individuals(6), selected = setOf("Bot3 1.0", "Bot4 1.0"), mode = SelectionMode.ONLY)
@@ -109,6 +119,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-104")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL104_UnitNegative_onlySelectedBotsWaitsWithAReasonAndNeverUsesOtherEntries() {
         val some = individuals(3)
@@ -133,6 +145,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-104")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL104_UnitNegative_aWaitThatOnlyTheSelectionCausedIsToldApartFromOneTheWholeCatalogCaused() {
         // Team A shares a member with every other team, but Team C and Team E could still meet each other.
@@ -159,6 +173,8 @@ class RumbleSessionPlannerTest {
     // RCL-105
 
     @Test
+    @Tag("RCL-105")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL105_UnitPositive_selectedEntriesFormatsAndOpponentsTakeTurns() {
         val request = request(
@@ -178,6 +194,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-105")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL105_UnitNegative_theSameRequestAndHistoryGiveTheSameBattleAndAnotherSeedMayGiveAnother() {
         val entries = individuals(12)
@@ -191,6 +209,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-105")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL105_UnitPositive_threeSelectedEntriesShareTheBattlesCloselyForEverySeedAndInTwinDuelToo() {
         val selected = setOf("Bot1 1.0", "Bot2 1.0", "Bot3 1.0")
@@ -212,6 +232,8 @@ class RumbleSessionPlannerTest {
     // RCL-106
 
     @Test
+    @Tag("RCL-106")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL106_UnitPositive_aBattleCountEndsTheSessionAndAdviceThatIsUsableIsFollowed() {
         val request = request(individuals(6), limit = 3, advice = mapOf("1v1" to listOf(listOf("Bot5 1.0", "Bot6 1.0"))))
@@ -227,6 +249,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-106")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL106_UnitNegative_noCountNeverEndsAndMissingOrUnusableAdviceBlocksNothing() {
         val entries = individuals(4)
@@ -246,6 +270,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-106")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL106_UnitNegative_adviceNamingTwinDuelTeamsThatShareAMemberOrTooManyTeamsBlocksNoValidBattle() {
         val entries = individuals(6) + listOf(
@@ -269,6 +295,8 @@ class RumbleSessionPlannerTest {
     // RCL-107
 
     @Test
+    @Tag("RCL-107")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL107_UnitPositive_aTwinDuelBattleHoldsTheSelectedTeamAndAnotherTeamWithDisjointMembers() {
         val entries = individuals(8) + listOf(
@@ -290,6 +318,8 @@ class RumbleSessionPlannerTest {
     }
 
     @Test
+    @Tag("RCL-107")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL107_UnitNegative_aTeamWhoseMemberIsNotActiveIsNeverUsedAndASelectedTeamWithNoPartnerGivesNoBattle() {
         val entries = individuals(5) + bot("Gone", status = "retired") + listOf(

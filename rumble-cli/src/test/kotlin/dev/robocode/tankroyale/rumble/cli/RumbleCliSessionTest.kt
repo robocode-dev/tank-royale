@@ -47,6 +47,8 @@ class RumbleCliSessionTest {
     // RCI-058
 
     @Test
+    @Tag("RCI-058")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI058_UnitPositive_sessionShowsAndControlsARunningSessionAndReportsOneThatEnded(@TempDir dir: Path) {
         val folder = SessionFolder.of(env, dir)
@@ -91,6 +93,8 @@ class RumbleCliSessionTest {
     }
 
     @Test
+    @Tag("RCI-058")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI058_UnitNegative_controlCommandsAreRefusedWhenNoSessionRuns(@TempDir dir: Path) {
         val none = run(dir, "status")

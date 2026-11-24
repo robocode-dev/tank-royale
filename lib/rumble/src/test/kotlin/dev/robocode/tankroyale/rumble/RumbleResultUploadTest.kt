@@ -138,6 +138,8 @@ class RumbleResultUploadTest {
     // RCL-125
 
     @Test
+    @Tag("RCL-125")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL125_UnitPositive_everyWaitingRecordIsInExactlyOneBatchInTheShapeTheResultDataValidates(@TempDir dir: Path) {
         val oneVsOne = record()
@@ -171,6 +173,8 @@ class RumbleResultUploadTest {
     }
 
     @Test
+    @Tag("RCL-125")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL125_UnitNegative_batchesStayWithinTheirBoundsAndRecordsOfAnotherEpochAreSetAsideAndNeverSent(@TempDir dir: Path) {
         val many = List(130) { record() }
@@ -213,6 +217,8 @@ class RumbleResultUploadTest {
     // RCL-126
 
     @Test
+    @Tag("RCL-126")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL126_UnitPositive_aBatchIsSentAsAResultIssueOnlyAfterItsRecordsAreHandedOver(@TempDir dir: Path) {
         val records = listOf(record(), record())
@@ -233,6 +239,8 @@ class RumbleResultUploadTest {
     }
 
     @Test
+    @Tag("RCL-126")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL126_UnitNegative_aCrashAfterABatchWasClosedAndBeforeItsRecordsWaitedAgainNeverLosesARecord(@TempDir dir: Path) {
         // The issue was deleted, or the Rumble refused the batch: the batch was closed, and the program stopped before
@@ -274,6 +282,8 @@ class RumbleResultUploadTest {
     }
 
     @Test
+    @Tag("RCL-126")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL126_UnitNegative_aFailedSendOrACrashBeforeTheIssueWasRecordedNeverLosesARecord(@TempDir dir: Path) {
         // GitHub said no, so no issue was opened: the records wait again.
@@ -341,6 +351,8 @@ class RumbleResultUploadTest {
     // RCL-127
 
     @Test
+    @Tag("RCL-127")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL127_UnitPositive_eachRecordIsAcceptedRejectedOrSentAgainByItsOwnReceiptLine(@TempDir dir: Path) {
         val accepted = record()
@@ -370,6 +382,8 @@ class RumbleResultUploadTest {
     }
 
     @Test
+    @Tag("RCL-127")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL127_UnitNegative_aRefusedBatchWaitsAgainAndStopsSendingAndOtherAccountsCannotWriteAReceipt(@TempDir dir: Path) {
         val a = record()
@@ -401,6 +415,8 @@ class RumbleResultUploadTest {
     }
 
     @Test
+    @Tag("RCL-127")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL127_UnitNegative_aDeletedIssueDoesNotStopOtherReceiptsAndAReceiptAfterManyCommentsIsFound(@TempDir dir: Path) {
         val first = record()
@@ -423,6 +439,8 @@ class RumbleResultUploadTest {
     // RCL-128
 
     @Test
+    @Tag("RCL-128")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL128_UnitNegative_withoutAUsableSignInPinOrClientIdNothingIsSentAndTheReasonIsGiven(@TempDir dir: Path) {
         val noSignIn = FakeGitHub()
@@ -467,6 +485,8 @@ class RumbleResultUploadTest {
     }
 
     @Test
+    @Tag("RCL-128")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL128_UnitPositive_theSavedSignInIsRenewedOnlyWhenItsTokenRanOutOrWasRefused(@TempDir base: Path) {
         var renewals = 0
@@ -499,6 +519,8 @@ class RumbleResultUploadTest {
     // RCL-129
 
     @Test
+    @Tag("RCL-129")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL129_UnitPositive_automaticSendingRunsWhenEnoughWaitOrTimeHasPassedAndReceiptsAtTheirOwnInterval(@TempDir dir: Path) {
         val github = FakeGitHub()
@@ -527,6 +549,8 @@ class RumbleResultUploadTest {
     }
 
     @Test
+    @Tag("RCL-129")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL129_UnitNegative_aSessionSendsBetweenBattlesAndEndsWhenTheListOfSentBatchesCannotBeWritten(@TempDir dir: Path) {
         var calls = 0
@@ -568,6 +592,7 @@ class RumbleResultUploadTest {
     // RCL-130
 
     @Test
+    @Tag("RCL-130")
     @Tag("Integration")
     @Tag("Positive")
     fun testRCL130_IntegrationPositive_oneRealBatchIsSentAndReceiptedInTheTestRumble(@TempDir dir: Path) {

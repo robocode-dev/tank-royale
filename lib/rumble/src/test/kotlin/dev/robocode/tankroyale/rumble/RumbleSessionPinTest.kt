@@ -64,6 +64,8 @@ class RumbleSessionPinTest {
     // RCL-121
 
     @Test
+    @Tag("RCL-121")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL121_UnitPositive_aValidPinGivesTheBehaviorVersionAndEachFormatsRoundsAndBattleSize() {
         val ready = assertInstanceOf(SessionPin.Ready::class.java, prepare(pin()))
@@ -78,6 +80,8 @@ class RumbleSessionPinTest {
     }
 
     @Test
+    @Tag("RCL-121")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL121_UnitNegative_aPinThatCannotBeReadOrUnderstoodRefusesTheSessionWithItsReason() {
         val unreachable = Data(EnginePin.PATH to pin()).apply { failing += EnginePin.PATH }
@@ -127,6 +131,8 @@ class RumbleSessionPinTest {
     // RCL-122
 
     @Test
+    @Tag("RCL-122")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL122_UnitNegative_aPinThisProgramCannotRunUnderIsRefusedNamingWhatDiffers() {
         assertEquals(SessionPin.Refused(PinRefusal.BEHAVIOR_VERSION_DIFFERS, listOf("1", "2")), prepare(pin(behavior = 1), version = 2))
@@ -171,6 +177,8 @@ class RumbleSessionPinTest {
     // RCL-123
 
     @Test
+    @Tag("RCL-123")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL123_UnitPositive_adviceIsReadBestFirstAndReadAgainOnlyAfterTheRefreshTime() {
         val data = Data(advice("1v1", listOf("A 1.0", "B 1.0"), listOf("C 1.0", "D 1.0")), advice("twinduel", listOf("T 1.0", "U 1.0")))
@@ -191,6 +199,8 @@ class RumbleSessionPinTest {
     }
 
     @Test
+    @Tag("RCL-123")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL123_UnitNegative_missingUnknownOrUnreachableAdviceGivesNoneAndAFailedReReadKeepsTheLast() {
         assertEquals(AdviceRead.None, MatchmakingAdvice.read(Data(), "1v1"))
@@ -239,6 +249,7 @@ class RumbleSessionPinTest {
     // RCL-124
 
     @Test
+    @Tag("RCL-124")
     @Tag("Integration")
     @Tag("Positive")
     fun testRCL124_IntegrationPositive_theRealPublicPinAndAdviceFilesAreUnderstood() {

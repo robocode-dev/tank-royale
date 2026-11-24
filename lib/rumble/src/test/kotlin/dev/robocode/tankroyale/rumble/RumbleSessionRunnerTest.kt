@@ -129,6 +129,8 @@ class RumbleSessionRunnerTest {
     // RCL-115
 
     @Test
+    @Tag("RCL-115")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL115_UnitPositive_aCompletedBattleBecomesExactlyOneRecordMadeFromWhatWasRun(@TempDir dir: Path) {
         val a = bot("Alpha")
@@ -152,6 +154,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-115")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL115_UnitNegative_aResultThatNamesOtherBotsThanTheBattleRanIsNotKept(@TempDir dir: Path) {
         // The fake worker reports every bot as version 1.0, while these bots are version 2.0.
@@ -178,6 +182,8 @@ class RumbleSessionRunnerTest {
     // RCL-116
 
     @Test
+    @Tag("RCL-116")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL116_UnitPositive_everyKindOfBattleThatDidNotCompleteIsReportedAndKeptNothingAndTheSessionGoesOn(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"))
@@ -197,6 +203,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-116")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL116_UnitPositive_aBattleThatDidNotCompleteMakesTheNextChoiceAnotherBattle(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"), bot("Gamma"), bot("Delta"))
@@ -234,6 +242,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-116")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL116_UnitPositive_aWorkerThatCannotBeStartedIsReported(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"))
@@ -245,6 +255,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-116")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL116_UnitNegative_tooManyBattlesInARowThatFailGiveUpWithoutSpinningAndAFormatWithNoRoundsIsNotRun(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"))
@@ -263,6 +275,8 @@ class RumbleSessionRunnerTest {
     // RCL-117
 
     @Test
+    @Tag("RCL-117")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL117_UnitPositive_aBotThatCannotBePlacedIsNotRunAndTheSessionGoesOnWithOthers(@TempDir dir: Path) {
         val entries = listOf(bot("Bad", hash = "sha256:wrong"), bot("Gone"), bot("Alpha"), bot("Beta"), bot("Gamma"))
@@ -278,6 +292,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-117")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL117_UnitNegative_aBotInTheCacheIsReusedAndOneThatNoLongerMatchesIsFetchedAgainAndTooFewBotsMakeTheSessionWait(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"))
@@ -345,6 +361,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-117")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL117_UnitPositive_aTeamsMembersArePlacedBesideTheTeamAndBotsWithTheSameFolderNameDoNotMeet(@TempDir dir: Path) {
         val members = listOf("M1", "M2", "M3", "M4")
@@ -401,6 +419,7 @@ class RumbleSessionRunnerTest {
     // RCL-118
 
     @Test
+    @Tag("RCL-118")
     @Tag("Integration")
     @Tag("Positive")
     fun testRCL118_IntegrationPositive_pauseLetsTheActiveBattleFinishAndFinishAndStopKeepsItsResult(@TempDir dir: Path) {
@@ -431,6 +450,7 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-118")
     @Tag("Integration")
     @Tag("Negative")
     fun testRCL118_IntegrationNegative_cancelNowEndsTheWorkerAndEverythingItStartedAndKeepsNothing(@TempDir dir: Path) {
@@ -459,6 +479,7 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-118")
     @Tag("Integration")
     @Tag("Negative")
     fun testRCL118_IntegrationNegative_cancelNowWorksAfterTheWorkerClosedItsOutputAndDuringAPauseWithoutAResumption(@TempDir dir: Path) {
@@ -582,6 +603,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-122")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL122_UnitPositive_aSessionUnderAPinRunsThePinsRoundsAndKeepsThePinsBehaviorVersion(@TempDir dir: Path) {
         val run = pinnedSession(dir, PinData(enginePin), listOf(bot("Alpha"), bot("Beta")), "Alpha", "Beta")
@@ -594,6 +617,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-123")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL123_UnitPositive_anAdvisedBattleIsRunFirstAndWithoutAdviceTheSessionRunsByCoverage(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"), bot("Gamma"), bot("Delta"))
@@ -619,6 +644,8 @@ class RumbleSessionRunnerTest {
     // RCL-119
 
     @Test
+    @Tag("RCL-119")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCL119_UnitPositive_aBattleCountEndsTheSessionAndOnlyKeptBattlesCount(@TempDir dir: Path) {
         val entries = listOf(bot("Alpha"), bot("Beta"), bot("Gamma"))
@@ -632,6 +659,8 @@ class RumbleSessionRunnerTest {
     }
 
     @Test
+    @Tag("RCL-119")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCL119_UnitNegative_aWaitIsReportedOnceForItsReasonAndARequestThatChangesWhileWaitingIsUsed(@TempDir dir: Path) {
         val alpha = bot("Alpha")

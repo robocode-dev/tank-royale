@@ -248,6 +248,8 @@ class RumbleWorkerHostTest {
     // RCI-051: the worker is started shielded from Ctrl+C, with its arguments whole.
 
     @Test
+    @Tag("RCI-051")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI051_UnitPositive_aShieldedCommandKeepsEveryArgumentAndItsExitCode() {
         val arguments = listOf("a&b", "c!d", "e^f", "g%PATH%h", "i j", "k\\l")
@@ -263,6 +265,8 @@ class RumbleWorkerHostTest {
     }
 
     @Test
+    @Tag("RCI-051")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI051_UnitNegative_noArgumentIsReadByTheShellAndElsewhereCtrlCIsIgnoredForEveryChild() {
         val command = listOf("C:\\R&D!\\java.exe", "-jar", "C:\\x^y\\w.jar")

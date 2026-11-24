@@ -248,6 +248,8 @@ class RumbleCliContributeTest {
     // RCI-048
 
     @Test
+    @Tag("RCI-048")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI048_UnitPositive_aSessionStartsWhenEverythingIsReady(@TempDir dir: Path) {
         val world = World(dir).apply { signIn() }
@@ -269,6 +271,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-048")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI048_UnitNegative_anythingNotReadyEndsTheCommandBeforeAnyBattleWithItsExitCodeAndReason(@TempDir dir: Path) {
         fun check(world: World, exit: Int, outcome: String, next: String? = null) {
@@ -306,6 +310,8 @@ class RumbleCliContributeTest {
     // RCI-049
 
     @Test
+    @Tag("RCI-049")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI049_UnitPositive_theSessionRunsTheChosenBotsAndFormatsAndSendsWhatItKeeps(@TempDir dir: Path) {
         val world = World(dir).apply { signIn() }
@@ -324,6 +330,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-049")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI049_UnitNegative_anUnknownBotOrAModeWithoutBotsIsBadInput(@TempDir dir: Path) {
         val world = World(dir).apply { signIn() }
@@ -350,6 +358,8 @@ class RumbleCliContributeTest {
     // RCI-050
 
     @Test
+    @Tag("RCI-050")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI050_UnitPositive_startingAgainKeepsWhatWasKeptAndSendsAHandedOverBatchAgain(@TempDir dir: Path) {
         val world = World(dir).apply { signIn() }
@@ -370,6 +380,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-050")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI050_UnitNegative_aBatchWhoseSendHadNoClearAnswerIsSentAgainUnderItsOwnIdentity(@TempDir dir: Path) {
         val world = World(dir).apply { signIn() }
@@ -387,6 +399,8 @@ class RumbleCliContributeTest {
     // RCI-051
 
     @Test
+    @Tag("RCI-051")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI051_UnitPositive_theFirstCtrlCFinishesTheBattleKeepsItAndStops(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); mode = "slow" }
@@ -402,6 +416,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-051")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI051_UnitNegative_aSecondCtrlCEndsTheBattleAtOnceAndKeepsNothingOfIt(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); mode = "hang" }
@@ -421,6 +437,8 @@ class RumbleCliContributeTest {
     // RCI-052
 
     @Test
+    @Tag("RCI-052")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI052_UnitPositive_eventsAreJsonLinesAndTheFinalAnswerCountsTheResults(@TempDir dir: Path) {
         val world = World(dir).apply { signIn() }
@@ -441,6 +459,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-052")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI052_UnitNegative_aSessionThatGivesUpEndsWithExitCodeOneAndItsReasons(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); mode = "fail" }
@@ -456,6 +476,8 @@ class RumbleCliContributeTest {
     // RCI-053
 
     @Test
+    @Tag("RCI-053")
+    @Tag("Integration")
     @Tag("Positive")
     fun testRCI053_IntegrationPositive_oneRealSessionInTheTestRumbleKeepsAndSendsAResultThatIsAccepted() {
         org.junit.jupiter.api.Assumptions.assumeTrue(
@@ -487,6 +509,8 @@ class RumbleCliContributeTest {
     // RCI-054
 
     @Test
+    @Tag("RCI-054")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI054_UnitPositive_aSessionSetsUpPythonForItsPythonBotsAndSaysSo(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); catalog.python = true }
@@ -507,6 +531,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-054")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI054_UnitNegative_withoutAUsablePythonThePythonBotsAreLeftOutAndTheOthersRun(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); catalog.python = true; python.version = "3 12" }
@@ -536,6 +562,8 @@ class RumbleCliContributeTest {
     // RCL-134
 
     @Test
+    @Tag("RCL-134")
+    @Tag("Integration")
     @Tag("Positive")
     fun testRCL134_IntegrationPositive_oneRealSessionRunsAPythonCatalogBotAndItsResultIsAccepted() {
         org.junit.jupiter.api.Assumptions.assumeTrue(
@@ -595,6 +623,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-054")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI054_UnitNegative_aCtrlCWhilePythonIsSetUpIsAStopAndNotAnInstallFailure(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); catalog.python = true }
@@ -608,6 +638,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-054")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI054_UnitPositive_onlyABattleWithAPythonBotGetsACopyAndItIsNotInTheBotsTemporaryFolder(@TempDir dir: Path) {
         val fake = FakePython()
@@ -635,6 +667,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-054")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI054_UnitNegative_whenABattlesCopyCanNoLongerBeMadeThePythonBotsAreLeftOutForTheRestOfTheSession(@TempDir dir: Path) {
         val wheel = World(dir).services().pythonBotApi
@@ -692,6 +726,8 @@ class RumbleCliContributeTest {
         ProcessBuilder(java, "-cp", System.getProperty("java.class.path"), "dev.robocode.tankroyale.rumble.cli.CliFakeWorkerKt", "hang").start()
 
     @Test
+    @Tag("RCI-055")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI055_UnitPositive_aRunningSessionKeepsItsLockStatusAndLogInTheSessionFolder(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); mode = "slow" }
@@ -722,6 +758,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-055")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI055_UnitNegative_aSecondSessionIsRefusedAndASessionThatEndsBeforeItsFirstBattleSaysWhy(@TempDir dir: Path) {
         val world = World(dir).apply { signIn() }
@@ -750,6 +788,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-056")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI056_UnitPositive_requestsPauseResumeAndStopARunningSession(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); mode = "slow" }
@@ -773,6 +813,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-056")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI056_UnitPositive_aPauseLiftedBeforeItTookHoldLeavesTheSessionRunning(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); mode = "slow" }
@@ -793,6 +835,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-056")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI056_UnitNegative_stopNowKeepsNothingAndEachRequestIsActedOnOnce(@TempDir dir: Path) {
         val world = World(dir).apply { signIn(); mode = "hang" }
@@ -825,6 +869,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-057")
+    @Tag("Unit")
     @Tag("Positive")
     fun testRCI057_UnitPositive_aSessionStopsAfterItsBattleWhenItsOwnerIsGoneAndRunsOnWhenReleased(@TempDir dir: Path) {
         val owner = ownerProcess()
@@ -865,6 +911,8 @@ class RumbleCliContributeTest {
     }
 
     @Test
+    @Tag("RCI-057")
+    @Tag("Unit")
     @Tag("Negative")
     fun testRCI057_UnitNegative_anOwnerThatDoesNotRunIsBadInputAndAReusedProcessIdIsNotTheOwner(@TempDir dir: Path) {
         val gone = ProcessBuilder(java, "-version").redirectErrorStream(true).start()

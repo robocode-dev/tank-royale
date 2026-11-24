@@ -455,7 +455,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "bab3ae9729342e6a394dcc5f9e7baeac091db04884ff74805c288eb98ab0b041"
+          "sha256": "c5f2ea7bffa2495c995bdf574763a471c2f0da3bbc0c37829f2f849cb32825a2"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -479,7 +479,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
-          "sha256": "11b8466d023a547c9a813fd3e69376117da82b0a45e06ba839bc83e326a81030"
+          "sha256": "cb75fe4c068b3bd11e032b07cabea3640c6b9bdd3d85a06c79173206cb40f78b"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
@@ -2170,7 +2170,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankedJournalTest.kt",
-          "sha256": "5c7127b8a1bccbfabefd1ef309ad33a96ff0b6f57c0113e063396721c3a59ef4"
+          "sha256": "810bb0e3c84ab51a05dd7f4d244ce9ff9dc73e9b10270b587b7464ea147a5913"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleRankingsAndHelpTest.kt",
@@ -2186,7 +2186,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
-          "sha256": "59f13306c55486e713193f8d7cf617e7c02f4d37d2c4c1e1853735c9e804679b"
+          "sha256": "701c09cff1a2246a14b904973a85484c96f6f2a62aeeb150fab022ed0bac489b"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
@@ -2202,19 +2202,19 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPinTest.kt",
-          "sha256": "2e83a7889c0e7c49935832eaeedb9a8d223356c1f0c6256c301773dd71bd9568"
+          "sha256": "90ab71c05fc9a701d8214b6fc518f4669be6a4fde9111f7240ad821dccd5f7ba"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
-          "sha256": "9fc1557db9fefcd6b8ec1b67c7cf24f101c51f38edf4a1841e32ce4104389214"
+          "sha256": "5b840c3bf02af0a8283c31d83079d002a843be37ea18c1c67185064cf26eac77"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
-          "sha256": "724676bf2bfc737a53717d39c1d3ff4adfdd6f9cf9eb79e26290423a7954e78b"
+          "sha256": "71782d7eb9b4b9de370f15ac47fbb89808d06e4a6f5b6a89e5b8354d4070bd9a"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
-          "sha256": "3528be239fc9c888ac9637d61e2af711875a4b95807c51246154118925407b31"
+          "sha256": "f4f620cc9eb74c13730343c9e38b2b07e1ccff82579b21848796919e842f7699"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
@@ -2262,7 +2262,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleWorkerHostTest.kt",
-          "sha256": "302d006782753aef4a8cc4427d47b0ece775d7f36fad9b3fae8f8dfb654d5031"
+          "sha256": "64ed55924fa3d8b3323626b37350f142f463a1e66e7b5dbc84e02227d8cf7e95"
         }
       ],
       "references": [
