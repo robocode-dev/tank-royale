@@ -68,6 +68,11 @@ internal class SessionDisplay(
     private var filled: List<Any?>? = null
     private val closed = CountDownLatch(1)
 
+    private companion object {
+        /** The window is never narrower than this, so it does not jump in width as its texts change. */
+        const val MIN_WIDTH = 460
+    }
+
     @Volatile
     private var over = false
 
@@ -146,11 +151,9 @@ internal class SessionDisplay(
                 }
             })
         }.also { window = it }
+        if (!shown.isVisible) shown.setLocationByPlatform(true)
+        // Filled before it shows, so its size comes from its content in the fonts of this computer.
         (last ?: status())?.let { fill(shown, it) }
-        if (!shown.isVisible) {
-            shown.setSize(460, 220)
-            shown.setLocationByPlatform(true)
-        }
         shown.isVisible = true
         // Windows ignores a plain toFront from a program in the background; on top of all others for a moment, it shows.
         shown.isAlwaysOnTop = true
@@ -187,9 +190,11 @@ internal class SessionDisplay(
         frame.contentPane.add(buttons, BorderLayout.SOUTH)
         frame.contentPane.revalidate()
         frame.contentPane.repaint()
-        // As wide as the texts need, and as high as the content, which changes as the session goes on.
-        val wanted = frame.preferredSize
-        frame.setSize(maxOf(frame.width, wanted.width), wanted.height)
+        // As wide as the texts need, and as high as the content, which changes as the session goes on: pack() counts the window's frame, whose size is known only to the operating system, and gives every button
+        // the width its text needs; the window never gets narrower, so it does not jump as its texts change.
+        val before = frame.width
+        frame.pack()
+        frame.setSize(maxOf(before, frame.width, MIN_WIDTH), frame.height)
     }
 
     /** Takes away the icon and the window, which lets the session program end. On the event thread. */
