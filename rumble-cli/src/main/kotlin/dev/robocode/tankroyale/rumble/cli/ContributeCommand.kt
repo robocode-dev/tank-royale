@@ -143,9 +143,11 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             tracker = null
             if (t != null) {
                 runCatching { t.end(if (e is BadInput) "bad-input" else "failed", e.message.orEmpty()) }
-                t.close()
-                endedStatus = t.status
+                runCatching { t.close() }
             }
+            // The answer to a fault is written by the caller, so the end is not waited for here: the person sees the
+            // failure on the Contribute battles screen or in the terminal, and the icon and window go with the program.
+            endedStatus = null
             throw e
         } finally {
             // Only now, with the answer written and the Ctrl+C handler, the watcher and Python let go of, the tray

@@ -1273,7 +1273,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given the Contribute battles screen's choices and the desktop program started from its installed launcher or with Java and its jar
     When a session is started
-    Then the session shows itself in the tray unless the person chose its own window or nothing, the choice is passed as the command line's `--show`, and the command that starts the desktop program again is passed as `--open-command`: the installed launcher as it is, or Java with its settings and the jar, since Windows does not tell a program's own arguments
+    Then the session shows itself in the tray unless the person chose its own window or nothing, the choice is passed as the command line's `--show`, and the command that starts the desktop program again is passed as `--open-command=<part>`, one word per part: the installed launcher as it is, or Java with its settings and the jar, since Windows does not tell a program's own arguments, leaving out a debugger or agent of the running program
     And a choice the program does not know is none of them, and without a launcher or a jar no `--open-command` is passed
 
   @RCL-156
@@ -1281,7 +1281,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given sessions running, paused, stopping, cancelling and ended, on a computer with a tray, without one, and without a screen
     When the session decides what to show and what its menu holds
-    Then it shows the tray only where the operating system has one, else its window, and nothing without a screen; the tip says where it stands with the battles kept and the limit; the menu holds Show status, pause or resume as it stands, stop and stop now while they apply, and Open Tank Royale only when the session has the command, and each of pause, resume, stop and stop now names the session's own request
+    Then it shows the tray only where the operating system has one, else its window, and nothing without a screen; the menu holds Show status, pause or resume as it stands, stop and stop now while they apply, and Open Tank Royale only when the session has the command, each of pause, resume, stop and stop now names the session's own request, and the headline shown in the tip and the window says where it stands with the battles kept and the limit
     And a session that ended offers only Show status, Open Tank Royale where it can and Close
 
   @RCL-157
@@ -1293,12 +1293,12 @@ Feature: rumble-client — Local ranked and practice battle client
     And every text of the tray and the window is in English, Danish, Spanish and Catalan without a long dash, and the computer's own language never stands in for the one chosen
 
   @RCL-158
-  Scenario: Open Tank Royale brings a running desktop program to the front, or starts one, but never two
+  Scenario: Open Tank Royale asks a running desktop program through the session folder, or starts one
     Test-type: Unit
     Given a session with the command that starts the desktop program, with and without a desktop program that follows the session
     When Open Tank Royale is chosen
     Then the session asks through its session folder, and when a desktop program takes the request nothing is started
-    And when no desktop program takes it within a few seconds the session takes the request back and starts Tank Royale with its command, only one taker can take one request, the command leaves out a debugger or agent of the running program and is passed as one word per part, and without a command Open Tank Royale is not offered
+    And when no desktop program takes it within a few seconds the session takes the request back and starts Tank Royale with its command, only one taker can take one request, and without a command Open Tank Royale is not offered
 
   @RCL-159
   Scenario: The maintainer sees a session in the tray and in its own window on Windows

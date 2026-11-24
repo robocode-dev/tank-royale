@@ -50,7 +50,10 @@ class RumbleSessionViewTest {
         assertEquals(SessionShow.NONE, SessionShow.of(" None "))
         assertFalse(ContributeChoices().arguments(RumbleEnvironments.TEST, null).any { it.startsWith("--open-command") })
         // A debugger of the running program is not given to a new one.
-        assertEquals(listOf("java", "-Xmx1g", "-jar", "gui.jar"), OpenCommand.of("java", listOf("-agentlib:jdwp=transport=dt_socket,suspend=y", "-Xmx1g", "-javaagent:x.jar"), Path.of("gui.jar")))
+        assertEquals(
+            listOf("java", "-Xmx1g", "-jar", "gui.jar"),
+            OpenCommand.of("java", listOf("-agentlib:jdwp=transport=dt_socket,suspend=y", "-Xmx1g", "-javaagent:x.jar", "-agentpath:/a.so", "-Xrunjdwp:x", "-Xdebug"), Path.of("gui.jar")),
+        )
         // Java whose classes are not in a jar, as when run from the build's class folders, or no program at all: no command.
         assertEquals(emptyList<String>(), OpenCommand.of("/usr/bin/java", emptyList(), Path.of("/code/gui/build/classes")))
         assertEquals(emptyList<String>(), OpenCommand.of(null, emptyList(), null))
@@ -68,6 +71,8 @@ class RumbleSessionViewTest {
         )
         assertEquals(SessionMenuItem.RESUME, SessionView.menu(status("paused"), true)[1])
         assertEquals(SessionControlRequest.PAUSE, SessionMenuItem.PAUSE.request)
+        assertEquals(SessionControlRequest.RESUME, SessionMenuItem.RESUME.request)
+        assertEquals(SessionControlRequest.STOP, SessionMenuItem.STOP.request)
         assertEquals(SessionControlRequest.STOP_NOW, SessionMenuItem.STOP_NOW.request)
         assertEquals("session.headline.limit.running" to listOf<Any>(3, 10), SessionView.headline(status("running")))
         assertEquals("session.headline.running" to listOf<Any>(3), SessionView.headline(status("running", limit = null)))
@@ -85,6 +90,7 @@ class RumbleSessionViewTest {
         val ended = status("running", ended = SessionEnded("battles-done", "2026-11-23T11:00:00Z", ""))
         // An ended session offers no controls, only Close, so its icon and window stay until the person closes them.
         assertEquals(listOf(SessionMenuItem.SHOW_STATUS, SessionMenuItem.CLOSE), SessionView.menu(ended, canOpenTankRoyale = false))
+        assertEquals(listOf(SessionMenuItem.SHOW_STATUS, SessionMenuItem.OPEN_TANK_ROYALE, SessionMenuItem.CLOSE), SessionView.menu(ended, canOpenTankRoyale = true))
         assertFalse(SessionMenuItem.CLOSE in SessionView.menu(status("running"), true), "a running session is not closed from its icon")
         assertEquals("session.headline.limit.ended", SessionView.headline(ended).first)
         assertFalse(SessionMenuItem.STOP in SessionView.menu(status("stopping"), false), "a session that stops is not asked again")
