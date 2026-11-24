@@ -138,7 +138,7 @@ class RumbleContributeScreenTest {
         screen.controller.startSession(keepOnClose = false)
 
         assertEquals(
-            listOf("contribute", "-e", "test", "--mode", "only", "--bot", "Beta 1.0", "--format", "1v1", "--battles", "3", "--owner-pid", "$ownPid"),
+            listOf("contribute", "-e", "test", "--mode", "only", "--bot", "Beta 1.0", "--format", "1v1", "--battles", "3", "--owner-pid", "$ownPid", "--show", "tray"),
             screen.port.starts.single(),
         )
         assertInstanceOf(ContributeState.Starting::class.java, screen.state)

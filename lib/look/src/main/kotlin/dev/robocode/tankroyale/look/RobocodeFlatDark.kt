@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ui.theme
+package dev.robocode.tankroyale.look
 
 import com.formdev.flatlaf.FlatDarkLaf
 import com.formdev.flatlaf.FlatLaf

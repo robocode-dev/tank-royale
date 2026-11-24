@@ -8,52 +8,13 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.botapi.BotApiUpdateDialog
 import dev.robocode.tankroyale.gui.ui.components.RcImages
-import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatDark
-import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatLight
+import dev.robocode.tankroyale.look.RobocodeLook
 import dev.robocode.tankroyale.gui.util.UserDataMigration
 import java.awt.Taskbar
 import java.util.Locale
 
 import com.formdev.flatlaf.FlatLaf
 import java.awt.Toolkit
-
-fun resolveTheme(theme: String): String = when (theme) {
-    "light" -> "light"
-    "system" -> if (isOsDark()) "dark" else "light"
-    else -> "dark"
-}
-
-private fun isOsDark(): Boolean {
-    return try {
-        val os = System.getProperty("os.name", "").lowercase()
-        when {
-            "win" in os -> isWindowsDark()
-            "mac" in os -> {
-                val style = Toolkit.getDefaultToolkit().getDesktopProperty("apple.awt.application.appearanceMode") as? String
-                style?.lowercase()?.contains("dark") ?: true
-            }
-            else -> true
-        }
-    } catch (_: Exception) {
-        true
-    }
-}
-
-private fun isWindowsDark(): Boolean {
-    return try {
-        val process = ProcessBuilder(
-            "reg", "query",
-            "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
-            "/v", "AppsUseLightTheme"
-        ).start()
-        val output = process.inputStream.bufferedReader().readText()
-        process.waitFor()
-        // AppsUseLightTheme = 0x0 means dark mode ON, 0x1 means light mode
-        output.contains("0x0")
-    } catch (_: Exception) {
-        true
-    }
-}
 
 fun main(args: Array<String>) {
     if (args.contains("-v") || args.contains("--version")) {
@@ -81,7 +42,7 @@ fun main(args: Array<String>) {
 
     applyDefaultLocaleFromSettings() // Ensure JVM default locale follows GUI language
 
-    if (resolveTheme(ConfigSettings.theme) == "light") RobocodeFlatLight.setup() else RobocodeFlatDark.setup()
+    RobocodeLook.setup(ConfigSettings.theme)
 
     MainFrame.isVisible = true
 

@@ -20,6 +20,7 @@ val cliMainClass = "dev.robocode.tankroyale.rumble.cli.MainKt"
 dependencies {
     implementation(project(":lib:common"))
     implementation(project(":lib:rumble"))
+    implementation(project(":lib:look"))
     implementation(project(":lib:rumble-protocol"))
     implementation(project(":lib:bot-project"))
     implementation(libs.kotlinx.serialization.json)

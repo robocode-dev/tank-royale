@@ -13,6 +13,7 @@ import dev.robocode.tankroyale.rumble.ContributeMode
 import dev.robocode.tankroyale.rumble.ContributeState
 import dev.robocode.tankroyale.rumble.ContributeTexts
 import dev.robocode.tankroyale.rumble.SessionControlRequest
+import dev.robocode.tankroyale.rumble.SessionShow
 import dev.robocode.tankroyale.rumble.SessionStatus
 import net.miginfocom.swing.MigLayout
 import java.awt.BorderLayout
@@ -136,7 +137,7 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
         put(wrapped(text("rumble.contribute.intro")))
         val choices = state.choices
 
-        put(wrapped(text("rumble.contribute.which"), bold = true))
+        heading("rumble.contribute.which")
         val modes = ButtonGroup()
         ContributeMode.entries.forEach { mode ->
             put(choice(JRadioButton().also { modes.add(it) }, text(ContributeTexts.forMode(mode)), choices.mode == mode, true) { if (it) controller.setMode(mode) })
@@ -145,21 +146,21 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
         if (bots == null) {
             put(button("rumble.contribute.button.read_again") { controller.readAgain() })
         } else if (choices.mode != ContributeMode.ALL) {
-            put(wrapped(text("rumble.contribute.bots"), bold = true))
+            heading("rumble.contribute.bots")
             if (bots.isEmpty()) put(wrapped(text("rumble.contribute.no_bots")))
             put(JPanel(MigLayout("insets 0, wrap 2", "[grow, fill][grow, fill]")).apply {
                 bots.forEach { bot -> add(JCheckBox(bot, bot in choices.bots).apply { addActionListener { controller.setBot(bot, isSelected) } }) }
             })
         }
 
-        put(wrapped(text("rumble.contribute.formats"), bold = true))
+        heading("rumble.contribute.formats")
         put(JPanel(MigLayout("insets 0", "[][][]")).apply {
             ContributeChoices.RANKED_FORMATS.forEach { format ->
                 add(JCheckBox(format, format in choices.formats).apply { addActionListener { controller.setFormat(format, isSelected) } })
             }
         })
 
-        put(wrapped(text("rumble.contribute.how_long"), bold = true))
+        heading("rumble.contribute.how_long")
         val length = ButtonGroup()
         val count = JSpinner(SpinnerNumberModel(choices.battles ?: ContributeChoices.DEFAULT_BATTLES, 1, 100_000, 1)).apply {
             isEnabled = choices.battles != null
@@ -174,6 +175,18 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
         put(JRadioButton(text("rumble.contribute.keep_running"), choices.battles == null).also { length.add(it) }.apply {
             addActionListener { if (isSelected) controller.setBattles(null) }
         })
+
+        // How the running session shows itself; the choice is remembered for the next session.
+        heading("rumble.contribute.show")
+        val shows = ButtonGroup()
+        SessionShow.entries.forEach { show ->
+            put(choice(JRadioButton().also { shows.add(it) }, text("rumble.contribute.show.${show.option}"), choices.show == show, true) {
+                if (it) {
+                    ConfigSettings.rumbleSessionShow = show.option
+                    controller.setShow(show)
+                }
+            })
+        }
 
         closeSetting()
         act(
@@ -386,7 +399,7 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
 
     /** The setting of what closing Tank Royale does with a session it started. */
     private fun closeSetting() {
-        put(wrapped(text("rumble.contribute.close_setting"), bold = true))
+        heading("rumble.contribute.close_setting")
         val choices = CloseChoice.entries
         put(JComboBox(choices.map { text(ContributeTexts.forClose(it)) }.toTypedArray()).apply {
             selectedIndex = choices.indexOf(ConfigSettings.rumbleCloseChoice)
@@ -415,6 +428,11 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
     }
 
     private fun act(vararg buttons: JButton) = buttons.forEach { actions.add(it) }
+
+    /** A heading of a group of choices, with room above it so the groups stand apart. */
+    private fun heading(key: String) {
+        content.add(wrapped(text(key), bold = true), "growx, wmin 10, gaptop 12")
+    }
 
     private fun put(component: Component) {
         content.add(component, "growx, wmin 10")

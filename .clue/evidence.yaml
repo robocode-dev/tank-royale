@@ -263,7 +263,7 @@
         },
         {
           "path": "gui/build.gradle.kts",
-          "sha256": "fce99fea58207af81b0134aefbf885d87608d65137efcb919fd93d013f65e046"
+          "sha256": "1a30d7be05f64094b00753adb25c314bcb515b39e67f9c9394e2dc3dd6cfc04f"
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/newbattle/GameTypeDropdownTest.kt",
@@ -443,7 +443,7 @@
         },
         {
           "path": "rumble-cli/build.gradle.kts",
-          "sha256": "1fa4fd3748d300ef37e410758a12a4fc737b6a0ed2df6acbb15465985ddda9f2"
+          "sha256": "baa2cadc3db14f0891c748e1b05881764d35bca411c82cd5953ef5c76282970f"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliAccountTextsTest.kt",
@@ -480,6 +480,10 @@
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
           "sha256": "11b8466d023a547c9a813fd3e69376117da82b0a45e06ba839bc83e326a81030"
+        },
+        {
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
+          "sha256": "2305817ed83b6479279705298d0254c2df810f37581eedae8bbb26d5e417dbd4"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
@@ -1192,6 +1196,20 @@
           "id": "RCI-058",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
           "subject": "RumbleCliSessionTest.testRCI058_UnitPositive_sessionShowsAndControlsARunningSessionAndReportsOneThatEnded",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-157",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
+          "subject": "RumbleCliSessionViewTest.testRCL157_UnitNegative_theComputersOwnLanguageNeverStandsInForTheChosenOne",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-157",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
+          "subject": "RumbleCliSessionViewTest.testRCL157_UnitPositive_everyTextOfTheTrayAndTheWindowIsInEveryLanguage",
           "type": "Unit",
           "direction": "positive"
         },
@@ -2047,7 +2065,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleContributeScreenTest.kt",
-          "sha256": "565d79f666ada9b8341c56cdd5d17cc55b70485aeedabbf481b10c6a4b81b068"
+          "sha256": "d4d503ef0c4320aaa78ec1ad5e3adee25bd1852a30c1b8017cfc130dde0c9dad"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleCredentialBoundaryTest.kt",
@@ -2144,6 +2162,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
           "sha256": "433bbf12a522591bb80fe302952efde57d2d3fd1765663ee7352c4c1bd15041e"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "sha256": "9f04d77f2638dbd67ec31578200f6c0ec68f45a1f02114a2a75d25816871c9f4"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSignInFlowTest.kt",
@@ -4127,6 +4149,62 @@
           "id": "RCL-123",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionRunnerTest.kt",
           "subject": "RumbleSessionRunnerTest.testRCL123_UnitPositive_anAdvisedBattleIsRunFirstAndWithoutAdviceTheSessionRunsByCoverage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-155",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL155_UnitNegative_anUnknownChoiceIsNoneOfThemAndNoCommandMeansNoOpenCommandArgument",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-155",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL155_UnitPositive_theSessionShowsItselfInTheTrayUnlessChosenOtherwiseAndIsGivenTheCommandThatOpensTankRoyale",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-156",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL156_UnitNegative_withoutATrayTheWindowWithoutAScreenNothingAndAnEndedSessionOffersNoControls",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-156",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL156_UnitPositive_theTrayOffersTheSessionsOwnRequestsAsItStands",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-157",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL157_UnitNegative_missingOrUnknownSettingsGiveTheDefaults",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-157",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL157_UnitPositive_theWindowFollowsTheDesktopProgramsThemeAndLanguage",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-158",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL158_UnitNegative_withoutADesktopProgramTankRoyaleIsStartedAndWithoutACommandNothingIsOffered",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-158",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionViewTest.kt",
+          "subject": "RumbleSessionViewTest.testRCL158_UnitPositive_aRunningDesktopProgramTakesTheRequestAndNothingIsStarted",
           "type": "Unit",
           "direction": "positive"
         },

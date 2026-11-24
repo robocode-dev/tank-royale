@@ -3,6 +3,7 @@ rootProject.name = "Robocode Tank Royale"
 
 // Lib
 include("lib:common")
+include("lib:look")
 include("lib:client")
 include("lib:intent-diagnostics")
 include("lib:rumble")

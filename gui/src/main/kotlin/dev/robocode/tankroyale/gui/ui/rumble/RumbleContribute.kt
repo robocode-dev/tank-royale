@@ -18,6 +18,7 @@ import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.rumble.RumbleProgram
 import dev.robocode.tankroyale.rumble.SessionControlRequest
 import dev.robocode.tankroyale.rumble.SessionFolder
+import dev.robocode.tankroyale.rumble.SessionShow
 import dev.robocode.tankroyale.rumble.SessionStatus
 import java.awt.BorderLayout
 import java.awt.Window
@@ -122,12 +123,36 @@ object RumbleContribute {
         val port = LibraryContributePort(environment, userData, api, RumbleProgram(userData, Version.version, api))
         val made = ContributeController(port, environment, background, post, onState = ::changed, onDone = ::done)
         controller = made
+        made.setShow(SessionShow.of(ConfigSettings.rumbleSessionShow) ?: SessionShow.TRAY)
+        val folder = SessionFolder.of(environment, userData)
         // The session is followed every second while one runs or the screen is open; a look is a small file read.
         timer = Timer(1000) {
             val state = made.state
             if (dialog?.isVisible == true || state is ContributeState.Running || state is ContributeState.Starting) made.refresh()
+            // The session's Open Tank Royale: the program that takes the request comes to the front with the screen.
+            if (folder.takeDesktopRequest()) comeToFront()
         }.apply { start() }
         return made
+    }
+
+    /** Brings the main window to the front, also from the taskbar, and shows the Contribute battles screen. */
+    private fun comeToFront() {
+        if (MainFrame.extendedState and java.awt.Frame.ICONIFIED != 0) MainFrame.extendedState = MainFrame.extendedState and java.awt.Frame.ICONIFIED.inv()
+        MainFrame.isVisible = true
+        raise(MainFrame)
+        open()
+        dialog?.let { raise(it) }
+    }
+
+    /**
+     * Brings [window] in front of other programs. Windows ignores a plain toFront from a program that is not the one in
+     * use, so the window is put on top of all others for a moment, which Windows lets through, and then let go again.
+     */
+    private fun raise(window: java.awt.Window) {
+        window.isAlwaysOnTop = true
+        window.toFront()
+        window.requestFocus()
+        window.isAlwaysOnTop = false
     }
 
     private fun changed(state: ContributeState) {

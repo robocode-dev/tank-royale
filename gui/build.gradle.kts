@@ -33,6 +33,7 @@ plugins {
 
 dependencies {
     implementation(project(":lib:client"))
+    implementation(project(":lib:look"))
     implementation(project(":lib:rumble"))
     implementation(project(":lib:bot-project"))
     implementation(libs.kotlinx.serialization.json)

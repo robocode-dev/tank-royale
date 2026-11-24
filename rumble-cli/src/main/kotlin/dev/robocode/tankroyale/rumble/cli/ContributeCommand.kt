@@ -52,6 +52,10 @@ import dev.robocode.tankroyale.rumble.WorkerHost
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.serialization.json.JsonObject
+import dev.robocode.tankroyale.rumble.DesktopSettings
+import dev.robocode.tankroyale.rumble.OpenTankRoyale
+import dev.robocode.tankroyale.rumble.SessionShow
+import dev.robocode.tankroyale.rumble.SessionStatus
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
@@ -80,6 +84,22 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         "--owner-pid",
         help = "The process that owns the session. When it is gone, the session finishes the running battle and ends. The desktop program gives its own.",
     ).long()
+    private val show by option(
+        "--show",
+        help = "How the session shows itself while it runs: tray (an icon, or its window where there is no tray), window, or none. Defaults to none.",
+    ).choice("tray", "window", "none").default("none")
+    private val openCommand by option(
+        "--open-command",
+        help = "One part of the command that starts Tank Royale, for the session's Open Tank Royale. Give it again for each part. The desktop program gives its own.",
+    ).multiple()
+
+    /** The session's tray icon or window, as chosen; null when it shows nothing. */
+    @Volatile
+    private var display: SessionDisplay? = null
+
+    /** The session's last status once it ended, which the tray icon or window shows when [run] is done with all else. */
+    @Volatile
+    private var endedStatus: SessionStatus? = null
 
     /** The session's folder in the Rumble state, kept up to date from the events reported; null before the lock is taken. */
     @Volatile
@@ -112,6 +132,9 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             return answer(reply(env, ExitCodes.FAILED, "session-folder-unusable", "The session folder could not be used: ${e.message}"))
         } ?: return answer(sessionRunning(env, folder))
         tracker = SessionTracker(running, env, owner, chosenFormats, battles) { services.clock.instant() }
+        display = SessionDisplay(
+            SessionShow.of(show) ?: SessionShow.NONE, { tracker?.status }, folder, OpenTankRoyale(folder, openCommand), DesktopSettings(base()),
+        ).also { it.start() }
         try {
             contribute(env, stateRoot, chosenFormats, selectionMode, owner)
         } catch (e: Throwable) {
@@ -120,9 +143,16 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             tracker = null
             if (t != null) {
                 runCatching { t.end(if (e is BadInput) "bad-input" else "failed", e.message.orEmpty()) }
-                t.close()
+                runCatching { t.close() }
             }
+            // The answer to a fault is written by the caller, so the end is not waited for here: the person sees the
+            // failure on the Contribute battles screen or in the terminal, and the icon and window go with the program.
+            endedStatus = null
             throw e
+        } finally {
+            // Only now, with the answer written and the Ctrl+C handler, the watcher and Python let go of, the tray
+            // icon or window shows the end and waits until the person closes it.
+            endedStatus?.let { final -> display?.ended(final) }
         }
     }
 
@@ -309,6 +339,10 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             // The answer is written whatever happens to the session folder.
             runCatching { t.end(outcome, message) }
             runCatching { t.close() }
+            answer(reply)
+            // The end is shown when run() is done with everything else, outside every lock; see run().
+            endedStatus = t.status
+            return
         }
         answer(reply)
     }
