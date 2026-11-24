@@ -183,7 +183,12 @@ class RumbleCliContributeTest {
 
         /** Called at the first install, as a person pressing Ctrl+C while pip runs; pip then ends without installing. */
         var duringInstall: (() -> Boolean)? = null
+        /** What `java -version` says. */
+        var java: String? = "openjdk version \"25.0.1\" 2025-10-21"
         override fun run(command: List<String>, timeout: Duration): dev.robocode.tankroyale.rumble.ToolOutput? {
+            // The session checks Java and the other bots' tools before its first battle; the fake catalog's bots are Java.
+            if (command.firstOrNull()?.endsWith("java") == true) return java?.let { dev.robocode.tankroyale.rumble.ToolOutput(0, it) }
+            if (command.firstOrNull() in setOf("dotnet", "node", "npm", "npm.cmd")) return null
             if (command.getOrNull(1) == "-c") return version?.let { dev.robocode.tankroyale.rumble.ToolOutput(0, "$it /usr/bin/python3\n") }
             if (duringInstall?.invoke() == true) return dev.robocode.tankroyale.rumble.ToolOutput(1, "KeyboardInterrupt")
             installs++
@@ -201,6 +206,9 @@ class RumbleCliContributeTest {
         val pin = Data()
         var mode = "ok"
         var workerReady = true
+
+        /** Whether the computer has Java on its path, where the Java bots' launchers look for it. */
+        var javaOnPath = true
         var interrupt: (() -> Unit)? = null
         var onInterruptInstalled: (() -> Unit) -> Unit = {}
 
@@ -221,7 +229,7 @@ class RumbleCliContributeTest {
             workerLimits = WorkerLimits(totalTime = Duration.ofSeconds(60)),
             interrupts = { action -> interrupt = action; onInterruptInstalled(action); AutoCloseable { interrupt = null } },
             seed = { 1L },
-            tools = python, runtimeList = { dev.robocode.tankroyale.rumble.RuntimeListSource { "java=25\ndotnet=10\npython=3.14\nnode=24\n" } },
+            tools = python, locate = { name -> if (name == "java" && !javaOnPath) null else name }, runtimeList = { dev.robocode.tankroyale.rumble.RuntimeListSource { "java=25\ndotnet=10\npython=3.14\nnode=24\n" } },
             pythonBotApi = dev.robocode.tankroyale.rumble.PythonBotApiWheel {
                 val bytes = ByteArrayOutputStream()
                 ZipOutputStream(bytes).use { zip ->
@@ -528,6 +536,41 @@ class RumbleCliContributeTest {
         assertEquals(0L, Files.list(sessions).use { it.count() }, "the session's Python folder is removed at the end")
         // The program carries its own Python Bot API.
         assertTrue(carriedPythonBotApi() != null, "the command line carries the Python Bot API")
+    }
+
+    // RCL-166
+
+    @Test
+    @Tag("RCL-166")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL166_UnitPositive_withoutJavaOnThePathTheJavaBotsAreLeftOutAndTheSessionSaysWhy(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn(); catalog.python = true; javaOnPath = false }
+
+        val run = world.run("--battles", "1", "--format", "1v1")
+        val text = World(dir.resolve("text")).apply { signIn(); catalog.python = true; javaOnPath = false }.run("--battles", "1", "--format", "1v1", json = false)
+
+        val unavailable = run.lines.single { it["event"]?.jsonPrimitive?.content == "platform-unavailable" }
+        assertEquals("JVM", unavailable["platform"]!!.jsonPrimitive.content)
+        assertEquals("MISSING", unavailable["reason"]!!.jsonPrimitive.content)
+        assertEquals("25", unavailable["needed"]!!.jsonPrimitive.content)
+        // The Java bots are left out from the start, so with only one Python bot no 1v1 battle can be chosen: the
+        // session ends with the planner's reason instead of failing battle after battle.
+        assertEquals("nothing-to-run", run.outcome, run.out)
+        assertTrue(run.events.none { it == "battle-started" }, run.events.toString())
+        assertTrue(text.out.contains("Java bots are left out of this session: Java was not found on this computer"), text.out)
+    }
+
+    @Test
+    @Tag("RCL-166")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL166_UnitNegative_withJavaOnThePathNothingIsLeftOut(@TempDir dir: Path) {
+        val run = World(dir).apply { signIn() }.run("--battles", "1", "--format", "1v1")
+
+        assertEquals(ExitCodes.DONE, run.exit, run.out)
+        assertTrue(run.events.none { it == "platform-unavailable" }, run.events.toString())
+        assertTrue(run.events.contains("battle-started"))
     }
 
     @Test

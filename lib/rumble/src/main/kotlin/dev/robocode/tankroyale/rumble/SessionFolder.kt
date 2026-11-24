@@ -77,6 +77,13 @@ data class SessionBoot(val connected: Int, val expected: Int, val elapsedSeconds
 @Serializable
 data class SessionLeftOut(val bot: String, val reason: String)
 
+/**
+ * A platform whose bots the session left out from its start, because it is missing or too old on this computer:
+ * [platform] as the catalog names it, [reason] as a [PlatformReason] word, and the version [needed] and [found] when known.
+ */
+@Serializable
+data class SessionPlatform(val platform: String, val reason: String, val needed: String? = null, val found: String? = null)
+
 /** How a session ended: its outcome word and when. */
 @Serializable
 data class SessionEnded(val outcome: String, val at: String, val message: String = "")
@@ -103,6 +110,8 @@ data class SessionStatus(
     val notKept: Int = 0,
     /** The bots left out for the rest of the session, in the order they were left out; empty in a status written before it existed. */
     val leftOut: List<SessionLeftOut> = emptyList(),
+    /** The platforms whose bots are left out of the whole session; empty in a status written before it existed. */
+    val platforms: List<SessionPlatform> = emptyList(),
     /** The planner's reason while the session waits, as a code. */
     val waitingFor: String? = null,
     /** `none`, `setting-up`, `ready`, `unavailable` or `stopped`. */

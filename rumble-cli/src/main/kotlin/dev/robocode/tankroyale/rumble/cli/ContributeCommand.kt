@@ -11,6 +11,11 @@ import com.github.ajalt.clikt.parameters.types.restrictTo
 import dev.robocode.tankroyale.rumble.AdviceKeeper
 import dev.robocode.tankroyale.rumble.AutomaticUpload
 import dev.robocode.tankroyale.rumble.BotPlatform
+import dev.robocode.tankroyale.rumble.ContributeTexts
+import dev.robocode.tankroyale.rumble.PlatformCheck
+import dev.robocode.tankroyale.rumble.PlatformChecker
+import dev.robocode.tankroyale.rumble.PlatformReason
+import dev.robocode.tankroyale.rumble.SessionPlatforms
 import dev.robocode.tankroyale.rumble.CatalogBot
 import dev.robocode.tankroyale.rumble.JournalClient
 import dev.robocode.tankroyale.rumble.JournalUnusable
@@ -213,8 +218,12 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             return endWith(reply(env, ExitCodes.FAILED, "worker-unavailable", "The battle worker could not be put in place: ${e.message}"))
         }
 
-        // The session.
+        // The bots of each platform need their own tools on the path: what is missing here is found before the first
+        // battle, not one failed battle at a time.
         val ranked = stateRoot.resolve("ranked")
+        val platforms = SessionPlatforms.check(PlatformChecker(services.tools, locate = services.locate), supportedVersions(), catalog.activeBots, ranked)
+
+        // The session.
         val (journal, sent) = try {
             RankedJournal.open(env, ranked.resolve("journal.jsonl")) to SentBatches.open(ranked.resolve("sent-batches.jsonl"))
         } catch (e: JournalUnusable) {
@@ -234,6 +243,7 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         val control = SessionControl()
         val kept = AtomicInteger()
         report(started(env, account, catalog.commit, pin, chosenFormats))
+        platforms.unavailable.forEach { report(platformUnavailable(it)) }
         val seed = services.seed()
         // Python bots get the program's own Python Bot API, set up once the session can be stopped with Ctrl+C.
         val python = SessionPythonHolder { reason, detail ->
@@ -305,7 +315,9 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             // active Python bot.
             python.python = pythonFor(catalog.activeBots, ranked) { interrupts.get() > 0 }
             // Without a usable Python the Python bots are left out, and with them every team that holds one.
-            fun entries() = if (python.python != null) catalog.bots else catalog.bots.filter { !isPython(it) }
+            // So are the bots of every platform that cannot run here, with the teams that hold one.
+            fun entries() = (if (python.python != null) catalog.bots else catalog.bots.filter { !isPython(it) })
+                .filter { SessionPlanner.key(it) !in platforms.leftOut }
             try {
                 var end = SessionRunner(setup, control) { event ->
                     if (event is SessionEvent.BattleKept) kept.incrementAndGet()
@@ -364,15 +376,44 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
      * and says how that went. Null when there is none to run or Python cannot be used here; the Python bots are then left
      * out. A Ctrl+C during the setup, which [stopped] tells, also ends pip, so it is reported as a stop and not as a failure.
      */
+    /** The versions the Rumble supports, or null when its runtime list cannot be read; then a tool passes when it is there. */
+    private var versionsRead = false
+    private var versions: SupportedVersions? = null
+
+    private fun supportedVersions(): SupportedVersions? {
+        if (!versionsRead) {
+            versionsRead = true
+            versions = try {
+                SupportedVersions.parse(services.runtimeList(services.api).text())
+            } catch (e: IOException) {
+                null
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+        }
+        return versions
+    }
+
+    /** One line, or one JSON line, for a platform whose bots are left out of the whole session. */
+    private fun platformUnavailable(check: PlatformCheck): Pair<JsonObject, String> {
+        val name = ContributeTexts.platformName(check.platform.catalogName)
+        val why = when (check.reason) {
+            PlatformReason.MISSING -> "$name was not found on this computer" + (check.needed?.let { "; the Rumble needs $it or newer" } ?: "")
+            PlatformReason.TOO_OLD -> "$name ${check.found} was found, and the Rumble needs ${check.needed} or newer"
+            PlatformReason.UNREADABLE -> "the version of $name could not be read"
+            PlatformReason.NPM_MISSING -> "npm was not found on this computer"
+            else -> "$name cannot run its bots here"
+        }
+        return event("platform-unavailable") {
+            put("platform", check.platform.catalogName); put("reason", check.reason.name)
+            check.needed?.let { put("needed", it) }
+            check.found?.let { put("found", it) }
+        } to "$name bots are left out of this session: $why."
+    }
+
     private fun pythonFor(active: List<CatalogBot>, ranked: java.nio.file.Path, stopped: () -> Boolean): SessionPython? {
         if (active.none { isPython(it) }) return null
-        val needed = try {
-            SupportedVersions.parse(services.runtimeList(services.api).text()).neededFor(BotPlatform.PYTHON)
-        } catch (e: IOException) {
-            null
-        } catch (e: IllegalArgumentException) {
-            null
-        }
+        val needed = supportedVersions()?.neededFor(BotPlatform.PYTHON)
         report(note("python-setting-up", "Setting up Python for the Python bots; the first time this takes a little while."))
         val python = SessionPython(services.tools, ranked, services.pythonBotApi, needed)
         return when (val setUp = python.setUp()) {

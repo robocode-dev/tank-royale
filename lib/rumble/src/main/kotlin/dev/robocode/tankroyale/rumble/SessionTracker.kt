@@ -84,6 +84,11 @@ class SessionTracker(
                 if (bot.isEmpty() || reason == NotPlacedReason.SOURCE_UNAVAILABLE.name || now.leftOut.any { it.bot == bot }) now
                 else now.copy(leftOut = now.leftOut + SessionLeftOut(bot, reason))
             }
+            "platform-unavailable" -> {
+                val platform = text("platform").orEmpty()
+                if (platform.isEmpty() || now.platforms.any { it.platform == platform }) now
+                else now.copy(platforms = now.platforms + SessionPlatform(platform, text("reason").orEmpty(), text("needed"), text("found")))
+            }
             "battle-kept" -> now.copy(kept = now.kept + 1, battle = null, boot = null)
             "battle-not-kept" -> now.copy(notKept = now.notKept + 1, battle = null, boot = null)
             "waiting" -> now.copy(state = "waiting", waitingFor = text("reason"), battle = null, boot = null)

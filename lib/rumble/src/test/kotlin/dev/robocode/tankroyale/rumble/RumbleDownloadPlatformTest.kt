@@ -63,7 +63,7 @@ class RumbleDownloadPlatformTest {
     fun testRCL083_UnitPositive_eachPlatformPassesWithAtLeastTheVersionTheRumblesListNames(@TempDir dir: Path) {
         environment(dir)
 
-        val checks = PlatformChecker(allReady(dir), windows = true).check(BotPlatform.entries, versions, dir)
+        val checks = PlatformChecker(allReady(dir), windows = true, locate = { it }).check(BotPlatform.entries, versions, dir)
 
         assertEquals(BotPlatform.entries.toSet(), checks.filterValues { it.ready }.keys)
         assertEquals("25" to "25.0", checks.getValue(BotPlatform.JVM).let { it.needed to it.found })
@@ -112,7 +112,7 @@ class RumbleDownloadPlatformTest {
             answers["python --version"] = ok("Python 3.13.15")
         }
 
-        val checks = PlatformChecker(tools, windows = true).check(BotPlatform.entries, versions, dir)
+        val checks = PlatformChecker(tools, windows = true, locate = { it }).check(BotPlatform.entries, versions, dir)
 
         assertEquals(PlatformReason.TOO_OLD to "17.0", checks.getValue(BotPlatform.JVM).let { it.reason to it.found })
         assertEquals(PlatformReason.MISSING, checks.getValue(BotPlatform.CSHARP).reason, "not found or silent")
@@ -121,9 +121,9 @@ class RumbleDownloadPlatformTest {
 
         tools.answers["node --version"] = ok("v24.1.0")
         tools.answers.remove("npm.cmd --version")
-        assertEquals(PlatformReason.NPM_MISSING, PlatformChecker(tools, windows = true).check(listOf(BotPlatform.TYPESCRIPT), versions, dir).getValue(BotPlatform.TYPESCRIPT).reason)
+        assertEquals(PlatformReason.NPM_MISSING, PlatformChecker(tools, windows = true, locate = { it }).check(listOf(BotPlatform.TYPESCRIPT), versions, dir).getValue(BotPlatform.TYPESCRIPT).reason)
         tools.answers["dotnet --list-sdks"] = ToolOutput(0, "")
-        assertEquals(PlatformReason.MISSING, PlatformChecker(tools, windows = true).check(listOf(BotPlatform.CSHARP), versions, dir).getValue(BotPlatform.CSHARP).reason, "dotnet without an SDK")
+        assertEquals(PlatformReason.MISSING, PlatformChecker(tools, windows = true, locate = { it }).check(listOf(BotPlatform.CSHARP), versions, dir).getValue(BotPlatform.CSHARP).reason, "dotnet without an SDK")
     }
 
     @Test
@@ -137,7 +137,7 @@ class RumbleDownloadPlatformTest {
                 "python3 -c import venv, ensurepip" to ok(""),
             ),
         )
-        val checker = PlatformChecker(tools, windows = false)
+        val checker = PlatformChecker(tools, windows = false, locate = { it })
 
         assertEquals(PlatformReason.NO_ENVIRONMENT, checker.check(listOf(BotPlatform.PYTHON), versions, dir).getValue(BotPlatform.PYTHON).reason, "no environment yet")
 
@@ -167,7 +167,7 @@ class RumbleDownloadPlatformTest {
         val tools = allReady(dir).apply { answers["java -version"] = ok("openjdk version \"11.0.2\"") }
         val before = tree(dir)
 
-        val checks = PlatformChecker(tools, windows = true).check(BotPlatform.entries, null, dir)
+        val checks = PlatformChecker(tools, windows = true, locate = { it }).check(BotPlatform.entries, null, dir)
 
         assertTrue(checks.getValue(BotPlatform.JVM).ready, "without the list, Java 11 is only known to be there")
         assertEquals(null, checks.getValue(BotPlatform.JVM).needed)

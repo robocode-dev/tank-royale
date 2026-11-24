@@ -359,6 +359,8 @@ fun Project.registerJpackageTasks(
                 "java.base",
                 "java.desktop",
                 "java.logging",
+                // The Contribute battles screen reads the program's own Java settings to start it again (Open Tank Royale)
+                "java.management",
                 "java.scripting",
                 "java.xml",
                 "java.datatransfer",

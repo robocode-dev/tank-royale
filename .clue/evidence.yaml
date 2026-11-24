@@ -455,7 +455,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "c5f2ea7bffa2495c995bdf574763a471c2f0da3bbc0c37829f2f849cb32825a2"
+          "sha256": "c29c6c16ac2f45045a5ea301ee309fc66cc113a672a92bd28681fcac5f25c388"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -938,6 +938,20 @@
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
           "subject": "RumbleCliContributeTest.testRCL140_IntegrationPositive_oneRealTwinDuelSessionRunsRumbleTeamsAndItsResultIsAccepted",
           "type": "Integration",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-166",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCL166_UnitNegative_withJavaOnThePathNothingIsLeftOut",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-166",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCL166_UnitPositive_withoutJavaOnThePathTheJavaBotsAreLeftOutAndTheSessionSaysWhy",
+          "type": "Unit",
           "direction": "positive"
         },
         {
@@ -2134,7 +2148,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadPlatformTest.kt",
-          "sha256": "a5303364c6a013c3f700ef1d34e7d4ff50361334ba7e52f95a7d47945d6200f9"
+          "sha256": "1dc662dcacae8bdce32c60a580520c2a8c0b86c8afc8c91b3a4e4c5b88314f22"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleDownloadTest.kt",
@@ -2207,6 +2221,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "sha256": "5b840c3bf02af0a8283c31d83079d002a843be37ea18c1c67185064cf26eac77"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlatformsTest.kt",
+          "sha256": "dc73527614e14d486507b85c01447e2bdf45f9bdb4c1a3eda68df48786f857a5"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPythonTest.kt",
@@ -4041,6 +4059,34 @@
           "id": "RCL-107",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlannerTest.kt",
           "subject": "RumbleSessionPlannerTest.testRCL107_UnitPositive_aTwinDuelBattleHoldsTheSelectedTeamAndAnotherTeamWithDisjointMembers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-165",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlatformsTest.kt",
+          "subject": "RumbleSessionPlatformsTest.testRCL165_UnitNegative_noJavaOnThePathIsMissingEvenWhenTheProgramsOwnJavaWouldAnswer",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-165",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlatformsTest.kt",
+          "subject": "RumbleSessionPlatformsTest.testRCL165_UnitPositive_javaIsLookedForOnThePathByItsFullPathAsTheBotsLaunchersFindIt",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-166",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlatformsTest.kt",
+          "subject": "RumbleSessionPlatformsTest.testRCL166_UnitNegative_withEveryPlatformReadyOrTheListUnreadableNothingIsLeftOutAndPythonIsLeftToItsOwnSetup",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-166",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionPlatformsTest.kt",
+          "subject": "RumbleSessionPlatformsTest.testRCL166_UnitPositive_theBotsOfAMissingOrTooOldPlatformAreLeftOutWithTheTeamsThatHoldOne",
           "type": "Unit",
           "direction": "positive"
         },

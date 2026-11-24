@@ -36,6 +36,15 @@ object ContributeTexts {
     fun forLeftOut(reason: String): String =
         "rumble.contribute.left_out." + (NotPlacedReason.entries.firstOrNull { it.name == reason && it != NotPlacedReason.SOURCE_UNAVAILABLE }?.name?.lowercase() ?: "other")
 
+    /** Why a platform's bots are left out of the session, from its [PlatformReason] word. */
+    fun forPlatform(reason: String): String =
+        "rumble.contribute.platform." + (PLATFORM_REASONS.firstOrNull { it.name == reason }?.name?.lowercase() ?: "other")
+
+    /** The name of a platform as a person knows it, from the catalog's name. */
+    fun platformName(catalogName: String): String = if (catalogName == BotPlatform.JVM.catalogName) "Java" else catalogName
+
+    private val PLATFORM_REASONS = listOf(PlatformReason.MISSING, PlatformReason.TOO_OLD, PlatformReason.UNREADABLE, PlatformReason.NPM_MISSING)
+
     fun forProblem(problem: ContributeProblem): String = "rumble.contribute.problem." + problem.name.lowercase()
 
     fun forProgram(problem: ProgramProblem): String = "rumble.contribute.program." + problem.name.lowercase()
@@ -67,5 +76,6 @@ object ContributeTexts {
             WaitReason.entries.map { forWaiting(it.name) } + forWaiting(null) + ContributeProblem.entries.map { forProblem(it) } +
             ProgramProblem.entries.map { forProgram(it) } + SessionControlRequest.entries.map { forRequest(it) } +
             ContributeMode.entries.map { forMode(it) } + CloseChoice.entries.map { forClose(it) } +
-            NotPlacedReason.entries.map { forLeftOut(it.name) }.distinct() + forLeftOut("other")
+            NotPlacedReason.entries.map { forLeftOut(it.name) }.distinct() + forLeftOut("other") +
+            PLATFORM_REASONS.map { forPlatform(it.name) } + forPlatform("other")
 }
