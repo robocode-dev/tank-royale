@@ -49,9 +49,10 @@ internal class SessionTexts(language: String) {
     fun starting(status: SessionStatus): String? =
         status.boot?.let { get("session.window.starting", it.connected, it.expected, it.elapsedSeconds, it.limitSeconds) }
 
-    /** The tray icon's tip: the title, where the session stands and, while the bots start, how far they are. */
+    /** The tray icon's tip: the title, where the session stands and, while the bots start, how many have connected. */
     fun tip(status: SessionStatus): String =
-        listOfNotNull(get("session.title"), headline(status), starting(status)).joinToString("\n")
+        // Windows cuts a tray tip at about 127 characters, so the tip has the count only, without the seconds.
+        listOfNotNull(get("session.title"), headline(status), status.boot?.let { get("session.tip.starting", it.connected, it.expected) }).joinToString("\n")
 }
 
 /**

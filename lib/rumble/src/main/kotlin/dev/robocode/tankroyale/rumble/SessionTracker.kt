@@ -62,8 +62,9 @@ class SessionTracker(
         fun number(name: String) = text(name)?.toLongOrNull() ?: 0L
         // The starting of a battle's bots is shown until they have all connected, and never past the battle's end.
         status = when (kind) {
+            // A report that arrives after its battle ended, or for another battle, shows nothing.
             "bots-starting" -> now.copy(
-                boot = if (number("connected") >= number("expected")) null
+                boot = if (now.battle == null || now.battle.battleId != text("battleId") || number("connected") >= number("expected")) null
                 else SessionBoot(number("connected").toInt(), number("expected").toInt(), (number("elapsedMillis") / 1000).toInt(), (number("limitMillis") / 1000).toInt()),
             )
             "battle-started" -> now.copy(

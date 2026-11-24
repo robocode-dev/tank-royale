@@ -76,6 +76,16 @@ class RumbleSessionBootTest {
             tracker.end("battles-done", "")
             assertNull(tracker.status.boot)
         }
+        // A report that comes late, after its battle ended or for another battle, shows nothing.
+        tracker(SessionFolder(dir.resolve("late"))).use { tracker ->
+            tracker.record(event("battle-started", "battleId" to "b1", "gameType" to "twinduel"))
+            tracker.record(event("battle-not-kept", "battleId" to "b1", "reason" to "TIMED_OUT"))
+            tracker.record(starting(1, 4, 2_000))
+            assertNull(tracker.status.boot, "a report after the battle ended")
+            tracker.record(event("battle-started", "battleId" to "b2", "gameType" to "twinduel"))
+            tracker.record(starting(1, 4, 2_000))
+            assertNull(tracker.status.boot, "a report of the battle before")
+        }
         // A status as an older program wrote it, without the field, is read with no progress.
         val old = """{"environment":"test","pid":1,"startedAt":"2026-11-23T10:00:00Z","updatedAt":"2026-11-23T10:01:00Z"}"""
         assertNull(Json { ignoreUnknownKeys = true }.decodeFromString(SessionStatus.serializer(), old).boot)

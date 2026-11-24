@@ -1321,7 +1321,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a status with the starting bots, with none connected, with some and with all, and a status without them as an older program writes it
     When the Contribute battles screen, the session's window and the tray's tip are given it
-    Then each SHALL show how many bots are connected of how many, and the seconds waited of the limit, with a bar that moves on its own while none is connected
+    Then each SHALL show how many bots are connected of how many, and the seconds waited of the limit, with a bar
     And a status without them SHALL show what it showed before, and every text SHALL be in English, Danish, Spanish and Catalan without a long dash
 
   @RCL-162

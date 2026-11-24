@@ -26,7 +26,7 @@ class RumbleCliSessionViewTest {
         add("session.title")
         SessionView.STATES.forEach { add("session.headline.limit.$it"); add("session.headline.$it") }
         SessionMenuItem.entries.forEach { add("session.menu.${it.name.lowercase()}") }
-        addAll(listOf("session.window.battle", "session.window.no_battle", "session.window.not_kept", "session.window.results", "session.window.starting"))
+        addAll(listOf("session.window.battle", "session.window.no_battle", "session.window.not_kept", "session.window.results", "session.window.starting", "session.tip.starting"))
         addAll(listOf("session.notice.title", "session.notice.text"))
     }
 
@@ -83,8 +83,11 @@ class RumbleCliSessionViewTest {
             val texts = SessionTexts(language)
             val status = status(SessionBoot(connected = 2, expected = 4, elapsedSeconds = 18, limitSeconds = 90))
             assertEquals(line, texts.starting(status))
-            // The tip has the title, where the session stands and the line, one under the other.
-            assertEquals(listOf(texts.get("session.title"), texts.headline(status), line), texts.tip(status).lines())
+            // The tip has the title, where the session stands and the count, one under the other and short enough for Windows.
+            val tip = texts.tip(status).lines()
+            assertEquals(listOf(texts.get("session.title"), texts.headline(status)), tip.take(2))
+            assertTrue(tip[2].contains("2") && tip[2].contains("4") && !tip[2].contains("18"), tip[2])
+            assertTrue(texts.tip(status).length <= 127, "$language tip is ${texts.tip(status).length} characters")
             assertFalse('—' in line || '–' in line)
         }
     }
