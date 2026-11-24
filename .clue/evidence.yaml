@@ -483,7 +483,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
-          "sha256": "da2b219b5675ee90105be6aeb4250d810c61c00563ee86456e11505778f1a139"
+          "sha256": "c715a71a020f8b5315b61b77dcb63b9105b14a78fb925c2f6706e34c41b9842d"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSignInTest.kt",
@@ -1217,6 +1217,13 @@
           "id": "RCL-161",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
           "subject": "RumbleCliSessionViewTest.testRCL161_UnitNegative_aStatusWithoutStartingBotsShowsWhatItShowedBefore",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-161",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
+          "subject": "RumbleCliSessionViewTest.testRCL161_UnitNegative_noTipIsLongerThanWindowsShowsInAnyLanguageOrStateWhileTheBotsStart",
           "type": "Unit",
           "direction": "negative"
         },

@@ -96,6 +96,20 @@ class RumbleCliSessionViewTest {
     @Tag("RCL-161")
     @Tag("Unit")
     @Tag("Negative")
+    fun testRCL161_UnitNegative_noTipIsLongerThanWindowsShowsInAnyLanguageOrStateWhileTheBotsStart() {
+        for (language in listOf("en", "da", "es", "ca")) {
+            val texts = SessionTexts(language)
+            for (state in listOf("starting", "running", "waiting", "pausing", "paused", "stopping", "cancelling")) {
+                val tip = texts.tip(status(SessionBoot(connected = 2, expected = 4, elapsedSeconds = 18, limitSeconds = 90)).copy(state = state, battleLimit = 100, kept = 50)).replace("\n", "")
+                assertTrue(tip.length <= 127, "$language $state tip is ${tip.length} characters")
+            }
+        }
+    }
+
+    @Test
+    @Tag("RCL-161")
+    @Tag("Unit")
+    @Tag("Negative")
     fun testRCL161_UnitNegative_aStatusWithoutStartingBotsShowsWhatItShowedBefore() {
         val texts = SessionTexts("da")
         val plain = status(null)

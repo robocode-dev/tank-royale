@@ -50,9 +50,17 @@ internal class SessionTexts(language: String) {
         status.boot?.let { get("session.window.starting", it.connected, it.expected, it.elapsedSeconds, it.limitSeconds) }
 
     /** The tray icon's tip: the title, where the session stands and, while the bots start, how many have connected. */
-    fun tip(status: SessionStatus): String =
-        // Windows cuts a tray tip at about 127 characters, so the tip has the count only, without the seconds.
-        listOfNotNull(get("session.title"), headline(status), status.boot?.let { get("session.tip.starting", it.connected, it.expected) }).joinToString("\n")
+    fun tip(status: SessionStatus): String {
+        val boot = status.boot?.let { get("session.tip.starting", it.connected, it.expected) }
+        val whole = listOfNotNull(get("session.title"), headline(status), boot).joinToString("\n")
+        // Windows cuts a tray tip at about 127 characters; the title is the first to go, and nothing runs past the limit.
+        val fits = if (whole.length <= TIP_LIMIT) whole else listOfNotNull(headline(status), boot).joinToString("\n")
+        return fits.take(TIP_LIMIT)
+    }
+
+    private companion object {
+        const val TIP_LIMIT = 127
+    }
 }
 
 /**
