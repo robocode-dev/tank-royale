@@ -7,14 +7,19 @@ import dev.robocode.tankroyale.rumble.protocol.WorkerEvent
 import dev.robocode.tankroyale.runner.BattleException
 import dev.robocode.tankroyale.runner.BattleRunner
 import dev.robocode.tankroyale.runner.BattleSetup
+import dev.robocode.tankroyale.runner.BootProgress
 import dev.robocode.tankroyale.runner.BotEntry
+import java.util.function.Consumer
 
 /** Runs a job on the Battle Runner with an embedded server, requiring the job's engine pin. */
 object RunnerEngine : BattleEngine {
 
     /** A runner that refuses to run a battle on a server whose behavior version is not [behaviorVersion]. */
-    internal fun createRunner(behaviorVersion: Int): BattleRunner =
-        BattleRunner.create { embeddedServer().requireBehaviorVersion(behaviorVersion) }
+    internal fun createRunner(behaviorVersion: Int, booting: Consumer<BootProgress>? = null): BattleRunner =
+        BattleRunner.create {
+            embeddedServer().requireBehaviorVersion(behaviorVersion)
+            booting?.let { onBootProgress(it) }
+        }
 
     internal fun setupFor(job: Job): BattleSetup {
         val rounds = job.numberOfRounds
@@ -27,15 +32,24 @@ object RunnerEngine : BattleEngine {
         }
     }
 
+    /** The progress of a battle's start as the worker reports it: counts and times only. */
+    internal fun bootEvent(job: Job, progress: BootProgress) = WorkerEvent.Booting(
+        jobId = job.jobId, connected = progress.totalConnected, expected = progress.totalExpected,
+        elapsedMillis = progress.elapsedMs, limitMillis = progress.timeoutMs,
+    )
+
     /** True when the runner's refusal is about the engine pin, which is the job's fault and not a failed battle. */
     internal fun isPinMismatch(e: BattleException): Boolean =
         e.message.orEmpty().contains("behavior version", ignoreCase = true)
 
-    override fun run(job: Job): WorkerEvent.Result {
+    override fun run(job: Job): WorkerEvent.Result = run(job) { }
+
+    override fun run(job: Job, booting: (WorkerEvent.Booting) -> Unit): WorkerEvent.Result {
         val setup = setupFor(job)
         val bots = job.bots.map { BotEntry.of(it.folder) }
         try {
-            createRunner(job.behaviorVersion).use { runner ->
+            val progress = Consumer<BootProgress> { booting(bootEvent(job, it)) }
+            createRunner(job.behaviorVersion, progress).use { runner ->
                 val results = runner.runBattle(setup, bots)
                 return WorkerEvent.Result(
                     jobId = job.jobId,

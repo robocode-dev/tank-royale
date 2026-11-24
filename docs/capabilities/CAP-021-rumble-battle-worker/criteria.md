@@ -178,4 +178,20 @@ Feature: rumble-battle-worker — Rumble battle worker
     Given the participation design
     When a maintainer reads the worker boundary
     Then it lists the ordinary ways that are closed (the environment, the home and temporary folders of every Java process, the user data folder, the command line and standard input) and says in the same place that a bot can still read a file by its full path, that the saved sign-in is only bound to its user name and home folder, and that only a container or a separate account closes the rest
+
+  @RBW-024
+  Scenario: The worker reports the starting bots with counts and times only
+    Test-type: Unit
+    Given a worker running a job on an engine that reports the starting bots many times, also repeating the same count
+    When the events it writes are read
+    Then a boot event SHALL be written when the count of connected bots changes and about once a second otherwise, between the started event and the result
+    And a boot event SHALL carry only the number of connected bots, the number expected, the milliseconds waited and the limit, and no bot name, folder or text
+
+  @RBW-025
+  Scenario: The host hands boot progress on as it arrives and does not keep it
+    Test-type: Unit
+    Given a worker that writes boot events before its result
+    When the host runs the job with a listener for them
+    Then the listener SHALL be called with each boot event as it is read, in order
+    And the outcome SHALL be the same as without a listener, the events SHALL NOT be kept in the host's list of events, and a listener that throws SHALL NOT change the outcome
 ```

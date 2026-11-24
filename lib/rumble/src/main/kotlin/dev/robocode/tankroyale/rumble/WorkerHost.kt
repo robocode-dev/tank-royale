@@ -65,14 +65,22 @@ class WorkerHost(
     /** Starts the worker so that a Ctrl+C in the terminal does not reach it; see [InterruptShield]. */
     private val shieldFromInterrupt: Boolean = true,
 ) {
-    private class Reading(val events: MutableList<WorkerEvent> = mutableListOf())
+    private class Reading(val booting: (WorkerEvent.Booting) -> Unit, val events: MutableList<WorkerEvent> = mutableListOf())
 
     /**
      * Runs [job]. [prepare] is given the battle's own new folders before the worker starts and returns variables the worker
      * gets on top of its usual environment, such as a copy of the Python Bot API made in those folders; a failure there
-     * means the worker could not start.
+     * means the worker could not start. [booting] is called, on the thread that reads the worker's output, with each report
+     * of the starting bots as it arrives; the reports are not kept, so they never change the outcome, and a listener that
+     * throws is ignored.
      */
-    fun run(command: WorkerCommand, job: Job, cancel: () -> Boolean = { false }, prepare: (WorkerFolders) -> Map<String, String> = { emptyMap() }): WorkerOutcome {
+    fun run(
+        command: WorkerCommand,
+        job: Job,
+        cancel: () -> Boolean = { false },
+        booting: (WorkerEvent.Booting) -> Unit = {},
+        prepare: (WorkerFolders) -> Map<String, String> = { emptyMap() },
+    ): WorkerOutcome {
         val base = try {
             runFolders?.also { Files.createDirectories(it) }?.let { Files.createTempDirectory(it, "rumble-worker") }
                 ?: Files.createTempDirectory("rumble-worker")
@@ -99,7 +107,7 @@ class WorkerHost(
             } catch (e: RuntimeException) {
                 return WorkerOutcome.CouldNotStart(e.message ?: "The battle could not be prepared.")
             }
-            return runIn(command, job, folders, cancel, extra)
+            return runIn(command, job, folders, cancel, extra, booting)
         } catch (e: IOException) {
             return WorkerOutcome.CouldNotStart("The worker could not be started: ${e.message}")
         } finally {
@@ -107,7 +115,7 @@ class WorkerHost(
         }
     }
 
-    private fun runIn(command: WorkerCommand, job: Job, folders: WorkerFolders, cancel: () -> Boolean, extra: Map<String, String>): WorkerOutcome {
+    private fun runIn(command: WorkerCommand, job: Job, folders: WorkerFolders, cancel: () -> Boolean, extra: Map<String, String>, booting: (WorkerEvent.Booting) -> Unit): WorkerOutcome {
         val built = command.build(folders)
         // Behind the shield the shell starts the program, so a program that is not there is found missing here.
         if (shieldFromInterrupt && !programExists(built.firstOrNull().orEmpty())) return WorkerOutcome.CouldNotStart("The worker could not be started.")
@@ -123,7 +131,7 @@ class WorkerHost(
             return WorkerOutcome.CouldNotStart("The worker could not be started.")
         }
 
-        val reading = Reading()
+        val reading = Reading(booting)
         val stopRequested = AtomicReference<WorkerOutcome?>(null)
         val reader = Thread({ read(process.inputStream, reading, stopRequested, process) }, "rumble-worker-stdout").apply { isDaemon = true }
         val drain = Thread({ discard(process.errorStream) }, "rumble-worker-stderr").apply { isDaemon = true }
@@ -247,7 +255,17 @@ class WorkerHost(
         val text = raw.trimEnd('\r')
         if (text.isBlank()) return true
         return try {
-            reading.events += MessageCodec.readEvent(text)
+            val event = MessageCodec.readEvent(text)
+            if (event is WorkerEvent.Booting) {
+                // Handed on and not kept: a worker that reports often must not fill memory or change the outcome.
+                try {
+                    reading.booting(event)
+                } catch (e: Exception) {
+                    // A listener that fails only loses its reports.
+                }
+            } else {
+                reading.events += event
+            }
             true
         } catch (rejected: MessageRejected) {
             stop.set(WorkerOutcome.UnreadableOutput(rejected.message.orEmpty()))

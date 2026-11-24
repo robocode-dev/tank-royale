@@ -392,4 +392,15 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     Then a folder beside the team with exactly the entry's name SHALL be the member
     And otherwise the one folder beside it whose bot's name and version, joined by one space, equal the whole entry SHALL be the member, without splitting or trimming the entry
     And a folder without a bot file SHALL be found only by its name, the team's own folder and folders outside the team's parent SHALL never be members, and no match or several SHALL name no member and say which
+
+  # Requirement: Boot Progress for the Synchronous Run
+  # A caller of the synchronous run can see the bots start, which only the handle of a battle that had started could show.
+
+  @BR-052
+  Scenario: A runner given a boot progress listener reports the starting bots of every battle
+    Test-type: Unit
+    Given a runner built with a boot progress listener and a battle whose bots connect one after the other
+    When the battle starts, also through the synchronous run
+    Then the listener SHALL be called with the connected and the missing bots, the time waited and the connect limit, on every change of the connected bots and about every half second while it waits
+    And the last call SHALL show every expected bot connected, a runner without a listener SHALL behave as before, and a listener that throws SHALL NOT stop the battle
 ```

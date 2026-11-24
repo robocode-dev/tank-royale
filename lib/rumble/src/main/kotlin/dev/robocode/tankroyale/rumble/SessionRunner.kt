@@ -64,6 +64,8 @@ enum class NotPlacedReason {
 sealed interface SessionEvent {
     data class BotNotPlaced(val bot: String, val reason: NotPlacedReason, val detail: String = "") : SessionEvent
     data class BattleStarted(val battleId: String, val gameType: String, val participants: List<String>) : SessionEvent
+    /** The bots of the battle are starting: [connected] of [expected] have connected after [elapsedMillis] of the [limitMillis] it waits. */
+    data class BotsStarting(val battleId: String, val connected: Int, val expected: Int, val elapsedMillis: Long, val limitMillis: Long) : SessionEvent
     data class BattleKept(val battleId: String) : SessionEvent
     data class BattleNotKept(val battleId: String, val reason: NotKeptReason, val detail: String = "") : SessionEvent
 
@@ -362,7 +364,8 @@ class SessionRunner(
         }
         val job = Job(jobId = battleId, behaviorVersion = setup.engine.behaviorVersion, gameType = step.gameType, numberOfRounds = rounds, bots = placed.jobBots)
         onEvent(SessionEvent.BattleStarted(battleId, step.gameType, step.participants))
-        val outcome = setup.host.run(setup.command, job, { control.cancelRequested }) { folders -> setup.battleEnvironment(placed.bots, folders) }
+        val starting = { it: WorkerEvent.Booting -> onEvent(SessionEvent.BotsStarting(battleId, it.connected, it.expected, it.elapsedMillis, it.limitMillis)) }
+        val outcome = setup.host.run(setup.command, job, { control.cancelRequested }, booting = starting) { folders -> setup.battleEnvironment(placed.bots, folders) }
         val notKept = { reason: NotKeptReason, detail: String ->
             onEvent(SessionEvent.BattleNotKept(battleId, reason, detail))
             Ran.NotKept(reason)

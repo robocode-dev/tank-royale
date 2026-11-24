@@ -66,6 +66,13 @@ data class SessionBattle(
     val startedAt: String = "",
 )
 
+/**
+ * How far the bots of the running battle have come in starting: [connected] of [expected] have connected after
+ * [elapsedSeconds] of the [limitSeconds] the battle waits. A status carries it only while the bots start.
+ */
+@Serializable
+data class SessionBoot(val connected: Int, val expected: Int, val elapsedSeconds: Int, val limitSeconds: Int)
+
 /** How a session ended: its outcome word and when. */
 @Serializable
 data class SessionEnded(val outcome: String, val at: String, val message: String = "")
@@ -86,6 +93,8 @@ data class SessionStatus(
     val formats: List<String> = emptyList(),
     val battleLimit: Int? = null,
     val battle: SessionBattle? = null,
+    /** The starting of the running battle's bots, until they have all connected; null in a status written before it existed. */
+    val boot: SessionBoot? = null,
     val kept: Int = 0,
     val notKept: Int = 0,
     /** The planner's reason while the session waits, as a code. */
