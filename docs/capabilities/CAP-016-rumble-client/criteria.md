@@ -1340,9 +1340,9 @@ Feature: rumble-client — Local ranked and practice battle client
     And the battle that left it out SHALL not count toward giving up, a bot that missed one battle and then connected SHALL stay in, and the next session SHALL choose it again
 
   @RCL-164
-  Scenario: The agent sees a real session leave out a bot that cannot start
+  Scenario: A real bot that cannot start ends its battle at once, and the official starters are not taken for ended bots
     Test-type: Human
-    Given a session on the development Rumble with a bot that cannot start on the computer
-    When its battles are run
-    Then the bot's battles are seen to end at once instead of after the connect limit, the bot is left out after its second, and the session runs on with the others
+    Given the Battle Runner with the real booter, a bot that cannot start on the computer and the official starters of the Rumble
+    When a battle with the bot that cannot start is run, and battles with each starter
+    Then the first is seen to end within seconds instead of after the connect limit, naming that bot, and every starter's battle completes
 ```

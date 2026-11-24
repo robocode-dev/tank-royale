@@ -40,7 +40,7 @@ Test class Unit unless stated.
 - **BR-053: The Battle Runner ends the start of a battle at once when a booted bot's process ends before the bot connected**, naming the bots that had not connected, and still waits the connect limit for a process that runs without connecting.
 - **RBW-026: The worker reports a battle whose bots did not connect** with a fixed code and the names and versions of those bots, and nothing else about them.
 - **RCL-163: A session leaves a bot out for the rest of the session after it did not connect in two battles in a row**, with every team that holds it, says which bot and why, does not count those battles toward giving up, and tries the bot again in its next session.
-- **RCL-164: A real session on the development Rumble with a bot that cannot start leaves it out after its second battle and runs on with the others.** (Human.)
+- **RCL-164: A real bot that cannot start ends its battle at once, naming it, and the official starters of the Rumble are not taken for ended bots.** (Human.) The test Rumble holds only Java and Python bots, which start on this computer, so a real session cannot meet a bot that cannot start; leaving out in a session is proved with the worker as a real process.
 
 ## Identity allocation
 
@@ -48,4 +48,4 @@ The change, the criteria and the new milestone were allocated with the repositor
 
 ## Human evidence
 
-To be written after the trial.
+**Seen by the agent on 2026-11-24** on Windows, with the Battle Runner and the real booter built from this change: a one-round battle of the Rumble's C# starter bot, which targets .NET 10 on a computer with only .NET 8 so its build fails, against the Java sample bot Fire ended after 2.1 seconds instead of the 30-second connect limit, with the booter's line `exited <pid>` and the failure naming `StarterBot 1.0.0`. Battles of the Rumble's Java, Python and TypeScript starters against Fire each completed, in 4.9, 4.9 and 7.2 seconds, and none of their processes was reported as ended before it connected. The session's leaving out after two battles was not seen with a real catalog bot, because the test Rumble has no bot that cannot start on this computer; it is proved with the fake worker run as a real process.
