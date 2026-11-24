@@ -19,6 +19,12 @@ class EngineFailed(message: String, cause: Throwable? = null) : Exception(messag
 fun interface BattleEngine {
     /** Returns the result of the battle, or throws [EngineRefused] or [EngineFailed]. */
     fun run(job: Job): WorkerEvent.Result
+
+    /**
+     * Runs the battle and calls [booting] as its bots start, from any thread, as often as the engine likes; the worker
+     * decides what is written. An engine that has nothing to report just runs the battle.
+     */
+    fun run(job: Job, booting: (WorkerEvent.Booting) -> Unit): WorkerEvent.Result = run(job)
 }
 
 /**
@@ -26,8 +32,12 @@ fun interface BattleEngine {
  * code. Nothing else is ever written to [output]: a caller needs no log to know what happened.
  */
 object Worker {
+    /** How often the starting bots are reported while the number of connected bots does not change. */
+    private const val BOOT_REPORT_MILLIS = 1000L
+
     fun run(input: BufferedReader, output: PrintStream, engine: BattleEngine): Int {
-        fun emit(event: WorkerEvent) {
+        // The engine reports the starting bots from its own threads, so a line is never written by two at once.
+        fun emit(event: WorkerEvent) = synchronized(output) {
             output.println(MessageCodec.write(event))
             output.flush()
         }
@@ -46,7 +56,20 @@ object Worker {
 
         emit(WorkerEvent.Started(jobId = job.jobId))
         return try {
-            emit(engine.run(job))
+            // The starting bots are reported when the number of connected bots changes and about once a second otherwise.
+            var last: WorkerEvent.Booting? = null
+            val result = engine.run(job) { booting ->
+                synchronized(output) {
+                    val before = last
+                    if (before == null || before.connected != booting.connected || before.expected != booting.expected ||
+                        booting.elapsedMillis / BOOT_REPORT_MILLIS != before.elapsedMillis / BOOT_REPORT_MILLIS
+                    ) {
+                        last = booting
+                        emit(booting)
+                    }
+                }
+            }
+            emit(result)
             emit(WorkerEvent.Finished(jobId = job.jobId))
             ExitCode.FINISHED
         } catch (refused: EngineRefused) {

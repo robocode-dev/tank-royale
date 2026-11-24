@@ -2,6 +2,7 @@
 
 ### ✨ Features
 
+- Battle Runner: A runner can be given a boot progress listener, `onBootProgress`, which is called while each battle starts with how many of the expected bots have connected, how many are missing, how long the runner has waited and its connect limit. Until now only the handle of a battle that had already started had this, so a caller of the synchronous `runBattle` could not see the bots start.
 - GUI: Help → Feedback has Report a Problem... and Suggest a New Feature..., which open the issue form on GitHub for a bug report or a feature request.
 - Bot API (Java, .NET, Python, TypeScript): Colour text is now read in all four forms `#RGB`, `#RGBA`, `#RRGGBB` and `#RRGGBBAA`, in capital or small letters, by every Bot API. The short forms double each digit, and a form without transparency is fully opaque.
 

@@ -102,6 +102,15 @@ class WorkerTest {
         assertTrue(unexpected.events.none { it is WorkerEvent.Finished })
     }
 
+    @Test
+    @Tag("RBW-023")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRBW023_UnitPositive_aBattleWaitsLongerThanTheRunnersDefaultForSlowStartingBots() {
+        RunnerEngine.createRunner(2).use { assertEquals(90_000L, it.config.botConnectTimeoutMs) }
+        assertTrue(RunnerEngine.BOT_CONNECT_TIMEOUT < java.time.Duration.ofMinutes(10))
+    }
+
     // RBW-005
 
     @Test
@@ -140,5 +149,61 @@ class WorkerTest {
 
         val refused = assertThrows(EngineRefused::class.java) { RunnerEngine.setupFor(job.copy(gameType = "chess")) }
         assertEquals(ErrorCode.UNKNOWN_GAME_TYPE, refused.code)
+    }
+
+    // RBW-024
+
+    private fun booting(connected: Int, elapsed: Long, expected: Int = 4) =
+        WorkerEvent.Booting(jobId = "job-7", connected = connected, expected = expected, elapsedMillis = elapsed, limitMillis = 90_000)
+
+    @Test
+    @Tag("RBW-024")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRBW024_UnitPositive_theWorkerReportsTheStartingBotsWhenTheCountChangesAndAboutOnceASecondBetweenStartedAndResult() {
+        val reports = listOf(
+            booting(0, 0), booting(0, 500), booting(0, 1000), booting(0, 1500), booting(1, 1700), booting(1, 2100),
+            booting(1, 2600), booting(2, 2700), booting(4, 3000),
+        )
+        val run = run(MessageCodec.write(job) + "\n", object : BattleEngine {
+            override fun run(job: Job): WorkerEvent.Result = result
+            override fun run(job: Job, booting: (WorkerEvent.Booting) -> Unit): WorkerEvent.Result {
+                reports.forEach(booting)
+                return result
+            }
+        })
+
+        assertEquals(ExitCode.FINISHED, run.exit)
+        val events = run.events
+        assertEquals(WorkerEvent.Started(jobId = "job-7"), events.first())
+        assertEquals(result, events[events.size - 2])
+        assertEquals(WorkerEvent.Finished(jobId = "job-7"), events.last())
+        // A report is written when the count changes or the second turns, so 0 at 500 and 1 at 2600 are left out.
+        assertEquals(
+            listOf(booting(0, 0), booting(0, 1000), booting(1, 1700), booting(1, 2100), booting(2, 2700), booting(4, 3000)),
+            events.filterIsInstance<WorkerEvent.Booting>(),
+        )
+    }
+
+    @Test
+    @Tag("RBW-024")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRBW024_UnitNegative_aBootEventCarriesOnlyCountsAndTimesAndNoWorkerWritesOneWithoutAnEngineThatReports() {
+        val line = MessageCodec.write(booting(1, 1234))
+        // The names of its fields are all of what it can say: a bot's name, folder or output has no place in it.
+        assertEquals(
+            setOf("type", "schemaVersion", "jobId", "connected", "expected", "elapsedMillis", "limitMillis"),
+            kotlinx.serialization.json.Json.parseToJsonElement(line).let { (it as kotlinx.serialization.json.JsonObject).keys },
+        )
+        // The Battle Runner's progress becomes the event with its counts and times, and an engine that reports nothing adds none.
+        val progress = dev.robocode.tankroyale.runner.BootProgress(
+            expected = mapOf(dev.robocode.tankroyale.runner.BotIdentity("Walls", "1.0.0", "A") to 2, dev.robocode.tankroyale.runner.BotIdentity("SpinBot", "1.0.0", "A") to 1),
+            connected = mapOf(dev.robocode.tankroyale.runner.BotIdentity("Walls", "1.0.0", "A") to 1),
+            pending = emptyMap(), elapsedMs = 2500, timeoutMs = 90_000,
+        )
+        assertEquals(WorkerEvent.Booting(jobId = "job-7", connected = 1, expected = 3, elapsedMillis = 2500, limitMillis = 90_000), RunnerEngine.bootEvent(job, progress))
+        val quiet = run(MessageCodec.write(job) + "\n", BattleEngine { result })
+        assertTrue(quiet.events.none { it is WorkerEvent.Booting })
     }
 }

@@ -26,6 +26,7 @@ import javax.swing.JButton
 import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JProgressBar
 import javax.swing.SwingUtilities
 import javax.swing.Timer
 import javax.swing.WindowConstants
@@ -43,6 +44,14 @@ internal class SessionTexts(language: String) {
     fun headline(status: SessionStatus): String = SessionView.headline(status).let { (key, arguments) -> get(key, *arguments.toTypedArray()) }
 
     fun menu(item: SessionMenuItem): String = get("session.menu.${item.name.lowercase()}")
+
+    /** Where the starting of the running battle's bots stands, or null when no bots are starting. */
+    fun starting(status: SessionStatus): String? =
+        status.boot?.let { get("session.window.starting", it.connected, it.expected, it.elapsedSeconds, it.limitSeconds) }
+
+    /** The tray icon's tip: the title, where the session stands and, while the bots start, how far they are. */
+    fun tip(status: SessionStatus): String =
+        listOfNotNull(get("session.title"), headline(status), starting(status)).joinToString("\n")
 }
 
 /**
@@ -116,9 +125,8 @@ internal class SessionDisplay(
         val now = final ?: status() ?: return
         // Once ended, the icon's menu shows Close; the final status is kept for the window's later repaints.
         if (final != null) last = final
-        val headline = texts.headline(now)
         tray?.let { icon ->
-            icon.toolTip = "${texts.get("session.title")}\n$headline"
+            icon.toolTip = texts.tip(now)
             val items = SessionView.menu(now, open.offered)
             if (items != menuShown) {
                 menuShown = items
@@ -164,7 +172,7 @@ internal class SessionDisplay(
     /** The window's content: where the session stands, the running battle, the counts, and the controls as buttons. */
     private fun fill(frame: JFrame, now: SessionStatus) {
         // Rebuilt only when what it shows changed, so a click or the keyboard focus is never lost to a rebuild.
-        val shownNow = listOf(texts.headline(now), now.battle, now.notKept, now.results, SessionView.menu(now, open.offered))
+        val shownNow = listOf(texts.headline(now), now.battle, now.boot, now.notKept, now.results, SessionView.menu(now, open.offered))
         if (shownNow == filled && frame.contentPane.componentCount > 0) return
         filled = shownNow
         val lines = JPanel().apply {
@@ -177,6 +185,17 @@ internal class SessionDisplay(
             add(JLabel(texts.get("session.window.not_kept", now.notKept)))
             val r = now.results
             add(JLabel(texts.get("session.window.results", r.waiting, r.sent, r.accepted, r.rejected)))
+            // While the battle's bots start: how far they are, with a bar that moves on its own until the first has connected.
+            texts.starting(now)?.let { line ->
+                val boot = now.boot!!
+                add(javax.swing.Box.createVerticalStrut(6))
+                add(JLabel(line))
+                add(JProgressBar(0, boot.expected.coerceAtLeast(1)).apply {
+                    value = boot.connected
+                    isIndeterminate = boot.connected == 0
+                    alignmentX = java.awt.Component.LEFT_ALIGNMENT
+                })
+            }
         }
         // Two buttons a row, so their texts are never cut short.
         val buttons = JPanel(GridLayout(0, 2, 6, 6)).apply {

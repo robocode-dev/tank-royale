@@ -27,6 +27,7 @@ import dev.robocode.tankroyale.rumble.SavedRenewal
 import dev.robocode.tankroyale.rumble.SavedSignInUpload
 import dev.robocode.tankroyale.rumble.SelectionMode
 import dev.robocode.tankroyale.rumble.SentBatches
+import dev.robocode.tankroyale.rumble.StartingLog
 import dev.robocode.tankroyale.rumble.SessionControl
 import dev.robocode.tankroyale.rumble.SessionEnd
 import dev.robocode.tankroyale.rumble.SessionEvent
@@ -307,7 +308,8 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             try {
                 var end = SessionRunner(setup, control) { event ->
                     if (event is SessionEvent.BattleKept) kept.incrementAndGet()
-                    report(sessionEvent(event))
+                    if (event is SessionEvent.BattleStarted) startingLog.reset()
+                    if (event is SessionEvent.BotsStarting) reportStarting(event) else report(sessionEvent(event))
                 }.run {
                     SessionRequest(entries(), bots.toSet(), selectionMode, chosenFormats, pin.participantCounts, battles, advice.current(), seed)
                 }
@@ -407,6 +409,21 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
         }
     }
 
+    private val startingLog = StartingLog()
+
+    /**
+     * The starting bots of a battle change the status on every report, so a screen can show the seconds going by, but
+     * the log and the command line's output get a line only when the number of connected bots changes.
+     */
+    private fun reportStarting(event: SessionEvent.BotsStarting) {
+        synchronized(output) {
+            val changed = startingLog.isNews(event.connected)
+            val line = sessionEvent(event)
+            tracker?.record(line.first, log = changed)
+            if (changed) { if (json) io.event(line.first) else io.say(line.second) }
+        }
+    }
+
     private fun note(kind: String, text: String) = event(kind) { put("message", text) } to text
 
     private fun event(kind: String, build: kotlinx.serialization.json.JsonObjectBuilder.() -> Unit): JsonObject = buildJsonObject {
@@ -430,6 +447,10 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             put("battleId", event.battleId); put("gameType", event.gameType)
             putJsonArray("participants") { event.participants.forEach { add(kotlinx.serialization.json.JsonPrimitive(it)) } }
         } to "Battle ${event.gameType}: ${event.participants.joinToString(" vs ")}"
+        is SessionEvent.BotsStarting -> event("bots-starting") {
+            put("battleId", event.battleId); put("connected", event.connected); put("expected", event.expected)
+            put("elapsedMillis", event.elapsedMillis); put("limitMillis", event.limitMillis)
+        } to "  Bots starting: ${event.connected} of ${event.expected} connected"
         is SessionEvent.BattleKept -> event("battle-kept") { put("battleId", event.battleId) } to "  kept"
         is SessionEvent.BattleNotKept -> event("battle-not-kept") {
             put("battleId", event.battleId); put("reason", event.reason.name); put("detail", event.detail)

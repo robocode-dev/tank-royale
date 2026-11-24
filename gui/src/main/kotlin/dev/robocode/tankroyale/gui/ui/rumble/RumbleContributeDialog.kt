@@ -257,6 +257,16 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
                     battleSeenAt = battleStartedAt
                 }
                 put(elapsedLabel)
+                // While the battle's bots start, how many have connected, with a bar that moves on its own until the first has.
+                status.boot?.let { boot ->
+                    put(small(text("rumble.contribute.starting_bots", boot.connected, boot.expected, boot.elapsedSeconds, boot.limitSeconds)))
+                    putBar(JProgressBar(0, boot.expected.coerceAtLeast(1)).apply {
+                        value = boot.connected
+                        isIndeterminate = boot.connected == 0
+                        isStringPainted = boot.connected > 0
+                        string = text("rumble.contribute.starting_bots_bar", boot.connected, boot.expected)
+                    })
+                }
             } ?: run { battleStartedAt = null }
             tiles(status)
             ContributeTexts.forPython(status.python)?.let { put(small(text(it))) }

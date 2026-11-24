@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.rumble
 import dev.robocode.tankroyale.rumble.protocol.ErrorCode
 import dev.robocode.tankroyale.rumble.protocol.Job
 import dev.robocode.tankroyale.rumble.protocol.JobBot
+import dev.robocode.tankroyale.rumble.protocol.WorkerEvent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -15,6 +16,8 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Duration
+import java.util.Collections
+import java.util.concurrent.atomic.AtomicInteger
 
 class RumbleWorkerHostTest {
 
@@ -273,5 +276,42 @@ class RumbleWorkerHostTest {
         assertTrue(windows.command.last().startsWith("start \"\" /b /wait "), "start runs the program with Ctrl+C ignored, which its children inherit")
         assertEquals(listOf("/bin/sh", "-c", "trap '' INT; exec \"\$@\"", "sh") + command, unix.command)
         assertEquals(emptyMap<String, String>(), unix.environment)
+    }
+
+    // RBW-025
+
+    @Test
+    @Tag("RBW-025")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRBW025_UnitPositive_theHostHandsTheBootReportsOnInOrderAndTheOutcomeIsTheSameWithOrWithoutThem() {
+        val seen = Collections.synchronizedList(mutableListOf<WorkerEvent.Booting>())
+
+        val listened = host().run(fake("booting"), job(), booting = { seen += it })
+        val silent = host().run(fake("booting"), job())
+
+        // The first three go with the number of connected bots, 0 to 2, then the same report two thousand times.
+        assertEquals(listOf(0, 1, 2), seen.take(3).map { it.connected })
+        assertEquals(2_003, seen.size)
+        assertEquals(listOf(0L, 1000L, 2000L), seen.take(3).map { it.elapsedMillis })
+        assertTrue(seen.all { it.expected == 2 && it.limitMillis == 90_000L })
+        assertEquals(listened, silent)
+        assertInstanceOf(WorkerOutcome.Completed::class.java, listened)
+    }
+
+    @Test
+    @Tag("RBW-025")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRBW025_UnitNegative_aListenerThatThrowsChangesNothingAndASilentWorkerGivesNoReport() {
+        val seen = AtomicInteger()
+
+        val outcome = host().run(fake("booting"), job(), booting = { seen.incrementAndGet(); throw IllegalStateException("a listener that fails") })
+
+        assertInstanceOf(WorkerOutcome.Completed::class.java, outcome)
+        assertEquals(2_003, seen.get(), "every report still reaches the listener")
+        val none = AtomicInteger()
+        assertInstanceOf(WorkerOutcome.Completed::class.java, host().run(fake("ok"), job(), booting = { none.incrementAndGet() }))
+        assertEquals(0, none.get())
     }
 }

@@ -1307,4 +1307,27 @@ Feature: rumble-client — Local ranked and practice battle client
     When a session is started from Contribute battles in the tray, its window is opened, Open Tank Royale is used with the desktop program open and closed, and the battles end
     Then the icon, its tip and its menu, the window with its controls sending their requests, the desktop program coming to the front with the Contribute battles screen or being started, never a second one while one follows the session, and the end shown in the window, with the icon, until the person closes them, are seen
 
+  @RCL-160
+  Scenario: A session reports the starting bots in its status and its events
+    Test-type: Unit
+    Given a session whose worker reports a battle's bots connecting
+    When its events are recorded
+    Then its status SHALL carry the connected and expected bots and the seconds waited and the limit while the bots start
+    And the status SHALL clear them when all the bots have connected, and with every ending of the battle, kept, not kept, waiting, paused and ended
+    And its log and the command line SHALL get a line only when the count of connected bots changes, while the status is updated on every report
+
+  @RCL-161
+  Scenario: The screen, the window and the tray show the starting bots
+    Test-type: Unit
+    Given a status with the starting bots, with none connected, with some and with all, and a status without them as an older program writes it
+    When the Contribute battles screen, the session's window and the tray's tip are given it
+    Then each SHALL show how many bots are connected of how many, and the seconds waited of the limit, with a bar that moves on its own while none is connected
+    And a status without them SHALL show what it showed before, and every text SHALL be in English, Danish, Spanish and Catalan without a long dash
+
+  @RCL-162
+  Scenario: The maintainer sees the bots start in a real session on Windows
+    Test-type: Human
+    Given the desktop program on Windows set to the development Rumble and Java catalog bots
+    When a session is started from Contribute battles and a battle starts its bots
+    Then the screen, the session's window and the tray's tip are seen to show the bots connecting one after the other, and after they all connected the progress is gone
 ```

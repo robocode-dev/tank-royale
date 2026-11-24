@@ -1,10 +1,14 @@
 package dev.robocode.tankroyale.rumble.cli
 
+import dev.robocode.tankroyale.rumble.SessionBoot
 import dev.robocode.tankroyale.rumble.SessionMenuItem
+import dev.robocode.tankroyale.rumble.SessionStatus
 import dev.robocode.tankroyale.rumble.SessionView
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.util.Locale
@@ -22,7 +26,7 @@ class RumbleCliSessionViewTest {
         add("session.title")
         SessionView.STATES.forEach { add("session.headline.limit.$it"); add("session.headline.$it") }
         SessionMenuItem.entries.forEach { add("session.menu.${it.name.lowercase()}") }
-        addAll(listOf("session.window.battle", "session.window.no_battle", "session.window.not_kept", "session.window.results"))
+        addAll(listOf("session.window.battle", "session.window.no_battle", "session.window.not_kept", "session.window.results", "session.window.starting"))
         addAll(listOf("session.notice.title", "session.notice.text"))
     }
 
@@ -57,5 +61,43 @@ class RumbleCliSessionViewTest {
         } finally {
             Locale.setDefault(before)
         }
+    }
+
+    private fun status(boot: SessionBoot?) = SessionStatus(
+        environment = "test", pid = 1, startedAt = "2026-11-24T10:00:00Z", state = "running", battleLimit = 10, kept = 3,
+        updatedAt = "2026-11-24T10:01:00Z", boot = boot,
+    )
+
+    @Test
+    @Tag("RCL-161")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL161_UnitPositive_theWindowAndTheTipSayHowManyBotsHaveConnectedAndHowLongTheBattleHasWaitedInEveryLanguage() {
+        val expected = mapOf(
+            "en" to "Starting the bots: 2 of 4 connected, 18 s of 90 s",
+            "da" to "Bots starter: 2 af 4 forbundet, 18 s af 90 s",
+            "es" to "Iniciando los bots: 2 de 4 conectados, 18 s de 90 s",
+            "ca" to "Iniciant els bots: 2 de 4 connectats, 18 s de 90 s",
+        )
+        for ((language, line) in expected) {
+            val texts = SessionTexts(language)
+            val status = status(SessionBoot(connected = 2, expected = 4, elapsedSeconds = 18, limitSeconds = 90))
+            assertEquals(line, texts.starting(status))
+            // The tip has the title, where the session stands and the line, one under the other.
+            assertEquals(listOf(texts.get("session.title"), texts.headline(status), line), texts.tip(status).lines())
+            assertFalse('—' in line || '–' in line)
+        }
+    }
+
+    @Test
+    @Tag("RCL-161")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL161_UnitNegative_aStatusWithoutStartingBotsShowsWhatItShowedBefore() {
+        val texts = SessionTexts("da")
+        val plain = status(null)
+        assertNull(texts.starting(plain))
+        assertEquals(listOf(texts.get("session.title"), texts.headline(plain)), texts.tip(plain).lines())
+        assertTrue(texts.tip(plain).lines().none { it.startsWith("Bots starter") })
     }
 }

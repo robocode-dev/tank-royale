@@ -54,6 +54,7 @@ class BattleRunner private constructor(
     val config: Config,
     private val turnTimingDiagnosticsEnabled: Boolean = false,
     private val turnTimingDiagnosticsTps: Int = 30,
+    private val bootProgressListener: Consumer<BootProgress>? = null,
 ) : AutoCloseable {
 
     private val logger = Logger.getLogger(BattleRunner::class.java.name)
@@ -108,6 +109,21 @@ class BattleRunner private constructor(
     // -------------------------------------------------------------------------------------
     // 8.2 — Async battle
     // -------------------------------------------------------------------------------------
+
+    /**
+     * Calls the runner's boot progress listener, if it has one, with every progress [event] of a battle's start. A
+     * listener that throws never stops the battle, which it only watches.
+     */
+    internal fun attachBootListener(event: dev.robocode.tankroyale.common.event.Event<BootProgress>) {
+        val listener = bootProgressListener ?: return
+        event.on(this) { progress ->
+            try {
+                listener.accept(progress)
+            } catch (e: Exception) {
+                logger.log(Level.WARNING, "A boot progress listener failed", e)
+            }
+        }
+    }
 
     /**
      * Starts a battle asynchronously and returns a [BattleHandle] for event observation
@@ -170,6 +186,8 @@ class BattleRunner private constructor(
                 booterManager = null
                 battleInProgress.set(false)
             }
+
+            attachBootListener(handle.onBootProgress)
 
             // 2. Boot bots
             val botUrl = if (config.intentDiagnosticsEnabled) intentProxy!!.proxyUrl else serverManager.serverUrl
@@ -436,6 +454,7 @@ class BattleRunner private constructor(
         private var captureServerOutput: Boolean = true
         private var botConnectTimeoutMs: Long = 30_000L
         private var requiredBehaviorVersion: Int? = null
+        private var bootProgressListener: Consumer<BootProgress>? = null
 
         /**
          * Use an embedded server, binding it to [port] (default 0 = dynamic port assignment).
@@ -512,6 +531,19 @@ class BattleRunner private constructor(
         }
 
         /**
+         * Sets a listener that is called while each battle starts, with how many of the expected bots have connected,
+         * how many are missing, how long the runner has waited and its connect limit: on every change of the connected
+         * bots and about every half second while it waits. The last call shows every expected bot connected. This is the
+         * same progress as [BattleHandle.onBootProgress], which a caller of [runBattle] cannot reach because the handle
+         * exists only after the bots have connected. A listener that throws does not stop the battle.
+         *
+         * @param listener called on the thread that starts the battle or on the server connection's thread
+         */
+        fun onBootProgress(listener: Consumer<BootProgress>): Builder = apply {
+            bootProgressListener = listener
+        }
+
+        /**
          * Requires the connected server to advertise [expected] as its behavior compatibility version.
          *
          * The check runs after both Runner role handshakes complete and before the Runner starts any requested bot process.
@@ -536,6 +568,7 @@ class BattleRunner private constructor(
             ),
             turnTimingDiagnosticsEnabled = turnTimingDiagnosticsEnabled,
             turnTimingDiagnosticsTps = turnTimingDiagnosticsTps,
+            bootProgressListener = bootProgressListener,
         )
     }
 

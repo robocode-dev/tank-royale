@@ -67,6 +67,16 @@ fun main(args: Array<String>) {
 
     when (mode) {
         "ok" -> finishNormally()
+        "booting" -> {
+            // Reports its bots connecting one after the other, as many times as it likes, before the result.
+            emit(WorkerEvent.Started(jobId = id))
+            for (connected in 0..job.bots.size) {
+                emit(WorkerEvent.Booting(jobId = id, connected = connected, expected = job.bots.size, elapsedMillis = connected * 1000L, limitMillis = 90_000))
+            }
+            repeat(2_000) { emit(WorkerEvent.Booting(jobId = id, connected = job.bots.size, expected = job.bots.size, elapsedMillis = 5_000, limitMillis = 90_000)) }
+            emit(WorkerEvent.Result(jobId = id, numberOfRounds = job.numberOfRounds, bots = job.bots.mapIndexed { i, b -> outcome(b.name, i + 1) }))
+            emit(WorkerEvent.Finished(jobId = id))
+        }
         "refuse" -> { emit(WorkerEvent.Refused(jobId = id, code = ErrorCode.PIN_MISMATCH, message = "wrong pin")); exitProcess(2) }
         "fail" -> { emit(WorkerEvent.Started(jobId = id)); emit(WorkerEvent.Failed(jobId = id, code = ErrorCode.BATTLE_FAILED, message = "no bots")); exitProcess(1) }
         "nofinal" -> emit(WorkerEvent.Started(jobId = id))

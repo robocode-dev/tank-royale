@@ -53,4 +53,4 @@ The change and the criteria were allocated with the repository's local allocatio
 
 ## Human evidence
 
-To be written after the maintainer's trial.
+**Seen by the agent on 2026-11-24**, on Windows with the development Rumble, because the maintainer's screen was locked afterwards: two real one-battle TwinDuel sessions ran the Rumble's own bots, and the command line wrote "Bots starting: 1 of 4 connected" up to "4 of 4 connected", one line for each change and no more, while the status file and the log held the same counts. The bots connected within 0.9 seconds in both, so a real start was too quick to be seen on the screen. A play-through of a slow start in the same session folder, with four bots connecting over 20 seconds, showed in the session's window, in the dark theme and in Danish, "Bots starter: 1 af 4 forbundet, 5 s af 90 s" and later "2 af 4 forbundet, 13 s af 90 s" with a bar that grew with the count, and the line and the bar were gone after all four had connected. **Not seen yet:** the Contribute battles screen and the tray's tip with the progress, and a real slow start with Java bots, which the maintainer's trial must show.

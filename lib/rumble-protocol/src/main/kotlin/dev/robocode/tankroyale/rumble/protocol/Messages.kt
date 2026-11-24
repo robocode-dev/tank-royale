@@ -58,6 +58,22 @@ sealed interface WorkerEvent {
     @SerialName("started")
     data class Started(override val schemaVersion: Int = SUPPORTED_SCHEMA_VERSION, val jobId: String) : WorkerEvent
 
+    /**
+     * The battle's bots are starting: [connected] of [expected] have connected after [elapsedMillis] of the [limitMillis]
+     * the battle waits for them. Counts and times only, never a bot's name, folder or output. Any number of these may
+     * come between [Started] and [Result].
+     */
+    @Serializable
+    @SerialName("booting")
+    data class Booting(
+        override val schemaVersion: Int = SUPPORTED_SCHEMA_VERSION,
+        val jobId: String,
+        val connected: Int,
+        val expected: Int,
+        val elapsedMillis: Long,
+        val limitMillis: Long,
+    ) : WorkerEvent
+
     /** The battle finished; [bots] are in final rank order. */
     @Serializable
     @SerialName("result")

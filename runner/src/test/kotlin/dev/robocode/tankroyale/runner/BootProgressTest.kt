@@ -139,4 +139,67 @@ class BootProgressTest {
         assertThat(last.totalExpected).isEqualTo(2)
         assertThat(last.pending).isEmpty()
     }
+
+    // -------------------------------------------------------------------------------------
+    // BR-052 — the runner's own boot progress listener
+    // -------------------------------------------------------------------------------------
+
+    private fun listenerRunner(listener: java.util.function.Consumer<BootProgress>): BattleRunner =
+        BattleRunner.create {
+            embeddedServer()
+            botConnectTimeout(Duration.ofMillis(5_000L))
+            onBootProgress(listener)
+        }
+
+    @Tag("BR-052")
+    @Tag("Unit")
+    @Tag("Positive")
+    @Test
+    fun `a runner's listener gets every progress of a start and the last shows all bots connected`() {
+        val conn = conn()
+        val identities = listOf(BotIdentity("Alpha", "1.0", "Author"), BotIdentity("Beta", "2.0", "Author"))
+        val alpha = botInfo("Alpha", "1.0", "Author", "localhost", 7001)
+        val beta = botInfo("Beta", "2.0", "Author", "localhost", 7002)
+        val seen = CopyOnWriteArrayList<BootProgress>()
+
+        listenerRunner { seen.add(it) }.use { r ->
+            val event = Event<BootProgress>()
+            r.attachBootListener(event)
+            r.waitForBots(conn, emptySet(), identities, identities.size, event) {
+                emitBots(conn, alpha)
+                emitBots(conn, alpha, beta)
+            }
+        }
+
+        assertThat(seen.map { it.totalConnected }).startsWith(1).endsWith(2)
+        assertThat(seen.last().totalExpected).isEqualTo(2)
+        assertThat(seen.last().pending).isEmpty()
+        assertThat(seen.last().timeoutMs).isEqualTo(5_000L)
+    }
+
+    @Tag("BR-052")
+    @Tag("Unit")
+    @Tag("Negative")
+    @Test
+    fun `a runner without a listener behaves as before and a listener that throws does not stop the start`() {
+        val conn = conn()
+        val identities = listOf(BotIdentity("Alpha", "1.0", "Author"))
+        val alpha = botInfo("Alpha", "1.0", "Author", "localhost", 7001)
+
+        // Without a listener nothing is attached, and the start waits as always.
+        runner().use { r ->
+            val event = Event<BootProgress>()
+            r.attachBootListener(event)
+            val matched = r.waitForBots(conn, emptySet(), identities, identities.size, event) { emitBots(conn, alpha) }
+            assertThat(matched).hasSize(1)
+        }
+
+        // A listener that throws is only logged: the bots are still found.
+        listenerRunner { throw IllegalStateException("a listener that fails") }.use { r ->
+            val event = Event<BootProgress>()
+            r.attachBootListener(event)
+            val matched = r.waitForBots(conn, emptySet(), identities, identities.size, event) { emitBots(conn, alpha) }
+            assertThat(matched).hasSize(1)
+        }
+    }
 }
