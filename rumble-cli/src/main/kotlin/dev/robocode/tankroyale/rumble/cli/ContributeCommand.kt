@@ -55,6 +55,7 @@ import kotlinx.serialization.json.JsonObject
 import dev.robocode.tankroyale.rumble.DesktopSettings
 import dev.robocode.tankroyale.rumble.OpenTankRoyale
 import dev.robocode.tankroyale.rumble.SessionShow
+import dev.robocode.tankroyale.rumble.SessionStatus
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
@@ -95,6 +96,10 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
     /** The session's tray icon or window, as chosen; null when it shows nothing. */
     @Volatile
     private var display: SessionDisplay? = null
+
+    /** The session's last status once it ended, which the tray icon or window shows when [run] is done with all else. */
+    @Volatile
+    private var endedStatus: SessionStatus? = null
 
     /** The session's folder in the Rumble state, kept up to date from the events reported; null before the lock is taken. */
     @Volatile
@@ -139,9 +144,13 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             if (t != null) {
                 runCatching { t.end(if (e is BadInput) "bad-input" else "failed", e.message.orEmpty()) }
                 t.close()
-                display?.ended(t.status)
+                endedStatus = t.status
             }
             throw e
+        } finally {
+            // Only now, with the answer written and the Ctrl+C handler, the watcher and Python let go of, the tray
+            // icon or window shows the end and waits until the person closes it.
+            endedStatus?.let { final -> display?.ended(final) }
         }
     }
 
@@ -329,8 +338,8 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             runCatching { t.end(outcome, message) }
             runCatching { t.close() }
             answer(reply)
-            // The tray's notice and an open window come after the session let go of its folder, so it can be started again.
-            display?.ended(t.status)
+            // The end is shown when run() is done with everything else, outside every lock; see run().
+            endedStatus = t.status
             return
         }
         answer(reply)

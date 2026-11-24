@@ -29,7 +29,7 @@ class RumbleSessionViewTest {
         assertEquals(SessionShow.TRAY, ContributeChoices().show)
         val arguments = ContributeChoices().arguments(RumbleEnvironments.TEST, 42, listOf("C:\\Tank Royale\\Tank Royale.exe", "--x"))
         assertEquals(listOf("--show", "tray"), arguments.windowed(2).first { it[0] == "--show" })
-        assertEquals(listOf("C:\\Tank Royale\\Tank Royale.exe", "--x"), arguments.windowed(2).filter { it[0] == "--open-command" }.map { it[1] })
+        assertEquals(listOf("C:\\Tank Royale\\Tank Royale.exe", "--x"), arguments.filter { it.startsWith("--open-command=") }.map { it.removePrefix("--open-command=") })
         assertEquals("window", ContributeChoices(show = SessionShow.WINDOW).arguments(RumbleEnvironments.TEST, null).let { it[it.indexOf("--show") + 1] })
 
         // The command that starts the desktop program again: the installed launcher as it is, or Java with its settings
@@ -48,7 +48,9 @@ class RumbleSessionViewTest {
         assertNull(SessionShow.of("balloon"))
         assertNull(SessionShow.of(null))
         assertEquals(SessionShow.NONE, SessionShow.of(" None "))
-        assertFalse(ContributeChoices().arguments(RumbleEnvironments.TEST, null).contains("--open-command"))
+        assertFalse(ContributeChoices().arguments(RumbleEnvironments.TEST, null).any { it.startsWith("--open-command") })
+        // A debugger of the running program is not given to a new one.
+        assertEquals(listOf("java", "-Xmx1g", "-jar", "gui.jar"), OpenCommand.of("java", listOf("-agentlib:jdwp=transport=dt_socket,suspend=y", "-Xmx1g", "-javaagent:x.jar"), Path.of("gui.jar")))
         // Java whose classes are not in a jar, as when run from the build's class folders, or no program at all: no command.
         assertEquals(emptyList<String>(), OpenCommand.of("/usr/bin/java", emptyList(), Path.of("/code/gui/build/classes")))
         assertEquals(emptyList<String>(), OpenCommand.of(null, emptyList(), null))

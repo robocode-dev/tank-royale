@@ -83,6 +83,8 @@ object SessionView {
 
 /** The command that starts the desktop program again, which a session it starts is given for Open Tank Royale. */
 object OpenCommand {
+    private val AGENTS = listOf("-agentlib", "-agentpath", "-javaagent", "-Xrunjdwp", "-Xdebug")
+
     /**
      * The command for a program started as [command], the program file, with the Java settings [javaArguments], and
      * whose classes come from [codeSource]. An installed launcher is started as it is. Java started with a jar is
@@ -91,11 +93,14 @@ object OpenCommand {
      */
     fun of(command: String?, javaArguments: List<String>, codeSource: Path?): List<String> {
         if (command.isNullOrBlank()) return emptyList()
+        // (A command whose program is not Java is an installed launcher, started as it is.)
         val name = Path.of(command).fileName?.toString()?.lowercase().orEmpty()
         val java = name == "java" || name == "java.exe" || name == "javaw" || name == "javaw.exe"
         if (!java) return listOf(command)
         val jar = codeSource?.takeIf { it.fileName?.toString()?.lowercase()?.endsWith(".jar") == true } ?: return emptyList()
-        return listOf(command) + javaArguments + listOf("-jar", jar.toString())
+        // A debugger or agent of the running program is not given to a new one, which could not bind its port.
+        val settings = javaArguments.filterNot { arg -> AGENTS.any { arg.startsWith(it) } }
+        return listOf(command) + settings + listOf("-jar", jar.toString())
     }
 }
 

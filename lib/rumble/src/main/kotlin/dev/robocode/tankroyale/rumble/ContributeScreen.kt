@@ -53,7 +53,8 @@ data class ContributeChoices(
         battles?.let { add("--battles"); add(it.toString()) }
         ownerPid?.let { add("--owner-pid"); add(it.toString()) }
         add("--show"); add(show.option)
-        openCommand.forEach { add("--open-command"); add(it) }
+        // As one word each, so a part that starts with a dash is never read as an option of its own.
+        openCommand.forEach { add("--open-command=$it") }
     }
 
     companion object {

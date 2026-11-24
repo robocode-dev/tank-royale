@@ -65,6 +65,7 @@ internal class SessionDisplay(
     private var timer: Timer? = null
     private var menuShown: List<SessionMenuItem> = emptyList()
     private var last: SessionStatus? = null
+    private var filled: List<Any?>? = null
     private val closed = CountDownLatch(1)
 
     @Volatile
@@ -72,6 +73,8 @@ internal class SessionDisplay(
 
     /** Shows the session as chosen, or nothing where it cannot. Called once, when the session starts. */
     fun start() {
+        // A session that shows nothing never loads the windowing toolkit, so a terminal session stays a plain program.
+        if (show == SessionShow.NONE) return
         val trayOffered = !GraphicsEnvironment.isHeadless() && runCatching { SystemTray.isSupported() }.getOrDefault(false)
         val decided = SessionView.decide(show, GraphicsEnvironment.isHeadless(), trayOffered)
         if (decided == SessionShow.NONE) return
@@ -137,8 +140,9 @@ internal class SessionDisplay(
             addWindowListener(object : java.awt.event.WindowAdapter() {
                 override fun windowClosed(e: java.awt.event.WindowEvent) {
                     window = null
-                    // Closing the window of a session that ended closes all of it; while it runs, the tray stays.
-                    if (over || tray == null) close()
+                    // Closing the window of a session that ended closes all of it; while it runs, it is only hidden and
+                    // comes back at the end, so the end is never missed.
+                    if (over) close()
                 }
             })
         }.also { window = it }
@@ -156,6 +160,10 @@ internal class SessionDisplay(
 
     /** The window's content: where the session stands, the running battle, the counts, and the controls as buttons. */
     private fun fill(frame: JFrame, now: SessionStatus) {
+        // Rebuilt only when what it shows changed, so a click or the keyboard focus is never lost to a rebuild.
+        val shownNow = listOf(texts.headline(now), now.battle, now.notKept, now.results, SessionView.menu(now, open.offered))
+        if (shownNow == filled && frame.contentPane.componentCount > 0) return
+        filled = shownNow
         val lines = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
             border = BorderFactory.createEmptyBorder(12, 12, 6, 12)
@@ -190,6 +198,7 @@ internal class SessionDisplay(
         tray = null
         window?.dispose()
         window = null
+        filled = null
         closed.countDown()
     }
 

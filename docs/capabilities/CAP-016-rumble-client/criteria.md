@@ -1281,8 +1281,8 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given sessions running, paused, stopping, cancelling and ended, on a computer with a tray, without one, and without a screen
     When the session decides what to show and what its menu holds
-    Then it shows the tray only where the operating system has one, else its window, and nothing without a screen; the tip says where it stands with the battles kept and the limit; the menu holds Show status, pause or resume as it stands, stop and stop now while they apply, and Open Tank Royale only when the session has the command, and each control sends the session's own request
-    And a session that ended offers only Show status, Open Tank Royale where it can and Close, and its icon and window stay until the person closes them, so the end is not missed when the operating system does not show the notice
+    Then it shows the tray only where the operating system has one, else its window, and nothing without a screen; the tip says where it stands with the battles kept and the limit; the menu holds Show status, pause or resume as it stands, stop and stop now while they apply, and Open Tank Royale only when the session has the command, and each of pause, resume, stop and stop now names the session's own request
+    And a session that ended offers only Show status, Open Tank Royale where it can and Close
 
   @RCL-157
   Scenario: The session's small window follows the desktop program's theme and language, with every text in every language
@@ -1297,14 +1297,14 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Unit
     Given a session with the command that starts the desktop program, with and without a desktop program that follows the session
     When Open Tank Royale is chosen
-    Then the session asks through its session folder, a running desktop program takes the request and comes to the front with the Contribute battles screen, and nothing is started
-    And when no desktop program takes it within a few seconds the session takes the request back and starts Tank Royale with its command, only one of two desktop programs takes one request, and without a command Open Tank Royale is not offered
+    Then the session asks through its session folder, and when a desktop program takes the request nothing is started
+    And when no desktop program takes it within a few seconds the session takes the request back and starts Tank Royale with its command, only one taker can take one request, the command leaves out a debugger or agent of the running program and is passed as one word per part, and without a command Open Tank Royale is not offered
 
   @RCL-159
   Scenario: The maintainer sees a session in the tray and in its own window on Windows
     Test-type: Human
     Given the desktop program on Windows set to the development Rumble, in its dark theme
     When a session is started from Contribute battles in the tray, its window is opened, Open Tank Royale is used with the desktop program open and closed, and the battles end
-    Then the icon, its tip and its menu, the window with its controls, the desktop program coming to the front or being started, and the end shown until it is closed are seen
+    Then the icon, its tip and its menu, the window with its controls sending their requests, the desktop program coming to the front with the Contribute battles screen or being started, never a second one while one follows the session, and the end shown in the window, with the icon, until the person closes them, are seen
 
 ```
