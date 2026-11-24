@@ -179,14 +179,6 @@ Feature: rumble-battle-worker — Rumble battle worker
     When a maintainer reads the worker boundary
     Then it lists the ordinary ways that are closed (the environment, the home and temporary folders of every Java process, the user data folder, the command line and standard input) and says in the same place that a bot can still read a file by its full path, that the saved sign-in is only bound to its user name and home folder, and that only a container or a separate account closes the rest
 
-  @RBW-023
-  Scenario: The worker waits up to ninety seconds for a battle's bots to connect
-    Test-type: Unit
-    Given the runner the worker creates for a job
-    When its configuration is read
-    Then its bot connect limit SHALL be 90 seconds, far below the host's limit for a whole job
-    And the limit is only the longest a battle waits, because the battle starts as soon as the last bot has connected
-
   @RBW-024
   Scenario: The worker reports the starting bots with counts and times only
     Test-type: Unit

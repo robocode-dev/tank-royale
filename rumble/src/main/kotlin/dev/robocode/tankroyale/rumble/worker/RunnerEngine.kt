@@ -9,23 +9,15 @@ import dev.robocode.tankroyale.runner.BattleRunner
 import dev.robocode.tankroyale.runner.BattleSetup
 import dev.robocode.tankroyale.runner.BootProgress
 import dev.robocode.tankroyale.runner.BotEntry
-import java.time.Duration
 import java.util.function.Consumer
 
 /** Runs a job on the Battle Runner with an embedded server, requiring the job's engine pin. */
 object RunnerEngine : BattleEngine {
 
-    /**
-     * How long a battle waits for all its bots to connect. The Rumble's bots start from source, and a Java bot is
-     * compiled at every start, which takes 10 to 30 seconds when four start together on a slow computer; the runner's
-     * 30 seconds let a battle fail on one bot that was only slow. It stays far below the host's limit on a whole job.
-     */
-    internal val BOT_CONNECT_TIMEOUT: Duration = Duration.ofSeconds(90)
-
     /** A runner that refuses to run a battle on a server whose behavior version is not [behaviorVersion]. */
     internal fun createRunner(behaviorVersion: Int, booting: Consumer<BootProgress>? = null): BattleRunner =
         BattleRunner.create {
-            embeddedServer().requireBehaviorVersion(behaviorVersion).botConnectTimeout(BOT_CONNECT_TIMEOUT)
+            embeddedServer().requireBehaviorVersion(behaviorVersion)
             booting?.let { onBootProgress(it) }
         }
 

@@ -523,7 +523,7 @@
         },
         {
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
-          "sha256": "00e3b5d3d579137b039e94842080af762905e5e61462dc75a12d81ac49e1cb76"
+          "sha256": "c86a33daf38296b86f9dc6057858d441d77b184fecbcfc942e92aa486b736a23"
         }
       ],
       "references": [
@@ -1819,13 +1819,6 @@
           "id": "RBW-005",
           "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
           "subject": "WorkerTest.testRBW005_UnitPositive_theRunnerIsAskedToRequireExactlyTheJobsBehaviorVersion",
-          "type": "Unit",
-          "direction": "positive"
-        },
-        {
-          "id": "RBW-023",
-          "path": "rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/worker/WorkerTest.kt",
-          "subject": "WorkerTest.testRBW023_UnitPositive_aBattleWaitsLongerThanTheRunnersDefaultForSlowStartingBots",
           "type": "Unit",
           "direction": "positive"
         },

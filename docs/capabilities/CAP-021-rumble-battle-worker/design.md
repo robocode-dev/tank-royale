@@ -22,7 +22,7 @@ The behavior version is an integer owned by the server and reported in its hands
 
 ## The boundary
 
-The worker waits up to 90 seconds for all of a battle's bots to connect, not the runner's default of 30, because the Rumble's bots start from source and the time a start takes depends on the language and the computer: four bots took 10 to 30 seconds in a TwinDuel battle of the test Rumble on 2026-11-21, which let a battle fail on one bot that was only slow, while a TwinDuel battle with one Java and one Python team connected in under a second on the development computer on 2026-11-24, and C# bots are expected to take longer than Java; the host's limit on a whole job is far longer. The worker's dependencies are the runner and the message module. A build check and a source scan keep it that way. A separate process only helps if the host starts it without credentials in its environment, with no home folder and no container socket; that is the host's half and arrives with the host.
+The worker's dependencies are the runner and the message module. A build check and a source scan keep it that way. A separate process only helps if the host starts it without credentials in its environment, with no home folder and no container socket; that is the host's half and arrives with the host.
 
 ## The host
 

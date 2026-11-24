@@ -102,15 +102,6 @@ class WorkerTest {
         assertTrue(unexpected.events.none { it is WorkerEvent.Finished })
     }
 
-    @Test
-    @Tag("RBW-023")
-    @Tag("Unit")
-    @Tag("Positive")
-    fun testRBW023_UnitPositive_aBattleWaitsLongerThanTheRunnersDefaultForSlowStartingBots() {
-        RunnerEngine.createRunner(2).use { assertEquals(90_000L, it.config.botConnectTimeoutMs) }
-        assertTrue(RunnerEngine.BOT_CONNECT_TIMEOUT < java.time.Duration.ofMinutes(10))
-    }
-
     // RBW-005
 
     @Test
