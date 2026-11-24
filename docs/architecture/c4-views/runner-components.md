@@ -159,7 +159,7 @@ The Runner composes existing Tank Royale components (Server, Booter) rather than
   - Manages the Booter process for launching and stopping bot processes
   - Extracts bundled Booter JAR from classpath to temp file
   - Launches via `java -Dserver.url=<url> -Dserver.secret=<secret> -jar booter.jar boot <dirs...>`
-  - Parses stdout: `<pid>;<directory>` lines for booted bots, `stopped <pid>` / `lost <pid>` for status
+  - Parses stdout: `<pid>;<directory>` lines for booted bots, `stopped <pid>` / `lost <pid>` for status, and `exited <pid>` for a bot whose process ended by itself, which ends the wait for a bot that had not connected
   - Sends stdin commands: `boot <dir>`, `stop <pid>`, `quit`
   - Validates bot directories before passing to Booter
   - Bot path validation: checks `<dir-name>/<dir-name>.json` exists

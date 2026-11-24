@@ -211,6 +211,10 @@ class SessionRunner(
                             history = history.afterNotCompleted(step)
                             // A bot that did not connect in two battles in a row is left out for the rest of the session, with
                             // every team that holds it; the battle that left it out does not count toward giving up.
+                            // The bots of the battle that were not named connected, so their run of misses is over.
+                            if (result.reason == NotKeptReason.BOTS_DID_NOT_CONNECT) {
+                                battle.bots.map { SessionPlanner.key(it) }.filter { it !in result.notConnected }.forEach { missed.remove(it) }
+                            }
                             val leftOut = result.notConnected.filter { bot ->
                                 val times = (missed[bot] ?: 0) + 1
                                 missed[bot] = times

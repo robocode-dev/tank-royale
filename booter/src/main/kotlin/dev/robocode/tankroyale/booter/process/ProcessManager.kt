@@ -148,10 +148,8 @@ internal class ProcessManager(private val bootMaker: BotBooter = BotBooter()) {
         // A bot process that ends by itself, such as one whose build fails, is reported, so a caller waiting for it to
         // connect need not wait for its whole limit. One that this booter stops is reported as stopped instead.
         process.onExit().thenAccept {
-            if (pid !in stopping) {
-                processes.remove(pid)
-                println("exited $pid")
-            }
+            // The process stays known, so a later stop of it is answered with `stopped` as before.
+            if (pid !in stopping) println("exited $pid")
         }
     }
 

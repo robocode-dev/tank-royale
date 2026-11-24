@@ -536,6 +536,16 @@ class RumbleSessionRunnerTest {
         assertEquals(SessionEnd.Finished, once.end)
         assertTrue(once.events.none { it is SessionEvent.BotNotPlaced })
 
+        // Alpha misses a battle, connects in the next one, which fails because Gamma did not, and misses again: the battle
+        // it connected in ends its run of misses, so it is not left out.
+        val melee = listOf(bot("Alpha"), bot("Beta"), bot("Gamma"))
+        val between = session(
+            dir.resolve("between"), sourceFor("Alpha", "Beta", "Gamma"), command("noconnect:Alpha", "noconnect:Gamma", "noconnect:Alpha", "ok"),
+            { request(melee, formats = listOf("melee"), limit = 1) }, rounds = mapOf("melee" to 3),
+        )
+        assertEquals(SessionEnd.Finished, between.end)
+        assertTrue(between.events.none { it is SessionEvent.BotNotPlaced }, between.events.toString())
+
         // Left out in one session after two battles, Beta is chosen again by the next session, which starts afresh.
         val three = entries + bot("Gamma")
         val first = session(dir.resolve("first"), sourceFor("Alpha", "Beta", "Gamma"), command("noconnect:Beta"), { request(three, limit = 3) }, maxFailures = 5)
