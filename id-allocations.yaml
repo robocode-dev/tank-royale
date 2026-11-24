@@ -920,6 +920,11 @@ claims:
       state: reserved
       prefix: BR
       component: "52"
+    - id: BR-053
+      kind: numeric
+      state: reserved
+      prefix: BR
+      component: "53"
     - id: C-001
       kind: numeric
       state: reserved
@@ -4771,11 +4776,11 @@ high-water:
       state: reserved
       prefix: CAP
       component: "24"
-    - id: CH-114
+    - id: CH-115
       kind: numeric
       state: reserved
       prefix: CH
-      component: "114"
+      component: "115"
     - id: G-004
       kind: numeric
       state: reserved
