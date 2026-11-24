@@ -2495,6 +2495,11 @@ claims:
       state: reserved
       prefix: RBW
       component: "23"
+    - id: RBW-024
+      kind: numeric
+      state: reserved
+      prefix: RBW
+      component: "24"
     - id: RCI-001
       kind: numeric
       state: reserved
@@ -4816,11 +4821,11 @@ high-water:
       state: reserved
       prefix: RBC
       component: "38"
-    - id: RBW-022
+    - id: RBW-023
       kind: numeric
       state: reserved
       prefix: RBW
-      component: "22"
+      component: "23"
     - id: RCI-058
       kind: numeric
       state: reserved
