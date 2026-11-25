@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+Tank Royale Rumble, the community-run ranked competition for Tank Royale bots, is now built into the GUI as a public Beta. A new **Rumble** menu lets you get started, submit and update your bots, download other people's bots to practise against, contribute battles from your own computer, and follow the rankings and your results. Everything is still in Beta, so please try it and tell us what works and what does not through the [Rumble feedback form](https://github.com/robocode-dev/tank-royale/issues/new?template=rumble_feedback.yml).
+
 ### ✨ Features
 
 - Battle Runner: A runner can be given a boot progress listener, `onBootProgress`, which is called while each battle starts with how many of the expected bots have connected, how many are missing, how long the runner has waited and its connect limit. Until now only the handle of a battle that had already started had this, so a caller of the synchronous `runBattle` could not see the bots start.
