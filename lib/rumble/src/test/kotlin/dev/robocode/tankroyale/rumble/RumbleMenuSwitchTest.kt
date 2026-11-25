@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.rumble
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
@@ -42,7 +43,10 @@ class RumbleMenuSwitchTest {
         for (source in listOf(menu, contribute)) {
             assertFalse(source.contains("RUMBLE_MENU") || source.contains("rumble.menu") || source.contains("menuShown"))
         }
+        // At start the program follows a session only where one has run, so a person who never used the Rumble gets nothing.
+        assertFalse(SessionLook.None.worthFollowing)
+        assertTrue(SessionLook.Running(null).worthFollowing)
         val startUp = contribute.substringAfter("fun startUp()").substringBefore("fun open()")
-        assertFalse(startUp.contains("return\n        val choice") && startUp.contains("if (!"), "the lookup at start is not guarded by a switch")
+        assertTrue(startUp.contains("worthFollowing") && startUp.indexOf("look()") < startUp.indexOf("controllerFor"), "the controller is made only after the look")
     }
 }

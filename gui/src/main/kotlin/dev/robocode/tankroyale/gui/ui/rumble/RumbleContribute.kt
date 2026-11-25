@@ -48,10 +48,18 @@ object RumbleContribute {
 
     private fun text(key: String, vararg arguments: Any): String = String.format(Messages.get(key), *arguments)
 
-    /** Looks for a session when the program starts. Never waits for anything. */
+    /**
+     * Looks for a session when the program starts, and follows it only when there is one, running or ended, so a person who
+     * never used the Rumble gets no network request and no timer. Never waits for anything: the look is a small file read
+     * away from the event thread.
+     */
     fun startUp() {
         val choice = RumbleMenuSwitch.environment(System.getenv(RumbleMenuSwitch.ENVIRONMENT_VARIABLE)) as? EnvironmentChoice.Chosen ?: return
-        controllerFor(choice.environment).start()
+        val folder = SessionFolder.of(choice.environment, UserDataDirectory.get().toPath())
+        Thread({
+            val found = runCatching { folder.look() }.getOrNull() ?: return@Thread
+            if (found.worthFollowing) SwingUtilities.invokeLater { controllerFor(choice.environment).start() }
+        }, "rumble-session-startup").apply { isDaemon = true }.start()
     }
 
     /** Opens the Contribute battles screen. */

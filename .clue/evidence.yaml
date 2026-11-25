@@ -2172,7 +2172,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
-          "sha256": "82823ae9bd35a0fd5bcfcc1a740da9f69eff615b1bafbbbbbce981dc9417b5a4"
+          "sha256": "353ebc573ae904ac55f18c27d1c444bb24f76288e9a300e23cf0f5e78bf35232"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
