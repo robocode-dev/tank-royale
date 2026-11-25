@@ -1525,6 +1525,11 @@ claims:
       state: reserved
       prefix: CH
       component: "117"
+    - id: CH-118
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "118"
     - id: G-001
       kind: numeric
       state: reserved
@@ -4916,11 +4921,11 @@ high-water:
       state: reserved
       prefix: RCI
       component: "58"
-    - id: RCL-168
+    - id: RCL-169
       kind: numeric
       state: reserved
       prefix: RCL
-      component: "168"
+      component: "169"
     - id: RCV-002
       kind: numeric
       state: reserved
