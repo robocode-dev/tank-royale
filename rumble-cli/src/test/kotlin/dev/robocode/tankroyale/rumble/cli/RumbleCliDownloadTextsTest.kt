@@ -143,8 +143,10 @@ class RumbleCliDownloadTextsTest {
 
         assertEquals(1, menu.split("item.rumble_download").size - 1)
         assertTrue(rumbleMenu.contains("item.rumble_download"))
-        assertTrue(!rumbleMenu.contains("menuShown") && !rumbleMenu.contains("return"), "no switch hides the menu")
-        assertTrue(menu.substringBefore("private fun setupRumbleMenu()").contains("setupRumbleMenu()"), "the menu bar always builds it")
+        assertTrue(listOf("menuShown", "RUMBLE_MENU", "rumble.menu").none { menu.contains(it) }, "no switch hides the menu")
+        // The menu bar's setup calls it in code, not only in a comment.
+        val setup = menu.substringBefore("private fun setupRumbleMenu()").lines().map { it.substringBefore("//").trim() }
+        assertTrue(setup.any { it == "setupRumbleMenu()" }, "the menu bar always builds it")
         val dialog = code(dialogFile)
         assertTrue(dialog.contains("environment.displayName") && dialog.contains("title = text(\"rumble.download.title\", title, environmentName)"))
     }

@@ -463,7 +463,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "9097812104a77e248baf97b4523d27cb4bddec9af12823322f1be92a2ebb8930"
+          "sha256": "aa7c71c5fda20197ad0a48e7960cbe3185b6380523d4bc18f2fadcdb8f181efe"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -2172,7 +2172,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
-          "sha256": "353ebc573ae904ac55f18c27d1c444bb24f76288e9a300e23cf0f5e78bf35232"
+          "sha256": "a0330b06960aa4754bdd4efd7362511c3cffb0167a9ee7d6c00faf2f7aeca8cf"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",

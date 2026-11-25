@@ -46,7 +46,10 @@ class RumbleMenuSwitchTest {
         // At start the program follows a session only where one has run, so a person who never used the Rumble gets nothing.
         assertFalse(SessionLook.None.worthFollowing)
         assertTrue(SessionLook.Running(null).worthFollowing)
-        val startUp = contribute.substringAfter("fun startUp()").substringBefore("fun open()")
-        assertTrue(startUp.contains("worthFollowing") && startUp.indexOf("look()") < startUp.indexOf("controllerFor"), "the controller is made only after the look")
+        val startUp = contribute.substringAfter("fun startUp()").substringBefore("private fun watch(")
+        val look = startUp.indexOf("folder.look()")
+        val follow = startUp.indexOf("controllerFor(")
+        assertTrue(look >= 0 && follow >= 0 && look < follow && startUp.contains("worthFollowing"), "the controller is made only after the look")
+        assertTrue(startUp.contains("else watch("), "without a session the program still watches the folder")
     }
 }

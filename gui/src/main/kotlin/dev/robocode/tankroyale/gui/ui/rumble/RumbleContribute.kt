@@ -36,8 +36,9 @@ import javax.swing.UIManager
  * The desktop program's side of a contribution session: one [ContributeController] for the whole program, which the
  * Contribute battles screen shows and which keeps following a session while the screen is closed. It looks for a
  * running session, or one that ended while the program was closed, when the program starts; while the screen is closed
- * it gives a short notice when a session's battles are done; and it asks what to do with the session when the program closes. Everything here runs
- * on the event thread.
+ * it gives a short notice when a session's battles are done; and it asks what to do with the session when the program closes. Its state, such as the
+ * controller and the watch, is read and changed only on the event thread; looks into the session folder run on
+ * background threads and hand their answer back to the event thread.
  */
 object RumbleContribute {
     private var environment: RumbleEnvironment? = null
@@ -58,15 +59,19 @@ object RumbleContribute {
         val choice = RumbleMenuSwitch.environment(System.getenv(RumbleMenuSwitch.ENVIRONMENT_VARIABLE)) as? EnvironmentChoice.Chosen ?: return
         val folder = SessionFolder.of(choice.environment, UserDataDirectory.get().toPath())
         Thread({
-            val found = runCatching { folder.look() }.getOrNull() ?: return@Thread
+            // A look that fails is taken as no session found: the program still watches, and so finds one later.
+            val found = runCatching { folder.look() }.getOrNull()
             SwingUtilities.invokeLater {
-                if (found.worthFollowing) controllerFor(choice.environment).start() else watch(choice.environment, folder)
+                if (found?.worthFollowing == true) controllerFor(choice.environment).start() else watch(choice.environment, folder)
             }
         }, "rumble-session-startup").apply { isDaemon = true }.start()
     }
 
     /** The light watch of a program that follows no session yet; it stops when the program follows one. */
     private var watcher: Timer? = null
+
+    /** True while a look of the watch is on its way, so a slow folder never piles looks up. */
+    private var watchLooking = false
 
     private fun watch(environment: RumbleEnvironment, folder: SessionFolder) {
         if (controller != null || watcher != null) return
@@ -83,10 +88,18 @@ object RumbleContribute {
                 return@Timer
             }
             // A session another program started is followed, so its end is noticed here too.
-            if (++ticks % LOOK_EVERY == 0) {
+            if (++ticks % LOOK_EVERY == 0 && !watchLooking) {
+                watchLooking = true
                 Thread({
-                    if (runCatching { folder.look() }.getOrNull()?.worthFollowing == true) {
-                        SwingUtilities.invokeLater { if (controller == null) { stopWatching(); controllerFor(environment).start() } }
+                    val found = runCatching { folder.look() }.getOrNull()?.worthFollowing == true
+                    SwingUtilities.invokeLater {
+                        watchLooking = false
+                        if (found && controller == null) {
+                            stopWatching()
+                            // Found while the program runs, not at its start: the start's notice does not apply.
+                            firstLook = false
+                            controllerFor(environment).start()
+                        }
                     }
                 }, "rumble-session-watch").apply { isDaemon = true }.start()
             }
@@ -171,10 +184,14 @@ object RumbleContribute {
         controller = made
         made.setShow(SessionShow.of(ConfigSettings.rumbleSessionShow) ?: SessionShow.TRAY)
         val folder = SessionFolder.of(environment, userData)
-        // The session is followed every second while one runs or the screen is open; a look is a small file read.
+        // The session is followed every second while one runs or the screen is open; a look is a small file read. With
+        // the screen closed and no session running, a session another program starts is looked for every few seconds.
+        var ticks = 0
         timer = Timer(1000) {
             val state = made.state
+            ticks++
             if (dialog?.isVisible == true || state is ContributeState.Running || state is ContributeState.Starting) made.refresh()
+            else if (state is ContributeState.Choosing && ticks % LOOK_EVERY == 0) made.refresh()
             // The session's Open Tank Royale: the program that takes the request comes to the front with the screen.
             if (folder.takeDesktopRequest()) comeToFront()
         }.apply { start() }
