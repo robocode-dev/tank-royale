@@ -360,7 +360,7 @@ class ContributeController(
     private fun control(request: SessionControlRequest) = post.execute {
         val running = state as? ContributeState.Running ?: return@execute
         show(running.copy(asked = request))
-        work({ port.ask(request) }) { asked -> if (!asked) refresh() }
+        work({ port.ask(request) }, isLook = false) { asked -> if (!asked) refresh() }
     }
 
     private fun launch(choosing: ContributeState.Choosing, jar: Path, keepOnClose: Boolean) {
@@ -431,13 +431,15 @@ class ContributeController(
      * Runs [call] on [background] and its result on [post]. Whatever a call throws ends as a problem shown on the
      * screen, so the screen never waits for an answer that will not come.
      */
-    private fun <T> work(call: () -> T, then: (T) -> Unit) {
+    /** Runs [call] away from the screen's thread and hands its result to [then]; [isLook] is true for work that set [looking]. */
+    private fun <T> work(call: () -> T, isLook: Boolean = true, then: (T) -> Unit) {
         background.execute {
             val result = attempt(call)
             post.execute {
                 result.fold(then) { failure ->
-                    val wasLooking = looking
-                    looking = false
+                    val wasLooking = looking && isLook
+                    // Only the work that began a look ends it, so a failed request never lets a second look start.
+                    if (isLook) looking = false
                     val details = failure.message.orEmpty()
                     when (val now = state) {
                         // A look that failed is tried again at the next refresh, unless it was the first.

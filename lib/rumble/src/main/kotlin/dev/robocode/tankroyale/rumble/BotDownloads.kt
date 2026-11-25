@@ -122,7 +122,13 @@ object BotDownloads {
     ): List<DownloadResult> = synchronized(this) {
         Files.createDirectories(target)
         val results = HashMap<String, DownloadResult>()
-        val wanted = bots.filter { bot ->
+        // Two active bots whose folders have the same name would share one folder here: neither is placed, so one is
+        // never taken for the other. The Rumble binds a name to one owner, so this is a guard, not a usual case.
+        val activeByFolder = catalog.activeBots.groupBy { folderName(it) }
+        val clashing = bots.filter { (activeByFolder[folderName(it)]?.size ?: 0) > 1 }
+        // The detail is the folder both would use; the screen's own text says that the bot was not placed.
+        clashing.forEach { results[it.path] = DownloadResult.NotPlaced(it, folderName(it)) }
+        val wanted = (bots - clashing.toSet()).filter { bot ->
             val stays = try {
                 leftAsItIs(bot, catalog, replaceChanged, target)
             } catch (e: IOException) {
@@ -242,18 +248,8 @@ object BotDownloads {
      * Those files are never read: the bot repository refuses them in a bot's source, so they cannot be part of the
      * checksum, and a folder full of build output costs no memory.
      */
-    private fun unchanged(folder: Path, known: CatalogBot): Boolean {
-        val found = files(folder).map { folder.relativize(it).joinToString("/") to it }
-            .filter { (path, _) -> path != MARKER && !leftByRunning(path) }
-            .associate { (path, file) -> path to Files.readAllBytes(file) }
-        return TreeHash.of(found) == known.sourceHash
-    }
-
-    /** The folders and file endings the bot repository never accepts, so they cannot be part of a bot's source. */
-    private fun leftByRunning(path: String): Boolean {
-        val rules = ValidationRules.current
-        return path.split('/').dropLast(1).any { it in rules.forbiddenDirectories } || rules.forbiddenSuffixes.any { path.endsWith(it) }
-    }
+    private fun unchanged(folder: Path, known: CatalogBot): Boolean =
+        BotSourceHash.of(folder) { it == MARKER } == known.sourceHash
 
     private fun markedFolders(target: Path): List<Path> {
         if (!Files.isDirectory(target)) return emptyList()

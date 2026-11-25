@@ -145,7 +145,8 @@ class WorkerHost(
         }
 
         val deadline = System.nanoTime() + limits.totalTime.toNanos()
-        val descendants = mutableListOf<ProcessHandle>()
+        // Every process the worker started, once each, kept so they can be stopped even after they are no longer its children.
+        val descendants = DescendantSet()
         while (reader.isAlive) {
             descendants.addAll(descendantsOf(process))
             if (cancel()) {
@@ -283,7 +284,7 @@ class WorkerHost(
     }
 
     /** Stops the worker and every process it started, the ones seen while it ran and the ones alive now. */
-    private fun stopTree(process: Process, seen: List<ProcessHandle>) {
+    private fun stopTree(process: Process, seen: Collection<ProcessHandle>) {
         val all = (seen + descendantsOf(process)).distinctBy { it.pid() }
         all.forEach { it.destroyForcibly() }
         process.destroyForcibly()
@@ -293,4 +294,15 @@ class WorkerHost(
 
     private fun descendantsOf(process: Process): List<ProcessHandle> =
         process.descendants().collect(java.util.stream.Collectors.toList())
+}
+
+/** The processes a worker started, each kept once by its process ID, in the order they were first seen. */
+internal class DescendantSet : AbstractCollection<ProcessHandle>() {
+    private val byPid = LinkedHashMap<Long, ProcessHandle>()
+
+    fun addAll(handles: Collection<ProcessHandle>) = handles.forEach { byPid.putIfAbsent(it.pid(), it) }
+
+    override val size: Int get() = byPid.size
+
+    override fun iterator(): Iterator<ProcessHandle> = byPid.values.iterator()
 }

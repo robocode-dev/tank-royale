@@ -82,11 +82,7 @@ object RumbleContribute {
                 return@Timer
             }
             // A session's Open Tank Royale: this program comes to the front with the screen, as a following one does.
-            if (folder.takeDesktopRequest()) {
-                stopWatching()
-                comeToFront()
-                return@Timer
-            }
+            takeRequest(folder) { stopWatching() }
             // A session another program started is followed, so its end is noticed here too.
             if (++ticks % LOOK_EVERY == 0 && !watchLooking) {
                 watchLooking = true
@@ -193,9 +189,31 @@ object RumbleContribute {
             if (dialog?.isVisible == true || state is ContributeState.Running || state is ContributeState.Starting) made.refresh()
             else if (state is ContributeState.Choosing && ticks % LOOK_EVERY == 0) made.refresh()
             // The session's Open Tank Royale: the program that takes the request comes to the front with the screen.
-            if (folder.takeDesktopRequest()) comeToFront()
+            takeRequest(folder)
         }.apply { start() }
         return made
+    }
+
+    /** True while a look for a session's request to come to the front is on its way, so a slow folder never piles looks up. */
+    private var requestLooking = false
+
+    /**
+     * Takes a session's request to come to the front, away from the event thread, since the session folder may be on a
+     * slow disk; when this program takes it, [first] runs and the program comes to the front, both on the event thread.
+     */
+    private fun takeRequest(folder: SessionFolder, first: () -> Unit = {}) {
+        if (requestLooking) return
+        requestLooking = true
+        Thread({
+            val taken = runCatching { folder.takeDesktopRequest() }.getOrDefault(false)
+            SwingUtilities.invokeLater {
+                requestLooking = false
+                if (taken) {
+                    first()
+                    comeToFront()
+                }
+            }
+        }, "rumble-desktop-request").apply { isDaemon = true }.start()
     }
 
     /** Brings the main window to the front, also from the taskbar, and shows the Contribute battles screen. */

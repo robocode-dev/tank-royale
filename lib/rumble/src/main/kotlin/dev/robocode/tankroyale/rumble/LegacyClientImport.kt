@@ -413,7 +413,8 @@ class LegacyClientImport(
         const val RECORD_FILE = "import-record.json"
         const val PREFERENCES_FILE = "preferences.json"
         const val FILES_FOLDER = "files"
-        private const val PART_SUFFIX = ".part"
+        /** The suffix of the import's own temporary files, which no file it copies can end in by chance. */
+        private const val PART_SUFFIX = ".rumble-import-part"
         private const val BUFFER = 64 * 1024
         private const val PLACEHOLDER_CLIENT_ID = "replace-with-registered-client-id"
         private val COPIED_FOLDERS = setOf("journal", "evidence")

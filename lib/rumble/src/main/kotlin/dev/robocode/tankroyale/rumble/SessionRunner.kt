@@ -164,7 +164,11 @@ class SessionRunner(
             if (control.stopRequested) return SessionEnd.Stopped
             if (control.paused) {
                 onEvent(SessionEvent.Paused)
-                while (control.paused) setup.sleep(setup.pollMillis)
+                // What waits is still sent and its receipts read while the session is paused.
+                while (control.paused) {
+                    betweenBattles()?.let { return it }
+                    setup.sleep(setup.pollMillis)
+                }
                 // A pause ended by cancel-now or finish-and-stop ends the session without a resumption.
                 if (!control.cancelRequested && !control.stopRequested) onEvent(SessionEvent.Resumed)
                 continue
@@ -290,7 +294,8 @@ class SessionRunner(
         val missing = mutableListOf<Spot>()
         for (spot in spots) {
             val matches = try {
-                Files.isDirectory(spot.folder) && TreeHash.ofDirectory(spot.folder) == spot.bot.sourceHash
+                // What a battle left in the folder, such as a build's output, is not part of the bot's source.
+                Files.isDirectory(spot.folder) && BotSourceHash.of(spot.folder) == spot.bot.sourceHash
             } catch (e: IOException) {
                 false
             } catch (e: java.io.UncheckedIOException) {

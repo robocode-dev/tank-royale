@@ -222,7 +222,7 @@ class RumbleLegacyImportTest {
         listOf("evidence/1v1/b1/replay.json.gz", "journal/records.jsonl", "journal/acknowledgements.jsonl", "journal/quarantine.jsonl", "journal/submissions.jsonl").forEach { path ->
             assertArrayEquals(Files.readAllBytes(old.work.resolve(path)), Files.readAllBytes(target.resolve("files").resolve(path)), path)
         }
-        assertTrue(snapshot(target).keys.none { it.endsWith(".part") })
+        assertTrue(snapshot(target).keys.none { it.endsWith(".rumble-import-part") })
         assertFalse(Files.exists(target.resolve("files/cache")), "The bot cache is not copied")
     }
 
@@ -240,7 +240,7 @@ class RumbleLegacyImportTest {
         assertInstanceOf(LegacyImportResult.Incomplete::class.java, result)
         val target = LegacyClientImport.targetOf(RumbleEnvironments.PUBLIC, state)
         assertFalse(Files.exists(target.resolve("files/journal/records.jsonl")))
-        assertTrue(snapshot(target).keys.none { it.endsWith(".part") })
+        assertTrue(snapshot(target).keys.none { it.endsWith(".rumble-import-part") })
         assertFalse(Files.exists(target.resolve("import-record.json")))
     }
 
@@ -334,12 +334,12 @@ class RumbleLegacyImportTest {
         assertInstanceOf(LegacyImportResult.Failed::class.java, interrupted)
         val target = LegacyClientImport.targetOf(RumbleEnvironments.PUBLIC, state)
         assertFalse(Files.exists(target.resolve("import-record.json")))
-        assertTrue(snapshot(target).keys.any { it.endsWith(".part") }, "The crash must leave a temporary file for this test to mean anything")
+        assertTrue(snapshot(target).keys.any { it.endsWith(".rumble-import-part") }, "The crash must leave a temporary file for this test to mean anything")
 
         val resumed = importer(state).import(old.config) as LegacyImportResult.Imported
         assertEquals(2, resumed.alreadyCopied)
         assertEquals(3, resumed.copied)
-        assertTrue(snapshot(target).keys.none { it.endsWith(".part") })
+        assertTrue(snapshot(target).keys.none { it.endsWith(".rumble-import-part") })
         assertTrue(Files.exists(target.resolve("import-record.json")))
 
         val third = importer(state).import(old.config) as LegacyImportResult.Imported

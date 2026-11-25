@@ -58,7 +58,7 @@ CLASS_CASES = [
     (re.compile(r"^RumbleLegacyImportTest$"), "legacy-client-import"),
     (re.compile(r"^RumbleSessionPlannerTest$"), "session-planning"),
     (re.compile(r"^RumbleRankedJournalTest$"), "ranked-journal"),
-    (re.compile(r"^RumbleSessionRunnerTest$"), "session-running"),
+    (re.compile(r"^(RumbleSessionRunnerTest|RumbleCleanupTest)$"), "session-running"),
     (re.compile(r"^RumbleSessionPinTest$"), "session-pin"),
     (re.compile(r"^RumbleResultUploadTest$"), "result-upload"),
     (re.compile(r"^RumbleSessionPythonTest$"), "session-python"),
