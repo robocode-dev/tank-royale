@@ -123,6 +123,13 @@ data class SessionStatus(
 
 /** What a look into the session folder finds. */
 sealed interface SessionLook {
+    /**
+     * Whether a desktop program that starts should follow what it found: a session that runs, or the summary of one that
+     * ended. A computer on which no session has run leaves the program alone, so it reads nothing over the network and
+     * starts no timer for a person who never uses the Rumble.
+     */
+    val worthFollowing: Boolean get() = this !is None
+
     /** No session has run in this environment, or its traces are gone. */
     data object None : SessionLook
 

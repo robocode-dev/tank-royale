@@ -105,6 +105,41 @@ The first build downloads Gradle and all dependencies automatically.
 
 `./gradlew rumbleFixtureCheck` runs the offline checks of the Rumble modules (`lib:rumble-protocol`, `rumble`, `lib:rumble` and `lib:bot-project`) and the Python checks in `scripts/rumble`, groups them into named cases, and writes two files below `build/rumble-fixture/`: `result.json`, which a program can read, and `report.md`, which a person can read. Both have tokens, the home folder, the user name and absolute paths removed automatically. The command needs no network, never runs a live check, writes nothing outside the build folder, and refuses to start when `-Drumble.live=true` is given. It collects every failure before it fails, and a case that ran no checks counts as failed. A green run says nothing about the sign-in App on a real fork, public installation permissions or a real account; the report says so every time. Python 3 must be on the path (`python` on Windows, `python3` elsewhere).
 
+### Settings for development
+
+These environment variables and Java system properties change how the programs behave while you develop and test them. A released program needs none of them.
+
+| Setting | Read by | What it does |
+|---|---|---|
+| `RUMBLE_ENVIRONMENT` (variable) | the desktop program and the `rumble` command line | Names the Rumble to use: `public` (the default when it is not set) or `test`, the development Rumble. The command line's `-e` option overrides it. An unknown name is reported, never replaced. Use `test` for every trial that signs in, submits a bot or sends results. |
+| `rumble.jar` (system property) | the desktop program | The full path of a locally built session program (`rumble-cli/build/libs/robocode-tankroyale-rumble-cli-<version>.jar`, from `./gradlew :rumble-cli:fatJar`). The desktop program then uses that jar for contribution sessions and fetches nothing. Without it, the desktop program fetches the released session program of its own version. |
+| `ROBOCODE_DEBUG` (variable) | the Bot APIs (Java, .NET, Python, TypeScript) | `true` or `false` overrides whether a bot tells the server in its handshake that a debugger is attached. The server takes it as information only. Without it the Bot API detects a debugger itself. |
+| `ROBOCODE_TURN_TIMING_DIAGNOSTICS` (variable) | bots started by the Battle Runner | Set to `true` by the Battle Runner for the bots it starts when its turn timing diagnostics are on; the team message stress sample bots read it. |
+| `rumble.live` (system property) | `./gradlew :lib:rumble:test` and `./gradlew rumbleFixtureCheck` | `-Drumble.live=true` runs the Rumble library's live test, which reads the public Rumble, and `-Drumble.live.send=true` sends one real result batch to the test Rumble with your saved sign-in; the fixture check refuses to start with it, because it never runs a live check. |
+| `winConsole` (Gradle property) | `./gradlew :gui:jpackageWin` | `-PwinConsole=true` builds a Windows installer whose program opens a console window, for diagnostics. |
+
+The Rumble's bot launchers, in the bot repository, read their own variables: `RUMBLE_PYTHON` names the Python to run a Python bot with, and a session and the booter set it to the Python environment they prepare; `RUMBLE_JAVA_CACHE` and `RUMBLE_NODE_CACHE` name the folders where the Java and TypeScript launchers keep the Bot API and the packages they fetch, in the temporary folder by default.
+
+Examples:
+
+```bash
+# The desktop program from a local build, against the development Rumble, with a locally built session program
+RUMBLE_ENVIRONMENT=test java -Drumble.jar="$PWD/rumble-cli/build/libs/robocode-tankroyale-rumble-cli-1.4.0.jar" \
+  -jar gui/build/libs/robocode-tankroyale-gui-1.4.0-all.jar
+
+# The command line against the development Rumble
+java -jar rumble-cli/build/libs/robocode-tankroyale-rumble-cli-1.4.0.jar session status -e test
+```
+
+```bat
+rem An installed desktop program on Windows: its launcher takes Java settings through JAVA_TOOL_OPTIONS
+set RUMBLE_ENVIRONMENT=test
+set JAVA_TOOL_OPTIONS=-Drumble.jar=C:\path\to\robocode-tankroyale-rumble-cli-1.4.0.jar
+"C:\Program Files\robocode-tank-royale-gui\robocode-tank-royale-gui.exe"
+```
+
+The Rumble menu is always shown; the earlier developer switch `RUMBLE_MENU` (and `rumble.menu`) is no longer read.
+
 ---
 
 ## Agent-assisted development

@@ -463,7 +463,7 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it gives the same results as the command line's commands would, with the account and client ID, and each failure as the plain message of the library
     And the sign-in and registration it saves are the same files the command line reads
 
-  @RCL-055
+  @RCL-055 @retired
   Scenario: The Rumble menu is shown only when a developer switches it on, and the environment follows the command line's rule
     Test-type: Unit
     Given the switch property or variable set to a true word, to another word and not set, and the variable naming an environment, an unknown name and nothing
@@ -673,7 +673,7 @@ Feature: rumble-client — Local ranked and practice battle client
     And every license in the Rumble's allowed list has an explanation and both links, so a newly allowed license without them fails a test, and the fuller explanation opens in the screen's language where that page exists and in English otherwise
     And the dialog opens a page in the browser from one place only, after checking that the address is one of the library's fixed license addresses, and the warning that downloaded bots are other people's code and not made safe by review is on the screen that offers the download
 
-  @RCL-081
+  @RCL-081 @retired
   Scenario: The Download bots item is in the Rumble menu and is shown only when the Rumble menu is switched on
     Test-type: Unit
     Given the Rumble menu switch off and on
@@ -1367,4 +1367,18 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the Java runtime the Windows installer ships
     When the session program runs a session on it with no Java on the path, and again with Java on the path
     Then the first leaves the Java bots out, says why, and keeps and sends a battle of other bots, the second keeps and sends battles of a Java bot, and the Contribute screen's own Java settings can be read on that runtime
+
+  @RCL-168
+  Scenario: The desktop program always shows the Rumble menu and looks for a session at start, and the environment follows the command line's rule
+    Test-type: Unit
+    Given the desktop program with no switch set, and the variable `RUMBLE_ENVIRONMENT` naming an environment, an unknown name and nothing
+    When the menu bar is built, the program starts and the environment is worked out
+    Then the Rumble menu is shown and a contribution session is looked for at start with no switch read, the environment is the named one, the public Rumble when none is named, and an unknown name is reported as unknown and never replaced silently
+
+  @RCL-169
+  Scenario: The Download bots item is in the Rumble menu, which is always shown
+    Test-type: Unit
+    Given the desktop program's menu bar
+    When it is built
+    Then the Download bots item is in the Rumble menu only, the menu is built with no switch, the menu holds only items of built screens, and the dialog's title shows the environment it talks to
 ```
