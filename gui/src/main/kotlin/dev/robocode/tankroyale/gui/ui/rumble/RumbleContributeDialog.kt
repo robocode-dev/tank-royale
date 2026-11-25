@@ -269,6 +269,10 @@ class RumbleContributeDialog(environmentName: String, private val controller: Co
                 }
             } ?: run { battleStartedAt = null }
             tiles(status)
+            // The platforms whose bots this computer cannot run, found before the first battle.
+            status.platforms.forEach { platform ->
+                put(wrapped(text(ContributeTexts.forPlatform(platform.reason), ContributeTexts.platformName(platform.platform), platform.needed ?: "?", platform.found ?: "?")))
+            }
             // The bots left out for the rest of the session, and why, so a missing bot is never a mystery.
             if (status.leftOut.isNotEmpty()) {
                 put(wrapped(text("rumble.contribute.left_out_heading", status.leftOut.joinToString("; ") { "${it.bot} (${text(ContributeTexts.forLeftOut(it.reason))})" })))

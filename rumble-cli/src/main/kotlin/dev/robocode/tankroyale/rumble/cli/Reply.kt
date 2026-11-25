@@ -127,6 +127,8 @@ class Services(
     val interrupts: (() -> Unit) -> AutoCloseable = ::onInterrupt,
     /** The seed of a session's choices among equals. */
     val seed: () -> Long = { System.nanoTime() },
+    /** Finds a program on the path as a bot's launcher does, giving its full path, or null when it is not there. */
+    val locate: (String) -> String? = { dev.robocode.tankroyale.rumble.PlatformChecker.onPath(it, dev.robocode.tankroyale.common.util.Platform.isWindows) },
     /** Runs the tools a session needs on this computer, such as Python and pip. */
     val tools: ToolRunner = ProcessToolRunner(),
     /** The Rumble's list of supported runtime versions. */

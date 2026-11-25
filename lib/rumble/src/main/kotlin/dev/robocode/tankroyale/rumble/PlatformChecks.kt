@@ -171,14 +171,24 @@ object PythonEnvironment {
  * Asks the tools of each platform for their version and compares it with the Rumble's list. Checking only asks: it
  * installs or changes nothing. Every call may take seconds and is never made on the screen's thread.
  */
-class PlatformChecker(private val runner: ToolRunner, private val windows: Boolean = Platform.isWindows) {
+class PlatformChecker(
+    private val runner: ToolRunner,
+    private val windows: Boolean = Platform.isWindows,
+    /**
+     * Finds a program on the path, as a bot's launcher finds it, and gives the path to run, or null when it is not there.
+     * Windows starts a program by its bare name from the starting program's own folder first, so the desktop program's
+     * own Java would answer for a Java that is not on the path; the program found here is run by its full path instead.
+     */
+    private val locate: (String) -> String? = { name -> onPath(name, windows) },
+) {
 
     /** [versions] is null when the Rumble's list could not be read; then a platform passes when its tool is there. */
     fun check(platforms: Collection<BotPlatform>, versions: SupportedVersions?, downloadFolder: Path): Map<BotPlatform, PlatformCheck> =
         platforms.distinct().associateWith { platform ->
             val needed = versions?.neededFor(platform)
             when (platform) {
-                BotPlatform.JVM -> major(platform, needed, listOf("java", "-version"), JAVA)
+                BotPlatform.JVM -> locate("java")?.let { major(platform, needed, listOf(it, "-version"), JAVA) }
+                    ?: PlatformCheck(platform, PlatformReason.MISSING, needed, null)
                 BotPlatform.CSHARP -> dotnet(needed)
                 BotPlatform.TYPESCRIPT -> node(needed)
                 BotPlatform.PYTHON -> python(needed, downloadFolder)
@@ -229,6 +239,15 @@ class PlatformChecker(private val runner: ToolRunner, private val windows: Boole
     }
 
     companion object {
+        /** The full path of [name] in the folders of the path, with `.exe` on Windows, or null when no folder holds it. */
+        fun onPath(name: String, windows: Boolean, path: String? = System.getenv("PATH")): String? =
+            path.orEmpty().split(java.io.File.pathSeparatorChar)
+                .map { it.trim().trim('"').trim() }.filter { it.isNotEmpty() }
+                // A folder the path names but this system cannot read as a path, such as one with a stray character, is skipped.
+                .mapNotNull { runCatching { Path.of(it).resolve(if (windows) "$name.exe" else name) }.getOrNull() }
+                .firstOrNull { Files.isRegularFile(it) && (windows || Files.isExecutable(it)) }
+                ?.toString()
+
         private val TIMEOUT: Duration = Duration.ofSeconds(20)
         private val JAVA = Regex("""version "(?:1\.)?(\d+)(?:\.(\d+))?""")
         private val NODE = Regex("""v(\d+)\.(\d+)""")

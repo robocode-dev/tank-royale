@@ -1345,4 +1345,26 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the Battle Runner with the real booter, a bot that cannot start on the computer and the official starters of the Rumble
     When a battle with the bot that cannot start is run, and battles with each starter
     Then the first is seen to end within seconds instead of after the connect limit, naming that bot, and every starter's battle completes
+
+  @RCL-165
+  Scenario: A session runs its battles on its own Java and looks for the bots' Java on the path
+    Test-type: Unit
+    Given a contribution session started by the desktop program or from a terminal
+    When it starts the battle worker, and when it checks the Java its Java bots need
+    Then the worker is started with the full path of the Java the session program runs on, and the worker starts its server and booter with the full path of its own Java, so no Java on the path is needed for the battles on any operating system
+    And Java for the bots is looked for in the folders of the path, as the bots' launchers find it, and run by its full path, so the program's own Java never answers for a Java the path does not hold; the Download bots screen checks Java the same way
+  @RCL-166
+  Scenario: A session leaves out from the start the bots of every platform that cannot run here
+    Test-type: Unit
+    Given a catalog with bots of several platforms and a computer on which some platforms are missing or too old
+    When the session checks the platforms before its first battle, with the Rumble's runtime list
+    Then the bots of those platforms are left out of the whole session, with every team that holds one, and the session says which platform, why and which version, in its log, its status and on the Contribute battles screen, in every language
+    And with every platform ready, or the runtime list unreadable and every tool there, nothing is left out, and Python is left to the session's own Python setup
+
+  @RCL-167
+  Scenario: The session program runs on the installer's own Java with and without Java on the path
+    Test-type: Human
+    Given the Java runtime the Windows installer ships
+    When the session program runs a session on it with no Java on the path, and again with Java on the path
+    Then the first leaves the Java bots out, says why, and keeps and sends a battle of other bots, the second keeps and sends battles of a Java bot, and the Contribute screen's own Java settings can be read on that runtime
 ```
