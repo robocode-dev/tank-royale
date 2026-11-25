@@ -48,9 +48,8 @@ object RumbleContribute {
 
     private fun text(key: String, vararg arguments: Any): String = String.format(Messages.get(key), *arguments)
 
-    /** Looks for a session when the program starts, if the Rumble menu is shown. Never waits for anything. */
+    /** Looks for a session when the program starts. Never waits for anything. */
     fun startUp() {
-        if (!RumbleMenuSwitch.menuShown(System.getProperty(RumbleMenuSwitch.MENU_PROPERTY), System.getenv(RumbleMenuSwitch.MENU_VARIABLE))) return
         val choice = RumbleMenuSwitch.environment(System.getenv(RumbleMenuSwitch.ENVIRONMENT_VARIABLE)) as? EnvironmentChoice.Chosen ?: return
         controllerFor(choice.environment).start()
     }

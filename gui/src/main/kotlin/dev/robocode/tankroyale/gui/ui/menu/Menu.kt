@@ -24,7 +24,6 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleMyBots
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleRankings
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleResults
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRumbleSubmit
-import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onGuiConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartServer
@@ -136,9 +135,8 @@ object Menu : JMenuBar() {
         })
     }
 
-    /** The Rumble menu is not whole yet, so it is shown only when a developer switches it on. */
+    /** The Rumble menu, with every entry of the mockups. */
     private fun setupRumbleMenu() {
-        if (!RumbleMenuSwitch.menuShown(System.getProperty(RumbleMenuSwitch.MENU_PROPERTY), System.getenv(RumbleMenuSwitch.MENU_VARIABLE))) return
         add(JMenu(MenuTitles.get("menu.rumble")).apply {
             mnemonic = KeyEvent.VK_R
             addNewMenuItem("item.rumble_get_started", onRumbleGetStarted).apply {

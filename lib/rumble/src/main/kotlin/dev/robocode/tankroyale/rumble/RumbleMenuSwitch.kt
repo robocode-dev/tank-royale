@@ -9,20 +9,12 @@ sealed interface EnvironmentChoice {
 }
 
 /**
- * The developer switch that shows the Rumble menu while it is not whole, and the choice of environment. Both read
- * only what they are given: the menu is shown for a true word in the property or in the variable, and the
- * environment is the one the variable names, the public Rumble when it names none, the same rule as the command line.
+ * The desktop program's choice of Rumble environment. It reads only what it is given: the environment is the one the
+ * variable names, and the public Rumble when it names none, the same rule as the command line. The Rumble menu itself
+ * is always shown; the developer switch that hid it while the menu was not whole is gone.
  */
 object RumbleMenuSwitch {
-    const val MENU_PROPERTY = "rumble.menu"
-    const val MENU_VARIABLE = "RUMBLE_MENU"
     const val ENVIRONMENT_VARIABLE = "RUMBLE_ENVIRONMENT"
-
-    private val TRUE_WORDS = setOf("1", "true", "yes", "on")
-
-    /** True when [property] or [variable] holds a true word. */
-    fun menuShown(property: String?, variable: String?): Boolean =
-        listOf(property, variable).any { it?.trim()?.lowercase() in TRUE_WORDS }
 
     /** The environment named by [variable], or the public Rumble when it is not set or blank. */
     fun environment(variable: String?): EnvironmentChoice {

@@ -463,7 +463,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "sha256": "346f5819d1c1f716f4c241d78ba418fcc4bfaaa40603b4d1e8c5215b75ac80df"
+          "sha256": "9097812104a77e248baf97b4523d27cb4bddec9af12823322f1be92a2ebb8930"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliLauncherTest.kt",
@@ -1011,20 +1011,6 @@
           "direction": "positive"
         },
         {
-          "id": "RCL-081",
-          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "subject": "RumbleCliDownloadTextsTest.testRCL081_UnitNegative_theRumbleMenuHoldsOnlyItemsForBuiltScreens",
-          "type": "Unit",
-          "direction": "negative"
-        },
-        {
-          "id": "RCL-081",
-          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
-          "subject": "RumbleCliDownloadTextsTest.testRCL081_UnitPositive_theItemIsInTheRumbleMenuBehindTheSwitchAndTheTitleShowsTheEnvironment",
-          "type": "Unit",
-          "direction": "positive"
-        },
-        {
           "id": "RCL-084",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
           "subject": "RumbleCliDownloadTextsTest.testRCL084_UnitNegative_tickingAPlatformThatCannotRunOpensTheDialogInsteadOfTickingIt",
@@ -1070,6 +1056,20 @@
           "id": "RCL-095",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
           "subject": "RumbleCliDownloadTextsTest.testRCL095_UnitPositive_botInfoShowsTheCopyLevelAsAShapeAndWordsAndATeamsMembers",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-169",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL169_UnitNegative_theRumbleMenuHoldsOnlyItemsForBuiltScreens",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-169",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDownloadTextsTest.kt",
+          "subject": "RumbleCliDownloadTextsTest.testRCL169_UnitPositive_theItemIsInTheRumbleMenuWhichIsAlwaysShownAndTheTitleShowsTheEnvironment",
           "type": "Unit",
           "direction": "positive"
         },
@@ -2172,7 +2172,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
-          "sha256": "e0b131f80cccb1e9f5d13178a1733373184aa6c4a1c66b642bfb1aabde1e275d"
+          "sha256": "82823ae9bd35a0fd5bcfcc1a740da9f69eff615b1bafbbbbbce981dc9417b5a4"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMyBotsTest.kt",
@@ -3328,30 +3328,16 @@
           "direction": "positive"
         },
         {
-          "id": "RCL-055",
+          "id": "RCL-168",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
-          "subject": "RumbleMenuSwitchTest.testRCL055_UnitNegative_anUnknownEnvironmentNameIsReportedAndNeverReplaced",
+          "subject": "RumbleMenuSwitchTest.testRCL168_UnitNegative_noSwitchHidesTheMenuOrTheSessionLookupAndAnUnknownEnvironmentIsReported",
           "type": "Unit",
           "direction": "negative"
         },
         {
-          "id": "RCL-055",
+          "id": "RCL-168",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
-          "subject": "RumbleMenuSwitchTest.testRCL055_UnitNegative_anotherWordOrNothingKeepsTheMenuHidden",
-          "type": "Unit",
-          "direction": "negative"
-        },
-        {
-          "id": "RCL-055",
-          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
-          "subject": "RumbleMenuSwitchTest.testRCL055_UnitPositive_theEnvironmentIsTheNamedOneAndThePublicRumbleWhenNoneIsNamed",
-          "type": "Unit",
-          "direction": "positive"
-        },
-        {
-          "id": "RCL-055",
-          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleMenuSwitchTest.kt",
-          "subject": "RumbleMenuSwitchTest.testRCL055_UnitPositive_theMenuIsShownForATrueWordInThePropertyOrTheVariable",
+          "subject": "RumbleMenuSwitchTest.testRCL168_UnitPositive_theEnvironmentIsTheNamedOneAndThePublicRumbleWhenNoneIsNamed",
           "type": "Unit",
           "direction": "positive"
         },

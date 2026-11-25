@@ -20,6 +20,7 @@ The Rumble menu has been shown only when a developer set the system property `ru
 - **The desktop program always looks for a contribution session when it starts**, which until now it did only with the switch on, so a session that runs, or one that ended while the program was closed, is found again by every desktop program.
 - **The environment choice stays.** The variable `RUMBLE_ENVIRONMENT` still names the development Rumble for a developer, and the program uses the public Rumble when it names none, as the command line does.
 - **The criteria that named the switch are retired**, and new ones state that the menu is always there.
+- **The settings a developer uses are described** in the repository's development guide, as the maintainer asked: `RUMBLE_ENVIRONMENT`, the `rumble.jar` property, `ROBOCODE_DEBUG`, `ROBOCODE_TURN_TIMING_DIAGNOSTICS`, `rumble.live` and `winConsole`, the variables of the Rumble's bot launchers, and how to set them for a local build and for an installed program.
 
 ## Challenge
 
@@ -46,4 +47,4 @@ The change and the criteria were allocated with the repository's local allocatio
 
 ## Human evidence
 
-To be written after the trial.
+**Seen by the agent on 2026-11-25** on Windows: the desktop program built from this change, started with no `RUMBLE_MENU`, `rumble.menu` or `RUMBLE_ENVIRONMENT` set, showed the Rumble menu in its menu bar between Indstillinger and Hjælp.

@@ -134,25 +134,26 @@ class RumbleCliDownloadTextsTest {
     }
 
     @Test
-    @Tag("RCL-081")
+    @Tag("RCL-169")
     @Tag("Unit")
     @Tag("Positive")
-    fun testRCL081_UnitPositive_theItemIsInTheRumbleMenuBehindTheSwitchAndTheTitleShowsTheEnvironment() {
+    fun testRCL169_UnitPositive_theItemIsInTheRumbleMenuWhichIsAlwaysShownAndTheTitleShowsTheEnvironment() {
         val menu = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/menu/Menu.kt")
         val rumbleMenu = menu.substringAfter("private fun setupRumbleMenu()").substringBefore("private fun setupHelpMenu()")
 
         assertEquals(1, menu.split("item.rumble_download").size - 1)
         assertTrue(rumbleMenu.contains("item.rumble_download"))
-        assertTrue(rumbleMenu.indexOf("RumbleMenuSwitch.menuShown") < rumbleMenu.indexOf("item.rumble_download"), "the switch decides first")
+        assertTrue(!rumbleMenu.contains("menuShown") && !rumbleMenu.contains("return"), "no switch hides the menu")
+        assertTrue(menu.substringBefore("private fun setupRumbleMenu()").contains("setupRumbleMenu()"), "the menu bar always builds it")
         val dialog = code(dialogFile)
         assertTrue(dialog.contains("environment.displayName") && dialog.contains("title = text(\"rumble.download.title\", title, environmentName)"))
     }
 
     @Test
-    @Tag("RCL-081")
+    @Tag("RCL-169")
     @Tag("Unit")
     @Tag("Negative")
-    fun testRCL081_UnitNegative_theRumbleMenuHoldsOnlyItemsForBuiltScreens() {
+    fun testRCL169_UnitNegative_theRumbleMenuHoldsOnlyItemsForBuiltScreens() {
         val menu = code("gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/menu/Menu.kt")
         val rumbleMenu = menu.substringAfter("private fun setupRumbleMenu()").substringBefore("private fun setupHelpMenu()")
 
