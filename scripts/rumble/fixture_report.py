@@ -45,6 +45,9 @@ CASES = [
     ("result-upload", "Sending results and reading receipts"),
     ("session-python", "Python for a session's Python bots"),
     ("contribute-screen", "Contribute battles screen and its session"),
+    ("rumble-menu-screens", "Rumble menu screens: Get started, My bots, Rankings, Help, and Results and queue"),
+    ("session-view", "A session's tray icon and window, and its starting bots"),
+    ("session-platforms", "The platforms a session's bots need on this computer"),
 ]
 RESULTS_CASE = ("test-results", "Test results")
 
@@ -60,6 +63,9 @@ CLASS_CASES = [
     (re.compile(r"^RumbleResultUploadTest$"), "result-upload"),
     (re.compile(r"^RumbleSessionPythonTest$"), "session-python"),
     (re.compile(r"^RumbleContributeScreenTest$"), "contribute-screen"),
+    (re.compile(r"^(RumbleGetStartedTest|RumbleMyBotsTest|RumbleRankingsAndHelpTest|RumbleResultsQueueTest)$"), "rumble-menu-screens"),
+    (re.compile(r"^(RumbleSessionViewTest|RumbleSessionBootTest)$"), "session-view"),
+    (re.compile(r"^RumbleSessionPlatformsTest$"), "session-platforms"),
     (re.compile(r"^(RumbleCredentialBoundaryTest|WorkerClasspathTest|RumbleProtocolCredentialFieldsTest)$"), "credential-boundary"),
     (re.compile(r"^(RumbleEnvironmentTest|RumbleDependencyRulesTest)$"), "environments-and-reset-boundaries"),
     (re.compile(r"^(RumbleSignIn\w*|RumbleSavedSignInTest|RumbleRegistration\w*|RumbleGitHubApiTest|RumbleTokenSecrecyTest|RumbleAccount\w*Test|RumbleMenuSwitchTest|RumbleSubmit\w*Test|RumbleCliSubmitTextsTest)$"), "sign-in-and-registration"),

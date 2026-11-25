@@ -1894,7 +1894,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "c8d58d6f8edcc8fcc765be3d46f8cb5ad23c725ed9c44ba2a2cbe6455d37a156"
+          "sha256": "215c8fecba10b585909f6d38a33773c73d4b54f465930cf05182266760c8ba65"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -1906,7 +1906,7 @@
         },
         {
           "path": "scripts/rumble/test_fixture_report.py",
-          "sha256": "9a28404a5ad6c26438c091534f0ace5523d48288c1f12e8bbc25fc7373cc8da5"
+          "sha256": "a8d647ac4d4e54ecb85b1e14cf811769f49fbbfd9f050f5632dfaf06ca7eb65e"
         },
         {
           "path": "scripts/rumble/test_rumble_environments.py",
