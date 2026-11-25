@@ -50,17 +50,56 @@ object RumbleContribute {
 
     /**
      * Looks for a session when the program starts, and follows it only when there is one, running or ended, so a person who
-     * never used the Rumble gets no network request and no timer. Never waits for anything: the look is a small file read
-     * away from the event thread.
+     * never used the Rumble gets no network request. Without one, the program only watches the session folder, with small
+     * file reads: it takes a session's request to come to the front, and follows a session that another program starts.
+     * Never waits for anything: every look is away from the event thread.
      */
     fun startUp() {
         val choice = RumbleMenuSwitch.environment(System.getenv(RumbleMenuSwitch.ENVIRONMENT_VARIABLE)) as? EnvironmentChoice.Chosen ?: return
         val folder = SessionFolder.of(choice.environment, UserDataDirectory.get().toPath())
         Thread({
             val found = runCatching { folder.look() }.getOrNull() ?: return@Thread
-            if (found.worthFollowing) SwingUtilities.invokeLater { controllerFor(choice.environment).start() }
+            SwingUtilities.invokeLater {
+                if (found.worthFollowing) controllerFor(choice.environment).start() else watch(choice.environment, folder)
+            }
         }, "rumble-session-startup").apply { isDaemon = true }.start()
     }
+
+    /** The light watch of a program that follows no session yet; it stops when the program follows one. */
+    private var watcher: Timer? = null
+
+    private fun watch(environment: RumbleEnvironment, folder: SessionFolder) {
+        if (controller != null || watcher != null) return
+        var ticks = 0
+        watcher = Timer(1000) {
+            if (controller != null) {
+                stopWatching()
+                return@Timer
+            }
+            // A session's Open Tank Royale: this program comes to the front with the screen, as a following one does.
+            if (folder.takeDesktopRequest()) {
+                stopWatching()
+                comeToFront()
+                return@Timer
+            }
+            // A session another program started is followed, so its end is noticed here too.
+            if (++ticks % LOOK_EVERY == 0) {
+                Thread({
+                    if (runCatching { folder.look() }.getOrNull()?.worthFollowing == true) {
+                        SwingUtilities.invokeLater { if (controller == null) { stopWatching(); controllerFor(environment).start() } }
+                    }
+                }, "rumble-session-watch").apply { isDaemon = true }.start()
+            }
+        }.apply { start() }
+    }
+
+    private fun stopWatching() {
+        watcher?.stop()
+        watcher = null
+    }
+
+    /** How many seconds apart the light watch looks for a session another program started. */
+    private const val LOOK_EVERY = 5
 
     /** Opens the Contribute battles screen. */
     fun open() {
