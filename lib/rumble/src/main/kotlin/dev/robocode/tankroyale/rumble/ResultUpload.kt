@@ -110,10 +110,18 @@ private data class OutboxLine(
     val battleIds: List<String> = emptyList(),
     val issue: Int? = null,
     val reason: String? = null,
+    /** With a refusal: the version of the program that sent the refused batch, so another version can lift it. */
+    val version: String? = null,
 )
 
 /** The list of sent batches as read without opening it for writing: the batches in the order sent, those whose receipt was taken, and the refusal. */
-class SentBatchesRead(val batches: List<SentBatches.Batch>, val done: Set<String>, val refusal: String?)
+class SentBatchesRead(
+    val batches: List<SentBatches.Batch>,
+    val done: Set<String>,
+    val refusal: String?,
+    /** The version of the program whose batch was refused, when the refusal recorded it. */
+    val refusedVersion: String? = null,
+)
 
 /**
  * The batches this computer has sent or is about to send, and the issue each became, so receipts are found again after
@@ -131,6 +139,11 @@ class SentBatches private constructor(private val file: Path) {
     /** The reason the Rumble gave for refusing a batch, while sending is stopped for it; null when sending may go on. */
     @Volatile
     var refusal: String? = null
+        private set
+
+    /** The version of the program whose batch was refused, when the refusal recorded it; null for none or an older record. */
+    @Volatile
+    var refusedVersion: String? = null
         private set
 
     /** The batches whose receipt has not been taken yet. */
@@ -155,11 +168,12 @@ class SentBatches private constructor(private val file: Path) {
         done += batchId
     }
 
-    /** Sending stops for [reason] until [lift]; it stays stopped across restarts. */
+    /** Sending stops for [reason], given to a batch [version] of the program sent, until [lift]; it stays stopped across restarts. */
     @Synchronized
-    internal fun refuse(reason: String) {
-        append(OutboxLine("refused", reason = reason))
+    internal fun refuse(reason: String, version: String? = null) {
+        append(OutboxLine("refused", reason = reason, version = version))
         refusal = reason
+        refusedVersion = version
     }
 
     /** The contributor fixed the cause of a refusal; sending may go on. */
@@ -168,6 +182,18 @@ class SentBatches private constructor(private val file: Path) {
         if (refusal == null) return
         append(OutboxLine("lifted"))
         refusal = null
+        refusedVersion = null
+    }
+
+    /**
+     * Lifts a refusal of a batch another version than [version] sent, and says whether it did: a new program version may
+     * have fixed what the Rumble refused. A refusal recorded without a version is from an older program, so it is lifted too.
+     */
+    @Synchronized
+    fun liftForNewVersion(version: String): Boolean {
+        if (refusal == null || refusedVersion == version) return false
+        lift()
+        return true
     }
 
     private fun append(line: OutboxLine) {
@@ -215,6 +241,7 @@ class SentBatches private constructor(private val file: Path) {
             val batches = LinkedHashMap<String, Batch>()
             val done = mutableSetOf<String>()
             var refusal: String? = null
+            var refusedVersion: String? = null
             for (raw in String(bytes, 0, whole, Charsets.UTF_8).lineSequence().filter { it.isNotBlank() }) {
                 val line = try {
                     json.decodeFromString(OutboxLine.serializer(), raw)
@@ -225,11 +252,11 @@ class SentBatches private constructor(private val file: Path) {
                     "batch" -> batches[line.batchId] = Batch(line.batchId, line.battleIds, null)
                     "issue" -> batches[line.batchId]?.let { batches[line.batchId] = Batch(it.batchId, it.battleIds, line.issue) }
                     "done" -> done += line.batchId
-                    "refused" -> refusal = line.reason ?: "The Rumble refused a batch."
-                    "lifted" -> refusal = null
+                    "refused" -> { refusal = line.reason ?: "The Rumble refused a batch."; refusedVersion = line.version }
+                    "lifted" -> { refusal = null; refusedVersion = null }
                 }
             }
-            return SentBatchesRead(batches.values.toList(), done, refusal)
+            return SentBatchesRead(batches.values.toList(), done, refusal, refusedVersion)
         }
 
         /** Opens the file, or starts it. A torn last line is cut off; any other line that cannot be read is skipped. */
@@ -254,8 +281,8 @@ class SentBatches private constructor(private val file: Path) {
                             "batch" -> sent.batches[line.batchId] = Batch(line.batchId, line.battleIds, null)
                             "issue" -> sent.batches[line.batchId]?.let { sent.batches[line.batchId] = Batch(it.batchId, it.battleIds, line.issue) }
                             "done" -> sent.done += line.batchId
-                            "refused" -> sent.refusal = line.reason ?: "The Rumble refused a batch."
-                            "lifted" -> sent.refusal = null
+                            "refused" -> { sent.refusal = line.reason ?: "The Rumble refused a batch."; sent.refusedVersion = line.version }
+                            "lifted" -> { sent.refusal = null; sent.refusedVersion = null }
                         }
                     }
                 }
@@ -285,6 +312,8 @@ class ResultUploader(
     private val maxResults: Int = MAX_RESULTS,
     private val maxCharacters: Int = MAX_CHARACTERS,
     private val newBatchId: () -> String = { UUID.randomUUID().toString() },
+    /** The version of this program, recorded with a refusal so another version can lift it. */
+    private val programVersion: String? = null,
 ) {
     private val repository = "/repos/${RumbleEnvironments.owner}/${environment.dataRepository}"
 
@@ -407,7 +436,7 @@ class ResultUploader(
                 null -> continue
                 is Receipt.Refused -> {
                     sent.finish(batch.batchId)
-                    sent.refuse(receipt.reason)
+                    sent.refuse(receipt.reason, programVersion)
                     returnHandedOver(batch)
                     onEvent(UploadEvent.BatchRefused(batch.batchId, issue, receipt.reason))
                 }

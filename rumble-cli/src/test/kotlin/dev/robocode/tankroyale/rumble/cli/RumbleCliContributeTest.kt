@@ -538,6 +538,43 @@ class RumbleCliContributeTest {
         assertTrue(carriedPythonBotApi() != null, "the command line carries the Python Bot API")
     }
 
+    // RCL-170
+
+    @Test
+    @Tag("RCL-170")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL170_UnitPositive_aSessionOfAnotherVersionLiftsARefusalAndSaysSo(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn() }
+        val sent = env.stateRoot(dir).resolve("ranked/sent-batches.jsonl")
+        Files.createDirectories(sent.parent)
+        Files.writeString(sent, """{"kind":"refused","reason":"refused","version":"0.0.1-old"}""" + "\n")
+
+        val run = world.run("--battles", "1", "--format", "1v1")
+
+        val lifted = run.lines.single { it["event"]?.jsonPrimitive?.content == "refusal-lifted" }
+        assertEquals("0.0.1-old", lifted["refusedVersion"]!!.jsonPrimitive.content)
+        assertEquals(null, dev.robocode.tankroyale.rumble.SentBatches.read(sent).refusal)
+    }
+
+    @Test
+    @Tag("RCL-170")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL170_UnitNegative_aSessionOfTheSameVersionKeepsTheRefusal(@TempDir dir: Path) {
+        val world = World(dir).apply { signIn() }
+        val sent = env.stateRoot(dir).resolve("ranked/sent-batches.jsonl")
+        Files.createDirectories(sent.parent)
+        // The program's own version, as a session records it with a refusal.
+        val own = programVersion()
+        Files.writeString(sent, """{"kind":"refused","reason":"refused","version":"$own"}""" + "\n")
+
+        val run = world.run("--battles", "1", "--format", "1v1")
+
+        assertTrue(run.events.none { it == "refusal-lifted" }, run.events.toString())
+        assertEquals("refused", dev.robocode.tankroyale.rumble.SentBatches.read(sent).refusal)
+    }
+
     // RCL-166
 
     @Test

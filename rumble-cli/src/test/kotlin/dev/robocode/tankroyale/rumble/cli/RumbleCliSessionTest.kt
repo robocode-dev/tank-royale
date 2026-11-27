@@ -113,4 +113,35 @@ class RumbleCliSessionTest {
         val requests = folder.folder.resolve("requests")
         assertFalse(Files.list(requests).use { it.findAny().isPresent }, "no request was written")
     }
+
+    // RCL-171
+
+    @Test
+    @Tag("RCL-171")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL171_UnitPositive_sendAgainLiftsTheStopWhenNoSessionRuns(@TempDir dir: Path) {
+        val sent = env.stateRoot(dir).resolve("ranked").resolve("sent-batches.jsonl")
+        // The list of sent batches as a session leaves it after the Rumble refused a batch.
+        Files.createDirectories(sent.parent)
+        Files.writeString(sent, """{"kind":"refused","reason":"refused","version":"1.4.0"}""" + "\n")
+
+        val lifted = run(dir, "send-again")
+        assertEquals(ExitCodes.DONE, lifted.exit, lifted.out)
+        assertEquals("lifted", lifted.outcome)
+        assertEquals(null, dev.robocode.tankroyale.rumble.SentBatches.read(sent).refusal)
+        assertEquals("not-stopped", run(dir, "send-again").outcome)
+    }
+
+    @Test
+    @Tag("RCL-171")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL171_UnitNegative_sendAgainIsRefusedWhileASessionRuns(@TempDir dir: Path) {
+        SessionFolder.of(env, dir).claim()!!.use {
+            val asked = run(dir, "send-again")
+            assertEquals(ExitCodes.REFUSED, asked.exit, asked.out)
+            assertEquals("session-running", asked.outcome)
+        }
+    }
 }

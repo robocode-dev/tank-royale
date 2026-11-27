@@ -27,7 +27,8 @@ class RumbleResultsTextsTest {
 
     // Keys built from a name are listed here; the others are read from the screen's source.
     private val builtKeys = listOf("kept", "waiting", "sent", "accepted", "rejected", "set_aside").map { "rumble.results.count.$it" } +
-        listOf("batch", "battles", "sent", "state").map { "rumble.results.column.$it" }
+        listOf("batch", "battles", "sent", "state").map { "rumble.results.column.$it" } +
+        dev.robocode.tankroyale.rumble.SendAgainOutcome.entries.map { "rumble.results.sent_again.${it.name.lowercase()}" }
 
     @Test
     @Tag("RCL-153")
@@ -37,7 +38,7 @@ class RumbleResultsTextsTest {
         val entries = Regex("addNewMenuItem\\(\"(item\\.rumble_[a-z_]+)\"").findAll(source("menu/Menu.kt")).map { it.groupValues[1] }.toList()
         assertEquals(entries.indexOf("item.rumble_contribute") + 1, entries.indexOf("item.rumble_results"))
         val inSource = Regex("\"(rumble\\.results\\.[a-z_.]+)\"").findAll(source("rumble/RumbleResultsDialog.kt")).map { it.groupValues[1] }.toSet()
-        val wanted = (builtKeys + inSource).toSet() - setOf("rumble.results.open_issue", "rumble.results.batch_id") // tooltips, in the hint files
+        val wanted = (builtKeys + inSource).toSet() - setOf("rumble.results.open_issue", "rumble.results.batch_id", "rumble.results.sent_again.") // tooltips, in the hint files; a prefix of built keys
         assertTrue("rumble.results.waiting_note" in wanted && "rumble.results.state.rejected" in wanted)
         for (language in listOf("", "_da", "_es", "_ca")) {
             val messages = texts("Messages$language.properties")
@@ -86,5 +87,31 @@ class RumbleResultsTextsTest {
         assertTrue(words.any { it.contains("rumble.results.state.other 1") }, "results of a batch that were not sent are said")
         // Without a sign-in the screen offers the GitHub account screen.
         assertTrue(source("rumble/RumbleResultsDialog.kt").contains("RumbleAccountDialog.open()"))
+    }
+
+    @Test
+    @Tag("RCL-171")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL171_UnitPositive_theStopItsVersionTheWaysOnAndEverySendAgainOutcomeAreInEveryLanguage() {
+        val keys = listOf("refused", "refused_version", "refused_version_unknown", "refused_ways", "button.send_again", "button.feedback")
+            .map { "rumble.results.$it" } +
+            dev.robocode.tankroyale.rumble.SendAgainOutcome.entries.map { "rumble.results.sent_again.${it.name.lowercase()}" }
+        for (language in listOf("", "_da", "_es", "_ca")) {
+            val read = texts("Messages$language.properties")
+            assertEquals(emptyList<String>(), keys.filter { read.getProperty(it).isNullOrBlank() }, "missing in Messages$language")
+            assertTrue(keys.none { read.getProperty(it).contains('—') || read.getProperty(it).contains('–') })
+        }
+    }
+
+    @Test
+    @Tag("RCL-171")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL171_UnitNegative_theScreenOffersSendAgainOnlyWhileSendingIsStopped() {
+        val screen = source("rumble/RumbleResultsDialog.kt")
+        val stopped = screen.substringAfter("overview.refusal?.let").substringBefore("state.sentAgain?.let")
+        assertTrue(stopped.contains("rumble.results.button.send_again"), "the button is in the block that runs only while sending is stopped")
+        assertFalse(screen.substringBefore("overview.refusal?.let").contains("rumble.results.button.send_again"))
     }
 }
