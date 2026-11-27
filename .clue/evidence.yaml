@@ -291,7 +291,7 @@
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleResultsTextsTest.kt",
-          "sha256": "2635c8226510f5b279506040839a37d84f9bf194220142ad3f3d1bf366e543fa"
+          "sha256": "2ecc671277335dd447961dd89a07f732a4f1133d94d8c6ca12bd3fe654ea4ac9"
         }
       ],
       "references": [
@@ -479,7 +479,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
-          "sha256": "cb75fe4c068b3bd11e032b07cabea3640c6b9bdd3d85a06c79173206cb40f78b"
+          "sha256": "4fa74f39123652d2eae8b8b3f9e23144af48b088f0302a181da2e3a6472efbb5"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
@@ -1214,6 +1214,20 @@
           "direction": "positive"
         },
         {
+          "id": "RCL-171",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
+          "subject": "RumbleCliSessionTest.testRCL171_UnitNegative_sendAgainIsRefusedWhileASessionRuns",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-171",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionTest.kt",
+          "subject": "RumbleCliSessionTest.testRCL171_UnitPositive_sendAgainLiftsTheStopWhenNoSessionRuns",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
           "id": "RCL-157",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliSessionViewTest.kt",
           "subject": "RumbleCliSessionViewTest.testRCL157_UnitNegative_theComputersOwnLanguageNeverStandsInForTheChosenOne",
@@ -1894,7 +1908,7 @@
         },
         {
           "path": "scripts/rumble/fixture_report.py",
-          "sha256": "ea906fd41a23a1c722a81117ab32b2dfb7e06356939ae8b154f8cfba908fcf82"
+          "sha256": "27cf30f238c2e38819467471a410177168b9aeef3ddd99cdeab172be5a352d01"
         },
         {
           "path": "scripts/rumble/rumble_environments.py",
@@ -2213,6 +2227,10 @@
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
           "sha256": "b6bbc107a7e210863fe4e039f4a2601b61cc25f1d479e3de3ce2723837936526"
+        },
+        {
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSendAgainTest.kt",
+          "sha256": "7be3f031d96614eec603de71785d908a238fbe77d6c1f1bad564a0753ea111df"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionBootTest.kt",
@@ -3874,6 +3892,34 @@
           "id": "RCL-035",
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSavedSignInTest.kt",
           "subject": "RumbleSavedSignInTest.testRCL035_UnitPositive_twoProgramsRenewOneAfterTheOtherAndBothStaySignedIn",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-170",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSendAgainTest.kt",
+          "subject": "RumbleSendAgainTest.testRCL170_UnitNegative_theSameVersionKeepsTheStopAndARefusalWithoutAVersionIsLifted",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-170",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSendAgainTest.kt",
+          "subject": "RumbleSendAgainTest.testRCL170_UnitPositive_aRefusalRecordsItsVersionAndAnotherVersionLiftsIt",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-171",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSendAgainTest.kt",
+          "subject": "RumbleSendAgainTest.testRCL171_UnitNegative_whileASessionRunsTheStopStaysAndThePersonIsToldToStopItFirst",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-171",
+          "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSendAgainTest.kt",
+          "subject": "RumbleSendAgainTest.testRCL171_UnitPositive_thePersonLiftsTheStopWhenNoSessionRunsAndTheScreenShowsItWent",
           "type": "Unit",
           "direction": "positive"
         },

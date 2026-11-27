@@ -1381,4 +1381,27 @@ Feature: rumble-client — Local ranked and practice battle client
     Given the desktop program's menu bar
     When it is built
     Then the Download bots item is in the Rumble menu only, the menu is built with no switch, the menu holds only items of built screens, and the dialog's title shows the environment it talks to
+
+  @RCL-170
+  Scenario: A refusal records the program's version, and a session of another version lifts it
+    Test-type: Unit
+    Given the Rumble refused a whole batch that one version of the program sent
+    When a session of another version starts, and when a session of the same version starts
+    Then the refusal is kept with that version across restarts, a session of another version lifts it and says so, and a session of the same version keeps sending stopped
+    And a refusal recorded without a version, by an older program, is lifted by any version, and a list with no refusal has nothing to lift
+
+  @RCL-171
+  Scenario: The contributor lets sending go on from Results and queue or the command line, only while no session runs
+    Test-type: Unit
+    Given sending stopped by a refused batch
+    When the contributor chooses Send again on Results and queue or runs `rumble session send-again`, with and without a session of the environment running
+    Then without a session sending may go on and the screen and the command say so, and with a session the stop stays and they say to stop the session first
+    And the screen shows the Rumble's reason, the version that was refused and the ways on, with a way to report it, in every language
+
+  @RCL-172
+  Scenario: The agent sees the stop and lifts it on the Results and queue screen
+    Test-type: Human
+    Given the desktop program on the development Rumble and a list of sent batches stopped by a refusal
+    When Results and queue is opened and Send again is chosen
+    Then the reason, the refused version and the ways on are seen, and after Send again the screen says that sending may go on and the stop is gone
 ```

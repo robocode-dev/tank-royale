@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.rumble.cli
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.CoreCliktCommand
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
+import dev.robocode.tankroyale.rumble.SendAgain
+import dev.robocode.tankroyale.rumble.SendAgainOutcome
 import dev.robocode.tankroyale.rumble.SessionControlRequest
 import dev.robocode.tankroyale.rumble.SessionFolder
 import dev.robocode.tankroyale.rumble.SessionLook
@@ -33,6 +35,7 @@ internal class SessionGroup : CoreCliktCommand(name = "session") {
                 io, "release", SessionControlRequest.RELEASE,
                 "Lets the running session go on when the program that started it ends, until its battles are done or it is stopped.",
             ),
+            SessionSendAgainCommand(io),
         )
     }
 }
@@ -135,5 +138,22 @@ internal class SessionControlCommand(
         SessionControlRequest.STOP -> "stop after the battle that is running"
         SessionControlRequest.STOP_NOW -> "end now"
         SessionControlRequest.RELEASE -> "go on when the program that started it ends"
+    }
+}
+
+/** `session send-again`: lets sending go on after the Rumble refused a whole batch, once its cause is fixed. */
+internal class SessionSendAgainCommand(io: Io) : SessionLeaf("send-again", io) {
+    override fun help(context: Context) =
+        "Lets sending go on after the Rumble refused a whole batch, once you have fixed what it refused. The next session sends what waits. " +
+            "It is refused while a session of the environment runs."
+
+    override fun run() {
+        val env = environment()
+        when (SendAgain.lift(env.stateRoot(base()))) {
+            SendAgainOutcome.LIFTED -> answer(reply(env, ExitCodes.DONE, "lifted", "Sending may go on. The next session sends the results that wait."))
+            SendAgainOutcome.NOT_STOPPED -> answer(reply(env, ExitCodes.DONE, "not-stopped", "Sending was not stopped."))
+            SendAgainOutcome.SESSION_RUNNING -> answer(reply(env, ExitCodes.REFUSED, "session-running", "A contribution session runs in this environment. Stop it first, then run this again."))
+            SendAgainOutcome.FAILED -> answer(reply(env, ExitCodes.FAILED, "failed", "The list of sent batches or the session folder could not be read or written."))
+        }
     }
 }

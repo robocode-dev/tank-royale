@@ -17,7 +17,7 @@ When the Rumble's receiving workflow refuses a whole result batch before it read
 ## What changes
 
 - **A new program version lifts the stop by itself.** The refusal records the version of the program that sent the refused batch. When a session of another version starts, it lifts the stop and says so, because a refusal is most often about the format of what this program sends, which a new version may have fixed.
-- **The contributor can lift the stop.** The Results and queue screen shows the Rumble's reason with a button, Send again. The command line gets `rumble results send-again`. Both lift the stop only when no session of the environment runs, because a running session holds the list of sent batches. While one runs, they say to stop it first. The waiting results are sent by the next session, as now.
+- **The contributor can lift the stop.** The Results and queue screen shows the Rumble's reason with a button, Send again. The command line gets `rumble session send-again`, beside the other commands that act on an environment's sessions. Both lift the stop only when no session of the environment runs, because a running session holds the list of sent batches. While one runs, they say to stop it first. The waiting results are sent by the next session, as now.
 - **What the screen says while sending is stopped.** It names the reason the Rumble gave, the version that was refused, and the two ways on: update the program, or send again after fixing the cause. It also links to the Rumble feedback form, since a refusal the person cannot explain is worth reporting.
 - **Every text** is in English, Danish, Spanish and Catalan.
 
@@ -38,7 +38,7 @@ Telling the Rumble's maintainers about refused batches, reasons as codes from th
 Test class Unit unless stated.
 
 - **RCL-170: A refusal records the program version, and a session of another version lifts it by itself and says so**; a session of the same version keeps it.
-- **RCL-171: The contributor lifts the stop from the Results and queue screen or with `rumble results send-again`**, only when no session of the environment runs, and is told to stop the session first otherwise; the screen shows the reason, the refused version and the ways on in every language.
+- **RCL-171: The contributor lifts the stop from the Results and queue screen or with `rumble session send-again`**, only when no session of the environment runs, and is told to stop the session first otherwise; the screen shows the reason, the refused version and the ways on in every language.
 - **RCL-172: The maintainer sees the stop and lifts it from Results and queue on the development Rumble.** (Human.)
 
 ## Identity allocation
@@ -47,4 +47,11 @@ The change and the criteria were allocated with the repository's local allocatio
 
 ## Human evidence
 
-To be written after the trial.
+**Seen by the agent on 2026-11-27** on Windows, with the desktop program built from this change on the development Rumble. A refusal line was added for the trial to a copy of the list of sent batches, which was put back exactly afterwards. Results and queue showed, in Danish:
+
+- the reason in red;
+- "Den afviste pakke blev sendt af Tank Royale 1.4.0-trial";
+- the ways on;
+- the buttons Send igen and Meld det.
+
+After Send igen the screen said "Afsendelsen kan fortsætte. Den næste session sender de resultater, der venter." The reason and the buttons were gone, and the list held the line that lifts the stop. A real refusal from the Rumble's receiving workflow was not caused, and a session of a new version lifting a real refusal was not seen; both are proved with fakes.

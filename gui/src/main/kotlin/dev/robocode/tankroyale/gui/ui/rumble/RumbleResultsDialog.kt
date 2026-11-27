@@ -19,6 +19,7 @@ import dev.robocode.tankroyale.rumble.ResultsState
 import dev.robocode.tankroyale.rumble.RumbleEnvironment
 import dev.robocode.tankroyale.rumble.RumbleLinks
 import dev.robocode.tankroyale.rumble.RumbleMenuSwitch
+import dev.robocode.tankroyale.rumble.SendAgainOutcome
 import dev.robocode.tankroyale.rumble.SignInStore
 import net.miginfocom.swing.MigLayout
 import java.awt.BorderLayout
@@ -79,7 +80,18 @@ class RumbleResultsDialog private constructor(environment: RumbleEnvironment, co
             is ResultsState.Shown -> {
                 val overview = state.overview
                 put(countTiles(overview.counts) { key, arguments -> text(key, *arguments) })
-                overview.refusal?.let { put(wrappedText(text("rumble.results.refused", it), bold = true).apply { foreground = myBotsColor(good = false) }) }
+                overview.refusal?.let { reason ->
+                    put(wrappedText(text("rumble.results.refused", reason), bold = true).apply { foreground = myBotsColor(good = false) })
+                    put(wrappedText(text("rumble.results.refused_version", overview.refusedVersion ?: text("rumble.results.refused_version_unknown"))))
+                    put(wrappedText(text("rumble.results.refused_ways")))
+                    actions.add(JButton(text("rumble.results.button.send_again")).apply { addActionListener { controller.sendAgain() } })
+                    actions.add(JButton(text("rumble.results.button.feedback")).apply { addActionListener { Browser.browse(GetStarted.FEEDBACK_PAGE) } })
+                }
+                state.sentAgain?.let { outcome ->
+                    put(wrappedText(text("rumble.results.sent_again." + outcome.name.lowercase())).apply {
+                        foreground = myBotsColor(good = outcome == SendAgainOutcome.LIFTED || outcome == SendAgainOutcome.NOT_STOPPED)
+                    })
+                }
                 if (ResultsQueue.waitsToBeSent(overview)) put(wrappedText(text("rumble.results.waiting_note", overview.counts.waiting)))
                 if (ResultsQueue.needsSignIn(overview)) {
                     put(wrappedText(text("rumble.results.sign_in_needed"), bold = true))

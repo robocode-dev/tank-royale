@@ -27,7 +27,8 @@ class RumbleResultsTextsTest {
 
     // Keys built from a name are listed here; the others are read from the screen's source.
     private val builtKeys = listOf("kept", "waiting", "sent", "accepted", "rejected", "set_aside").map { "rumble.results.count.$it" } +
-        listOf("batch", "battles", "sent", "state").map { "rumble.results.column.$it" }
+        listOf("batch", "battles", "sent", "state").map { "rumble.results.column.$it" } +
+        dev.robocode.tankroyale.rumble.SendAgainOutcome.entries.map { "rumble.results.sent_again.${it.name.lowercase()}" }
 
     @Test
     @Tag("RCL-153")
@@ -37,7 +38,7 @@ class RumbleResultsTextsTest {
         val entries = Regex("addNewMenuItem\\(\"(item\\.rumble_[a-z_]+)\"").findAll(source("menu/Menu.kt")).map { it.groupValues[1] }.toList()
         assertEquals(entries.indexOf("item.rumble_contribute") + 1, entries.indexOf("item.rumble_results"))
         val inSource = Regex("\"(rumble\\.results\\.[a-z_.]+)\"").findAll(source("rumble/RumbleResultsDialog.kt")).map { it.groupValues[1] }.toSet()
-        val wanted = (builtKeys + inSource).toSet() - setOf("rumble.results.open_issue", "rumble.results.batch_id") // tooltips, in the hint files
+        val wanted = (builtKeys + inSource).toSet() - setOf("rumble.results.open_issue", "rumble.results.batch_id", "rumble.results.sent_again.") // tooltips, in the hint files; a prefix of built keys
         assertTrue("rumble.results.waiting_note" in wanted && "rumble.results.state.rejected" in wanted)
         for (language in listOf("", "_da", "_es", "_ca")) {
             val messages = texts("Messages$language.properties")

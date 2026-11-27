@@ -235,7 +235,14 @@ internal class ContributeCommand(io: Io, services: Services) : SignInLeaf("contr
             env, journal, sent, services.api,
             SavedSignInUpload(flow.savedSignIn()) { services.clock.instant() },
             data, { report(uploadEvent(it)) },
+            programVersion = version,
         )
+        // A refusal of a batch another version sent is lifted: this version may have fixed what the Rumble refused.
+        val refusedBy = sent.refusedVersion
+        if (sent.liftForNewVersion(version)) {
+            report(event("refusal-lifted") { refusedBy?.let { put("refusedVersion", it) }; put("version", version) } to
+                "Sending goes on: the Rumble refused a batch an earlier version sent, and this is version $version.")
+        }
         val interrupts = AtomicInteger()
         // After the second Ctrl+C nothing more is started over the network.
         val automatic = AutomaticUpload(uploader, clock = { services.clock.instant() }, stop = { interrupts.get() >= 2 })

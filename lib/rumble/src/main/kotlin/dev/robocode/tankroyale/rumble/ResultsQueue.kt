@@ -47,6 +47,8 @@ data class ResultsOverview(
     val refusal: String?,
     /** Whether this computer holds a saved sign-in for the Rumble; without one, a session cannot send. */
     val signedIn: Boolean,
+    /** The version of the program whose batch was refused, when the refusal recorded it. */
+    val refusedVersion: String? = null,
 )
 
 /** Builds what Results and queue shows from the two readings, without a window and without the disk. */
@@ -95,7 +97,7 @@ object ResultsQueue {
         val newestFirst = rows.sortedWith(
             compareByDescending<Pair<Int, BatchRow>> { it.second.sentAt?.let(::instant) ?: java.time.Instant.MIN }.thenByDescending { it.first },
         ).map { it.second }
-        return ResultsOverview(counts, newestFirst, sent.refusal, signedIn)
+        return ResultsOverview(counts, newestFirst, sent.refusal, signedIn, sent.refusedVersion)
     }
 
     private fun instant(text: String): java.time.Instant = try {
@@ -122,6 +124,9 @@ sealed interface ResultsReading {
 /** What Results and queue needs of this computer, so a test can stand in for it. */
 fun interface ResultsPort {
     fun read(): ResultsReading
+
+    /** Lets sending go on after a refused batch; see [SendAgain]. */
+    fun sendAgain(): SendAgainOutcome = SendAgainOutcome.FAILED
 }
 
 /**
@@ -144,12 +149,15 @@ class LibraryResultsPort(
     } catch (e: EnvironmentRefused) {
         ResultsReading.Failed(e.message.orEmpty())
     }
+
+    override fun sendAgain(): SendAgainOutcome = SendAgain.lift(stateRoot)
 }
 
 /** The state of the Results and queue screen. */
 sealed interface ResultsState {
     data object Reading : ResultsState
-    data class Shown(val overview: ResultsOverview) : ResultsState
+    /** [sentAgain] is how the person's last Send again went, if they asked in this opening of the screen. */
+    data class Shown(val overview: ResultsOverview, val sentAgain: SendAgainOutcome? = null) : ResultsState
     data class Failed(val details: String) : ResultsState
 }
 
@@ -171,11 +179,25 @@ class ResultsController(
     @Volatile
     private var closed = false
 
-    fun start() {
+    fun start() = readAgain(null)
+
+    /** Lets sending go on after a refused batch, then reads again, so the screen shows what is now true. */
+    fun sendAgain() {
+        background.execute {
+            val outcome = try {
+                port.sendAgain()
+            } catch (e: Exception) {
+                SendAgainOutcome.FAILED
+            }
+            readAgain(outcome)
+        }
+    }
+
+    private fun readAgain(sentAgain: SendAgainOutcome?) {
         background.execute {
             val next = try {
                 when (val reading = port.read()) {
-                    is ResultsReading.Read -> ResultsState.Shown(reading.overview)
+                    is ResultsReading.Read -> ResultsState.Shown(reading.overview, sentAgain)
                     is ResultsReading.Failed -> ResultsState.Failed(reading.message)
                 }
             } catch (e: Exception) {
