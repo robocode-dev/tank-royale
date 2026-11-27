@@ -88,4 +88,30 @@ class RumbleResultsTextsTest {
         // Without a sign-in the screen offers the GitHub account screen.
         assertTrue(source("rumble/RumbleResultsDialog.kt").contains("RumbleAccountDialog.open()"))
     }
+
+    @Test
+    @Tag("RCL-171")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testRCL171_UnitPositive_theStopItsVersionTheWaysOnAndEverySendAgainOutcomeAreInEveryLanguage() {
+        val keys = listOf("refused", "refused_version", "refused_version_unknown", "refused_ways", "button.send_again", "button.feedback")
+            .map { "rumble.results.$it" } +
+            dev.robocode.tankroyale.rumble.SendAgainOutcome.entries.map { "rumble.results.sent_again.${it.name.lowercase()}" }
+        for (language in listOf("", "_da", "_es", "_ca")) {
+            val read = texts("Messages$language.properties")
+            assertEquals(emptyList<String>(), keys.filter { read.getProperty(it).isNullOrBlank() }, "missing in Messages$language")
+            assertTrue(keys.none { read.getProperty(it).contains('—') || read.getProperty(it).contains('–') })
+        }
+    }
+
+    @Test
+    @Tag("RCL-171")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testRCL171_UnitNegative_theScreenOffersSendAgainOnlyWhileSendingIsStopped() {
+        val screen = source("rumble/RumbleResultsDialog.kt")
+        val stopped = screen.substringAfter("overview.refusal?.let").substringBefore("state.sentAgain?.let")
+        assertTrue(stopped.contains("rumble.results.button.send_again"), "the button is in the block that runs only while sending is stopped")
+        assertFalse(screen.substringBefore("overview.refusal?.let").contains("rumble.results.button.send_again"))
+    }
 }

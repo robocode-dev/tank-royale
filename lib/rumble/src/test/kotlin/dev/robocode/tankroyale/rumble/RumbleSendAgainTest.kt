@@ -96,7 +96,12 @@ class RumbleSendAgainTest {
             assertEquals(SendAgainOutcome.SESSION_RUNNING, SendAgain.lift(dir))
             assertEquals("refused", SentBatches.read(sentFile(dir)).refusal)
         }
-        // Once the session ended, it can be lifted.
+        // Once the session ended, it can be lifted, and the last session's status and log stay as they were.
+        val folder = dir.resolve(SessionFolder.FOLDER)
+        java.nio.file.Files.writeString(folder.resolve("status.json"), "{}")
+        java.nio.file.Files.writeString(folder.resolve("events.jsonl"), "{}" + "\n")
         assertEquals(SendAgainOutcome.LIFTED, SendAgain.lift(dir))
+        assertTrue(java.nio.file.Files.exists(folder.resolve("status.json")))
+        assertTrue(java.nio.file.Files.exists(folder.resolve("events.jsonl")))
     }
 }

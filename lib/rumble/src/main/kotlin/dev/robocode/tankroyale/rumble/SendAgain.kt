@@ -20,15 +20,15 @@ enum class SendAgainOutcome {
 
 /**
  * Lets a contributor send results again after the Rumble refused a whole batch, once they fixed what it refused. It
- * takes the environment's session lock while it writes, as a session does, so it never writes beside a running session,
- * and a session cannot start while it writes.
+ * holds the environment's session lock while it writes, so it never writes beside a running session and a session
+ * cannot start meanwhile, and it leaves the last session's status, log and requests as they are.
  */
 object SendAgain {
     /** Lifts the stop of the environment whose own state folder is [stateRoot]. */
     fun lift(stateRoot: Path): SendAgainOutcome {
         val folder = SessionFolder(stateRoot.resolve(SessionFolder.FOLDER))
         val held = try {
-            folder.claim()
+            folder.holdBriefly()
         } catch (e: IOException) {
             return SendAgainOutcome.FAILED
         } ?: return SendAgainOutcome.SESSION_RUNNING

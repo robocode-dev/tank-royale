@@ -291,7 +291,7 @@
         },
         {
           "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleResultsTextsTest.kt",
-          "sha256": "2ecc671277335dd447961dd89a07f732a4f1133d94d8c6ca12bd3fe654ea4ac9"
+          "sha256": "20bb4334b7d3fcce90af9dca2c0cc137654b5397a5f4489e06d37e8fe04d3390"
         }
       ],
       "references": [
@@ -392,6 +392,20 @@
           "subject": "RumbleResultsTextsTest.testRCL153_UnitPositive_resultsFollowsContributeInTheMenuAndEveryTextIsInEveryLanguage",
           "type": "Unit",
           "direction": "positive"
+        },
+        {
+          "id": "RCL-171",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleResultsTextsTest.kt",
+          "subject": "RumbleResultsTextsTest.testRCL171_UnitNegative_theScreenOffersSendAgainOnlyWhileSendingIsStopped",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-171",
+          "path": "gui/src/test/kotlin/dev/robocode/tankroyale/gui/ui/rumble/RumbleResultsTextsTest.kt",
+          "subject": "RumbleResultsTextsTest.testRCL171_UnitPositive_theStopItsVersionTheWaysOnAndEverySendAgainOutcomeAreInEveryLanguage",
+          "type": "Unit",
+          "direction": "positive"
         }
       ]
     },
@@ -455,7 +469,7 @@
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
-          "sha256": "c29c6c16ac2f45045a5ea301ee309fc66cc113a672a92bd28681fcac5f25c388"
+          "sha256": "60fa418c0199578be37731b9a6d3b875a00038ad19497b023318273871380c40"
         },
         {
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliDependencyRulesTest.kt",
@@ -951,6 +965,20 @@
           "id": "RCL-166",
           "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
           "subject": "RumbleCliContributeTest.testRCL166_UnitPositive_withoutJavaOnThePathTheJavaBotsAreLeftOutAndTheSessionSaysWhy",
+          "type": "Unit",
+          "direction": "positive"
+        },
+        {
+          "id": "RCL-170",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCL170_UnitNegative_aSessionOfTheSameVersionKeepsTheRefusal",
+          "type": "Unit",
+          "direction": "negative"
+        },
+        {
+          "id": "RCL-170",
+          "path": "rumble-cli/src/test/kotlin/dev/robocode/tankroyale/rumble/cli/RumbleCliContributeTest.kt",
+          "subject": "RumbleCliContributeTest.testRCL170_UnitPositive_aSessionOfAnotherVersionLiftsARefusalAndSaysSo",
           "type": "Unit",
           "direction": "positive"
         },
@@ -2218,7 +2246,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultUploadTest.kt",
-          "sha256": "701c09cff1a2246a14b904973a85484c96f6f2a62aeeb150fab022ed0bac489b"
+          "sha256": "0193c48963a4681632cc56611359fba8406873401c6330d17152a4d12263ce52"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleResultsQueueTest.kt",
@@ -2230,7 +2258,7 @@
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSendAgainTest.kt",
-          "sha256": "7be3f031d96614eec603de71785d908a238fbe77d6c1f1bad564a0753ea111df"
+          "sha256": "26dcdd54890dae57d5333b4aa39cad037e8a2a492342d77922c51b9dd7d12042"
         },
         {
           "path": "lib/rumble/src/test/kotlin/dev/robocode/tankroyale/rumble/RumbleSessionBootTest.kt",

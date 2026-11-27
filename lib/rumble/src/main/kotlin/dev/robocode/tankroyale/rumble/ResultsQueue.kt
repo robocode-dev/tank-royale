@@ -194,6 +194,16 @@ class ResultsController(
     }
 
     private fun readAgain(sentAgain: SendAgainOutcome?) {
+        // A screen closed meanwhile has let its worker go; nothing is read for it then.
+        if (closed) return
+        try {
+            readNow(sentAgain)
+        } catch (e: java.util.concurrent.RejectedExecutionException) {
+            // The screen closed while the work was on its way.
+        }
+    }
+
+    private fun readNow(sentAgain: SendAgainOutcome?) {
         background.execute {
             val next = try {
                 when (val reading = port.read()) {

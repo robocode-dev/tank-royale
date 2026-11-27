@@ -120,7 +120,7 @@ class RumbleResultUploadTest {
         var batch = 0
         val uploader = ResultUploader(
             environment, journal, sent, github, access, data, { events += it }, maxCharacters = maxCharacters,
-            newBatchId = { "batch-${++batch}" },
+            newBatchId = { "batch-${++batch}" }, programVersion = "9.9.9",
         )
         return Setup(journal, sent, github, events, uploader)
     }
@@ -399,6 +399,8 @@ class RumbleResultUploadTest {
         s.uploader.collectReceipts()
         assertEquals(RecordState.WAITING, states(s.journal)[a.battleId])
         assertTrue(s.events.contains(UploadEvent.BatchRefused("batch-1", 1, "validation failed: clientId `client-a` is not registered to `outsider`")))
+        // The refusal records the version of the program that sent the batch, so another version can lift it.
+        assertEquals("9.9.9", s.sent.refusedVersion)
 
         s.events.clear()
         assertEquals(0, s.uploader.send())

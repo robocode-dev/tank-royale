@@ -157,6 +157,39 @@ class SessionFolder(val folder: Path) {
     private val requests = folder.resolve("requests")
     private val showDesktopFile = folder.resolve("show-desktop.request")
 
+    /**
+     * Holds the session lock for a moment of work beside the sessions, such as letting sending go on, without starting a
+     * session: the last session's status, log and requests are left as they are. Gives null when a session runs.
+     */
+    fun holdBriefly(): AutoCloseable? {
+        Files.createDirectories(requests)
+        val channel = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE)
+        val lock = takeLock(channel) ?: return null
+        return AutoCloseable {
+            try {
+                lock.release()
+            } finally {
+                channel.close()
+            }
+        }
+    }
+
+    /** Tries the lock a few times, since another program looking at the folder holds it for an instant; null when held. */
+    private fun takeLock(channel: FileChannel): FileLock? {
+        var lock: FileLock? = null
+        for (attempt in 1..CLAIM_ATTEMPTS) {
+            lock = try {
+                channel.tryLock()
+            } catch (e: OverlappingFileLockException) {
+                null
+            }
+            if (lock != null || attempt == CLAIM_ATTEMPTS) break
+            Thread.sleep(CLAIM_PAUSE_MILLIS)
+        }
+        if (lock == null) channel.close()
+        return lock
+    }
+
     /** Takes the lock for a new session, or gives null when a session of this environment already runs. */
     fun claim(): RunningSession? {
         Files.createDirectories(requests)
